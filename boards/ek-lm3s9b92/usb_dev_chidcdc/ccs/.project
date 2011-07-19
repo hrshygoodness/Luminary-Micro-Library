@@ -26,19 +26,19 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_dev_chidcdc.c</locationURI>
 		</link>
 		<link>
-			<name>usb_dev_mouse.c/usb_dev_mouse.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_dev_mouse.c</locationURI>
-		</link>
-		<link>
 			<name>usb_structs.c/usb_structs.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_structs.c</locationURI>
 		</link>
 		<link>
-			<name>startup_ccs.c</name>
+			<name>usb_dev_mouse.c/usb_dev_mouse.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/startup_ccs.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_dev_mouse.c</locationURI>
+		</link>
+		<link>
+			<name>usb_dev_serial.c/usb_dev_serial.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_dev_serial.c</locationURI>
 		</link>
 		<link>
 			<name>utils/cmdline.c</name>
@@ -46,9 +46,9 @@
 			<locationURI>SW_ROOT/utils/cmdline.c</locationURI>
 		</link>
 		<link>
-			<name>usb_dev_serial.c/usb_dev_serial.c</name>
+			<name>startup_ccs.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/usb_dev_serial.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_chidcdc/startup_ccs.c</locationURI>
 		</link>
 		<link>
 			<name>usb_dev_chidcdc_ccs.cmd</name>

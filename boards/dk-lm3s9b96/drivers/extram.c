@@ -3,7 +3,7 @@
 // extram.c - Functions related to initialization and management of external
 //            RAM.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,17 +19,13 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_epi.h"
-#include "driverlib/rom.h"
-#include "driverlib/rom_map.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
 #include "driverlib/epi.h"
 #include "third_party/bget/bget.h"
 #include "extram.h"

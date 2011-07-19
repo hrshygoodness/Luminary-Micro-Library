@@ -141,11 +141,6 @@
           <Key>ARMDBGFLAGS</Key>
           <Name></Name>
         </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
-          <Key>UL2CM3</Key>
-          <Name>-UU0086R8E -O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC0 -FN1 -FF0 -FS00 -FL00</Name>
-        </SetRegEntry>
       </TargetDriverDllRegistry>
       <DebugFlag>
         <trace>0</trace>
@@ -205,8 +200,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>0</TopLine>
+      <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\utils\uartstdio.c</PathWithFileName>
       <FilenameWithoutPath>uartstdio.c</FilenameWithoutPath>
@@ -217,10 +212,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>29</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>349</TopLine>
-      <CurrentLine>353</CurrentLine>
+      <TopLine>0</TopLine>
+      <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>usb_dev_keyboard.c</PathWithFileName>
       <FilenameWithoutPath>usb_dev_keyboard.c</FilenameWithoutPath>
@@ -233,8 +228,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>1</CurrentLine>
+      <TopLine>0</TopLine>
+      <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>usb_keyb_structs.c</PathWithFileName>
       <FilenameWithoutPath>usb_keyb_structs.c</FilenameWithoutPath>
@@ -321,31 +316,13 @@
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>3</ActiveTab>
+      <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
           <Name>.\readme.txt</Name>
           <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
           <CurrentLine>1</CurrentLine>
-        </Doc>
-        <Doc>
-          <Name>..\..\..\utils\uartstdio.c</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>1</TopLine>
-          <CurrentLine>1</CurrentLine>
-        </Doc>
-        <Doc>
-          <Name>usb_keyb_structs.c</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>1</TopLine>
-          <CurrentLine>1</CurrentLine>
-        </Doc>
-        <Doc>
-          <Name>usb_dev_keyboard.c</Name>
-          <ColumnNumber>29</ColumnNumber>
-          <TopLine>349</TopLine>
-          <CurrentLine>353</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

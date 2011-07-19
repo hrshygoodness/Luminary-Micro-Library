@@ -2144,7 +2144,18 @@ LMDFUDeviceOpen(int iDeviceIndex, tLMDFUDeviceInfo *psDevInfo,
         psDevInfo->usDetachTimeOut = 0;
         psDevInfo->usTransferSize = 0;
         psDevInfo->ucDFUAttributes = 0;
-    }
+    }    
+	
+	//
+    // Remember various important pieces of info about the device then tell
+    // the caller we found it, giving them back the handle.
+    //
+    pState->usVID = psDevInfo->usVID;
+    pState->usPID = psDevInfo->usPID;
+    pState->usTransferSize = psDevInfo->usTransferSize;
+    pState->ucDFUAttributes = psDevInfo->ucDFUAttributes;
+    pState->usInterface = (unsigned short)pucInterface[2];
+    pState->usBlockNum = 0;
 
     //
     // Is the device in DFU mode?  If we are in runtime mode, skip these
@@ -2169,17 +2180,6 @@ LMDFUDeviceOpen(int iDeviceIndex, tLMDFUDeviceInfo *psDevInfo,
         //
         GetPartNumberAndRev(pState, psDevInfo);
     }
-
-    //
-    // Remember various important pieces of info about the device then tell
-    // the caller we found it, giving them back the handle.
-    //
-    pState->usVID = psDevInfo->usVID;
-    pState->usPID = psDevInfo->usPID;
-    pState->usTransferSize = psDevInfo->usTransferSize;
-    pState->ucDFUAttributes = psDevInfo->ucDFUAttributes;
-    pState->usInterface = (unsigned short)pucInterface[2];
-    pState->usBlockNum = 0;
 
     //
     // Free the device and configuration descriptor storage.
@@ -3028,25 +3028,11 @@ LMDFUDownloadBin(tLMDFUHandle hHandle, unsigned char *pcBinaryImage,
     // Make sure that the start address and length are valid and that the image
     // will fit into the programmable area of flash.
     //
-    if(!ulStartAddr)
+    if((ulStartAddr + ulImageLen) >
+       (unsigned long)(pState->usLastFlashBlock * 1024))
     {
-        //
-        // If we were passed a NULL address, we write the binary at the start
-        // of the accessible flash.  This corresponds to the application start
-        // address.
-        //
-        ulStartAddr = pState->usFirstFlashBlock * 1024;
-        TRACE("Downloading binary to default address 0x%08x\n", ulStartAddr);
-    }
-    else
-    {
-        if((ulStartAddr < (unsigned long)(pState->usFirstFlashBlock * 1024)) ||
-           ((ulStartAddr + ulImageLen) >
-            (unsigned long)(pState->usLastFlashBlock * 1024)))
-        {
-            TRACE("Image is located outside writeable area of flash.\n");
-            return(DFU_ERR_INVALID_ADDR);
-        }
+        TRACE("Image is located outside writeable area of flash.\n");
+        return(DFU_ERR_INVALID_ADDR);
     }
 
     //

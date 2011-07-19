@@ -2,7 +2,7 @@
 //
 // uartstdio.c - Utility driver to provide simple UART console functions.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1410,7 +1410,7 @@ UARTFlushRx(void)
     //
     // Temporarily turn off interrupts.
     //
-    ulInt = IntMasterDisable();
+    ulInt = MAP_IntMasterDisable();
 
     //
     // Flush the receive buffer.
@@ -1424,7 +1424,7 @@ UARTFlushRx(void)
     //
     if(!ulInt)
     {
-        IntMasterEnable();
+        MAP_IntMasterEnable();
     }
 }
 #endif
@@ -1460,7 +1460,7 @@ UARTFlushTx(tBoolean bDiscard)
         // The remaining data should be discarded, so temporarily turn off
         // interrupts.
         //
-        ulInt = IntMasterDisable();
+        ulInt = MAP_IntMasterDisable();
 
         //
         // Flush the transmit buffer.
@@ -1474,7 +1474,7 @@ UARTFlushTx(tBoolean bDiscard)
         //
         if(!ulInt)
         {
-            IntMasterEnable();
+            MAP_IntMasterEnable();
         }
     }
     else

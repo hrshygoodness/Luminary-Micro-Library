@@ -2,7 +2,7 @@
 //
 // usbdcomp.c - USB composite device class driver.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,17 +18,17 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
-#include "driverlib/udma.h"
 #include "usblib/usblib.h"
 #include "usblib/usb-ids.h"
 #include "usblib/usbcdc.h"
@@ -1356,6 +1356,7 @@ BuildCompositeDescriptor(tUSBDCompositeDevice *psCompDevice)
     psCompDevice->psPrivateData->sConfigDescriptor.wTotalLength =
        usTotalLength;
 
+
     return(0);
 }
 
@@ -1398,7 +1399,7 @@ USBDCompositeInit(unsigned long ulIndex, tUSBDCompositeDevice *psDevice,
         unsigned long ulSize, unsigned char *pucData)
 {
     tCompositeInstance *psInst;
-    int iIdx;
+    long lIdx;
     unsigned char *pucTemp;
 
     //
@@ -1444,9 +1445,9 @@ USBDCompositeInit(unsigned long ulIndex, tUSBDCompositeDevice *psDevice,
     //
     // Copy the default configuration descriptor into the instance data.
     //
-    for(iIdx = 0; iIdx < g_pCompConfigDescriptor[0]; iIdx++)
+    for(lIdx = 0; lIdx < g_pCompConfigDescriptor[0]; lIdx++)
     {
-        pucTemp[iIdx] = g_pCompConfigDescriptor[iIdx];
+        pucTemp[lIdx] = g_pCompConfigDescriptor[lIdx];
     }
 
     //
@@ -1457,9 +1458,9 @@ USBDCompositeInit(unsigned long ulIndex, tUSBDCompositeDevice *psDevice,
     //
     // Copy the default configuration descriptor into the instance data.
     //
-    for(iIdx = 0; iIdx < g_pCompDeviceDescriptor[0]; iIdx++)
+    for(lIdx = 0; lIdx < g_pCompDeviceDescriptor[0]; lIdx++)
     {
-        pucTemp[iIdx] = g_pCompDeviceDescriptor[iIdx];
+        pucTemp[lIdx] = g_pCompDeviceDescriptor[lIdx];
     }
 
     //
@@ -1490,7 +1491,7 @@ USBDCompositeInit(unsigned long ulIndex, tUSBDCompositeDevice *psDevice,
     // Enable Clocking to the USB controller so that changes to the USB
     // controller can be made in the BuildCompositeDescriptor() function.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 
     //
     // Create the combined descriptors.
@@ -1515,7 +1516,7 @@ USBDCompositeInit(unsigned long ulIndex, tUSBDCompositeDevice *psDevice,
     // Return the pointer to the instance indicating that everything went
     // well.
     //
-    return ((void *)psDevice);
+    return((void *)psDevice);
 }
 
 //****************************************************************************

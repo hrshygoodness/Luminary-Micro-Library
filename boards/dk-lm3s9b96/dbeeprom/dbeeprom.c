@@ -2,7 +2,7 @@
 //
 // dbeeprom.c - Read and write the daughter board ID EEPROM.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -48,9 +48,9 @@
 //!
 //! This application may be used to read and write the ID structures written
 //! into the 128 byte EEPROMs found on the optional Flash/SRAM and FPGA
-//! daughter boards for dk-lm3s9b96.  A command line interface is provided
-//! via UART 0 and commands allow the existing ID EEPROM content to be read
-//! and one of the standard structures identifying the available daughter
+//! daughter boards for the development board.  A command line interface is
+//! provided via UART 0 and commands allow the existing ID EEPROM content to be
+//! read and one of the standard structures identifying the available daughter
 //! boards to be written to the device.
 //!
 //! The ID EEPROM is read in function PinoutSet() and used to configure the
@@ -156,22 +156,22 @@ WaitI2CFinished(void)
     //
     // Wait until the current byte has been transferred.
     //
-    while(I2CMasterIntStatus(I2C0_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(I2C0_MASTER_BASE, false) == 0)
     {
     }
 
     if(I2CMasterErr(I2C0_MASTER_BASE) != I2C_MASTER_ERR_NONE)
     {
-        I2CMasterIntClear(I2C0_MASTER_BASE);
+        ROM_I2CMasterIntClear(I2C0_MASTER_BASE);
         return(false);
     }
 
     //
     // Clear any interrupts set.
     //
-    while(I2CMasterIntStatus(I2C0_MASTER_BASE, false))
+    while(ROM_I2CMasterIntStatus(I2C0_MASTER_BASE, false))
     {
-        I2CMasterIntClear(I2C0_MASTER_BASE);
+        ROM_I2CMasterIntClear(I2C0_MASTER_BASE);
     }
 
     return(true);
@@ -186,8 +186,8 @@ WaitI2CFinished(void)
 // \param ulCount is the number of bytes of data to read from the EEPROM.
 //
 // This function reads one or more bytes of data from a given address in the
-// ID EEPROM found on several of the lm3s9b96 development kit daughter boards.
-// The return code indicates whether the read was successful.
+// ID EEPROM found on several of the development kit daughter boards.  The
+// return code indicates whether the read was successful.
 //
 // \return Returns \b true on success of \b false on failure.
 //
@@ -201,22 +201,22 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
     //
     // Clear any previously signalled interrupts.
     //
-    I2CMasterIntClear(I2C0_MASTER_BASE);
+    ROM_I2CMasterIntClear(I2C0_MASTER_BASE);
 
     //
     // Start with a dummy write to get the address set in the EEPROM.
     //
-    I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, false);
+    ROM_I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, false);
 
     //
     // Place the address to be written in the data register.
     //
-    I2CMasterDataPut(I2C0_MASTER_BASE, ulOffset);
+    ROM_I2CMasterDataPut(I2C0_MASTER_BASE, ulOffset);
 
     //
     // Perform a single send, writing the address as the only byte.
     //
-    I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    ROM_I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
 
     //
     // Wait until the current byte has been transferred.
@@ -229,14 +229,14 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
     //
     // Put the I2C master into receive mode.
     //
-    I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, true);
+    ROM_I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, true);
 
     //
     // Start the receive.
     //
-    I2CMasterControl(I2C0_MASTER_BASE,
-                     ((ulCount > 1) ? I2C_MASTER_CMD_BURST_RECEIVE_START :
-                     I2C_MASTER_CMD_SINGLE_RECEIVE));
+    ROM_I2CMasterControl(I2C0_MASTER_BASE,
+                         ((ulCount > 1) ? I2C_MASTER_CMD_BURST_RECEIVE_START :
+                         I2C_MASTER_CMD_SINGLE_RECEIVE));
 
     //
     // Receive the required number of bytes.
@@ -248,19 +248,19 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
         //
         // Wait until the current byte has been read.
         //
-        while(I2CMasterIntStatus(I2C0_MASTER_BASE, false) == 0)
+        while(ROM_I2CMasterIntStatus(I2C0_MASTER_BASE, false) == 0)
         {
         }
 
         //
         // Clear pending interrupt notification.
         //
-        I2CMasterIntClear(I2C0_MASTER_BASE);
+        ROM_I2CMasterIntClear(I2C0_MASTER_BASE);
 
         //
         // Read the received character.
         //
-        *pucData++ = I2CMasterDataGet(I2C0_MASTER_BASE);
+        *pucData++ = ROM_I2CMasterDataGet(I2C0_MASTER_BASE);
         ulToRead--;
 
         //
@@ -268,10 +268,10 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
         //
         if(ulToRead)
         {
-            I2CMasterControl(I2C0_MASTER_BASE,
-                             ((ulToRead == 1) ?
-                              I2C_MASTER_CMD_BURST_RECEIVE_FINISH :
-                              I2C_MASTER_CMD_BURST_RECEIVE_CONT));
+            ROM_I2CMasterControl(I2C0_MASTER_BASE,
+                                 ((ulToRead == 1) ?
+                                  I2C_MASTER_CMD_BURST_RECEIVE_FINISH :
+                                  I2C_MASTER_CMD_BURST_RECEIVE_CONT));
         }
     }
 
@@ -304,17 +304,17 @@ EEPROMWritePolled(unsigned char ucAddr, unsigned char ucData)
     //
     // Start with a dummy write to get the address set in the EEPROM.
     //
-    I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, false);
+    ROM_I2CMasterSlaveAddrSet(I2C0_MASTER_BASE, ID_I2C_ADDR, false);
 
     //
     // Place the address to be written in the data register.
     //
-    I2CMasterDataPut(I2C0_MASTER_BASE, ucAddr);
+    ROM_I2CMasterDataPut(I2C0_MASTER_BASE, ucAddr);
 
     //
     // Start a burst send, sending the device address as the first byte.
     //
-    I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    ROM_I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
 
     //
     // Wait until the current byte has been transferred.
@@ -327,12 +327,12 @@ EEPROMWritePolled(unsigned char ucAddr, unsigned char ucData)
     //
     // Write the value to be written to the flash.
     //
-    I2CMasterDataPut(I2C0_MASTER_BASE, ucData);
+    ROM_I2CMasterDataPut(I2C0_MASTER_BASE, ucData);
 
     //
     // Send the data byte.
     //
-    I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+    ROM_I2CMasterControl(I2C0_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
 
     //
     // Wait until the current byte has been transferred.
@@ -347,7 +347,7 @@ EEPROMWritePolled(unsigned char ucAddr, unsigned char ucData)
     // device waiting for an ACK but this is easier (and this code is only
     // for testcase use so this should be safe).
     //
-    SysCtlDelay(SysCtlClockGet() / (200 * 3));
+    SysCtlDelay(ROM_SysCtlClockGet() / (200 * 3));
 
     //
     // Tell the caller we wrote the required data.
@@ -814,8 +814,8 @@ int main(void)
     //
     // Set the system clock to run at 50MHz from the PLL
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the default pinout (and query any daughter board that may be
@@ -827,9 +827,9 @@ int main(void)
     //
     // Enable UART0.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Initialize the UART standard I/O.
@@ -838,8 +838,8 @@ int main(void)
     UARTprintf("\n\nDaughter Board ID EEPROM Read/Write\n");
     UARTprintf(    "-----------------------------------\n\n");
     UARTprintf("Use this tool to read or repair the information stored\n");
-    UARTprintf("in the 128 byte ID EEPROM on optional dk-lm3s9b96 daughter\n");
-    UARTprintf("boards.\n");
+    UARTprintf("in the 128 byte ID EEPROM on optional development kit\n");
+    UARTprintf("daughter boards.\n");
 
     //
     // Output our help screen.

@@ -3,7 +3,7 @@
 // usb_structs.c - Data structures defining the composite HID mouse and CDC
 // serial USB device.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //****************************************************************************
 
@@ -277,10 +277,18 @@ const tUSBBuffer g_sTxBuffer =
 
 //****************************************************************************
 //
+// The number of individual device class instances comprising this composite
+// device.
+//
+//****************************************************************************
+#define NUM_DEVICES 2
+
+//****************************************************************************
+//
 // The array of devices supported by this composite device.
 //
 //****************************************************************************
-tCompositeEntry g_psCompDevices[]=
+tCompositeEntry g_psCompDevices[NUM_DEVICES]=
 {
     //
     // HID Mouse Information.
@@ -299,7 +307,12 @@ tCompositeEntry g_psCompDevices[]=
     }
 };
 
-#define NUM_DEVICES         (sizeof(g_psCompDevices)/sizeof(tCompositeEntry))
+//****************************************************************************
+//
+// Additional workspaced required by the composite device.
+//
+//****************************************************************************
+unsigned long g_pulCompWorkspace[NUM_DEVICES];
 
 //****************************************************************************
 //
@@ -353,7 +366,8 @@ tUSBDCompositeDevice g_sCompDevice =
     g_psCompDevices,
 
     //
-    // Composite device instance data.
+    // Workspace required by the composite device.
     //
+    g_pulCompWorkspace,
     &g_CompInstance
 };

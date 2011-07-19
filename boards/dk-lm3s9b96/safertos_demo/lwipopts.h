@@ -2,7 +2,7 @@
 //
 // lwipopts.h - Configuration file for lwIP
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 //
@@ -386,7 +386,6 @@
 #define S32_F "d"
 #define X32_F "x"
 extern void UARTprintf(const char *pcString, ...);
-#define LWIP_PLATFORM_DIAG(x) {UARTprintf x;}
 #define LWIP_DEBUG
 #endif
 

@@ -9,17 +9,11 @@
 
   <project>
     <PathAndName>..\..\driverlib\driverlib.uvproj</PathAndName>
-    <NodeIsActive>1</NodeIsActive>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
     <PathAndName>..\..\grlib\grlib.uvproj</PathAndName>
-    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
-  </project>
-
-  <project>
-    <PathAndName>..\..\IQmath\IQmath.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
@@ -225,7 +219,6 @@
 
   <project>
     <PathAndName>.\uart_echo\uart_echo.uvproj</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

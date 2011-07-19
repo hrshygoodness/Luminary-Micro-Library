@@ -2,7 +2,7 @@
 //
 // usb_bulk_structs.h - Data structures defining this bulk USB device.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,13 +18,20 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #ifndef _USB_BULK_STRUCTS_H_
 #define _USB_BULK_STRUCTS_H_
 
+//*****************************************************************************
+//
+// The size of the transmit and receive buffers used. 256 is chosen pretty
+// much at random though the buffer should be at least twice the size of
+// a maximum-sized USB packet.
+//
+//*****************************************************************************
 #define BULK_BUFFER_SIZE 256
 
 extern unsigned long RxHandler(void *pvCBData, unsigned long ulEvent,

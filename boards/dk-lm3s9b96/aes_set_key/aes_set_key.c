@@ -2,7 +2,7 @@
 //
 // aes_set_key.c - Simple example using AES with a normal key.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,12 +18,13 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_types.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "third_party/aes/aes.h"
@@ -115,8 +116,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the pinout appropriately for this board.

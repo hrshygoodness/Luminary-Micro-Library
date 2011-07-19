@@ -2,7 +2,7 @@
 //
 // usb_stick_update.c - Example to update flash from a USB memory stick.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -759,7 +759,7 @@ main(void)
     //
     // Check if the button is pressed, if so then force an update.
     //
-    if(GPIOPinRead(GPIO_PORTJ_BASE, GPIO_PIN_7) == 0)
+    if(ROM_GPIOPinRead(GPIO_PORTJ_BASE, GPIO_PIN_7) == 0)
     {
         UpdaterMain();
     }

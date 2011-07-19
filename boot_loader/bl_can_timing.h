@@ -2,7 +2,7 @@
 //
 // bl_can_timing.h - Timing definitions for the CAN controller.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -75,9 +75,9 @@
 //*****************************************************************************
 #elif CRYSTAL_FREQ == 16000000
 #if CAN_BIT_RATE == 1000000
-#define CAN_BIT_TIMING          CAN_BIT_REG(10, 5, 4, 2)    // tProp = 312ns
+#define CAN_BIT_TIMING          CAN_BIT_REG(10, 5, 4, 1)    // tProp = 312ns
 #elif CAN_BIT_RATE == 500000
-#define CAN_BIT_TIMING          CAN_BIT_REG(9, 6, 4, 4)     // tProp = 375ns
+#define CAN_BIT_TIMING          CAN_BIT_REG(9, 6, 4, 2)     // tProp = 375ns
 #elif CAN_BIT_RATE == 250000
 #define CAN_BIT_TIMING          CAN_BIT_REG(4, 3, 3, 8)     // tProp = 500ns
 #elif CAN_BIT_RATE == 125000

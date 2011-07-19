@@ -2,53 +2,53 @@
 <?fileVersion 3.1.0?>
 
 <ManagedProjectBuildInfo>
-<project id="gpio_jtag.com.ti.ccstudio.buildDefinitions.TMS470.ProjectType.59554922" name="ARM" projectType="com.ti.ccstudio.buildDefinitions.TMS470.ProjectType">
-<configuration artifactExtension="out" artifactName="gpio_jtag" description="" id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.1077326905" name="Debug" parent="com.ti.ccstudio.buildDefinitions.TMS470.Debug" postbuildStep="&quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/tiobj2bin.bat&quot; &quot;${BuildArtifactFileName}&quot; &quot;${BuildArtifactFileBaseName}.bin&quot; &quot;${CG_TOOL_ROOT}/bin/ofd470.exe&quot; &quot;${CG_TOOL_ROOT}/bin/hex470.exe&quot; &quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/mkhex4bin.exe&quot;">
-<toolChain id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.DebugToolchain.749730746" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug.1552354403">
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.2073459847" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.6.3" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.812129463" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
+<project id="gpio_jtag.com.ti.ccstudio.buildDefinitions.TMS470.ProjectType.1526882961" name="ARM" projectType="com.ti.ccstudio.buildDefinitions.TMS470.ProjectType">
+<configuration artifactExtension="out" artifactName="gpio_jtag" description="" id="com.ti.ccstudio.buildDefinitions.TMS470.Debug.1363826718" name="Debug" parent="com.ti.ccstudio.buildDefinitions.TMS470.Debug" postbuildStep="&quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/tiobj2bin.bat&quot; &quot;${BuildArtifactFileName}&quot; &quot;${BuildArtifactFileBaseName}.bin&quot; &quot;${CG_TOOL_ROOT}/bin/ofd470.exe&quot; &quot;${CG_TOOL_ROOT}/bin/hex470.exe&quot; &quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/mkhex4bin.exe&quot;">
+<toolChain id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.DebugToolchain.2068728824" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug.286357651">
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.737844043" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
 <listOptionValue builtIn="false" value="DEVICE_CONFIGURATION_ID=Cortex M.LM3S9B96"/>
 <listOptionValue builtIn="false" value="DEVICE_ENDIANNESS=little"/>
-<listOptionValue builtIn="false" value="IS_ELF=true"/>
+<listOptionValue builtIn="false" value="OUTPUT_FORMAT=ELF"/>
+<listOptionValue builtIn="false" value="CCS_MBS_VERSION=4.2.2"/>
 <listOptionValue builtIn="false" value="LINKER_COMMAND_FILE="/>
-<listOptionValue builtIn="false" value="RUNTIME_SUPPORT_LIBRARY=rtsv7M3_T_le_eabi.lib"/>
-<listOptionValue builtIn="false" value="IS_ASSEMBLY_ONLY=false"/>
-<listOptionValue builtIn="false" value="CCS_MBS_VERSION=4.1.3"/>
-<listOptionValue builtIn="false" value="PROJECT_KIND=com.ti.ccstudio.managedbuild.core.ProjectKind_Executable"/>
+<listOptionValue builtIn="false" value="RUNTIME_SUPPORT_LIBRARY=libc.a"/>
+<listOptionValue builtIn="false" value="OUTPUT_TYPE=executable"/>
 </option>
-<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerDebug.1421804833" name="TMS470 Compiler" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerDebug">
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING.287945500" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING" valueType="stringList">
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.993144008" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.6.4" valueType="string"/>
+<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerDebug.1872045225" name="TMS470 Compiler" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerDebug">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING.1046336857" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING" valueType="stringList">
 <listOptionValue builtIn="false" value="225"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.1316197075" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.16" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.603796361" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.7M3" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.1107547984" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.eabi" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS.1994850461" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL.626160855" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL.2" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC.1127481876" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL.1032641144" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE.907932452" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE" valueType="definedSymbols">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.808847659" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.7M3" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.758508342" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.16" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.91054848" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.eabi" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS.988594131" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL.1932170215" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.OPT_LEVEL.2" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC.631418536" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL.1341757237" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE.2024763132" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="ccs"/>
 <listOptionValue builtIn="false" value="PART_LM3S9B96"/>
+<listOptionValue builtIn="false" value="TARGET_IS_TEMPEST_RB1"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH.1609839547" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH" valueType="includePath">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH.839827065" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../..&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../..&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/boards/dk-lm3s9b96&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN.706888995" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN.2051876163" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
 </tool>
-<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug.1552354403" name="TMS470 Linker" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug">
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE.877085014" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE" value="&quot;gpio_jtag_ccs.map&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE.1631006849" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE" value="512" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE.1242935984" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE" value="0" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE.1918339045" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE" value="&quot;gpio_jtag.out&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY.185628553" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY" valueType="libs">
-<listOptionValue builtIn="false" value="&quot;rtsv7M3_T_le_eabi.lib&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../../driverlib/ccs/Debug/driverlib.lib&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../../grlib/ccs/Debug/grlib.lib&quot;"/>
+<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug.286357651" name="TMS470 Linker" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerDebug">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE.790124754" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE" value="&quot;gpio_jtag_ccs.map&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE.1181473367" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE" value="512" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE.1272001096" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE" value="0" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE.1596091564" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE" value="&quot;gpio_jtag.out&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY.1065886374" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY" valueType="libs">
+<listOptionValue builtIn="false" value="&quot;libc.a&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/driverlib/ccs/Debug/driverlib.lib&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/grlib/ccs/Debug/grlib.lib&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH.1239667965" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH" valueType="stringList">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH.448062845" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH" valueType="stringList">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/lib&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 </option>
@@ -56,56 +56,57 @@
 <macros/>
 </toolChain>
 </configuration>
-<configuration artifactExtension="out" artifactName="gpio_jtag" description="" id="com.ti.ccstudio.buildDefinitions.TMS470.Release.1598084119" name="Release" parent="com.ti.ccstudio.buildDefinitions.TMS470.Release" postbuildStep="&quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/tiobj2bin.bat&quot; &quot;${BuildArtifactFileName}&quot; &quot;${BuildArtifactFileBaseName}.bin&quot; &quot;${CG_TOOL_ROOT}/bin/ofd470.exe&quot; &quot;${CG_TOOL_ROOT}/bin/hex470.exe&quot; &quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/mkhex4bin.exe&quot;">
-<toolChain id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.ReleaseToolchain.1983458992" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.ReleaseToolchain" targetTool="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease.1921219166">
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.469525345" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.6.3" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.3869912" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
+<configuration artifactExtension="out" artifactName="gpio_jtag" description="" id="com.ti.ccstudio.buildDefinitions.TMS470.Release.738263258" name="Release" parent="com.ti.ccstudio.buildDefinitions.TMS470.Release" postbuildStep="&quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/tiobj2bin.bat&quot; &quot;${BuildArtifactFileName}&quot; &quot;${BuildArtifactFileBaseName}.bin&quot; &quot;${CG_TOOL_ROOT}/bin/ofd470.exe&quot; &quot;${CG_TOOL_ROOT}/bin/hex470.exe&quot; &quot;${CCE_INSTALL_ROOT}/utils/tiobj2bin/mkhex4bin.exe&quot;">
+<toolChain id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.ReleaseToolchain.1458741652" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.ReleaseToolchain" targetTool="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease.1716220291">
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.662913657" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
 <listOptionValue builtIn="false" value="DEVICE_CONFIGURATION_ID=Cortex M.LM3S9B96"/>
 <listOptionValue builtIn="false" value="DEVICE_ENDIANNESS=little"/>
-<listOptionValue builtIn="false" value="IS_ELF=true"/>
+<listOptionValue builtIn="false" value="OUTPUT_FORMAT=ELF"/>
+<listOptionValue builtIn="false" value="CCS_MBS_VERSION=4.2.2"/>
 <listOptionValue builtIn="false" value="LINKER_COMMAND_FILE="/>
-<listOptionValue builtIn="false" value="RUNTIME_SUPPORT_LIBRARY=rtsv7M3_T_le_eabi.lib"/>
-<listOptionValue builtIn="false" value="IS_ASSEMBLY_ONLY=false"/>
-<listOptionValue builtIn="false" value="CCS_MBS_VERSION=4.1.3"/>
-<listOptionValue builtIn="false" value="PROJECT_KIND=com.ti.ccstudio.managedbuild.core.ProjectKind_Executable"/>
+<listOptionValue builtIn="false" value="RUNTIME_SUPPORT_LIBRARY=libc.a"/>
+<listOptionValue builtIn="false" value="OUTPUT_TYPE=executable"/>
 </option>
-<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerRelease.1290299028" name="TMS470 Compiler" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerRelease">
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING.527346897" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING" valueType="stringList">
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1806904025" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="4.6.4" valueType="string"/>
+<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerRelease.484195123" name="TMS470 Compiler" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.compilerRelease">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING.920034276" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DIAG_WARNING" valueType="stringList">
 <listOptionValue builtIn="false" value="225"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.569026171" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.16" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.361779040" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.7M3" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.1912055637" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.eabi" valueType="enumerated"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS.442303941" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC.1660631361" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL.1516206876" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL" value="true" valueType="boolean"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE.1723746812" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE" valueType="definedSymbols">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.52506707" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.SILICON_VERSION.7M3" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.555470587" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.CODE_STATE.16" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.13326648" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI" value="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.ABI.eabi" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS.1734258724" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GEN_FUNC_SUBSECTIONS" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC.1758228677" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.GCC" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL.1484213620" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.UAL" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE.191458130" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.DEFINE" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="ccs"/>
 <listOptionValue builtIn="false" value="PART_LM3S9B96"/>
+<listOptionValue builtIn="false" value="TARGET_IS_TEMPEST_RB1"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH.28624254" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH" valueType="includePath">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH.1548090186" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.INCLUDE_PATH" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../..&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../..&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/boards/dk-lm3s9b96&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN.1910249997" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN.838796541" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.compilerID.LITTLE_ENDIAN" value="true" valueType="boolean"/>
 </tool>
-<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease.1921219166" name="TMS470 Linker" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease">
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE.2077078923" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE" value="&quot;gpio_jtag_ccs.map&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE.1104815766" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE" value="512" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE.1445973814" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE" value="0" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE.895466021" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE" value="&quot;gpio_jtag.out&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY.835846212" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY" valueType="libs">
-<listOptionValue builtIn="false" value="&quot;rtsv7M3_T_le_eabi.lib&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../../driverlib/ccs/Debug/driverlib.lib&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${PROJECT_ROOT}/../../../../grlib/ccs/Debug/grlib.lib&quot;"/>
+<tool id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease.1716220291" name="TMS470 Linker" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.exe.linkerRelease">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE.1399086382" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.MAP_FILE" value="&quot;gpio_jtag_ccs.map&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE.37546581" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.STACK_SIZE" value="512" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE.242427278" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.HEAP_SIZE" value="0" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE.1503280213" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.OUTPUT_FILE" value="&quot;gpio_jtag.out&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY.797960382" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.LIBRARY" valueType="libs">
+<listOptionValue builtIn="false" value="&quot;libc.a&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/driverlib/ccs/Debug/driverlib.lib&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${SW_ROOT}/grlib/ccs/Debug/grlib.lib&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH.1235396123" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH" valueType="stringList">
+<option id="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH.179997110" superClass="com.ti.ccstudio.buildDefinitions.TMS470_4.6.linkerID.SEARCH_PATH" valueType="stringList">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/lib&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 </option>
 </tool>
 </toolChain>
 </configuration>
+<macros/>
 </project>
 </ManagedProjectBuildInfo>

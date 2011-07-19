@@ -9,7 +9,7 @@ application directory, not in the boot loader source directory).
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -25,4 +25,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the Stellaris Firmware Development Package.
+This is part of revision 7611 of the Stellaris Firmware Development Package.

@@ -2,7 +2,7 @@
 //
 // uart.c - Driver for the UART.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -78,11 +78,12 @@ UARTBaseValid(unsigned long ulBase)
 //! \param ulBase is the base address of the UART port.
 //! \param ulParity specifies the type of parity to use.
 //!
-//! Sets the type of parity to use for transmitting and expect when receiving.
-//! The \e ulParity parameter must be one of \b UART_CONFIG_PAR_NONE,
-//! \b UART_CONFIG_PAR_EVEN, \b UART_CONFIG_PAR_ODD, \b UART_CONFIG_PAR_ONE,
-//! or \b UART_CONFIG_PAR_ZERO.  The last two allow direct control of the
-//! parity bit; it is always either one or zero based on the mode.
+//! This function sets the type of parity to use for transmitting and expect
+//! when receiving.  The \e ulParity parameter must be one of
+//! \b UART_CONFIG_PAR_NONE, \b UART_CONFIG_PAR_EVEN, \b UART_CONFIG_PAR_ODD,
+//! \b UART_CONFIG_PAR_ONE, or \b UART_CONFIG_PAR_ZERO.  The last two allow
+//! direct control of the parity bit; it is always either one or zero based on
+//! the mode.
 //!
 //! \return None.
 //
@@ -193,7 +194,7 @@ UARTFIFOLevelSet(unsigned long ulBase, unsigned long ulTxLevel,
 //! \b UART_FIFO_RX4_8, \b UART_FIFO_RX6_8, or \b UART_FIFO_RX7_8.
 //!
 //! This function gets the FIFO level at which transmit and receive interrupts
-//! are xogenerated.
+//! are generated.
 //!
 //! \return None.
 //
@@ -245,10 +246,10 @@ UARTFIFOLevelGet(unsigned long ulBase, unsigned long *pulTxLevel,
 //! select the parity mode (no parity bit, even parity bit, odd parity bit,
 //! parity bit always one, and parity bit always zero, respectively).
 //!
-//! The peripheral clock will be the same as the processor clock.  This will be
-//! the value returned by SysCtlClockGet(), or it can be explicitly hard coded
-//! if it is constant and known (to save the code/execution overhead of a call
-//! to SysCtlClockGet()).
+//! The peripheral clock is the same as the processor clock.  The frequency of
+//! the system clock is the value returned by SysCtlClockGet(), or it can be
+//! explicitly hard coded if it is constant and known (to save the
+//! code/execution overhead of a call to SysCtlClockGet()).
 //!
 //! This function replaces the original UARTConfigSet() API and performs the
 //! same actions.  A macro is provided in <tt>uart.h</tt> to map the original
@@ -343,10 +344,10 @@ UARTConfigSetExpClk(unsigned long ulBase, unsigned long ulUARTClk,
 //! \e pulConfig is enumerated the same as the \e ulConfig parameter of
 //! UARTConfigSetExpClk().
 //!
-//! The peripheral clock will be the same as the processor clock.  This will be
-//! the value returned by SysCtlClockGet(), or it can be explicitly hard coded
-//! if it is constant and known (to save the code/execution overhead of a call
-//! to SysCtlClockGet()).
+//! The peripheral clock is the same as the processor clock.  The frequency of
+//! the system clock is the value returned by SysCtlClockGet(), or it can be
+//! explicitly hard coded if it is constant and known (to save the
+//! code/execution overhead of a call to SysCtlClockGet()).
 //!
 //! This function replaces the original UARTConfigGet() API and performs the
 //! same actions.  A macro is provided in <tt>uart.h</tt> to map the original
@@ -399,8 +400,8 @@ UARTConfigGetExpClk(unsigned long ulBase, unsigned long ulUARTClk,
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Sets the UARTEN, TXE, and RXE bits, and enables the transmit and receive
-//! FIFOs.
+//! This function sets the UARTEN, TXE, and RXE bits, and enables the transmit
+//! and receive FIFOs.
 //!
 //! \return None.
 //
@@ -431,7 +432,7 @@ UARTEnable(unsigned long ulBase)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Clears the UARTEN, TXE, and RXE bits, then waits for the end of
+//! This function clears the UARTEN, TXE, and RXE bits, waits for the end of
 //! transmission of the current character, and flushes the transmit FIFO.
 //!
 //! \return None.
@@ -521,10 +522,12 @@ UARTFIFODisable(unsigned long ulBase)
 //! \param ulBase is the base address of the UART port.
 //! \param bLowPower indicates if SIR Low Power Mode is to be used.
 //!
-//! Enables the SIREN control bit for IrDA mode on the UART.  If the
-//! \e bLowPower flag is set, then SIRLP bit will also be set.
+//! This function enables the SIREN control bit for IrDA mode on the UART.  If
+//! the \e bLowPower flag is set, then SIRLP bit will also be set.
 //!
-//! \note SIR (IrDA) operation is not supported on Sandstorm-class devices.
+//! \note The availability of SIR (IrDA) operation varies with the Stellaris
+//! part and UART in use.  Please consult the datasheet for the part you are
+//! using to determine whether this support is available.
 //!
 //! \return None.
 //
@@ -556,9 +559,11 @@ UARTEnableSIR(unsigned long ulBase, tBoolean bLowPower)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Clears the SIREN (IrDA) and SIRLP (Low Power) bits.
+//! This function clears the SIREN (IrDA) and SIRLP (Low Power) bits.
 //!
-//! \note SIR (IrDA) operation is not supported on Sandstorm-class devices.
+//! \note The availability of SIR (IrDA) operation varies with the Stellaris
+//! part and UART in use.  Please consult the datasheet for the part you are
+//! using to determine whether this support is available.
 //!
 //! \return None.
 //
@@ -579,15 +584,15 @@ UARTDisableSIR(unsigned long ulBase)
 
 //*****************************************************************************
 //
-//! Enables ISO 7816 smart card mode on the specified UART.
+//! Enables ISO7816 smart card mode on the specified UART.
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Enables the SMART control bit for ISO 7816 smart card mode on the UART.
-//! This call also sets 8 bit word length and even parity as required by ISO
-//! 7816.
+//! This function enables the SMART control bit for ISO7816 smart card mode on
+//! the UART.  This call also sets 8 bit word length and even parity as
+//! required by ISO7816.
 //!
-//! \note The availability of ISO 7816 smart card mode varies with the
+//! \note The availability of ISO7816 smart card mode varies with the
 //! Stellaris part and UART in use.  Please consult the datasheet for the part
 //! you are using to determine whether this support is available.
 //!
@@ -603,8 +608,7 @@ UARTSmartCardEnable(unsigned long ulBase)
     // Check the arguments.
     //
     ASSERT(!CLASS_IS_SANDSTORM && !CLASS_IS_FURY && !CLASS_IS_DUSTDEVIL);
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
 
     //
     // Set 8 bit word length, even parity, 2 stop bits (even though the STP2
@@ -625,13 +629,14 @@ UARTSmartCardEnable(unsigned long ulBase)
 
 //*****************************************************************************
 //
-//! Disables ISO 7816 smart card mode on the specified UART.
+//! Disables ISO7816 smart card mode on the specified UART.
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Clears the SMART (ISO 7816 smart card) bits in the UART control register.
+//! This function clears the SMART (ISO7816 smart card) bits in the UART
+//! control register.
 //!
-//! \note The availability of ISO 7816 smart card mode varies with the
+//! \note The availability of ISO7816 smart card mode varies with the
 //! Stellaris part and UART in use.  Please consult the datasheet for the part
 //! you are using to determine whether this support is available.
 //!
@@ -645,8 +650,7 @@ UARTSmartCardDisable(unsigned long ulBase)
     // Check the arguments.
     //
     ASSERT(!CLASS_IS_SANDSTORM && !CLASS_IS_FURY && !CLASS_IS_DUSTDEVIL);
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
 
     //
     // Disable the SMART bit.
@@ -662,7 +666,8 @@ UARTSmartCardDisable(unsigned long ulBase)
 //! \param ulControl is a bit-mapped flag indicating which modem control bits
 //! should be set.
 //!
-//! Sets the states of the DTR or RTS modem handshake outputs from the UART.
+//! This function sets the states of the DTR or RTS modem handshake outputs
+//! from the UART.
 //!
 //! The \e ulControl parameter is the logical OR of any of the following:
 //!
@@ -704,7 +709,8 @@ UARTModemControlSet(unsigned long ulBase, unsigned long ulControl)
 //! \param ulControl is a bit-mapped flag indicating which modem control bits
 //! should be set.
 //!
-//! Clears the states of the DTR or RTS modem handshake outputs from the UART.
+//! This function clears the states of the DTR or RTS modem handshake outputs
+//! from the UART.
 //!
 //! The \e ulControl parameter is the logical OR of any of the following:
 //!
@@ -744,8 +750,8 @@ UARTModemControlClear(unsigned long ulBase, unsigned long ulControl)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Returns the current states of each of the two UART modem control signals,
-//! DTR and RTS.
+//! This function returns the current states of each of the two UART modem
+//! control signals, DTR and RTS.
 //!
 //! \note The availability of hardware modem handshake signals varies with the
 //! Stellaris part and UART in use.  Please consult the datasheet for the part
@@ -775,16 +781,16 @@ UARTModemControlGet(unsigned long ulBase)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Returns the current states of each of the four UART modem status signals,
-//! RI, DCD, DSR and CTS.
+//! This function returns the current states of each of the four UART modem
+//! status signals, RI, DCD, DSR and CTS.
 //!
 //! \note The availability of hardware modem handshake signals varies with the
 //! Stellaris part and UART in use.  Please consult the datasheet for the part
 //! you are using to determine whether this support is available.
 //!
-//! \return Returns the states of the handshake output signals.  This will be a
-//! logical logical OR combination of values \b UART_INPUT_RI, \b
-//! UART_INPUT_DCD, \b UART_INPUT_CTS and \b UART_INPUT_DSR where the
+//! \return Returns the states of the handshake output signals.  This value
+//! will be a logical logical OR combination of values \b UART_INPUT_RI,
+//! \b UART_INPUT_DCD, \b UART_INPUT_CTS and \b UART_INPUT_DSR where the
 //! presence of each flag indicates that the associated signal is asserted.
 //
 //*****************************************************************************
@@ -806,17 +812,18 @@ UARTModemStatusGet(unsigned long ulBase)
 //! Sets the UART hardware flow control mode to be used.
 //!
 //! \param ulBase is the base address of the UART port.
-//! \param ulMode indicates the flow control modes to be used.  This is a
-//! logical OR combination of values \b UART_FLOWCONTROL_TX and \b
-//! UART_FLOWCONTROL_RX to enable hardware transmit (CTS) and receive (RTS)
+//! \param ulMode indicates the flow control modes to be used.  This parameter
+//! is a logical OR combination of values \b UART_FLOWCONTROL_TX and
+//! \b UART_FLOWCONTROL_RX to enable hardware transmit (CTS) and receive (RTS)
 //! flow control or \b UART_FLOWCONTROL_NONE to disable hardware flow control.
 //!
-//! Sets the required hardware flow control modes.  If \e ulMode contains
-//! flag \b UART_FLOWCONTROL_TX, data is only transmitted if the incoming CTS
-//! signal is asserted. If \e ulMode contains flag \b UART_FLOWCONTROL_RX,
-//! the RTS output is controlled by the hardware and is asserted only when
-//! there is space available in the receive FIFO.  If no hardware flow control
-//! is required, UART_FLOWCONTROL_NONE should be passed.
+//! This function sets the required hardware flow control modes.  If \e ulMode
+//! contains flag \b UART_FLOWCONTROL_TX, data is only transmitted if the
+//! incoming CTS signal is asserted. If \e ulMode contains flag
+//! \b UART_FLOWCONTROL_RX, the RTS output is controlled by the hardware and is
+//! asserted only when there is space available in the receive FIFO.  If no
+//! hardware flow control is required, \b UART_FLOWCONTROL_NONE should be
+//! passed.
 //!
 //! \note The availability of hardware flow control varies with the Stellaris
 //! part and UART in use.  Please consult the datasheet for the part you are
@@ -832,8 +839,7 @@ UARTFlowControlSet(unsigned long ulBase, unsigned long ulMode)
     // Check the arguments.
     //
     ASSERT(!CLASS_IS_SANDSTORM && !CLASS_IS_FURY && !CLASS_IS_DUSTDEVIL);
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
     ASSERT((ulMode & ~(UART_FLOWCONTROL_TX | UART_FLOWCONTROL_RX)) == 0);
 
     //
@@ -850,7 +856,7 @@ UARTFlowControlSet(unsigned long ulBase, unsigned long ulMode)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Returns the current hardware flow control mode.
+//! This function returns the current hardware flow control mode.
 //!
 //! \note The availability of hardware flow control varies with the Stellaris
 //! part and UART in use.  Please consult the datasheet for the part you are
@@ -859,8 +865,8 @@ UARTFlowControlSet(unsigned long ulBase, unsigned long ulMode)
 //! \return Returns the current flow control mode in use.  This is a
 //! logical OR combination of values \b UART_FLOWCONTROL_TX if transmit
 //! (CTS) flow control is enabled and \b UART_FLOWCONTROL_RX if receive (RTS)
-//! flow control is in use.  If hardware flow control is disabled, \b
-//! UART_FLOWCONTROL_NONE will be returned.
+//! flow control is in use.  If hardware flow control is disabled,
+//! \b UART_FLOWCONTROL_NONE is returned.
 //
 //*****************************************************************************
 unsigned long
@@ -870,8 +876,7 @@ UARTFlowControlGet(unsigned long ulBase)
     // Check the arguments.
     //
     ASSERT(!CLASS_IS_SANDSTORM && !CLASS_IS_FURY && !CLASS_IS_DUSTDEVIL);
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
 
     return(HWREG(ulBase + UART_O_CTL) & (UART_FLOWCONTROL_TX |
                                          UART_FLOWCONTROL_RX));
@@ -891,9 +896,9 @@ UARTFlowControlGet(unsigned long ulBase)
 //! default, the transmit interrupt is asserted when the FIFO level falls past
 //! a threshold set via a call to UARTFIFOLevelSet().  Alternatively, if this
 //! function is called with \e ulMode set to \b UART_TXINT_MODE_EOT, the
-//! transmit interrupt will only be asserted once the transmitter is completely
-//! idle - the transmit FIFO is empty and all bits, including any stop bits,
-//! have cleared the transmitter.
+//! transmit interrupt is asserted once the transmitter is completely idle -
+//! the transmit FIFO is empty and all bits, including any stop bits, have
+//! cleared the transmitter.
 //!
 //! \note The availability of end-of-transmission mode varies with the
 //! Stellaris part in use.  Please consult the datasheet for the part you are
@@ -908,8 +913,7 @@ UARTTxIntModeSet(unsigned long ulBase, unsigned long ulMode)
     //
     // Check the arguments.
     //
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
     ASSERT((ulMode == UART_TXINT_MODE_EOT) ||
            (ulMode == UART_TXINT_MODE_FIFO));
 
@@ -928,12 +932,12 @@ UARTTxIntModeSet(unsigned long ulBase, unsigned long ulMode)
 //! \param ulBase is the base address of the UART port.
 //!
 //! This function returns the current operating mode for the UART transmit
-//! interrupt.  The return value will be \b UART_TXINT_MODE_EOT if the
-//! transmit interrupt is currently set to be asserted once the transmitter is
+//! interrupt.  The return value is \b UART_TXINT_MODE_EOT if the transmit
+//! interrupt is currently set to be asserted once the transmitter is
 //! completely idle - the transmit FIFO is empty and all bits, including any
-//! stop bits, have cleared the transmitter.  The return value will be \b
-//! UART_TXINT_MODE_FIFO if the interrupt is set to be asserted based upon the
-//! level of the transmit FIFO.
+//! stop bits, have cleared the transmitter.  The return value is
+//! \b UART_TXINT_MODE_FIFO if the interrupt is set to be asserted based upon
+//! the level of the transmit FIFO.
 //!
 //! \note The availability of end-of-transmission mode varies with the
 //! Stellaris part in use.  Please consult the datasheet for the part you are
@@ -948,8 +952,7 @@ UARTTxIntModeGet(unsigned long ulBase)
     //
     // Check the arguments.
     //
-    ASSERT((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
-           (ulBase == UART2_BASE));
+    ASSERT(UARTBaseValid(ulBase));
 
     //
     // Return the current transmit interrupt mode.
@@ -1018,7 +1021,8 @@ UARTSpaceAvail(unsigned long ulBase)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Gets a character from the receive FIFO for the specified port.
+//! This function gets a character from the receive FIFO for the specified
+//! port.
 //!
 //! This function replaces the original UARTCharNonBlockingGet() API and
 //! performs the same actions.  A macro is provided in <tt>uart.h</tt> to map
@@ -1063,9 +1067,9 @@ UARTCharGetNonBlocking(unsigned long ulBase)
 //!
 //! \param ulBase is the base address of the UART port.
 //!
-//! Gets a character from the receive FIFO for the specified port.  If there
-//! are no characters available, this function waits until a character is
-//! received before returning.
+//! This function gets a character from the receive FIFO for the specified
+//! port.  If there are no characters available, this function waits until a
+//! character is received before returning.
 //!
 //! \return Returns the character read from the specified port, cast as a
 //! \e long.
@@ -1099,9 +1103,10 @@ UARTCharGet(unsigned long ulBase)
 //! \param ulBase is the base address of the UART port.
 //! \param ucData is the character to be transmitted.
 //!
-//! Writes the character \e ucData to the transmit FIFO for the specified port.
-//! This function does not block, so if there is no space available, then a
-//! \b false is returned, and the application must retry the function later.
+//! This function writes the character \e ucData to the transmit FIFO for the
+//! specified port.  This function does not block, so if there is no space
+//! available, then a \b false is returned, and the application must retry the
+//! function later.
 //!
 //! This function replaces the original UARTCharNonBlockingPut() API and
 //! performs the same actions.  A macro is provided in <tt>uart.h</tt> to map
@@ -1151,9 +1156,9 @@ UARTCharPutNonBlocking(unsigned long ulBase, unsigned char ucData)
 //! \param ulBase is the base address of the UART port.
 //! \param ucData is the character to be transmitted.
 //!
-//! Sends the character \e ucData to the transmit FIFO for the specified port.
-//! If there is no space available in the transmit FIFO, this function waits
-//! until there is space available before returning.
+//! This function sends the character \e ucData to the transmit FIFO for the
+//! specified port.  If there is no space available in the transmit FIFO, this
+//! function waits until there is space available before returning.
 //!
 //! \return None.
 //
@@ -1249,8 +1254,8 @@ UARTBusy(unsigned long ulBase)
 //! UART interrupt occurs.
 //!
 //! This function does the actual registering of the interrupt handler.  This
-//! will enable the global interrupt in the interrupt controller; specific UART
-//! interrupts must be enabled via UARTIntEnable().  It is the interrupt
+//! function enables the global interrupt in the interrupt controller; specific
+//! UART interrupts must be enabled via UARTIntEnable().  It is the interrupt
 //! handler's responsibility to clear the interrupt source.
 //!
 //! \sa IntRegister() for important information about registering interrupt
@@ -1293,9 +1298,9 @@ UARTIntRegister(unsigned long ulBase, void (*pfnHandler)(void))
 //! \param ulBase is the base address of the UART port.
 //!
 //! This function does the actual unregistering of the interrupt handler.  It
-//! will clear the handler to be called when a UART interrupt occurs.  This
-//! will also mask off the interrupt in the interrupt controller so that the
-//! interrupt handler no longer is called.
+//! clears the handler to be called when a UART interrupt occurs.  This
+//! function also masks off the interrupt in the interrupt controller so that
+//! the interrupt handler no longer is called.
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -1337,9 +1342,9 @@ UARTIntUnregister(unsigned long ulBase)
 //! \param ulBase is the base address of the UART port.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be enabled.
 //!
-//! Enables the indicated UART interrupt sources.  Only the sources that are
-//! enabled can be reflected to the processor interrupt; disabled sources have
-//! no effect on the processor.
+//! This function enables the indicated UART interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
+//! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter is the logical OR of any of the following:
 //!
@@ -1379,9 +1384,9 @@ UARTIntEnable(unsigned long ulBase, unsigned long ulIntFlags)
 //! \param ulBase is the base address of the UART port.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be disabled.
 //!
-//! Disables the indicated UART interrupt sources.  Only the sources that are
-//! enabled can be reflected to the processor interrupt; disabled sources have
-//! no effect on the processor.
+//! This function disables the indicated UART interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
+//! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to UARTIntEnable().
@@ -1411,9 +1416,9 @@ UARTIntDisable(unsigned long ulBase, unsigned long ulIntFlags)
 //! \param bMasked is \b false if the raw interrupt status is required and
 //! \b true if the masked interrupt status is required.
 //!
-//! This returns the interrupt status for the specified UART.  Either the raw
-//! interrupt status or the status of interrupts that are allowed to reflect to
-//! the processor can be returned.
+//! This function returns the interrupt status for the specified UART.  Either
+//! the raw interrupt status or the status of interrupts that are allowed to
+//! reflect to the processor can be returned.
 //!
 //! \return Returns the current interrupt status, enumerated as a bit field of
 //! values described in UARTIntEnable().
@@ -1455,14 +1460,14 @@ UARTIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to UARTIntEnable().
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //

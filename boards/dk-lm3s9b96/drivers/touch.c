@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// touch.c - Touch screen driver for the DK-LM3S9B96 board.
+// touch.c - Touch screen driver for the development board.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -40,6 +40,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "drivers/touch.h"
@@ -866,30 +867,30 @@ TouchScreenInit(void)
     //
     // Enable the peripherals used by the touch screen interface.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
-    SysCtlPeripheralEnable(TS_P_PERIPH);
-    SysCtlPeripheralEnable(TS_N_PERIPH);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    ROM_SysCtlPeripheralEnable(TS_P_PERIPH);
+    ROM_SysCtlPeripheralEnable(TS_N_PERIPH);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
 
     //
     // Configure the ADC sample sequence used to read the touch screen reading.
     //
-    ADCHardwareOversampleConfigure(ADC0_BASE, 4);
-    ADCSequenceConfigure(ADC0_BASE, 3, ADC_TRIGGER_TIMER, 0);
-    ADCSequenceStepConfigure(ADC0_BASE, 3, 0,
+    ROM_ADCHardwareOversampleConfigure(ADC0_BASE, 4);
+    ROM_ADCSequenceConfigure(ADC0_BASE, 3, ADC_TRIGGER_TIMER, 0);
+    ROM_ADCSequenceStepConfigure(ADC0_BASE, 3, 0,
                              ADC_CTL_CH_YP | ADC_CTL_END | ADC_CTL_IE);
-    ADCSequenceEnable(ADC0_BASE, 3);
+    ROM_ADCSequenceEnable(ADC0_BASE, 3);
 
     //
     // Enable the ADC sample sequence interrupt.
     //
-    ADCIntEnable(ADC0_BASE, 3);
-    IntEnable(INT_ADC0SS3);
+    ROM_ADCIntEnable(ADC0_BASE, 3);
+    ROM_IntEnable(INT_ADC0SS3);
 
     //
     // Configure the GPIOs used to drive the touch screen layers.
     //
-    GPIOPinTypeGPIOOutput(TS_P_BASE, TS_XP_PIN | TS_YP_PIN);
+    ROM_GPIOPinTypeGPIOOutput(TS_P_BASE, TS_XP_PIN | TS_YP_PIN);
 
     //
     // If no daughter board or one which does not rewire the touchscreen
@@ -898,10 +899,10 @@ TouchScreenInit(void)
     if((g_eDaughterType != DAUGHTER_SRAM_FLASH) &&
        (g_eDaughterType != DAUGHTER_FPGA))
     {
-        GPIOPinTypeGPIOOutput(TS_N_BASE, TS_XN_PIN | TS_YN_PIN);
+        ROM_GPIOPinTypeGPIOOutput(TS_N_BASE, TS_XN_PIN | TS_YN_PIN);
     }
 
-    GPIOPinWrite(TS_P_BASE, TS_XP_PIN | TS_YP_PIN, 0x00);
+    ROM_GPIOPinWrite(TS_P_BASE, TS_XP_PIN | TS_YP_PIN, 0x00);
 
     if(g_eDaughterType == DAUGHTER_SRAM_FLASH)
     {
@@ -913,7 +914,7 @@ TouchScreenInit(void)
     }
     else
     {
-        GPIOPinWrite(TS_N_BASE, TS_XN_PIN | TS_YN_PIN, 0x00);
+        ROM_GPIOPinWrite(TS_N_BASE, TS_XN_PIN | TS_YN_PIN, 0x00);
     }
 
     //
@@ -926,17 +927,17 @@ TouchScreenInit(void)
         // Configure the timer to trigger the sampling of the touch screen
         // every millisecond.
         //
-        TimerConfigure(TIMER1_BASE, (TIMER_CFG_16_BIT_PAIR |
-                                     TIMER_CFG_A_PERIODIC |
-                                     TIMER_CFG_B_PERIODIC));
-        TimerLoadSet(TIMER1_BASE, TIMER_A, (SysCtlClockGet() / 1000) - 1);
-        TimerControlTrigger(TIMER1_BASE, TIMER_A, true);
+        ROM_TimerConfigure(TIMER1_BASE, (TIMER_CFG_16_BIT_PAIR |
+                           TIMER_CFG_A_PERIODIC | TIMER_CFG_B_PERIODIC));
+        ROM_TimerLoadSet(TIMER1_BASE, TIMER_A,
+                         (ROM_SysCtlClockGet() / 1000) - 1);
+        ROM_TimerControlTrigger(TIMER1_BASE, TIMER_A, true);
 
         //
         // Enable the timer.  At this point, the touch screen state machine
         // will sample and run once per millisecond.
         //
-        TimerEnable(TIMER1_BASE, TIMER_A);
+        ROM_TimerEnable(TIMER1_BASE, TIMER_A);
     }
 }
 

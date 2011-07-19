@@ -2,7 +2,7 @@
 //
 // boot_demo1.c - First boot loader example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -34,6 +34,7 @@
 #include "driverlib/systick.h"
 #include "driverlib/flash.h"
 #include "driverlib/uart.h"
+#include "driverlib/rom.h"
 #include "utils/ustdlib.h"
 #include "utils/lwiplib.h"
 #include "grlib/grlib.h"
@@ -66,12 +67,12 @@
 //! flash.
 //!
 //! Note that the LM3S9B96 and other Tempest-class Stellaris devices also
-//! support serial and ethernet boot loaders in ROM in silicon revisions B1 or
-//! later.  To make use of this function, link your application to run at
-//! address 0x0000 in flash and enter the bootloader using either the
-//! ROM_UpdateEthernet or ROM_UpdateSerial functions (defined in rom.h).  This
-//! mechanism is used in the utils/swupdate.c module when built specifically
-//! targeting a suitable Tempest-class device.
+//! support serial and ethernet boot loaders in ROM.  To make use of this
+//! function, link your application to run at address 0x0000 in flash and enter
+//! the bootloader using either the ROM_UpdateEthernet or ROM_UpdateSerial
+//! functions (defined in rom.h).  This mechanism is used in the
+//! utils/swupdate.c module when built specifically targeting a suitable
+//! Tempest-class device.
 //
 //*****************************************************************************
 
@@ -175,9 +176,9 @@ SetupForEthernet(void)
     //
     // Configure SysTick for a 100Hz interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Configure the pins used to control the Ethernet LEDs.
@@ -189,7 +190,7 @@ SetupForEthernet(void)
     //
     // Get the MAC address from the UART0 and UART1 registers in NV ram.
     //
-    FlashUserGet(&ulUser0, &ulUser1);
+    ROM_FlashUserGet(&ulUser0, &ulUser1);
 
     //
     // Convert the 24/24 split MAC address from NV ram into a MAC address
@@ -230,25 +231,25 @@ SetupForUART(void)
     // loader does not enable or configure these peripherals for us if we
     // enter it via its SVC vector.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //
     // Set GPIO A0 and A1 as UART.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Configure the UART for 115200, n, 8, 1
     //
-    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
-                        (UART_CONFIG_PAR_NONE | UART_CONFIG_STOP_ONE |
-                         UART_CONFIG_WLEN_8));
+    ROM_UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+                            (UART_CONFIG_PAR_NONE | UART_CONFIG_STOP_ONE |
+                            UART_CONFIG_WLEN_8));
 
     //
     // Enable the UART operation.
     //
-    UARTEnable(UART0_BASE);
+    ROM_UARTEnable(UART0_BASE);
 }
 
 //*****************************************************************************
@@ -265,7 +266,7 @@ SetupForUSB(void)
     // loader does not enable or configure these peripherals for us if we
     // enter it via its SVC vector.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 }
 
 //*****************************************************************************
@@ -281,7 +282,7 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //

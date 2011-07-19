@@ -2,7 +2,7 @@
 //
 // usbddfu-rt.c - USB Device Firmware Update runtime device class driver.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -44,16 +44,6 @@
 //! @{
 //
 //*****************************************************************************
-
-//*****************************************************************************
-//
-// Macros to convert between USB controller base address and an index.  These
-// are currently trivial but are included to allow for the possibility of
-// supporting more than one controller in the future.
-//
-//*****************************************************************************
-#define USB_BASE_TO_INDEX(BaseAddr) (0)
-#define USB_INDEX_TO_BASE(Index)    (USB0_BASE)
 
 //*****************************************************************************
 //
@@ -323,20 +313,8 @@ static void
 HandleGetDescriptor(void *pvInstance, tUSBRequest *pUSBRequest)
 {
     unsigned long ulSize;
-    const tUSBDDFUDevice *psDevice;
-    tDFUInstance *psInst;
 
     ASSERT(pvInstance != 0);
-
-    //
-    // Which device are we dealing with?
-    //
-    psDevice = pvInstance;
-
-    //
-    // Get a pointer to our instance data.
-    //
-    psInst = psDevice->psPrivateDFUData;
 
     //
     // Which type of class descriptor are we being asked for?  We only support
@@ -361,15 +339,14 @@ HandleGetDescriptor(void *pvInstance, tUSBRequest *pUSBRequest)
         //
         // Send the data via endpoint 0.
         //
-        USBDCDSendDataEP0(USB_BASE_TO_INDEX(psInst->ulUSBBase),
-                          g_pDFUFunctionalDesc, ulSize);
+        USBDCDSendDataEP0(0, g_pDFUFunctionalDesc, ulSize);
     }
     else
     {
         //
         // This was an unknown or invalid request so stall.
         //
-        USBDCDStallEP0(USB_BASE_TO_INDEX(psInst->ulUSBBase));
+        USBDCDStallEP0(0);
     }
 }
 
@@ -440,7 +417,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
         //
         default:
         {
-            USBDCDStallEP0(USB_BASE_TO_INDEX(psInst->ulUSBBase));
+            USBDCDStallEP0(0);
             break;
         }
     }
@@ -475,7 +452,7 @@ USBDDFUCompositeInit(unsigned long ulIndex, const tUSBDDFUDevice *psDevice)
     //
     psInst = psDevice->psPrivateDFUData;
     psInst->psDevInfo = &g_sDFUDeviceInfo;
-    psInst->ulUSBBase = USB_INDEX_TO_BASE(ulIndex);
+    psInst->ulUSBBase = USB0_BASE;
     psInst->bConnected = false;
     psInst->ucInterface = 0;
 
@@ -521,7 +498,7 @@ USBDDFUCompositeTerm(void *pvInstance)
     //
     // Terminate the requested instance.
     //
-    USBDCDTerm(USB_BASE_TO_INDEX(psInst->ulUSBBase));
+    USBDCDTerm(0);
 
     psInst->ulUSBBase = 0;
     psInst->psDevInfo = (tDeviceInfo *)0;
@@ -583,12 +560,12 @@ USBDDFUUpdateBegin(void)
     //
     // Wait for about a second.
     //
-    SysCtlDelay(MAP_SysCtlClockGet() / 3);
+    MAP_SysCtlDelay(MAP_SysCtlClockGet() / 3);
 
     //
     // Re-enable interrupts at the NVIC level.
     //
-    IntMasterEnable();
+    MAP_IntMasterEnable();
 
     //
     // Return control to the boot loader.  This is a call to the SVC

@@ -2,7 +2,7 @@
 //
 // udma_demo.c - uDMA example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -32,6 +32,7 @@
 #include "driverlib/uart.h"
 #include "driverlib/udma.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "utils/cpu_usage.h"
 #include "utils/ustdlib.h"
@@ -221,7 +222,7 @@ uDMAErrorHandler(void)
     //
     // Check for uDMA error bit
     //
-    ulStatus = uDMAErrorStatusGet();
+    ulStatus = ROM_uDMAErrorStatusGet();
 
     //
     // If there is a uDMA error, then clear the error and increment
@@ -249,7 +250,7 @@ uDMAIntHandler(void)
     //
     // Check for the primary control structure to indicate complete.
     //
-    ulMode = uDMAChannelModeGet(UDMA_CHANNEL_SW);
+    ulMode = ROM_uDMAChannelModeGet(UDMA_CHANNEL_SW);
     if(ulMode == UDMA_MODE_STOP)
     {
         //
@@ -260,14 +261,14 @@ uDMAIntHandler(void)
         //
         // Configure it for another transfer.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_SW, UDMA_MODE_AUTO,
-                               g_ulSrcBuf, g_ulDstBuf, MEM_BUFFER_SIZE);
+        ROM_uDMAChannelTransferSet(UDMA_CHANNEL_SW, UDMA_MODE_AUTO,
+                                   g_ulSrcBuf, g_ulDstBuf, MEM_BUFFER_SIZE);
 
         //
         // Initiate another transfer.
         //
-        uDMAChannelEnable(UDMA_CHANNEL_SW);
-        uDMAChannelRequest(UDMA_CHANNEL_SW);
+        ROM_uDMAChannelEnable(UDMA_CHANNEL_SW);
+        ROM_uDMAChannelRequest(UDMA_CHANNEL_SW);
     }
 
     //
@@ -298,7 +299,7 @@ UART0IntHandler(void)
     //
     // Read the interrupt status of the UART.
     //
-    ulStatus = UARTIntStatus(UART0_BASE, 1);
+    ulStatus = ROM_UARTIntStatus(UART0_BASE, 1);
 
     //
     // Clear any pending status, even though there should be none since no UART
@@ -307,14 +308,14 @@ UART0IntHandler(void)
     // used for both the RX and TX, then neither of those interrupts should be
     // enabled.
     //
-    UARTIntClear(UART0_BASE, ulStatus);
+    ROM_UARTIntClear(UART0_BASE, ulStatus);
 
     //
     // Check the DMA control table to see if the ping-pong "A" transfer is
     // complete.  The "A" transfer uses receive buffer "A", and the primary
     // control structure.
     //
-    ulMode = uDMAChannelModeGet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT);
+    ulMode = ROM_uDMAChannelModeGet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT);
 
     //
     // If the primary control structure indicates stop, that means the "A"
@@ -339,10 +340,10 @@ UART0IntHandler(void)
         // the main thread has to process the data in the buffer before it is
         // reused.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
-                               UDMA_MODE_PINGPONG,
-                               (void *)(UART0_BASE + UART_O_DR),
-                               g_ucRxBufA, sizeof(g_ucRxBufA));
+        ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
+                                   UDMA_MODE_PINGPONG,
+                                   (void *)(UART0_BASE + UART_O_DR),
+                                   g_ucRxBufA, sizeof(g_ucRxBufA));
     }
 
     //
@@ -350,7 +351,7 @@ UART0IntHandler(void)
     // complete.  The "B" transfer uses receive buffer "B", and the alternate
     // control structure.
     //
-    ulMode = uDMAChannelModeGet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT);
+    ulMode = ROM_uDMAChannelModeGet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT);
 
     //
     // If the alternate control structure indicates stop, that means the "B"
@@ -375,30 +376,30 @@ UART0IntHandler(void)
         // the main thread has to process the data in the buffer before it is
         // reused.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
-                               UDMA_MODE_PINGPONG,
-                               (void *)(UART0_BASE + UART_O_DR),
-                               g_ucRxBufB, sizeof(g_ucRxBufB));
+        ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
+                                   UDMA_MODE_PINGPONG,
+                                   (void *)(UART0_BASE + UART_O_DR),
+                                   g_ucRxBufB, sizeof(g_ucRxBufB));
     }
 
     //
     // If the UART0 DMA TX channel is disabled, that means the TX DMA transfer
     // is done.
     //
-    if(!uDMAChannelIsEnabled(UDMA_CHANNEL_UART0TX))
+    if(!ROM_uDMAChannelIsEnabled(UDMA_CHANNEL_UART0TX))
     {
         //
         // Start another DMA transfer to UART0 TX.
         //
-        uDMAChannelTransferSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
-                               UDMA_MODE_BASIC, g_ucTxBuf,
-                               (void *)(UART0_BASE + UART_O_DR),
-                               sizeof(g_ucTxBuf));
+        ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
+                                   UDMA_MODE_BASIC, g_ucTxBuf,
+                                   (void *)(UART0_BASE + UART_O_DR),
+                                   sizeof(g_ucTxBuf));
 
         //
         // The uDMA TX channel must be re-enabled.
         //
-        uDMAChannelEnable(UDMA_CHANNEL_UART0TX);
+        ROM_uDMAChannelEnable(UDMA_CHANNEL_UART0TX);
     }
 }
 
@@ -428,15 +429,15 @@ InitUART0Transfer(void)
     // Enable the UART peripheral, and configure it to operate even if the CPU
     // is in sleep.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UART0);
 
     //
     // Configure the UART communication parameters.
     //
-    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
-                        UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
-                        UART_CONFIG_PAR_NONE);
+    ROM_UARTConfigSetExpClk(UART0_BASE, ROM_SysCtlClockGet(), 115200,
+                            UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
+                            UART_CONFIG_PAR_NONE);
 
     //
     // Set both the TX and RX trigger thresholds to 4.  This will be used by
@@ -444,14 +445,14 @@ InitUART0Transfer(void)
     // uDMA TX and RX channels will be configured so that it can transfer 4
     // bytes in a burst when the UART is ready to transfer more data.
     //
-    UARTFIFOLevelSet(UART0_BASE, UART_FIFO_TX4_8, UART_FIFO_RX4_8);
+    ROM_UARTFIFOLevelSet(UART0_BASE, UART_FIFO_TX4_8, UART_FIFO_RX4_8);
 
     //
     // Enable the UART for operation, and enable the uDMA interface for both TX
     // and RX channels.
     //
-    UARTEnable(UART0_BASE);
-    UARTDMAEnable(UART0_BASE, UART_DMA_RX | UART_DMA_TX);
+    ROM_UARTEnable(UART0_BASE);
+    ROM_UARTDMAEnable(UART0_BASE, UART_DMA_RX | UART_DMA_TX);
 
     //
     // This register write will set the UART to operate in loopback mode.  Any
@@ -464,15 +465,16 @@ InitUART0Transfer(void)
     // were enabled, but the uDMA controller will cause an interrupt on the
     // UART interrupt signal when a uDMA transfer is complete.
     //
-    IntEnable(INT_UART0);
+    ROM_IntEnable(INT_UART0);
 
     //
     // Put the attributes in a known state for the uDMA UART0RX channel.  These
     // should already be disabled by default.
     //
-    uDMAChannelAttributeDisable(UDMA_CHANNEL_UART0RX,
-                                UDMA_ATTR_ALTSELECT | UDMA_ATTR_USEBURST |
-                                UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
+    ROM_uDMAChannelAttributeDisable(UDMA_CHANNEL_UART0RX,
+                                    UDMA_ATTR_ALTSELECT | UDMA_ATTR_USEBURST |
+                                    UDMA_ATTR_HIGH_PRIORITY |
+                                    UDMA_ATTR_REQMASK);
 
     //
     // Configure the control parameters for the primary control structure for
@@ -484,9 +486,9 @@ InitUART0Transfer(void)
     // The uDMA controller will use a 4 byte burst transfer if possible.  This
     // will be somewhat more effecient that single byte transfers.
     //
-    uDMAChannelControlSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
-                          UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 |
-                          UDMA_ARB_4);
+    ROM_uDMAChannelControlSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
+                              UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 |
+                              UDMA_ARB_4);
 
     //
     // Configure the control parameters for the alternate control structure for
@@ -494,9 +496,9 @@ InitUART0Transfer(void)
     // part of the ping-pong receive.  The configuration is identical to the
     // primary/A control structure.
     //
-    uDMAChannelControlSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
-                          UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 |
-                          UDMA_ARB_4);
+    ROM_uDMAChannelControlSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
+                              UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 |
+                              UDMA_ARB_4);
 
     //
     // Set up the transfer parameters for the UART RX primary control
@@ -504,10 +506,10 @@ InitUART0Transfer(void)
     // UART data register, and the destination is the receive "A" buffer.  The
     // transfer size is set to match the size of the buffer.
     //
-    uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
-                           UDMA_MODE_PINGPONG,
-                           (void *)(UART0_BASE + UART_O_DR),
-                           g_ucRxBufA, sizeof(g_ucRxBufA));
+    ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_PRI_SELECT,
+                               UDMA_MODE_PINGPONG,
+                               (void *)(UART0_BASE + UART_O_DR),
+                               g_ucRxBufA, sizeof(g_ucRxBufA));
 
     //
     // Set up the transfer parameters for the UART RX alternate control
@@ -515,18 +517,19 @@ InitUART0Transfer(void)
     // UART data register, and the destination is the receive "B" buffer.  The
     // transfer size is set to match the size of the buffer.
     //
-    uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
-                           UDMA_MODE_PINGPONG,
-                           (void *)(UART0_BASE + UART_O_DR),
-                           g_ucRxBufB, sizeof(g_ucRxBufB));
+    ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0RX | UDMA_ALT_SELECT,
+                               UDMA_MODE_PINGPONG,
+                               (void *)(UART0_BASE + UART_O_DR),
+                               g_ucRxBufB, sizeof(g_ucRxBufB));
 
     //
     // Put the attributes in a known state for the uDMA UART0TX channel.  These
     // should already be disabled by default.
     //
-    uDMAChannelAttributeDisable(UDMA_CHANNEL_UART0TX,
-                                UDMA_ATTR_ALTSELECT |
-                                UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
+    ROM_uDMAChannelAttributeDisable(UDMA_CHANNEL_UART0TX,
+                                    UDMA_ATTR_ALTSELECT |
+                                    UDMA_ATTR_HIGH_PRIORITY |
+                                    UDMA_ATTR_REQMASK);
 
     //
     // Set the USEBURST attribute for the uDMA UART TX channel.  This will
@@ -534,7 +537,7 @@ InitUART0Transfer(void)
     // the TX buffer to the UART.  This is somewhat more effecient bus usage
     // than the default which allows single or burst transfers.
     //
-    uDMAChannelAttributeEnable(UDMA_CHANNEL_UART0TX, UDMA_ATTR_USEBURST);
+    ROM_uDMAChannelAttributeEnable(UDMA_CHANNEL_UART0TX, UDMA_ATTR_USEBURST);
 
     //
     // Configure the control parameters for the UART TX.  The uDMA UART TX
@@ -545,9 +548,9 @@ InitUART0Transfer(void)
     // arbitration size is set to 4, which matches the UART TX FIFO trigger
     // threshold.
     //
-    uDMAChannelControlSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
-                          UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE |
-                          UDMA_ARB_4);
+    ROM_uDMAChannelControlSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
+                              UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE |
+                              UDMA_ARB_4);
 
     //
     // Set up the transfer parameters for the uDMA UART TX channel.  This will
@@ -556,18 +559,18 @@ InitUART0Transfer(void)
     // request.  The source is the TX buffer and the destination is the UART
     // data register.
     //
-    uDMAChannelTransferSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
-                           UDMA_MODE_BASIC, g_ucTxBuf,
-                           (void *)(UART0_BASE + UART_O_DR),
-                           sizeof(g_ucTxBuf));
+    ROM_uDMAChannelTransferSet(UDMA_CHANNEL_UART0TX | UDMA_PRI_SELECT,
+                               UDMA_MODE_BASIC, g_ucTxBuf,
+                               (void *)(UART0_BASE + UART_O_DR),
+                               sizeof(g_ucTxBuf));
 
     //
     // Now both the uDMA UART TX and RX channels are primed to start a
     // transfer.  As soon as the channels are enabled, the peripheral will
     // issue a transfer request and the data transfers will begin.
     //
-    uDMAChannelEnable(UDMA_CHANNEL_UART0RX);
-    uDMAChannelEnable(UDMA_CHANNEL_UART0TX);
+    ROM_uDMAChannelEnable(UDMA_CHANNEL_UART0RX);
+    ROM_uDMAChannelEnable(UDMA_CHANNEL_UART0TX);
 }
 
 //*****************************************************************************
@@ -592,15 +595,16 @@ InitSWTransfer(void)
     //
     // Enable interrupts from the uDMA software channel.
     //
-    IntEnable(INT_UDMA);
+    ROM_IntEnable(INT_UDMA);
 
     //
     // Put the attributes in a known state for the uDMA software channel.
     // These should already be disabled by default.
     //
-    uDMAChannelAttributeDisable(UDMA_CHANNEL_SW,
-                                UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT |
-                                UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
+    ROM_uDMAChannelAttributeDisable(UDMA_CHANNEL_SW,
+                                    UDMA_ATTR_USEBURST | UDMA_ATTR_ALTSELECT |
+                                    (UDMA_ATTR_HIGH_PRIORITY |
+                                    UDMA_ATTR_REQMASK));
 
     //
     // Configure the control parameters for the SW channel.  The SW channel
@@ -612,25 +616,26 @@ InitSWTransfer(void)
     // once the transfer is started, and allows other channels cycles if they
     // are higher priority.
     //
-    uDMAChannelControlSet(UDMA_CHANNEL_SW | UDMA_PRI_SELECT,
-                          UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 |
-                          UDMA_ARB_8);
+    ROM_uDMAChannelControlSet(UDMA_CHANNEL_SW | UDMA_PRI_SELECT,
+                              UDMA_SIZE_32 | UDMA_SRC_INC_32 | UDMA_DST_INC_32 |
+                              UDMA_ARB_8);
 
     //
     // Set up the transfer parameters for the software channel.  This will
     // configure the transfer buffers and the transfer size.  Auto mode must be
     // used for software transfers.
     //
-    uDMAChannelTransferSet(UDMA_CHANNEL_SW | UDMA_PRI_SELECT, UDMA_MODE_AUTO,
-                           g_ulSrcBuf, g_ulDstBuf, MEM_BUFFER_SIZE);
+    ROM_uDMAChannelTransferSet(UDMA_CHANNEL_SW | UDMA_PRI_SELECT,
+                               UDMA_MODE_AUTO, g_ulSrcBuf, g_ulDstBuf,
+                               MEM_BUFFER_SIZE);
 
     //
     // Now the software channel is primed to start a transfer.  The channel
     // must be enabled.  For software based transfers, a request must be
     // issued.  After this, the uDMA memory transfer begins.
     //
-    uDMAChannelEnable(UDMA_CHANNEL_SW);
-    uDMAChannelRequest(UDMA_CHANNEL_SW);
+    ROM_uDMAChannelEnable(UDMA_CHANNEL_SW);
+    ROM_uDMAChannelRequest(UDMA_CHANNEL_SW);
 }
 
 //*****************************************************************************
@@ -663,7 +668,7 @@ main(void)
     //
     // Set the clocking to run from the PLL at 50 MHz.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -674,7 +679,7 @@ main(void)
     //
     // Enable peripherals to operate when CPU is in sleep.
     //
-    SysCtlPeripheralClockGating(true);
+    ROM_SysCtlPeripheralClockGating(true);
 
     //
     // Initialize the display driver.
@@ -733,9 +738,9 @@ main(void)
     // Configure SysTick to occur 100 times per second, to use as a time
     // reference.  Enable SysTick to generate interrupts.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    SysTickIntEnable();
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+    ROM_SysTickIntEnable();
+    ROM_SysTickEnable();
 
     //
     // Initialize the CPU usage measurement routine.
@@ -746,24 +751,24 @@ main(void)
     // Enable the uDMA controller at the system level.  Enable it to continue
     // to run while the processor is in sleep.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
 
     //
     // Enable the uDMA controller error interrupt.  This interrupt will occur
     // if there is a bus error during a transfer.
     //
-    IntEnable(INT_UDMAERR);
+    ROM_IntEnable(INT_UDMAERR);
 
     //
     // Enable the uDMA controller.
     //
-    uDMAEnable();
+    ROM_uDMAEnable();
 
     //
     // Point at the control table to use for channel control structures.
     //
-    uDMAControlBaseSet(ucControlTable);
+    ROM_uDMAControlBaseSet(ucControlTable);
 
     //
     // Initialize the uDMA memory to memory transfers.

@@ -2,7 +2,7 @@
 //
 // hw_usb.h - Macros for use in accessing the USB registers.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -4569,6 +4569,8 @@
 #define USB_DMASEL_DMABRX_M     0x00000F00  // DMA B RX Select
 #define USB_DMASEL_DMAATX_M     0x000000F0  // DMA A TX Select
 #define USB_DMASEL_DMAARX_M     0x0000000F  // DMA A RX Select
+#define USB_DMASEL_DMACTX_S     20
+#define USB_DMASEL_DMACRX_S     16
 #define USB_DMASEL_DMABTX_S     12
 #define USB_DMASEL_DMABRX_S     8
 #define USB_DMASEL_DMAATX_S     4

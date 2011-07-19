@@ -21,16 +21,16 @@ easily demonstrate that the boot loader is actually updating the on-chip
 flash.
 
 Note that the LM3S9B96 and other Tempest-class Stellaris devices also
-support serial and ethernet boot loaders in ROM in silicon revisions B1 or
-later.  To make use of this function, link your application to run at
-address 0x0000 in flash and enter the bootloader using either the
-ROM_UpdateEthernet or ROM_UpdateSerial functions (defined in rom.h).  This
-mechanism is used in the utils/swupdate.c module when built specifically
-targeting a suitable Tempest-class device.
+support serial and ethernet boot loaders in ROM.  To make use of this
+function, link your application to run at address 0x0000 in flash and enter
+the bootloader using either the ROM_UpdateEthernet or ROM_UpdateSerial
+functions (defined in rom.h).  This mechanism is used in the
+utils/swupdate.c module when built specifically targeting a suitable
+Tempest-class device.
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -46,4 +46,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.

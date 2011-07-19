@@ -2,7 +2,7 @@
 //
 // i2s.c - Driver for the I2S controller.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -106,13 +106,14 @@ I2STxDisable(unsigned long ulBase)
 //! This function writes a single channel sample or combined left-right
 //! samples to the I2S transmit FIFO.  The format of the sample is determined
 //! by the configuration that was used with the function I2STxConfigSet().
-//! If the transmit mode is I2S_MODE_DUAL_STEREO then the \e ulData parameter
-//! contains either the left or right sample.  The left and right sample
-//! alternate with each write to the FIFO, left sample first.  If the transmit
-//! mode is I2S_MODE_COMPACT_STEREO_16 or I2S_MODE_COMPACT_STEREO_8, then the
-//! \e ulData parameter contains both the left and right samples.  If the
-//! transmit mode is I2S_MODE_SINGLE_MONO then the \e ulData parameter
-//! contains the single channel sample.
+//! If the transmit mode is \b I2S_MODE_DUAL_STEREO then the \e ulData
+//! parameter contains either the left or right sample.  The left and right
+//! sample alternate with each write to the FIFO, left sample first.  If the
+//! transmit mode is \b I2S_MODE_COMPACT_STEREO_16 or
+//! \b I2S_MODE_COMPACT_STEREO_8, then the \e ulData parameter contains both
+//! the left and right samples.  If the transmit mode is
+//! \b I2S_MODE_SINGLE_MONO then the \e ulData parameter contains the single
+//! channel sample.
 //!
 //! For the compact modes, both the left and right samples are written at
 //! the same time.  If 16-bit compact mode is used, then the least significant
@@ -158,13 +159,14 @@ I2STxDataPut(unsigned long ulBase, unsigned long ulData)
 //! This function writes a single channel sample or combined left-right
 //! samples to the I2S transmit FIFO.  The format of the sample is determined
 //! by the configuration that was used with the function I2STxConfigSet().
-//! If the transmit mode is I2S_MODE_DUAL_STEREO then the \e ulData parameter
-//! contains either the left or right sample.  The left and right sample
-//! alternate with each write to the FIFO, left sample first.  If the transmit
-//! mode is I2S_MODE_COMPACT_STEREO_16 or I2S_MODE_COMPACT_STEREO_8, then the
-//! \e ulData parameter contains both the left and right samples.  If the
-//! transmit mode is I2S_MODE_SINGLE_MONO then the \e ulData parameter
-//! contains the single channel sample.
+//! If the transmit mode is \b I2S_MODE_DUAL_STEREO then the \e ulData
+//! parameter contains either the left or right sample.  The left and right
+//! sample alternate with each write to the FIFO, left sample first.  If the
+//! transmit mode is \b I2S_MODE_COMPACT_STEREO_16 or
+//! \b I2S_MODE_COMPACT_STEREO_8, then the \e ulData parameter contains both
+//! the left and right samples.  If the transmit mode is
+//! \b I2S_MODE_SINGLE_MONO then the \e ulData parameter contains the single
+//! channel sample.
 //!
 //! For the compact modes, both the left and right samples are written at
 //! the same time.  If 16-bit compact mode is used, then the least significant
@@ -213,23 +215,23 @@ I2STxDataPutNonBlocking(unsigned long ulBase, unsigned long ulData)
 //! options:
 //!
 //! - \b I2S_CONFIG_FORMAT_I2S for standard I2S format,
-//! \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
-//! \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
+//!   \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
+//!   \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
 //! - \b I2S_CONFIG_SCLK_INVERT to invert the polarity of the serial bit clock.
 //! - \b I2S_CONFIG_MODE_DUAL for dual channel stereo,
-//! \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
-//! \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
-//! \b I2S_CONFIG_MODE_MONO for single channel mono format.
+//!   \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
+//!   \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
+//!   \b I2S_CONFIG_MODE_MONO for single channel mono format.
 //! - \b I2S_CONFIG_CLK_MASTER or \b I2S_CONFIG_CLK_SLAVE to select whether
-//! the I2S transmitter is the clock master or slave.
+//!   the I2S transmitter is the clock master or slave.
 //! - \b I2S_CONFIG_SAMPLE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per sample.
+//!   to select the number of bits per sample.
 //! - \b I2S_CONFIG_WIRE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per word that are transferred on the data
-//! line.
+//!   to select the number of bits per word that are transferred on the data
+//!   line.
 //! - \b I2S_CONFIG_EMPTY_ZERO or \b I2S_CONFIG_EMPTY_REPEAT to select whether
-//! the module transmits zeroes or repeats the last sample when the FIFO is
-//! empty.
+//!   the module transmits zeroes or repeats the last sample when the FIFO is
+//!   empty.
 //!
 //! \return None.
 //
@@ -450,12 +452,12 @@ I2SRxDisable(unsigned long ulBase)
 //! This function reads a single channel sample or combined left-right
 //! samples from the I2S receive FIFO.  The format of the sample is determined
 //! by the configuration that was used with the function I2SRxConfigSet().
-//! If the receive mode is I2S_MODE_DUAL_STEREO then the returned value
+//! If the receive mode is \b I2S_MODE_DUAL_STEREO then the returned value
 //! contains either the left or right sample.  The left and right sample
 //! alternate with each read from the FIFO, left sample first.  If the receive
-//! mode is I2S_MODE_COMPACT_STEREO_16 or I2S_MODE_COMPACT_STEREO_8, then the
-//! returned data contains both the left and right samples.  If the
-//! receive mode is I2S_MODE_SINGLE_MONO then the returned data
+//! mode is \b I2S_MODE_COMPACT_STEREO_16 or \b I2S_MODE_COMPACT_STEREO_8, then
+//! the returned data contains both the left and right samples.  If the
+//! receive mode is \b I2S_MODE_SINGLE_MONO then the returned data
 //! contains the single channel sample.
 //!
 //! For the compact modes, both the left and right samples are read at
@@ -502,12 +504,12 @@ I2SRxDataGet(unsigned long ulBase, unsigned long *pulData)
 //! This function reads a single channel sample or combined left-right
 //! samples from the I2S receive FIFO.  The format of the sample is determined
 //! by the configuration that was used with the function I2SRxConfigSet().
-//! If the receive mode is I2S_MODE_DUAL_STEREO then the received data
+//! If the receive mode is \b I2S_MODE_DUAL_STEREO then the received data
 //! contains either the left or right sample.  The left and right sample
 //! alternate with each read from the FIFO, left sample first.  If the receive
-//! mode is I2S_MODE_COMPACT_STEREO_16 or I2S_MODE_COMPACT_STEREO_8, then the
-//! received data contains both the left and right samples.  If the
-//! receive mode is I2S_MODE_SINGLE_MONO then the received data
+//! mode is \b I2S_MODE_COMPACT_STEREO_16 or \b I2S_MODE_COMPACT_STEREO_8, then
+//! the received data contains both the left and right samples.  If the
+//! receive mode is \b I2S_MODE_SINGLE_MONO then the received data
 //! contains the single channel sample.
 //!
 //! For the compact modes, both the left and right samples are read at
@@ -557,20 +559,20 @@ I2SRxDataGetNonBlocking(unsigned long ulBase, unsigned long *pulData)
 //! options:
 //!
 //! - \b I2S_CONFIG_FORMAT_I2S for standard I2S format,
-//! \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
-//! \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
+//!   \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
+//!   \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
 //! - \b I2S_CONFIG_SCLK_INVERT to invert the polarity of the serial bit clock.
 //! - \b I2S_CONFIG_MODE_DUAL for dual channel stereo,
-//! \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
-//! \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
-//! \b I2S_CONFIG_MODE_MONO for single channel mono format.
+//!   \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
+//!   \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
+//!   \b I2S_CONFIG_MODE_MONO for single channel mono format.
 //! - \b I2S_CONFIG_CLK_MASTER or \b I2S_CONFIG_CLK_SLAVE to select whether
-//! the I2S receiver is the clock master or slave.
+//!   the I2S receiver is the clock master or slave.
 //! - \b I2S_CONFIG_SAMPLE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per sample.
+//!   to select the number of bits per sample.
 //! - \b I2S_CONFIG_WIRE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per word that are transferred on the data
-//! line.
+//!   to select the number of bits per word that are transferred on the data
+//!   line.
 //!
 //! \return None.
 //
@@ -805,23 +807,23 @@ I2STxRxDisable(unsigned long ulBase)
 //! the logical OR of the following options:
 //!
 //! - \b I2S_CONFIG_FORMAT_I2S for standard I2S format,
-//! \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
-//! \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
+//!   \b I2S_CONFIG_FORMAT_LEFT_JUST for left justified format, or
+//!   \b I2S_CONFIG_FORMAT_RIGHT_JUST for right justified format.
 //! - \b I2S_CONFIG_SCLK_INVERT to invert the polarity of the serial bit clock.
 //! - \b I2S_CONFIG_MODE_DUAL for dual channel stereo,
-//! \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
-//! \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
-//! \b I2S_CONFIG_MODE_MONO for single channel mono format.
+//!   \b I2S_CONFIG_MODE_COMPACT_16 for 16-bit compact stereo mode,
+//!   \b I2S_CONFIG_MODE_COMPACT_8 for 8-bit compact stereo mode, or
+//!   \b I2S_CONFIG_MODE_MONO for single channel mono format.
 //! - \b I2S_CONFIG_CLK_MASTER or \b I2S_CONFIG_CLK_SLAVE to select whether
-//! the I2S transmitter is the clock master or slave.
+//!   the I2S transmitter is the clock master or slave.
 //! - \b I2S_CONFIG_SAMPLE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per sample.
+//!   to select the number of bits per sample.
 //! - \b I2S_CONFIG_WIRE_SIZE_32, \b _24, \b _20, \b _16, or \b _8
-//! to select the number of bits per word that are transferred on the data
-//! line.
+//!   to select the number of bits per word that are transferred on the data
+//!   line.
 //! - \b I2S_CONFIG_EMPTY_ZERO or \b I2S_CONFIG_EMPTY_REPEAT to select whether
-//! the module transmits zeroes or repeats the last sample when the FIFO is
-//! empty.
+//!   the module transmits zeroes or repeats the last sample when the FIFO is
+//!   empty.
 //!
 //! \return None.
 //
@@ -888,7 +890,7 @@ I2STxRxConfigSet(unsigned long ulBase, unsigned long ulConfig)
 //! - one of \b I2S_TX_MCLK_EXT or \b I2S_TX_MCLK_INT
 //! - one of \b I2S_RX_MCLK_EXT or \b I2S_RX_MCLK_INT
 //!
-//! \return Returns None.
+//! \return None.
 //
 //*****************************************************************************
 void
@@ -926,7 +928,7 @@ I2SMasterClockSelect(unsigned long ulBase, unsigned long ulMClock)
 //! - \b I2S_INT_TXERR for transmit errors
 //! - \b I2S_INT_TXREQ for transmit FIFO service requests
 //!
-//! \return Returns None.
+//! \return None.
 //
 //*****************************************************************************
 void
@@ -957,7 +959,7 @@ I2SIntEnable(unsigned long ulBase, unsigned long ulIntFlags)
 //! of any of the following values: \b I2S_INT_RXERR, \b I2S_INT_RXREQ,
 //! \b I2S_INT_TXERR, or \b I2S_INT_TXREQ.
 //!
-//! \return Returns None.
+//! \return None.
 //
 //*****************************************************************************
 void
@@ -1027,16 +1029,16 @@ I2SIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! logical OR of any of the following values: \b I2S_INT_RXERR,
 //! \b I2S_INT_RXREQ, \b I2S_INT_TXERR, or \b I2S_INT_TXREQ.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
-//! \return Returns None.
+//! \return None.
 //
 //*****************************************************************************
 void

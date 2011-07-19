@@ -21,6 +21,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>usb_dev_serial.c/usb_dev_serial.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_serial/usb_dev_serial.c</locationURI>
+		</link>
+		<link>
 			<name>usb_serial_structs.c/usb_serial_structs.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_serial/usb_serial_structs.c</locationURI>
@@ -34,11 +39,6 @@
 			<name>usb_dev_serial_ccs.cmd</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_serial/usb_dev_serial_ccs.cmd</locationURI>
-		</link>
-		<link>
-			<name>usb_dev_serial.c/usb_dev_serial.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_serial/usb_dev_serial.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -62,8 +62,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,6594
- PRODUCTVERSION 1,0,0,6594
+ FILEVERSION 1,0,0,7611
+ PRODUCTVERSION 1,0,0,7611
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -80,12 +80,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Texas Instruments Incorporated"
             VALUE "FileDescription", "A DLL used to interface Windows example applications to the WinUSB subsystem"
-            VALUE "FileVersion", "6594"
+            VALUE "FileVersion", "7611"
             VALUE "InternalName", "lmusbdll.dll"
-            VALUE "LegalCopyright", "Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved."
+            VALUE "LegalCopyright", "Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved."
             VALUE "OriginalFilename", "lmusbdll.dll"
             VALUE "ProductName", "Stellaris USB DLL"
-            VALUE "ProductVersion", "6594"
+            VALUE "ProductVersion", "7611"
         END
     END
     BLOCK "VarFileInfo"

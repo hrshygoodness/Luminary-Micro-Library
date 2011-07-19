@@ -2,7 +2,7 @@
 //
 // interrupts.c - Interrupt preemption and tail-chaining example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/systick.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -122,14 +123,14 @@ Delay(unsigned long ulSeconds)
         //
         // Wait until the SysTick value is less than 1000.
         //
-        while(SysTickValueGet() > 1000)
+        while(ROM_SysTickValueGet() > 1000)
         {
         }
 
         //
         // Wait until the SysTick value is greater than 1000.
         //
-        while(SysTickValueGet() < 1000)
+        while(ROM_SysTickValueGet() < 1000)
         {
         }
     }
@@ -186,7 +187,7 @@ IntGPIOa(void)
     //
     // Set PB3 high to indicate entry to this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
+    ROM_GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, GPIO_PIN_3);
 
     //
     // Put the current interrupt state on the CSTN.
@@ -206,7 +207,7 @@ IntGPIOa(void)
     //
     // Set PB3 low to indicate exit from this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
+    ROM_GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_3, 0);
 }
 
 //*****************************************************************************
@@ -221,7 +222,7 @@ IntGPIOb(void)
     //
     // Set PF2 high to indicate entry to this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
 
     //
     // Put the current interrupt state on the CSTN.
@@ -251,7 +252,7 @@ IntGPIOb(void)
     //
     // Set PDF2 low to indicate exit from this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
 }
 
 //*****************************************************************************
@@ -266,7 +267,7 @@ IntGPIOc(void)
     //
     // Set PF3 high to indicate entry to this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
 
     //
     // Put the current interrupt state on the CSTN.
@@ -296,7 +297,7 @@ IntGPIOc(void)
     //
     // Set PF3 low to indicate exit from this interrupt handler.
     //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
 }
 
 //*****************************************************************************
@@ -316,7 +317,7 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -327,8 +328,8 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
     //
     // Initialize the display driver.
@@ -384,8 +385,8 @@ main(void)
     // for delay loops in the interrupt handlers.  The SysTick timer period
     // will be set up for one second.
     //
-    SysTickPeriodSet(SysCtlClockGet());
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
+    ROM_SysTickEnable();
 
     //
     // Reset the error indicator.
@@ -395,14 +396,14 @@ main(void)
     //
     // Enable interrupts to the processor.
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Enable the interrupts.
     //
-    IntEnable(INT_GPIOA);
-    IntEnable(INT_GPIOB);
-    IntEnable(INT_GPIOC);
+    ROM_IntEnable(INT_GPIOA);
+    ROM_IntEnable(INT_GPIOB);
+    ROM_IntEnable(INT_GPIOC);
 
     //
     // Indicate that the equal interrupt priority test is beginning.
@@ -413,9 +414,9 @@ main(void)
     //
     // Set the interrupt priorities so they are all equal.
     //
-    IntPrioritySet(INT_GPIOA, 0x00);
-    IntPrioritySet(INT_GPIOB, 0x00);
-    IntPrioritySet(INT_GPIOC, 0x00);
+    ROM_IntPrioritySet(INT_GPIOA, 0x00);
+    ROM_IntPrioritySet(INT_GPIOB, 0x00);
+    ROM_IntPrioritySet(INT_GPIOC, 0x00);
 
     //
     // Reset the interrupt flags.
@@ -458,9 +459,9 @@ main(void)
     // Set the interrupt priorities so that they are decreasing (i.e. C > B >
     // A).
     //
-    IntPrioritySet(INT_GPIOA, 0x80);
-    IntPrioritySet(INT_GPIOB, 0x40);
-    IntPrioritySet(INT_GPIOC, 0x00);
+    ROM_IntPrioritySet(INT_GPIOA, 0x80);
+    ROM_IntPrioritySet(INT_GPIOB, 0x40);
+    ROM_IntPrioritySet(INT_GPIOC, 0x00);
 
     //
     // Reset the interrupt flags.
@@ -503,9 +504,9 @@ main(void)
     // Set the interrupt priorities so that they are increasing (i.e. C < B <
     // A).
     //
-    IntPrioritySet(INT_GPIOA, 0x00);
-    IntPrioritySet(INT_GPIOB, 0x40);
-    IntPrioritySet(INT_GPIOC, 0x80);
+    ROM_IntPrioritySet(INT_GPIOA, 0x00);
+    ROM_IntPrioritySet(INT_GPIOB, 0x40);
+    ROM_IntPrioritySet(INT_GPIOC, 0x80);
 
     //
     // Reset the interrupt flags.
@@ -541,14 +542,14 @@ main(void)
     //
     // Disable the interrupts.
     //
-    IntDisable(INT_GPIOA);
-    IntDisable(INT_GPIOB);
-    IntDisable(INT_GPIOC);
+    ROM_IntDisable(INT_GPIOA);
+    ROM_IntDisable(INT_GPIOB);
+    ROM_IntDisable(INT_GPIOC);
 
     //
     // Disable interrupts to the processor.
     //
-    IntMasterDisable();
+    ROM_IntMasterDisable();
 
     //
     // Print out the test results.

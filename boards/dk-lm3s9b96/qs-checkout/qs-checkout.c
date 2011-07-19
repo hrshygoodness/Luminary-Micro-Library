@@ -3,7 +3,7 @@
 // qs-checkout.c - Example application for Tempest boards which exercises
 //                 the various peripherals and subsystems on the board.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -33,7 +33,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
-#include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/udma.h"
@@ -78,7 +77,7 @@
 //! <h1>Quickstart Checkout Application (qs-checkout)</h1>
 //!
 //! This widget-based application exercises many of the peripherals found on
-//! the dk-lm3s9b96 development kit board.  It offers the following features:
+//! the development kit board.  It offers the following features:
 //!
 //! - USB mouse support.  The application will show the state of up to
 //!   three mouse buttons and a cursor position when a USB mouse is connected
@@ -103,6 +102,11 @@
 //!   ``exflash''.
 //!   When shipped, the serial flash on the board contains file ramfs_data.bin
 //!   which contains a web photo gallery.
+//!   The TFTP server also allows access to files on an installed SDCard.  To
+//!   access the SDCard file system, add "sdcard/" before the filename to GET
+//!   or PUT.  This support does not allow creation of new directories but files
+//!   may be read or written anywhere in the existing directory structure of the
+//!   SDCard.
 //! - Web server.  The lwIP TCP/IP stack is used to implement a web server
 //!   which can serve files from an internal file system, a FAT file system
 //!   on an installed microSD card or USB flash drive, or a file system image
@@ -877,7 +881,7 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -917,19 +921,19 @@ main(void)
     //
     // Configure SysTick for a 100Hz interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / TICKS_PER_SECOND);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Enable Interrupts
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Set GPIO A0 and A1 as UART.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Initialize the UART as a console for text I/O.
@@ -962,17 +966,17 @@ main(void)
     //
     // Configure Port B3 for as an output for the status LED.
     //
-    GPIOPinTypeGPIOOutput(LED_PORT_BASE,LED_PIN);
+    ROM_GPIOPinTypeGPIOOutput(LED_PORT_BASE,LED_PIN);
 
     //
     // Initialize LED to OFF (0)
     //
-    GPIOPinWrite(LED_PORT_BASE, LED_PIN, 0);
+    ROM_GPIOPinWrite(LED_PORT_BASE, LED_PIN, 0);
 
     //
     // Get the MAC address from the UART0 and UART1 registers in NV ram.
     //
-    FlashUserGet(&ulUser0, &ulUser1);
+    ROM_FlashUserGet(&ulUser0, &ulUser1);
 
     //
     // Convert the 24/24 split MAC address from NV ram into a MAC address
@@ -1133,11 +1137,11 @@ main(void)
     // interrupt to ensure that audio playback continues smoothly even if the
     // web server is serving pages during this time.
     //
-    IntPriorityGroupingSet(4);
-    IntPrioritySet(INT_USB0, USB_INT_PRIORITY);
-    IntPrioritySet(INT_ETH, ETHERNET_INT_PRIORITY);
-    IntPrioritySet(FAULT_SYSTICK, SYSTICK_INT_PRIORITY);
-    IntPrioritySet(INT_I2S0, I2S_INT_PRIORITY);
+    ROM_IntPriorityGroupingSet(4);
+    ROM_IntPrioritySet(INT_USB0, USB_INT_PRIORITY);
+    ROM_IntPrioritySet(INT_ETH, ETHERNET_INT_PRIORITY);
+    ROM_IntPrioritySet(FAULT_SYSTICK, SYSTICK_INT_PRIORITY);
+    ROM_IntPrioritySet(INT_I2S0, I2S_INT_PRIORITY);
 
     //
     // Add the compile-time defined widgets to the widget tree.

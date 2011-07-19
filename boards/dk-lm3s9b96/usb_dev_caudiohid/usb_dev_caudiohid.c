@@ -3,7 +3,7 @@
 // usb_dev_caudiohid.c - The main routine for the combined audio hid keyboard
 // device.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -28,10 +28,9 @@
 #include "inc/hw_types.h"
 #include "inc/hw_sysctl.h"
 #include "inc/hw_udma.h"
-#include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/usbhid.h"
@@ -325,8 +324,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pin out appropriately for this board.
@@ -336,10 +335,10 @@ main(void)
     //
     // Configure and enable uDMA
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Initialize the display driver.

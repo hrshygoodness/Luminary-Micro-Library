@@ -2,7 +2,7 @@
 //
 // tftp.c - A very simple lwIP TFTP server.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -427,6 +427,21 @@ TFTPDataRecv(void *arg, struct udp_pcb *upcb, struct pbuf *p,
                     TFTPClose(psTFTP);
                     psTFTP = NULL;
                 }
+            }
+        }
+        else
+        {
+            //
+            // Is the client reporting an error?
+            //
+            if((pucData[0] == ((TFTP_ERROR >> 8) & 0xff)) &&
+               (pucData[1] == (TFTP_ERROR & 0xff)))
+            {
+                //
+                // Yes - we got an error so close the connection.
+                //
+                TFTPClose(psTFTP);
+                psTFTP = NULL;
             }
         }
     }

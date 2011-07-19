@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// ssiflash.c - Driver for the Winbond Serial Flash on the dk-lm3s9b96 board.
+// ssiflash.c - Driver for the Winbond Serial Flash on the development board.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -427,7 +427,7 @@ SSIFlashWriteEnable(void)
 //! available.
 //!
 //! \note SSI0 is shared between the serial flash and the SDCard on the
-//! dk-lm3s9b96 boards.  Two independent GPIOs are used to provide chip selects
+//! development board.  Two independent GPIOs are used to provide chip selects
 //! for these two devices but care must be taken when using both in a single
 //! application, especially during initialization of the SDCard when the SSI
 //! clock rate must initially be set to 400KHz and later increased.  Since both

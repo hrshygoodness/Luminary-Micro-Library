@@ -2,7 +2,7 @@
 //
 // set_pinout.c - Functions related to configuration of the device pinout.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/epi.h"
 #include "driverlib/debug.h"
+#include "driverlib/rom.h"
 #include "set_pinout.h"
 #include "camerafpga.h"
 
@@ -66,7 +67,7 @@
 //*****************************************************************************
 //
 // A global variable indicating which daughter board, if any, is currently
-// connected to the lm3s9b96 development board.
+// connected to the development board.
 //
 //*****************************************************************************
 tDaughterBoard g_eDaughterType;
@@ -102,8 +103,8 @@ const unsigned long g_pulGPIOBase[NUM_GPIO_PORTS] =
 //*****************************************************************************
 //
 // Structure used to map an EPI signal to a GPIO port and pin on the target
-// part (lm3s9b96 in this case).  Field ucPortIndex is the index into the
-// g_pulGPIOBase array containing the base address of the port.
+// part.  The ucPortIndex member is the index into the g_pulGPIOBase array
+// containing the base address of the port.
 //
 //*****************************************************************************
 typedef struct
@@ -145,9 +146,9 @@ tEPIPinInfo;
 //*****************************************************************************
 //
 // This array holds the information necessary to map an EPI signal to a
-// particular GPIO port and pin on the target part (lm3s9b96 in this case) and
-// also the port control nibble required to enable that EPI signal.  The index
-// into the array is the EPI signal number.
+// particular GPIO port and pin on the target part and also the port control
+// nibble required to enable that EPI signal.  The index into the array is the
+// EPI signal number.
 //
 //*****************************************************************************
 static const tEPIPinInfo g_psEPIPinInfo[NUM_EPI_SIGNALS] =
@@ -222,8 +223,8 @@ static const tEPIPinInfo g_psEPIPinInfo[NUM_EPI_SIGNALS] =
 // \param ulCount is the number of bytes of data to read from the EEPROM.
 //
 // This function reads one or more bytes of data from a given address in the
-// ID EEPROM found on several of the lm3s9b96 development kit daughter boards.
-// The return code indicates whether the read was successful.
+// ID EEPROM found on several of the development kit daughter boards.  The
+// return code indicates whether the read was successful.
 //
 // \return Returns \b true on success of \b false on failure.
 //
@@ -237,27 +238,27 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
     //
     // Clear any previously signalled interrupts.
     //
-    I2CMasterIntClear(ID_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(ID_I2C_MASTER_BASE);
 
     //
     // Start with a dummy write to get the address set in the EEPROM.
     //
-    I2CMasterSlaveAddrSet(ID_I2C_MASTER_BASE, ID_I2C_ADDR, false);
+    ROM_I2CMasterSlaveAddrSet(ID_I2C_MASTER_BASE, ID_I2C_ADDR, false);
 
     //
     // Place the address to be written in the data register.
     //
-    I2CMasterDataPut(ID_I2C_MASTER_BASE, ulOffset);
+    ROM_I2CMasterDataPut(ID_I2C_MASTER_BASE, ulOffset);
 
     //
     // Perform a single send, writing the address as the only byte.
     //
-    I2CMasterControl(ID_I2C_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    ROM_I2CMasterControl(ID_I2C_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
 
     //
     // Wait until the current byte has been transferred.
     //
-    while(I2CMasterIntStatus(ID_I2C_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(ID_I2C_MASTER_BASE, false) == 0)
     {
     }
 
@@ -270,7 +271,7 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
         //
         // Clear the error.
         //
-        I2CMasterIntClear(ID_I2C_MASTER_BASE);
+        ROM_I2CMasterIntClear(ID_I2C_MASTER_BASE);
 
         //
         // Is the arbitration lost error set?
@@ -280,23 +281,24 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
             //
             // Kick the controller hard to clear the arbitration lost error.
             //
-            SysCtlPeripheralReset(SYSCTL_PERIPH_I2C0);
+            ROM_SysCtlPeripheralReset(SYSCTL_PERIPH_I2C0);
             SysCtlDelay(10);
 
             //
             // Restore the I2C state.
             //
-            I2CMasterInitExpClk(ID_I2C_MASTER_BASE, SysCtlClockGet(), 0);
-            I2CMasterControl(ID_I2C_MASTER_BASE,
-                             I2C_MASTER_CMD_BURST_SEND_ERROR_STOP);
+            ROM_I2CMasterInitExpClk(ID_I2C_MASTER_BASE, ROM_SysCtlClockGet(),
+                                    0);
+            ROM_I2CMasterControl(ID_I2C_MASTER_BASE,
+                                 I2C_MASTER_CMD_BURST_SEND_ERROR_STOP);
         }
 
         //
         // Send a stop condition to get the controller back to the idle
         // state and release SDA and SCL.
         //
-        I2CMasterControl(ID_I2C_MASTER_BASE,
-                         I2C_MASTER_CMD_BURST_SEND_ERROR_STOP);
+        ROM_I2CMasterControl(ID_I2C_MASTER_BASE,
+                             I2C_MASTER_CMD_BURST_SEND_ERROR_STOP);
 
         //
         // Tell the caller we had a problem.
@@ -307,17 +309,17 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
     //
     // Clear any interrupts set.
     //
-    I2CMasterIntClear(ID_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(ID_I2C_MASTER_BASE);
 
     //
     // Put the I2C master into receive mode.
     //
-    I2CMasterSlaveAddrSet(ID_I2C_MASTER_BASE, ID_I2C_ADDR, true);
+    ROM_I2CMasterSlaveAddrSet(ID_I2C_MASTER_BASE, ID_I2C_ADDR, true);
 
     //
     // Start the receive.
     //
-    I2CMasterControl(ID_I2C_MASTER_BASE,
+    ROM_I2CMasterControl(ID_I2C_MASTER_BASE,
                      ((ulCount > 1) ? I2C_MASTER_CMD_BURST_RECEIVE_START :
                      I2C_MASTER_CMD_SINGLE_RECEIVE));
 
@@ -331,37 +333,37 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
         //
         // Wait until the current byte has been read.
         //
-        while(I2CMasterIntStatus(ID_I2C_MASTER_BASE, false) == 0)
+        while(ROM_I2CMasterIntStatus(ID_I2C_MASTER_BASE, false) == 0)
         {
         }
 
         //
         // Read the received character.
         //
-        *pucData++ = I2CMasterDataGet(ID_I2C_MASTER_BASE);
+        *pucData++ = ROM_I2CMasterDataGet(ID_I2C_MASTER_BASE);
         ulToRead--;
 
         //
         // Clear pending interrupt notifications.
         //
-        I2CMasterIntClear(ID_I2C_MASTER_BASE);
+        ROM_I2CMasterIntClear(ID_I2C_MASTER_BASE);
 
         //
         // Set up for the next byte if any more remain.
         //
         if(ulToRead)
         {
-            I2CMasterControl(ID_I2C_MASTER_BASE,
-                             ((ulToRead == 1) ?
-                              I2C_MASTER_CMD_BURST_RECEIVE_FINISH :
-                              I2C_MASTER_CMD_BURST_RECEIVE_CONT));
+            ROM_I2CMasterControl(ID_I2C_MASTER_BASE,
+                                 ((ulToRead == 1) ?
+                                  I2C_MASTER_CMD_BURST_RECEIVE_FINISH :
+                                  I2C_MASTER_CMD_BURST_RECEIVE_CONT));
         }
     }
 
     //
     // Clear pending interrupt notification.
     //
-    I2CMasterIntClear(ID_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(ID_I2C_MASTER_BASE);
 
     //
     // Tell the caller we read the required data.
@@ -371,11 +373,11 @@ EEPROMReadPolled(unsigned char *pucData, unsigned long ulOffset,
 
 //*****************************************************************************
 //
-// Determines which daughter board is currently attached to the lm3s9b96
-// development board and returns the daughter board's information block as
+// Determines which daughter board is currently attached to the development
+// board and returns the daughter board's information block as
 //
-// This function determines which of the possible daughter boards are
-// attached to the lm3s9b96.  It recognizes Flash/SRAM and FPGA daughter
+// This function determines which of the possible daughter boards are attached
+// to the development board.  It recognizes Flash/SRAM and FPGA daughter
 // boards, each of which contains an I2C device which may be queried to
 // identify the board.  In cases where the SDRAM daughter board is attached,
 // this function will return \b NONE and the determination of whether or not
@@ -399,21 +401,21 @@ DaughterBoardTypeGet(tDaughterIDInfo *psInfo)
     // clocked for SysCtlPeripheralReset() to reset the block so we need
     // to call I2CMasterEnable() between the two SysCtl calls.
     //
-    SysCtlPeripheralEnable(ID_I2C_PERIPH);
+    ROM_SysCtlPeripheralEnable(ID_I2C_PERIPH);
     SysCtlDelay(1);
-    I2CMasterEnable(ID_I2C_MASTER_BASE);
+    ROM_I2CMasterEnable(ID_I2C_MASTER_BASE);
     SysCtlDelay(1);
-    SysCtlPeripheralReset(ID_I2C_PERIPH);
+    ROM_SysCtlPeripheralReset(ID_I2C_PERIPH);
 
     //
     // Configure the I2C SCL and SDA pins for I2C operation.
     //
-    GPIOPinTypeI2C(ID_I2CSCL_GPIO_PORT, ID_I2CSCL_PIN | ID_I2CSDA_PIN);
+    ROM_GPIOPinTypeI2C(ID_I2CSCL_GPIO_PORT, ID_I2CSCL_PIN | ID_I2CSDA_PIN);
 
     //
     // Initialize the I2C master.
     //
-    I2CMasterInitExpClk(ID_I2C_MASTER_BASE, SysCtlClockGet(), 0);
+    ROM_I2CMasterInitExpClk(ID_I2C_MASTER_BASE, ROM_SysCtlClockGet(), 0);
 
     //
     // Read the ID information from the I2C EEPROM.
@@ -754,7 +756,7 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
     //
     // Enable the EPI peripheral
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_EPI0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_EPI0);
 
     //
     // Clear our pin bit mask array.
@@ -798,10 +800,10 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
             //
             // Yes - configure the EPI pins.
             //
-            GPIOPadConfigSet(g_pulGPIOBase[ulLoop], pucPins[ulLoop],
-                             GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
-            GPIODirModeSet(g_pulGPIOBase[ulLoop], pucPins[ulLoop],
-                           GPIO_DIR_MODE_HW);
+            ROM_GPIOPadConfigSet(g_pulGPIOBase[ulLoop], pucPins[ulLoop],
+                                 GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
+            ROM_GPIODirModeSet(g_pulGPIOBase[ulLoop], pucPins[ulLoop],
+                               GPIO_DIR_MODE_HW);
         }
     }
 
@@ -810,7 +812,7 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
     // to determine some timing information based on the ID block we have and
     // also the current system clock.
     //
-    ulClk = SysCtlClockGet();
+    ulClk = ROM_SysCtlClockGet();
     ulNsPerTick = 1000000000/ulClk;
 
     //
@@ -897,9 +899,9 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
 // Set the GPIO port control registers appropriately for the hardware.
 //
 // This function determines the correct port control settings to enable the
-// basic peripheral signals for the dk-lm3s9b96 on their respective pins and
-// also ensures that all required EPI signals are correctly routed.  The EPI
-// signal configuration is determined from the daughter board information
+// basic peripheral signals for the development board on their respective pins
+// and also ensures that all required EPI signals are correctly routed.  The
+// EPI signal configuration is determined from the daughter board information
 // structure passed via the \e psInfo parameter.
 //
 //*****************************************************************************
@@ -1010,11 +1012,10 @@ PortControlSet(tDaughterIDInfo *psInfo)
 
 //*****************************************************************************
 //
-//! Configures the LM3S9B96 device pinout for the development board.
+//! Configures the device pinout for the development board.
 //!
-//! This function configures each pin of the lm3s9b96 device to route the
-//! appropriate peripheral signal as required by the design of the
-//! dk-lm3s9b96 development board.
+//! This function configures each pin of the device to route the! appropriate
+//! peripheral signal as required by the design of the development board.
 //!
 //! \note This module can be built in two ways.  If the label SIMPLE_PINOUT_SET
 //! is not defined, the PinoutSet() function will attempt to read an I2C EEPROM
@@ -1024,11 +1025,11 @@ PortControlSet(tDaughterIDInfo *psInfo)
 //! will default to that required to use the SDRAM daughter board which is
 //! included with the base development kit.
 //!
-//! If SIMPLE_PINOUT_SET is defined, however, all the dynamic configuration code
-//! is replaced with a very simple function which merely sets the pinout and EPI
-//! configuration statically.  This is a better representation of how a real-
-//! world application would likely initialize the pinout and EPI timing and
-//! takes significantly less code space than the dynamic, daughter-board
+//! If SIMPLE_PINOUT_SET is defined, however, all the dynamic configuration
+//! code is replaced with a very simple function which merely sets the pinout
+//! and EPI configuration statically.  This is a better representation of how a
+//! real-world application would likely initialize the pinout and EPI timing
+//! and takes significantly less code space than the dynamic, daughter-board
 //! detecting version.  The example offered here sets the pinout and EPI
 //! configuration appropriately for the Flash/SRAM/LCD daughter board.
 //!
@@ -1043,15 +1044,15 @@ PinoutSet(void)
     //
     // Enable all GPIO banks.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
 
     //
     // Determine which daughter board (if any) is currently attached to the
@@ -1088,26 +1089,26 @@ PinoutSet(void)
         //
         // Configure the FPGA reset signal.
         //
-        GPIOPinTypeGPIOOutput(GPIO_PORTH_BASE, GPIO_PIN_6);
+        ROM_GPIOPinTypeGPIOOutput(GPIO_PORTH_BASE, GPIO_PIN_6);
 
         //
         // Configure the interrupt line from the FPGA.
         //
-        GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_6);
+        ROM_GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_6);
 
         //
         // Assert the FPGA reset for a while.
         //
-        GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, 0);
+        ROM_GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, 0);
         SysCtlDelay(10);
-        GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, GPIO_PIN_6);
+        ROM_GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, GPIO_PIN_6);
 
         //
         // Wait 600mS for the device to be completely ready.  This time
         // allows the FPGA to load its image from EEPROM after a power-on-
         // reset.
         //
-        SysCtlDelay(SysCtlClockGet() / 5);
+        SysCtlDelay(ROM_SysCtlClockGet() / 5);
 
         //
         // Perform a write to the "read only" version register.  This is a
@@ -1183,52 +1184,52 @@ EPIPinConfigSet(void)
     // Configure the EPI pins that are to be used on this board.
     //
 #if (EPI_PORTA_PINS != 0x00)
-    GPIOPadConfigSet(GPIO_PORTA_BASE, EPI_PORTA_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTA_BASE, EPI_PORTA_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTA_BASE, EPI_PORTA_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTA_BASE, EPI_PORTA_PINS, GPIO_DIR_MODE_HW);
 #endif
 #if (EPI_PORTC_PINS != 0x00)
-    GPIOPadConfigSet(GPIO_PORTC_BASE, EPI_PORTC_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTC_BASE, EPI_PORTC_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTC_BASE, EPI_PORTC_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTC_BASE, EPI_PORTC_PINS, GPIO_DIR_MODE_HW);
 #endif
 #if EPI_PORTE_PINS
-    GPIOPadConfigSet(GPIO_PORTE_BASE, EPI_PORTE_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTE_BASE, EPI_PORTE_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTE_BASE, EPI_PORTE_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTE_BASE, EPI_PORTE_PINS, GPIO_DIR_MODE_HW);
 #endif
 #if EPI_PORTF_PINS
-    GPIOPadConfigSet(GPIO_PORTF_BASE, EPI_PORTF_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTF_BASE, EPI_PORTF_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTF_BASE, EPI_PORTF_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTF_BASE, EPI_PORTF_PINS, GPIO_DIR_MODE_HW);
 #endif
 #if EPI_PORTG_PINS
-    GPIOPadConfigSet(GPIO_PORTG_BASE, EPI_PORTG_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTG_BASE, EPI_PORTG_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTG_BASE, EPI_PORTG_PINS, GPIO_STRENGTH_8MA,
+                        GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTG_BASE, EPI_PORTG_PINS, GPIO_DIR_MODE_HW);
 #endif
 #if EPI_PORTJ_PINS
-    GPIOPadConfigSet(GPIO_PORTJ_BASE, EPI_PORTJ_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTJ_BASE, EPI_PORTJ_PINS, GPIO_DIR_MODE_HW);
+    ROM_GPIOPadConfigSet(GPIO_PORTJ_BASE, EPI_PORTJ_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTJ_BASE, EPI_PORTJ_PINS, GPIO_DIR_MODE_HW);
 #endif
 
 #if (EPI_PORTB_PINS != 0x00)
-    GPIOPadConfigSet(GPIO_PORTB_BASE, EPI_PORTB_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTB_BASE, EPI_PORTB_PINS,
+    ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, EPI_PORTB_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTB_BASE, EPI_PORTB_PINS,
                    GPIO_DIR_MODE_HW);
 #endif
 #if (EPI_PORTD_PINS != 0x00)
-    GPIOPadConfigSet(GPIO_PORTD_BASE, EPI_PORTD_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTD_BASE, EPI_PORTD_PINS,
+    ROM_GPIOPadConfigSet(GPIO_PORTD_BASE, EPI_PORTD_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTD_BASE, EPI_PORTD_PINS,
                    GPIO_DIR_MODE_HW);
 #endif
 #if EPI_PORTH_PINS
-    GPIOPadConfigSet(GPIO_PORTH_BASE, EPI_PORTH_PINS,GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(GPIO_PORTH_BASE, EPI_PORTH_PINS,
+    ROM_GPIOPadConfigSet(GPIO_PORTH_BASE, EPI_PORTH_PINS,GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTH_BASE, EPI_PORTH_PINS,
                    GPIO_DIR_MODE_HW);
 #endif
 
@@ -1269,11 +1270,10 @@ EPIPinConfigSet(void)
 
 //*****************************************************************************
 //
-//! Configures the LM3S9B96 device pinout for the development board.
+//! Configures the device pinout for the development board.
 //!
-//! This function configures each pin of the lm3s9b96 device to route the
-//! appropriate peripheral signal as required by the design of the
-//! dk-lm3s9b96 development board.
+//! This function configures each pin of the device to route the appropriate
+//! peripheral signal as required by the design of the development board.
 //!
 //! \return None.
 //
@@ -1305,15 +1305,15 @@ PinoutSet(void)
     //
     // Enable all GPIO banks.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
 
     //
     // GPIO Port A pins
@@ -1459,26 +1459,26 @@ PinoutSet(void)
         //
         // Configure the FPGA reset signal.
         //
-        GPIOPinTypeGPIOOutput(GPIO_PORTH_BASE, GPIO_PIN_6);
+        ROM_GPIOPinTypeGPIOOutput(GPIO_PORTH_BASE, GPIO_PIN_6);
 
         //
         // Configure the interrupt line from the FPGA.
         //
-        GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_6);
+        ROM_GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, GPIO_PIN_6);
 
         //
         // Assert the FPGA reset for a while.
         //
-        GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, 0);
+        ROM_GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, 0);
         SysCtlDelay(10);
-        GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, GPIO_PIN_6);
+        ROM_GPIOPinWrite(GPIO_PORTH_BASE, GPIO_PIN_6, GPIO_PIN_6);
 
         //
         // Wait 600mS for the device to be completely ready.  This time
         // allows the FPGA to load its image from EEPROM after a power-on-
         // reset.
         //
-        SysCtlDelay(SysCtlClockGet() / 5);
+        SysCtlDelay(ROM_SysCtlClockGet() / 5);
 
         //
         // Perform a write to the "read only" version register.  This is a

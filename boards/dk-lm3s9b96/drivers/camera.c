@@ -3,7 +3,7 @@
 // camera.c - Low level driver for the camera functions on the FPGA/camera
 //            daughter board.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -478,22 +478,23 @@ CameraRegWrite(unsigned char ucReg, unsigned char ucVal)
     //
     // Set the slave address.
     //
-    I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, false);
+    ROM_I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, false);
 
     //
     // Write the next byte to the controller.
     //
-    I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucReg);
+    ROM_I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucReg);
 
     //
     // Continue the transfer.
     //
-    I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_START);
+    ROM_I2CMasterControl(CAMERA_I2C_MASTER_BASE,
+                         I2C_MASTER_CMD_BURST_SEND_START);
 
     //
     // Wait until the current byte has been transferred.
     //
-    while(I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
     {
     }
 
@@ -502,31 +503,32 @@ CameraRegWrite(unsigned char ucReg, unsigned char ucVal)
     // since the SCCB protocol declares the bit we would normally associate
     // with ACK to be a "don't care."
     //
-    I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
 
     //
     // Write the next byte to the controller.
     //
-    I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucVal);
+    ROM_I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucVal);
 
     //
     // End the transfer.
     //
-    I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+    ROM_I2CMasterControl(CAMERA_I2C_MASTER_BASE,
+                         I2C_MASTER_CMD_BURST_SEND_FINISH);
 
     //
     // Wait until the current byte has been transferred.
     //
-    while(I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
     {
     }
 
     //
     // Clear the interrupt status.  Once again, don't check for ACK.
     //
-    I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
 
-    SysCtlDelay(SysCtlClockGet() / 1000);
+    SysCtlDelay(ROM_SysCtlClockGet() / 1000);
 
     return(true);
 }
@@ -589,27 +591,27 @@ CameraRegRead(unsigned char ucReg)
     //
     // Clear any previously signalled interrupts.
     //
-    I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
 
     //
     // Start with a dummy write to get the address set in the EEPROM.
     //
-    I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, false);
+    ROM_I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, false);
 
     //
     // Place the register to be read in the data register.
     //
-    I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucReg);
+    ROM_I2CMasterDataPut(CAMERA_I2C_MASTER_BASE, ucReg);
 
     //
     // Perform a single send, writing the register address as the only byte.
     //
-    I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_SINGLE_SEND);
+    ROM_I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_SINGLE_SEND);
 
     //
     // Wait until the current byte has been transferred.
     //
-    while(I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
     {
     }
 
@@ -618,34 +620,34 @@ CameraRegRead(unsigned char ucReg)
     // since the SCCB protocol declares the bit we would normally associate
     // with ACK to be a "don't care."
     //
-    I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
 
     //
     // Put the I2C master into receive mode.
     //
-    I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, true);
+    ROM_I2CMasterSlaveAddrSet(CAMERA_I2C_MASTER_BASE, CAMERA_I2C_ADDR, true);
 
     //
     // Start the receive.
     //
-    I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE);
+    ROM_I2CMasterControl(CAMERA_I2C_MASTER_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE);
 
     //
     // Wait until the current byte has been read.
     //
-    while(I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
+    while(ROM_I2CMasterIntStatus(CAMERA_I2C_MASTER_BASE, false) == 0)
     {
     }
 
     //
     // Read the received character.
     //
-    ucVal =  I2CMasterDataGet(CAMERA_I2C_MASTER_BASE);
+    ucVal =  ROM_I2CMasterDataGet(CAMERA_I2C_MASTER_BASE);
 
     //
     // Clear pending interrupt notifications.
     //
-    I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
+    ROM_I2CMasterIntClear(CAMERA_I2C_MASTER_BASE);
 
     //
     // Tell the caller we read the required data.

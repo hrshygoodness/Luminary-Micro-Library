@@ -2,7 +2,7 @@
 //
 // usbhost.h - Host specific definitions for the USB host library.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -115,6 +115,38 @@ const tUSBHostClassDriver VarName =                                         \
 
 //*****************************************************************************
 //
+//! This structure is used to return generic event based information to an
+//! application.  The following events are currently supported:
+//! USB_EVENT_CONNECTED, USB_EVENT_DISCONNECTED, and USB_EVENT_POWER_FAULT.
+//
+//*****************************************************************************
+typedef struct
+{
+    unsigned long ulEvent;
+
+    unsigned long ulInstance;
+}
+tEventInfo;
+
+//*****************************************************************************
+//
+// This is the type definition a call back for events on USB Pipes allocated
+// by USBHCDPipeAlloc().
+//
+// \param ulPipe is well the pipe
+// \param ulEvent is well the event
+//
+// longer def thand may need more text in order to be recogized what should
+// this really say about ourselves.
+//
+// \return None.
+//
+//*****************************************************************************
+typedef void (* tHCDPipeCallback)(unsigned long ulPipe,
+                                  unsigned long ulEvent);
+
+//*****************************************************************************
+//
 //! This is the structure that holds all of the information for devices
 //! that are enumerated in the system.   It is passed in to Open function of
 //! USB host class drivers so that they can allocate any endpoints and parse
@@ -181,38 +213,6 @@ typedef struct
     void (*pfnIntHandler)(void *pvInstance);
 }
 tUSBHostClassDriver;
-
-//*****************************************************************************
-//
-//! This structure is used to return generic event based information to an
-//! application.  The following events are currently supported:
-//! USB_EVENT_CONNECTED, USB_EVENT_DISCONNECTED, and USB_EVENT_POWER_FAULT.
-//
-//*****************************************************************************
-typedef struct
-{
-    unsigned long ulEvent;
-
-    unsigned long ulInstance;
-}
-tEventInfo;
-
-//*****************************************************************************
-//
-// This is the type definition a call back for events on USB Pipes allocated
-// by USBHCDPipeAlloc().
-//
-// \param ulPipe is well the pipe
-// \param ulEvent is well the event
-//
-// longer def thand may need more text in order to be recogized what should
-// this really say about ourselves.
-//
-// \return None.
-//
-//*****************************************************************************
-typedef void (* tHCDPipeCallback)(unsigned long ulPipe,
-                                  unsigned long ulEvent);
 
 //*****************************************************************************
 //

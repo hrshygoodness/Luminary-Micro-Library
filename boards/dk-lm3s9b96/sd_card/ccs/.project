@@ -21,6 +21,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>third_party/fatfs/port/mmc-dk-lm3s9b96.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/third_party/fatfs/port/mmc-dk-lm3s9b96.c</locationURI>
+		</link>
+		<link>
 			<name>sd_card.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/dk-lm3s9b96/sd_card/sd_card.c</locationURI>
@@ -59,11 +64,6 @@
 			<name>third_party/fatfs/src/ff.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/third_party/fatfs/src/ff.c</locationURI>
-		</link>
-		<link>
-			<name>third_party/fatfs/port/mmc-dk-lm3s9b96.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/third_party/fatfs/port/mmc-dk-lm3s9b96.c</locationURI>
 		</link>
 		<link>
 			<name>startup_ccs.c</name>

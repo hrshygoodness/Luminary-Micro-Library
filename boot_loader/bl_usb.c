@@ -2,7 +2,7 @@
 //
 // bl_usb.c - Functions to transfer data via the USB port.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1290,9 +1290,15 @@ HandleSetAddress(void)
 tBoolean
 FlashRangeCheck(unsigned long ulStart, unsigned long ulLength)
 {
+#ifdef ENABLE_BL_UPDATE
+    if((ulLength <=
+        (g_sDFUDeviceInfo.ulFlashTop - g_sDFUDeviceInfo.ulAppStartAddr)) &&
+       ((ulStart + ulLength) <= g_sDFUDeviceInfo.ulFlashTop))
+#else
     if((ulStart >= g_sDFUDeviceInfo.ulAppStartAddr) && (ulLength <=
        (g_sDFUDeviceInfo.ulFlashTop - g_sDFUDeviceInfo.ulAppStartAddr)) &&
        ((ulStart + ulLength) <= g_sDFUDeviceInfo.ulFlashTop))
+#endif
     {
         //
         // The block passed lies wholly within the flash address range of
@@ -1710,7 +1716,8 @@ HandleReset(void)
     //
     // Are we currently in the middle of a download operation?
     //
-    if((g_eDFUState != STATE_DNLOAD_IDLE) && (g_eDFUState != STATE_DNLOAD_SYNC))
+    if((g_eDFUState != STATE_DNLOAD_IDLE) && (g_eDFUState != STATE_DNLOAD_SYNC) &&
+       (g_eDFUState != STATE_IDLE))
     {
         //
         // No - tell the main thread that it should reboot the system assuming

@@ -2,7 +2,7 @@
 //
 // usbdhidkeyb.c - USB HID Keyboard device class driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -233,7 +233,7 @@ HIDKeyboardRxHandler(void *pvCBData, unsigned long ulEvent,
             // in *pvMsgData and return the length of the report in bytes.
             //
             *(unsigned char **)pvMsgData = psInst->pucReport;
-            return (KEYB_IN_REPORT_SIZE);
+            return(KEYB_IN_REPORT_SIZE);
         }
 
         //
@@ -265,7 +265,7 @@ HIDKeyboardRxHandler(void *pvCBData, unsigned long ulEvent,
                 //
                 // Yes - return our pointer.
                 //
-                return ((unsigned long)psInst->pucDataBuffer);
+                return((unsigned long)psInst->pucDataBuffer);
             }
             else
             {
@@ -274,7 +274,7 @@ HIDKeyboardRxHandler(void *pvCBData, unsigned long ulEvent,
                 // only report we expect so return NULL.  This causes the
                 // device class driver to stall the request.
                 //
-                return (0);
+                return(0);
             }
         }
 
@@ -321,7 +321,7 @@ HIDKeyboardRxHandler(void *pvCBData, unsigned long ulEvent,
         //
         case USBD_HID_EVENT_GET_PROTOCOL:
         {
-            return (psInst->ucProtocol);
+            return(psInst->ucProtocol);
         }
 
         //
@@ -343,7 +343,7 @@ HIDKeyboardRxHandler(void *pvCBData, unsigned long ulEvent,
             break;
         }
     }
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -444,7 +444,7 @@ HIDKeyboardTxHandler(void *pvCBData, unsigned long ulEvent,
         }
     }
 
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************

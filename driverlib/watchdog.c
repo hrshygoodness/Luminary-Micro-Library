@@ -2,7 +2,7 @@
 //
 // watchdog.c - Driver for the Watchdog Timer Module.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -472,14 +472,14 @@ WatchdogIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! The watchdog timer interrupt source is cleared, so that it no longer
 //! asserts.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //

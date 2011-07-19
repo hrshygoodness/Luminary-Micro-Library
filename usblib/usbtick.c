@@ -2,7 +2,7 @@
 //
 // usbtick.c - Functions related to USB stack tick timer handling.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -152,9 +152,10 @@ InternalUSBRegisterTickHandler(unsigned long ulHandler,
 //! \return None.
 //
 //*****************************************************************************
-void InternalUSBStartOfFrameTick(unsigned long ulTicksmS)
+void
+InternalUSBStartOfFrameTick(unsigned long ulTicksmS)
 {
-    int iIdx;
+    long lIdx;
 
     //
     // Advance time.
@@ -164,11 +165,11 @@ void InternalUSBStartOfFrameTick(unsigned long ulTicksmS)
     //
     // Call any registered SOF tick handlers.
     //
-    for(iIdx = 0; iIdx < USB_TICK_HANDLER_NUM; iIdx++)
+    for(lIdx = 0; lIdx < USB_TICK_HANDLER_NUM; lIdx++)
     {
-        if(g_pfTickHandlers[iIdx])
+        if(g_pfTickHandlers[lIdx])
         {
-            g_pfTickHandlers[iIdx](g_pvTickInstance[iIdx], ulTicksmS);
+            g_pfTickHandlers[lIdx](g_pvTickInstance[lIdx], ulTicksmS);
         }
     }
 }

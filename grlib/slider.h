@@ -2,7 +2,7 @@
 //
 // slider.h - Prototypes for the slider widget class.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Graphics Library.
+// This is part of revision 7611 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -543,6 +543,46 @@ tSliderWidget;
             tSliderWidget *pW = pWidget;     \
             pW->ulStyle |= SL_STYLE_FILL;    \
         }                                    \
+        while(0)
+
+//*****************************************************************************
+//
+//! Disables filling of the background area of a slider widget.
+//!
+//! \param pWidget is a pointer to the slider widget to modify.
+//!
+//! This function disables the filling of the background area of a slider
+//! widget.  The display is not updated until the next paint request.
+//!
+//! \return None.
+//
+//*****************************************************************************
+#define SliderBackgroundFillOff(pWidget)            \
+        do                                          \
+        {                                           \
+            tSliderWidget *pW = pWidget;            \
+            pW->ulStyle &= ~(SL_STYLE_BACKG_FILL ); \
+        }                                           \
+        while(0)
+
+//*****************************************************************************
+//
+//! Enables filling of the background area of a slider widget.
+//!
+//! \param pWidget is a pointer to the slider widget to modify.
+//!
+//! This function enables the filling of the background area of a slider widget.
+//! The display is not updated until the next paint request.
+//!
+//! \return None.
+//
+//*****************************************************************************
+#define SliderBackgroundFillOn(pWidget)             \
+        do                                          \
+        {                                           \
+            tSliderWidget *pW = pWidget;            \
+            pW->ulStyle |= SL_STYLE_BACKG_FILL ;    \
+        }                                           \
         while(0)
 
 //*****************************************************************************
@@ -1095,6 +1135,39 @@ tSliderWidget;
             tSliderWidget *pW = pWidget;     \
             pW->lValue = (lVal);             \
         }                                    \
+        while(0)
+
+//*****************************************************************************
+//
+//! Sets the vertical or horizontal style for a slider widget
+//!
+//! \param pWidget is a pointer to the slider widget to be modified.
+//! \param bVertical is \b true to set the vertical slider style or \b false
+//! to set the horizontal slider style.
+//!
+//! This function allows the vertical or horizontal style to be set when
+//! creating slider widgets dynamically.  The function will typically be called
+//! before the slider is first attached to the active widget tree.  Since the
+//! vertical or horizontal style is intimately linked with the slider size
+//! and position on the display, it seldom makes sense to change this style for
+//! a widget which is already on the display.
+//!
+//! \return None.
+//
+//*****************************************************************************
+#define SliderVerticalSet(pWidget, bVertical)           \
+        do                                              \
+        {                                               \
+            tSliderWidget *pW = pWidget;                \
+            if(bVertical)                               \
+            {                                           \
+                pW->ulStyle |= (SL_STYLE_VERTICAL);     \
+            }                                           \
+            else                                        \
+            {                                           \
+                pW->ulStyle &= ~(SL_STYLE_VERTICAL);    \
+            }                                           \
+        }                                               \
         while(0)
 
 //*****************************************************************************

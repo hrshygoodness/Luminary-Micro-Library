@@ -1,6 +1,8 @@
-#Wed Oct 13 20:51:03 CDT 2010
-com.ti.ccstudio.buildDefinitions.TMS470.Debug.895003676/internalBuilder/enabled=false
-com.ti.ccstudio.buildDefinitions.TMS470.Debug.895003676/internalBuilder/ignoreErr=true
-com.ti.ccstudio.buildDefinitions.TMS470.Release.1430389683/internalBuilder/enabled=false
-com.ti.ccstudio.buildDefinitions.TMS470.Release.1430389683/internalBuilder/ignoreErr=true
+#Sat Jul 02 08:26:54 CDT 2011
+com.ti.ccstudio.buildDefinitions.TMS470.Debug.247772594/internalBuilder/enabled=false
+com.ti.ccstudio.buildDefinitions.TMS470.Debug.247772594/internalBuilder/ignoreErr=true
+com.ti.ccstudio.buildDefinitions.TMS470.Release.1796329344/internalBuilder/enabled=false
+com.ti.ccstudio.buildDefinitions.TMS470.Release.1796329344/internalBuilder/ignoreErr=true
 eclipse.preferences.version=1
+environment/project=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment/>\r\n
+environment/project/com.ti.ccstudio.buildDefinitions.TMS470.Debug.247772594=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<environment/>\r\n

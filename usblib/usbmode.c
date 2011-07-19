@@ -2,7 +2,7 @@
 //
 // usbmode.c - Functions related to dual mode USB device/host operation.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -27,8 +27,9 @@
 #include "inc/hw_types.h"
 #include "inc/hw_usb.h"
 #include "driverlib/debug.h"
-#include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
@@ -411,15 +412,19 @@ USBDualModeInit(unsigned long ulIndex)
     //
     // Enable USB Interrupts.
     //
-    USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET | USB_INTCTRL_DISCONNECT |
-                                   USB_INTCTRL_SESSION | USB_INTCTRL_BABBLE |
-                                   USB_INTCTRL_CONNECT | USB_INTCTRL_RESUME |
-                                   USB_INTCTRL_SUSPEND | USB_INTCTRL_VBUS_ERR);
+    MAP_USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
+                                       USB_INTCTRL_DISCONNECT |
+                                       USB_INTCTRL_SESSION |
+                                       USB_INTCTRL_BABBLE |
+                                       USB_INTCTRL_CONNECT |
+                                       USB_INTCTRL_RESUME |
+                                       USB_INTCTRL_SUSPEND |
+                                       USB_INTCTRL_VBUS_ERR);
 
     //
     // Enable all endpoint interrupts.
     //
-    USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
+    MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
 
     //
     // Initialize the USB tick module.
@@ -429,7 +434,7 @@ USBDualModeInit(unsigned long ulIndex)
     //
     // Enable the USB interrupt.
     //
-    IntEnable(INT_USB0);
+    MAP_IntEnable(INT_USB0);
 
     //
     // Turn on session request to enable ID pin checking.
@@ -480,11 +485,11 @@ USBDualModeTerm(unsigned long ulIndex)
     //
     // Disable the USB interrupt.
     //
-    IntDisable(INT_USB0);
+    MAP_IntDisable(INT_USB0);
 
-    USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
+    MAP_USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
 
-    USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
+    MAP_USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
 }
 
 //*****************************************************************************
@@ -524,17 +529,17 @@ USBOTGModeTerm(unsigned long ulIndex)
     //
     // Disable the USB interrupt.
     //
-    IntDisable(INT_USB0);
+    MAP_IntDisable(INT_USB0);
 
     //
     // Disable all control interrupts.
     //
-    USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
+    MAP_USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
 
     //
     // Disable all endpoint interrupts.
     //
-    USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
+    MAP_USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
 
     //
     // Set the mode to none if it is not already.
@@ -595,12 +600,12 @@ USBOTGModeInit(unsigned long ulIndex, unsigned long ulPollingRate,
     //
     // Enable the USB controller.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 
     //
     // Turn on USB Phy clock.
     //
-    SysCtlUSBPLLEnable();
+    MAP_SysCtlUSBPLLEnable();
 
     //
     // Initialize the host controller stack.
@@ -617,16 +622,26 @@ USBOTGModeInit(unsigned long ulIndex, unsigned long ulPollingRate,
     //
     // Enable control interrupts.
     //
-    USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET | USB_INTCTRL_DISCONNECT |
-                                   USB_INTCTRL_SESSION | USB_INTCTRL_BABBLE |
-                                   USB_INTCTRL_CONNECT | USB_INTCTRL_RESUME |
-                                   USB_INTCTRL_SUSPEND | USB_INTCTRL_VBUS_ERR |
-                                   USB_INTCTRL_MODE_DETECT | USB_INTCTRL_SOF);
+    MAP_USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
+                                       USB_INTCTRL_DISCONNECT |
+                                       USB_INTCTRL_SESSION |
+                                       USB_INTCTRL_BABBLE |
+                                       USB_INTCTRL_CONNECT |
+                                       USB_INTCTRL_RESUME |
+                                       USB_INTCTRL_SUSPEND |
+                                       USB_INTCTRL_VBUS_ERR |
+                                       USB_INTCTRL_MODE_DETECT |
+                                       USB_INTCTRL_SOF);
+
+    //
+    // Make sure the mode OTG mode and not forced device or host.
+    //
+    USBOTGMode(USB0_BASE);
 
     //
     // Enable all endpoint interrupts.
     //
-    USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
+    MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
 
     //
     // Initialize the power configuration.
@@ -649,7 +664,7 @@ USBOTGModeInit(unsigned long ulIndex, unsigned long ulPollingRate,
     //
     // Enable the USB interrupt.
     //
-    IntEnable(INT_USB0);
+    MAP_IntEnable(INT_USB0);
 }
 
 //*****************************************************************************

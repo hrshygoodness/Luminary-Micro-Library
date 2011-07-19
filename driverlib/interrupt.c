@@ -2,7 +2,7 @@
 //
 // interrupt.c - Driver for the NVIC Interrupt Controller.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -97,16 +97,18 @@ IntDefaultHandler(void)
 //
 //*****************************************************************************
 #if defined(ewarm)
+#pragma data_alignment=1024
 static __no_init void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) @ "VTABLE";
 #elif defined(sourcerygxx)
 static __attribute__((section(".cs3.region-head.ram")))
-void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void);
-#elif defined(ccs)
+void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) __attribute__ ((aligned(1024)));
+#elif defined(ccs) || defined(DOXYGEN)
+#pragma DATA_ALIGN(g_pfnRAMVectors, 1024)
 #pragma DATA_SECTION(g_pfnRAMVectors, ".vtable")
 void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void);
 #else
 static __attribute__((section("vtable")))
-void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void);
+void (*g_pfnRAMVectors[NUM_INTERRUPTS])(void) __attribute__ ((aligned(1024)));
 #endif
 
 //*****************************************************************************
@@ -183,11 +185,9 @@ IntMasterDisable(void)
 //! to ensure that the SRAM vector table is located at the beginning of SRAM;
 //! otherwise NVIC will not look in the correct portion of memory for the
 //! vector table (it requires the vector table be on a 1 kB memory alignment).
-//! Normally, the SRAM vector table is so placed via the use of linker scripts;
-//! some tool chains, such as the evaluation version of RV-MDK, do not support
-//! linker scripts and therefore will not produce a valid executable.  See the
-//! discussion of compile-time versus run-time interrupt handler registration
-//! in the introduction to this chapter.
+//! Normally, the SRAM vector table is so placed via the use of linker scripts.
+//! See the discussion of compile-time versus run-time interrupt handler
+//! registration in the introduction to this chapter.
 //!
 //! \return None.
 //

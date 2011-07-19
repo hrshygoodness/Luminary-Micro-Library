@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the USB Composite HID mouse/DFU.
 #
-# Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -49,7 +49,6 @@ VPATH+=../../../utils
 IPATH=..
 IPATH+=../../..
 
-#
 # The default rule, which causes the USB Composite HID mouse/DFU to be built.
 #
 all: ${COMPILER}
@@ -65,7 +64,7 @@ clean:
 # The rule to create the target directory.
 #
 ${COMPILER}:
-	@mkdir ${COMPILER}
+	@mkdir -p ${COMPILER}
 
 #
 # Rules for building the USB Composite HID mouse/DFU.
@@ -83,7 +82,7 @@ ${COMPILER}/boot_demo_usb.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/boot_demo_usb.axf: boot_demo_usb.ld
 SCATTERgcc_boot_demo_usb=boot_demo_usb.ld
 ENTRY_boot_demo_usb=ResetISR
-CFLAGSgcc=-DUART_BUFFERED
+CFLAGSgcc=-DTARGET_IS_TEMPEST_RB1 -DUART_BUFFERED
 
 #
 # Include the automatically generated dependency files.

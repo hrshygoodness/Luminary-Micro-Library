@@ -2,7 +2,7 @@
 //
 // i2s_demo.c - Example program for playing wav files from an SD card.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //******************************************************************************
 
@@ -792,7 +792,8 @@ WavePlay(FIL *psFileObject, tWaveHeader *pWaveHeader)
     while(1)
     {
         //
-        // Must disable I2S interrupts during this time to prevent state problems.
+        // Must disable I2S interrupts during this time to prevent state
+        // problems.
         //
         IntDisable(INT_I2S0);
 
@@ -817,6 +818,7 @@ WavePlay(FIL *psFileObject, tWaveHeader *pWaveHeader)
             //
             g_ulFlags &= ~BUFFER_BOTTOM_EMPTY;
         }
+
         if(g_ulFlags & BUFFER_TOP_EMPTY)
         {
             //
@@ -921,7 +923,8 @@ WavePlay(FIL *psFileObject, tWaveHeader *pWaveHeader)
 // listbox containing the files.
 //
 //******************************************************************************
-void OnListBoxChange(tWidget *pWidget, short usSelected)
+void
+OnListBoxChange(tWidget *pWidget, short usSelected)
 {
     //
     // Update only if playing a file.
@@ -949,7 +952,8 @@ void OnListBoxChange(tWidget *pWidget, short usSelected)
 // This function is called whenever someone presses the "Play/Stop" button.
 //
 //******************************************************************************
-void OnBtnPlay(tWidget *pWidget)
+void
+OnBtnPlay(tWidget *pWidget)
 {
     short sSelected;
 
@@ -976,8 +980,8 @@ void OnBtnPlay(tWidget *pWidget)
         }
         else
         {
-            if(WaveOpen(&g_sFileObject, g_pcFilenames[sSelected], &g_sWaveHeader)
-                   == FR_OK)
+            if(WaveOpen(&g_sFileObject, g_pcFilenames[sSelected],
+                        &g_sWaveHeader) == FR_OK)
             {
                 //
                 // Change the text on the button to Stop.
@@ -1165,8 +1169,8 @@ main(void)
     //
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Configure SysTick for a 100Hz interrupt.

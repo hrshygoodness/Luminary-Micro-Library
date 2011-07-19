@@ -1,12 +1,11 @@
 External flash execution demonstration
 
 This example application illustrates execution out of external flash
-attached via the lm3s9b96 Extended Peripheral Interface (EPI). It utilizes
-the UART to display a simple message before immediately transfering control
-back to the boot loader in preparation for the download of a new
-application image.  The first UART (connected to the FTDI virtual serial
-port on the development kit board) will be configured in 115200 baud,
-8-n-1 mode.
+attached via the Extended Peripheral Interface (EPI).  It utilizes the UART
+to display a simple message before immediately transfering control back to
+the boot loader in preparation for the download of a new application image.
+The first UART (connected to the FTDI virtual serial port on the
+development kit board) will be configured in 115200 baud, 8-n-1 mode.
 
 This application is configured specifically for execution from external
 flash and relies upon the external flash version of the Ethernet boot
@@ -26,7 +25,7 @@ same program in internal flash.
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -42,4 +41,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.

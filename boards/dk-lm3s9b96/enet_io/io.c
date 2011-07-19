@@ -2,7 +2,7 @@
 //
 // io.c - I/O routines for the enet_io example application.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
 #include "utils/ustdlib.h"
 #include "io.h"
 
@@ -63,7 +64,7 @@ io_set_timer(unsigned long ulSpeedPercent)
     //
     // Turn the timer off while we are mucking with it.
     //
-    TimerDisable(TIMER2_BASE, TIMER_A);
+    ROM_TimerDisable(TIMER2_BASE, TIMER_A);
 
     //
     // If the speed is non-zero, we reset the timeout.  If it is zero, we
@@ -74,8 +75,8 @@ io_set_timer(unsigned long ulSpeedPercent)
         ulTimeout = SysCtlClockGet() / 250;
         ulTimeout = (ulTimeout * 100 ) / ulSpeedPercent;
 
-        TimerLoadSet(TIMER2_BASE, TIMER_A, ulTimeout);
-        TimerEnable(TIMER2_BASE, TIMER_A);
+        ROM_TimerLoadSet(TIMER2_BASE, TIMER_A, ulTimeout);
+        ROM_TimerEnable(TIMER2_BASE, TIMER_A);
     }
 }
 
@@ -90,28 +91,28 @@ io_init(void)
     //
     // Configure Port F0 for as an output for the status LED.
     //
-    GPIOPinTypeGPIOOutput(LED_PORT_BASE, LED_PIN);
+    ROM_GPIOPinTypeGPIOOutput(LED_PORT_BASE, LED_PIN);
 
     //
     // Initialize LED to OFF (0)
     //
-    GPIOPinWrite(LED_PORT_BASE, LED_PIN, 0);
+    ROM_GPIOPinWrite(LED_PORT_BASE, LED_PIN, 0);
 
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER2);
 
     //
     // Configure the timer used to pace the animation.
     //
-    TimerConfigure(TIMER2_BASE, TIMER_CFG_32_BIT_PER);
+    ROM_TimerConfigure(TIMER2_BASE, TIMER_CFG_32_BIT_PER);
 
     //
     // Setup the interrupts for the timer timeouts.
     //
-    IntEnable(INT_TIMER2A);
-    TimerIntEnable(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_IntEnable(INT_TIMER2A);
+    ROM_TimerIntEnable(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
 
     //
     // Set the timer for the current animation speed.  This enables the
@@ -131,7 +132,7 @@ io_set_led(tBoolean bOn)
     //
     // Turn the LED on or off as requested.
     //
-    GPIOPinWrite(LED_PORT_BASE, LED_PIN, bOn ? LED_PIN : 0);
+    ROM_GPIOPinWrite(LED_PORT_BASE, LED_PIN, bOn ? LED_PIN : 0);
 }
 
 //*****************************************************************************
@@ -145,7 +146,7 @@ io_get_ledstate(char * pcBuf, int iBufLen)
     //
     // Get the state of the LED
     //
-    if(GPIOPinRead(LED_PORT_BASE, LED_PIN))
+    if(ROM_GPIOPinRead(LED_PORT_BASE, LED_PIN))
     {
         usnprintf(pcBuf, iBufLen, "ON");
     }
@@ -167,7 +168,7 @@ io_is_led_on(void)
     //
     // Get the state of the LED
     //
-    if(GPIOPinRead(LED_PORT_BASE, LED_PIN))
+    if(ROM_GPIOPinRead(LED_PORT_BASE, LED_PIN))
     {
         return(1);
     }

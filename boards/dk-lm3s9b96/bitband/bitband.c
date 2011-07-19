@@ -2,7 +2,7 @@
 //
 // bitband.c - Bit-band manipulation example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,13 +18,14 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_types.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -95,14 +96,14 @@ Delay(unsigned long ulSeconds)
         //
         // Wait until the SysTick value is less than 1000.
         //
-        while(SysTickValueGet() > 1000)
+        while(ROM_SysTickValueGet() > 1000)
         {
         }
 
         //
         // Wait until the SysTick value is greater than 1000.
         //
-        while(SysTickValueGet() < 1000)
+        while(ROM_SysTickValueGet() < 1000)
         {
         }
     }
@@ -147,7 +148,7 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -194,8 +195,8 @@ main(void)
     // for delay loops.  The SysTick timer period will be set up for one
     // second.
     //
-    SysTickPeriodSet(SysCtlClockGet());
-    SysTickEnable();
+    ROM_SysTickPeriodSet(SysCtlClockGet());
+    ROM_SysTickEnable();
 
     //
     // Set the value and error count to zero.

@@ -2,7 +2,7 @@
 //
 // ethernet.c - Driver for the Integrated Ethernet Controller
 //
-// Copyright (c) 2006-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2006-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -1144,14 +1144,14 @@ EthernetIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to EthernetIntEnable().
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -1171,6 +1171,42 @@ EthernetIntClear(unsigned long ulBase, unsigned long ulIntFlags)
     // Clear the requested interrupt sources.
     //
     HWREG(ulBase + MAC_O_IACK) = ulIntFlags;
+}
+
+//*****************************************************************************
+//
+//! Sets the PHY address.
+//!
+//! \param ulBase is the base address of the controller.
+//! \param ucAddr is the address of the PHY.
+//!
+//! This function sets the address of the PHY that is accessed via
+//! EthernetPHYRead() and EthernePHYWrite().  This is only needed when
+//! connecting to an external PHY via MII, and should not be used on devices
+//! that have integrated PHYs.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+EthernetPHYAddrSet(unsigned long ulBase, unsigned char ucAddr)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(ulBase == ETH_BASE);
+
+    //
+    // Wait for any pending transaction to complete.
+    //
+    while(HWREG(ulBase + MAC_O_MCTL) & MAC_MCTL_START)
+    {
+    }
+
+    //
+    // Set the PHY address.
+    //
+    HWREG(ulBase + MAC_O_MADD) = ucAddr;
 }
 
 //*****************************************************************************

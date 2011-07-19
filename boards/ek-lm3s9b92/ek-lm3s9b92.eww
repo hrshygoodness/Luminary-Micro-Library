@@ -20,6 +20,12 @@
     <path>$WS_DIR$\blinky\blinky.ewp</path>
   </project>
   <project>
+    <path>$WS_DIR$\boot_usb\boot_usb.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\boot_demo_usb\boot_demo_usb.ewp</path>
+  </project>
+  <project>
     <path>$WS_DIR$\enet_lwip\enet_lwip.ewp</path>
   </project>
   <project>
@@ -47,6 +53,9 @@
     <path>$WS_DIR$\qs-adventure\qs-adventure.ewp</path>
   </project>
   <project>
+    <path>$WS_DIR$\softuart_echo\softuart_echo.ewp</path>
+  </project>
+  <project>
     <path>$WS_DIR$\timers\timers.ewp</path>
   </project>
   <project>
@@ -60,6 +69,9 @@
   </project>
   <project>
     <path>$WS_DIR$\udma_timer_ccp\udma_timer_ccp.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\udma_uart_sg\udma_uart_sg.ewp</path>
   </project>
   <project>
     <path>$WS_DIR$\usb_dev_bulk\usb_dev_bulk.ewp</path>
@@ -122,6 +134,14 @@
         <configuration>Debug</configuration>
       </member>
       <member>
+        <project>boot_usb</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>boot_demo_usb</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
         <project>enet_lwip</project>
         <configuration>Debug</configuration>
       </member>
@@ -158,6 +178,10 @@
         <configuration>Debug</configuration>
       </member>
       <member>
+        <project>softuart_echo</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
         <project>timers</project>
         <configuration>Debug</configuration>
       </member>
@@ -175,6 +199,10 @@
       </member>
       <member>
         <project>udma_timer_ccp</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>udma_uart_sg</project>
         <configuration>Debug</configuration>
       </member>
       <member>

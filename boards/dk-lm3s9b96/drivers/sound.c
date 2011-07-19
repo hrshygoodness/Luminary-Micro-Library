@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// sound.c - Sound driver for the DK-LM3S9B96 board.
+// sound.c - Sound driver for the development board.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -625,9 +625,8 @@ SoundPlay(const unsigned short *pusSong, unsigned long ulLength)
 //! limit is a divide of the System PLL by 256 or an MCLK minimum of
 //! 400MHz/256 or 1.5625MHz.  This is overcome by increasing the number of
 //! bits shifted out per sample and thus increasing the MCLK needed for a given
-//! sample rate.  This uses the fact that the I2S codec used on the LM3S9B96
-//! development board s that will toss away extra bits that go to or from the
-//! codec.
+//! sample rate.  This uses the fact that the I2S codec used on the development
+//! board s that will toss away extra bits that go to or from the codec.
 //!
 //! \return None.
 //

@@ -2,7 +2,7 @@
 //
 // hw_nvic.h - Macros used when accessing the NVIC hardware.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -196,7 +196,7 @@
 // The following are defines for the bit fields in the NVIC_EN1 register.
 //
 //*****************************************************************************
-#define NVIC_EN1_INT_M          0x00FFFFFF  // Interrupt Enable
+#define NVIC_EN1_INT_M          0x007FFFFF  // Interrupt Enable
 #define NVIC_EN1_INT32          0x00000001  // Interrupt 32 enable
 #define NVIC_EN1_INT33          0x00000002  // Interrupt 33 enable
 #define NVIC_EN1_INT34          0x00000004  // Interrupt 34 enable
@@ -750,8 +750,8 @@
 //
 //*****************************************************************************
 #define NVIC_VTABLE_BASE        0x20000000  // Vector Table Base
-#define NVIC_VTABLE_OFFSET_M    0x1FFFFF00  // Vector Table Offset
-#define NVIC_VTABLE_OFFSET_S    8
+#define NVIC_VTABLE_OFFSET_M    0x1FFFFE00  // Vector Table Offset
+#define NVIC_VTABLE_OFFSET_S    9
 
 //*****************************************************************************
 //

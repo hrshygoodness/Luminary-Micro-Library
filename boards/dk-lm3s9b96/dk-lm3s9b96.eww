@@ -8,9 +8,6 @@
     <path>$WS_DIR$\..\..\grlib\grlib.ewp</path>
   </project>
   <project>
-    <path>$WS_DIR$\..\..\IQmath\IQmath.ewp</path>
-  </project>
-  <project>
     <path>$WS_DIR$\..\..\usblib\usblib.ewp</path>
   </project>
   <project>
@@ -190,10 +187,6 @@
       </member>
       <member>
         <project>grlib</project>
-        <configuration>Debug</configuration>
-      </member>
-      <member>
-        <project>IQmath</project>
         <configuration>Debug</configuration>
       </member>
       <member>

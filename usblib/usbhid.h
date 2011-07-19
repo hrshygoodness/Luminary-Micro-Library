@@ -2,7 +2,7 @@
 //
 // usbhid.h - Definitions used by HID class devices and hosts.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -112,8 +112,8 @@ extern "C"
 #define USB_HID_MOUSE           0x02
 #define USB_HID_KEYBOARD        0x06
 
-#define USB_HID_APPLICATION     0x00
-#define USB_HID_PHYSICAL        0x01
+#define USB_HID_PHYSICAL        0x00
+#define USB_HID_APPLICATION     0x01
 
 #define USB_HID_USAGE_POINTER   0x0109
 #define USB_HID_USAGE_BUTTONS   0x0509

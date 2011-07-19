@@ -2,7 +2,7 @@
 //
 // widget.c - Generic widget tree handling code.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Graphics Library.
+// This is part of revision 7611 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -296,27 +296,26 @@ WidgetMutexGet(unsigned char *pcMutex)
     bx          lr
 }
 #endif
+//
+// For CCS implement this function in pure assembly.  This prevents the TI
+// compiler from doing funny things with the optimizer.
+//
 #if defined(ccs)
-unsigned long
-WidgetMutexGet(unsigned char *pcMutex)
-{
-    //
-    // Acquire the mutex if possible.
-    //
-    __asm("    mov         r1, #1\n"
+    __asm("    .sect \".text:WidgetMutexGet\"\n"
+          "    .clink\n"
+          "    .thumbfunc WidgetMutexGet\n"
+          "    .thumb\n"
+          "    .global WidgetMutexGet\n"
+          "WidgetMutexGet:\n"
+          "    mov         r1, #1\n"
           "    ldrexb      r2, [r0]\n"
           "    cmp         r2, #0\n"
           "    it          EQ\n" // TI assembler requires upper case cond
           "    strexbeq    r2, r1, [r0]\n"
           "    mov         r0, r2\n"
           "    bx          lr\n");
-
-    //
-    // The following keeps the TI compiler from optimizing away the code.
-    //
-    return((unsigned long)pcMutex + 1);
-}
 #endif
+
 
 //*****************************************************************************
 //

@@ -2,7 +2,7 @@
 //
 // simple_fs.c - Functions for simple FAT file system support
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -306,32 +306,54 @@ SimpleFsInit(unsigned char *pucSectorBuf)
     }
 
     //
-    // Get the first partition table
+    // See if this is a MBR or a boot sector.
     //
-    pPart = &(pMBR->sPartTable[0]);
-
-    //
-    // Could optionally check partition type here ...
-    //
-
-    //
-    // Get the partition location and size
-    //
-    sPartInfo.ulFirstSector = pPart->ulFirstSector;
-    sPartInfo.ulNumBlocks = pPart->ulNumBlocks;
-
-    //
-    // Read the boot sector from the partition
-    //
-    if(SimpleFsReadMediaSector(sPartInfo.ulFirstSector, pucSectorBuf))
+    pBoot = (tBootSector *)pucSectorBuf;
+    if((strncmp(pBoot->ext.sExt16.cFsType, "FAT", 3) != 0) &&
+       (strncmp(pBoot->ext.sExt32.cFsType, "FAT32", 5) != 0))
     {
-        return(1);
+        //
+        // Get the first partition table
+        //
+        pPart = &(pMBR->sPartTable[0]);
+
+        //
+        // Could optionally check partition type here ...
+        //
+
+        //
+        // Get the partition location and size
+        //
+        sPartInfo.ulFirstSector = pPart->ulFirstSector;
+        sPartInfo.ulNumBlocks = pPart->ulNumBlocks;
+
+        //
+        // Read the boot sector from the partition
+        //
+        if(SimpleFsReadMediaSector(sPartInfo.ulFirstSector, pucSectorBuf))
+        {
+            return(1);
+        }
+    }
+    else
+    {
+        //
+        // Extract the number of sectors from the boot sector.
+        //
+        sPartInfo.ulFirstSector = 0;
+        if(pBoot->usTotalSectorsSmall == 0)
+        {
+            sPartInfo.ulNumBlocks = pBoot->ulTotalSectorsBig;
+        }
+        else
+        {
+            sPartInfo.ulNumBlocks = pBoot->usTotalSectorsSmall;
+        }
     }
 
     //
     // Get pointer to the boot sector
     //
-    pBoot = (tBootSector *)pucSectorBuf;
     if(pBoot->ext.sExt16.usSig != 0xAA55)
     {
         return(1);

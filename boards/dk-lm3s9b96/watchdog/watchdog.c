@@ -2,7 +2,7 @@
 //
 // watchdog.c - Watchdog timer example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/watchdog.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
@@ -99,13 +100,14 @@ WatchdogIntHandler(void)
     //
     // Clear the watchdog interrupt.
     //
-    WatchdogIntClear(WATCHDOG0_BASE);
+    ROM_WatchdogIntClear(WATCHDOG0_BASE);
 
     //
     // Invert the GPIO PF3 value.
     //
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3,
-                 (GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_3) ^ GPIO_PIN_3));
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3,
+                     (ROM_GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_3) ^
+                                     GPIO_PIN_3));
 }
 
 //*****************************************************************************
@@ -160,8 +162,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -222,39 +224,39 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_WDOG0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_WDOG0);
 
     //
     // Enable processor interrupts.
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Set GPIO PF3 as an output.  This drives an LED on the board that will
     // toggle when a watchdog interrupt is processed.
     //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
+    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
 
     //
     // Enable the watchdog interrupt.
     //
-    IntEnable(INT_WATCHDOG);
+    ROM_IntEnable(INT_WATCHDOG);
 
     //
     // Set the period of the watchdog timer.
     //
-    WatchdogReloadSet(WATCHDOG0_BASE, SysCtlClockGet());
+    ROM_WatchdogReloadSet(WATCHDOG0_BASE, ROM_SysCtlClockGet());
 
     //
     // Enable reset generation from the watchdog timer.
     //
-    WatchdogResetEnable(WATCHDOG0_BASE);
+    ROM_WatchdogResetEnable(WATCHDOG0_BASE);
 
     //
     // Enable the watchdog timer.
     //
-    WatchdogEnable(WATCHDOG0_BASE);
+    ROM_WatchdogEnable(WATCHDOG0_BASE);
 
     //
     // Loop forever while the LED winks as watchdog interrupts are handled.

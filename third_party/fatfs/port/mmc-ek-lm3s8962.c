@@ -352,7 +352,7 @@ BYTE send_cmd (
     xmit_spi((BYTE)(arg >> 16));        /* Argument[23..16] */
     xmit_spi((BYTE)(arg >> 8));            /* Argument[15..8] */
     xmit_spi((BYTE)arg);                /* Argument[7..0] */
-    n = 0;
+    n = 0xff;
     if (cmd == CMD0) n = 0x95;            /* CRC for CMD0(0) */
     if (cmd == CMD8) n = 0x87;            /* CRC for CMD8(0x1AA) */
     xmit_spi(n);
@@ -367,7 +367,51 @@ BYTE send_cmd (
     return res;            /* Return with the response value */
 }
 
+/*-----------------------------------------------------------------------*
+ * Send the special command used to terminate a multi-sector read.
+ *
+ * This is the only command which can be sent while the SDCard is sending
+ * data. The SDCard spec indicates that the data transfer will stop 2 bytes
+ * after the 6 byte CMD12 command is sent and that the card will then send
+ * 0xFF for between 2 and 6 more bytes before the R1 response byte.  This
+ * response will be followed by another 0xFF byte.  In testing, however, it
+ * seems that some cards don't send the 2 to 6 0xFF bytes between the end of
+ * data transmission and the response code.  This function, therefore, merely
+ * reads 10 bytes and, if the last one read is 0xFF, returns the value of the
+ * latest non-0xFF byte as the response code.
+ *
+ *-----------------------------------------------------------------------*/
 
+static
+BYTE send_cmd12 (void)
+{
+    BYTE n, res, val;
+
+    /* For CMD12, we don't wait for the card to be idle before we send
+     * the new command.
+     */
+
+    /* Send command packet - the argument for CMD12 is ignored. */
+    xmit_spi(CMD12);
+    xmit_spi(0);
+    xmit_spi(0);
+    xmit_spi(0);
+    xmit_spi(0);
+    xmit_spi(0);
+
+    /* Read up to 10 bytes from the card, remembering the value read if it's
+       not 0xFF */
+    for(n = 0; n < 10; n++)
+    {
+        val = rcvr_spi();
+        if(val != 0xFF)
+        {
+            res = val;
+        }
+    }
+
+    return res;            /* Return with the response value */
+}
 
 /*--------------------------------------------------------------------------
 
@@ -480,7 +524,7 @@ DRESULT disk_read (
                 if (!rcvr_datablock(buff, 512)) break;
                 buff += 512;
             } while (--count);
-            send_cmd(CMD12, 0);                /* STOP_TRANSMISSION */
+            send_cmd12();                /* STOP_TRANSMISSION */
         }
     }
 

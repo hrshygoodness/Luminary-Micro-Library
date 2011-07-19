@@ -2,7 +2,7 @@
 //
 // usb_dev_msc.c - Main routines for the device mass storage class example.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -27,8 +27,6 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
 #include "driverlib/systick.h"
 #include "driverlib/usb.h"
@@ -350,8 +348,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                      SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -362,17 +360,17 @@ main(void)
     // Configure SysTick for a 100Hz interrupt.  The FatFs driver wants a 10 ms
     // tick.
     //
-    SysTickPeriodSet(SysCtlClockGet() / 100);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / 100);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Configure and enable uDMA
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Initialize the display driver.

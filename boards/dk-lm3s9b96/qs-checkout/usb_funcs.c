@@ -3,7 +3,7 @@
 // usb_funcs.c - Support functions for supporting USB mouse both as a device
 //               and as a host and Mass Storage Class host.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,16 +19,15 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/gpio.h"
+#include "driverlib/rom.h"
 #include "usblib/usblib.h"
 #include "usblib/usbhid.h"
 #include "usblib/host/usbhost.h"
@@ -659,8 +658,8 @@ DeviceTouchEventHandler(void)
     //
     // Get the current state of the user button.
     //
-    bBtnPressed = (GPIOPinRead(USER_BTN_PORT, USER_BTN_PIN) & USER_BTN_PIN) ?
-                   false : true;
+    bBtnPressed = (ROM_GPIOPinRead(USER_BTN_PORT, USER_BTN_PIN) &
+                   USER_BTN_PIN) ? false : true;
 
     //
     // Is someone pressing the screen or has the button changed state?  If so,
@@ -773,9 +772,9 @@ USBFuncsProcess(void)
         // interrupt disabled since the web server accesses the USB stack and
         // runs in the context of that interrupt.
         //
-        IntDisable(INT_ETH);
+        ROM_IntDisable(INT_ETH);
         USBOTGMain(ulElapsed);
-        IntEnable(INT_ETH);
+        ROM_IntEnable(INT_ETH);
         ulLast = ulNow;
 
         if(g_eUSBState == STATE_MOUSE_DEVICE)
@@ -812,12 +811,12 @@ USBFuncsProcess(void)
     // leave it enabled, we can get deadlocked if a web server request comes in
     // during the time the USB interrupt is off.
     //
-    IntDisable(INT_ETH);
-    IntDisable(INT_USB0);
+    ROM_IntDisable(INT_ETH);
+    ROM_IntDisable(INT_USB0);
     ulFlags = g_ulChangeFlags;
     g_ulChangeFlags = 0;
-    IntEnable(INT_USB0);
-    IntEnable(INT_ETH);
+    ROM_IntEnable(INT_USB0);
+    ROM_IntEnable(INT_ETH);
 
     //
     // Tell the caller what changed since the last time this function was
@@ -899,9 +898,9 @@ DeviceInit(void)
     // Configure the pin the user button is attached to as an input with a
     // pull-up.
     //
-    GPIODirModeSet(USER_BTN_PORT, USER_BTN_PIN, GPIO_DIR_MODE_IN);
-    GPIOPadConfigSet(USER_BTN_PORT, USER_BTN_PIN, GPIO_STRENGTH_2MA,
-                     GPIO_PIN_TYPE_STD_WPU);
+    ROM_GPIODirModeSet(USER_BTN_PORT, USER_BTN_PIN, GPIO_DIR_MODE_IN);
+    ROM_GPIOPadConfigSet(USER_BTN_PORT, USER_BTN_PIN, GPIO_STRENGTH_2MA,
+                         GPIO_PIN_TYPE_STD_WPU);
 
     //
     // Pass the USB library our device information, initialize the USB
@@ -945,7 +944,7 @@ HostInit(void)
     //
     // Configure the power pins for host mode.
     //
-    GPIOPinTypeUSBDigital(GPIO_PORTA_BASE, GPIO_PIN_6);
+    ROM_GPIOPinTypeUSBDigital(GPIO_PORTA_BASE, GPIO_PIN_6);
 
     //
     // Initialize the power configuration. This sets the power enable signal

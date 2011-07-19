@@ -2,7 +2,7 @@
 //
 // usbdhid.c - USB HID device class driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -26,6 +26,8 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/usb.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "usblib/usblib.h"
 #include "usblib/usbhid.h"
 #include "usblib/device/usbdevice.h"
@@ -806,12 +808,12 @@ FindHIDDescriptor(const tUSBDHIDDevice *psDevice, unsigned char ucType,
 // packet with no data to indicate the end of the transaction.
 //
 //*****************************************************************************
-static int
+static long
 ScheduleReportTransmission(tHIDInstance *psInst)
 {
     unsigned long ulNumBytes;
     unsigned char *pucData;
-    int iRetcode;
+    long lRetcode;
 
     //
     // Set the number of bytes to send this iteration.
@@ -835,10 +837,10 @@ ScheduleReportTransmission(tHIDInstance *psInst)
     //
     // Put the data in the correct FIFO.
     //
-    iRetcode = USBEndpointDataPut(psInst->ulUSBBase, psInst->ucINEndpoint,
-                                  pucData, ulNumBytes);
+    lRetcode = MAP_USBEndpointDataPut(psInst->ulUSBBase, psInst->ucINEndpoint,
+                                      pucData, ulNumBytes);
 
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // Update the count and index ready for the next time round.
@@ -848,14 +850,15 @@ ScheduleReportTransmission(tHIDInstance *psInst)
         //
         // Send out the current data.
         //
-        iRetcode = USBEndpointDataSend(psInst->ulUSBBase, psInst->ucINEndpoint,
-                                       USB_TRANS_IN);
+        lRetcode = MAP_USBEndpointDataSend(psInst->ulUSBBase,
+                                           psInst->ucINEndpoint,
+                                           USB_TRANS_IN);
     }
 
     //
     // Tell the caller how we got on.
     //
-    return(iRetcode);
+    return(lRetcode);
 }
 
 //*****************************************************************************
@@ -890,12 +893,12 @@ ProcessDataFromHost(const tUSBDHIDDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
+    MAP_USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
 
     //
     // Has a packet been received?
@@ -913,8 +916,8 @@ ProcessDataFromHost(const tUSBDHIDDevice *psDevice, unsigned long ulStatus)
         //
         // How big is the packet we've just been sent?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase,
-                                      psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint);
 
         //
         // The receive channel is not blocked so let the caller know
@@ -941,10 +944,10 @@ ProcessDataFromHost(const tUSBDHIDDevice *psDevice, unsigned long ulStatus)
                                     (ulEPStatus & USB_RX_ERROR_FLAGS),
                                     (void *)0);
         }
-        return (false);
+        return(false);
     }
 
-    return (true);
+    return(true);
 }
 
 //*****************************************************************************
@@ -977,13 +980,13 @@ ProcessDataToHost(const tUSBDHIDDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucINEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase, psInst->ucINEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucINEndpoint,
-                              ulEPStatus);
+    MAP_USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucINEndpoint,
+                                  ulEPStatus);
 
     //
     // Our last packet was transmitted successfully.  Is there any more data to
@@ -1023,7 +1026,7 @@ ProcessDataToHost(const tUSBDHIDDevice *psDevice, unsigned long ulStatus)
         ScheduleReportTransmission(psInst);
     }
 
-    return (true);
+    return(true);
 }
 
 //*****************************************************************************
@@ -1438,7 +1441,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
                 // occur if you acknowledge before setting up to receive the
                 // request data.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
             }
 
             break;
@@ -1463,7 +1466,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // Need to ACK the data on end point 0 in this case.
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
 
             //
             // ..then send back the requested report.
@@ -1490,7 +1493,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // Need to ACK the data on end point 0 in this case.
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
 
             break;
         }
@@ -1513,7 +1516,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
                 //
                 // Need to ACK the data on end point 0 in this case.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
 
                 //
                 // Send our response to the host.
@@ -1541,7 +1544,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
                 //
                 // We need to ACK the data on end point 0 in this case.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
 
                 //
                 // We are a boot subclass device so pass this on to the
@@ -1574,7 +1577,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
                 //
                 // We need to ACK the data on end point 0 in this case.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
 
                 //
                 // We are a boot subclass device so pass this on to the
@@ -1825,7 +1828,7 @@ HIDTickHandler(void *pvInstance, unsigned long ulTimemS)
         //
         // Yes - how big is the waiting packet?
         //
-        ulSize = USBEndpointDataAvail(USB0_BASE, psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(USB0_BASE, psInst->ucOUTEndpoint);
 
         //
         // Tell the client that there is a packet waiting for it.
@@ -2146,7 +2149,7 @@ USBDHIDSetRxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback data value.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -2188,7 +2191,7 @@ USBDHIDSetTxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback data value.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -2225,7 +2228,7 @@ USBDHIDReportWrite(void *pvInstance, unsigned char *pcData,
                    unsigned long ulLength, tBoolean bLast)
 {
     tHIDInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -2251,7 +2254,7 @@ USBDHIDReportWrite(void *pvInstance, unsigned char *pcData,
         // finishes.
         //
         psInst->bSendInProgress = false;
-        return (0);
+        return(0);
     }
 
     //
@@ -2274,7 +2277,7 @@ USBDHIDReportWrite(void *pvInstance, unsigned char *pcData,
     // Schedule transmission of the first packet of the report.
     //
     psInst->eHIDTxState = HID_STATE_WAIT_DATA;
-    iRetcode = ScheduleReportTransmission(psInst);
+    lRetcode = ScheduleReportTransmission(psInst);
 
     //
     // Clear the flag we use to indicate that we are in the midst of sending
@@ -2285,19 +2288,19 @@ USBDHIDReportWrite(void *pvInstance, unsigned char *pcData,
     //
     // Did an error occur while trying to send the data?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // No - tell the caller we sent all the bytes provided.
         //
-        return (ulLength);
+        return(ulLength);
     }
     else
     {
         //
         // Yes - tell the caller we couldn't send the data.
         //
-        return (0);
+        return(0);
     }
 }
 
@@ -2331,7 +2334,7 @@ USBDHIDPacketRead(void *pvInstance, unsigned char *pcData,
 {
     unsigned long ulEPStatus, ulCount, ulPkt;
     tHIDInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -2343,20 +2346,23 @@ USBDHIDPacketRead(void *pvInstance, unsigned char *pcData,
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucOUTEndpoint);
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
         //
         // How many bytes are available for us to receive?
         //
-        ulPkt = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulPkt = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                         psInst->ucOUTEndpoint);
 
         //
         // Get as much data as we can.
         //
         ulCount = ulLength;
-        iRetcode = USBEndpointDataGet(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                      pcData, &ulCount);
+        lRetcode = MAP_USBEndpointDataGet(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint,
+                                          pcData, &ulCount);
 
         //
         // Did we read the last of the packet data?
@@ -2367,15 +2373,16 @@ USBDHIDPacketRead(void *pvInstance, unsigned char *pcData,
             // Clear the endpoint status so that we know no packet is
             // waiting.
             //
-            USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                      ulEPStatus);
+            MAP_USBDevEndpointStatusClear(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint,
+                                          ulEPStatus);
 
             //
             // Acknowledge the data, thus freeing the host to send the
             // next packet.
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                  true);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, psInst->ucOUTEndpoint,
+                                      true);
 
             //
             // Clear the flag we set to indicate that a packet read is
@@ -2388,9 +2395,9 @@ USBDHIDPacketRead(void *pvInstance, unsigned char *pcData,
         //
         // If all went well, tell the caller how many bytes they got.
         //
-        if(iRetcode != -1)
+        if(lRetcode != -1)
         {
-            return (ulCount);
+            return(ulCount);
         }
     }
 
@@ -2398,7 +2405,7 @@ USBDHIDPacketRead(void *pvInstance, unsigned char *pcData,
     // No packet was available or an error occurred while reading so tell
     // the caller no bytes were returned.
     //
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -2442,7 +2449,7 @@ USBDHIDTxPacketAvailable(void *pvInstance)
         //
         // We are not ready to receive a new packet so return 0.
         //
-        return (0);
+        return(0);
     }
     else
     {
@@ -2450,7 +2457,7 @@ USBDHIDTxPacketAvailable(void *pvInstance)
         // We can receive a packet so return the max packet size for the
         // relevant endpoint.
         //
-        return (INT_IN_EP_MAX_SIZE);
+        return(INT_IN_EP_MAX_SIZE);
     }
 }
 
@@ -2487,22 +2494,24 @@ USBDHIDRxPacketAvailable(void *pvInstance)
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucOUTEndpoint);
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
         //
         // Yes - a packet is waiting.  How big is it?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint);
 
-        return (ulSize);
+        return(ulSize);
     }
     else
     {
         //
         // There is no packet waiting to be received.
         //
-        return (0);
+        return(0);
     }
 }
 

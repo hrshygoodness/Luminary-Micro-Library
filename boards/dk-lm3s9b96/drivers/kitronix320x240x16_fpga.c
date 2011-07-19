@@ -1,10 +1,10 @@
 //*****************************************************************************
 //
-// kitronix320x240x16_ssd2119_fpga.c - Display driver for the Kitronix
-//    K350QVG-V1-F TFT display with an SSD2119 controller attached via the
-//    dk-lm3s9b96 FPGA/Camera daughter board.
+// kitronix320x240x16_fpga.c - Display driver for the Kitronix K350QVG-V1-F TFT
+//                             display with an SSD2119 controller attached via
+//                             the FPGA/Camera daughter board.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -28,11 +28,9 @@
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "driverlib/gpio.h"
 #include "driverlib/epi.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_fpga.h"
 #include "drivers/set_pinout.h"
@@ -168,7 +166,7 @@ tFPGADisplayData g_sDispData;
 //*****************************************************************************
 //
 // Writes a data word to the SSD2119 via the EPI interface as wired when using
-// the lm3s9b96 development kit SRAM/flash daughter board.
+// the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -180,7 +178,7 @@ WriteData(unsigned short usData)
 //*****************************************************************************
 //
 // Writes a command word to the SSD2119 via the EPI interface as wired when
-// using the lm3s9b96 development kit SRAM/flash daughter board.
+// using the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -237,7 +235,7 @@ Kitronix320x240x16_FPGAInit(unsigned long ulFrameBufAddr)
     //
     // Get the current processor clock frequency.
     //
-    ulClockMS = SysCtlClockGet() / (3 * 1000);
+    ulClockMS = ROM_SysCtlClockGet() / (3 * 1000);
 
     //
     // Asserts the LCD reset signal.
@@ -1491,7 +1489,7 @@ Kitronix320x240x16_FPGAModeSet(tBoolean bAutoRefresh)
 //
 //! The display structure that describes the driver for the Kitronix
 //! K350QVG-V1-F TFT panel with an SSD2119 controller attached via the
-//! dk-lm3s9b96 FPGA/camera daughter board.
+//! FPGA/camera daughter board.
 //
 //*****************************************************************************
 tDisplay g_sKitronix320x240x16_FPGA =

@@ -112,7 +112,7 @@
         <tRbox>1</tRbox>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <nTsel>1</nTsel>
+        <nTsel>4</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -123,7 +123,7 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon>BIN\UL2CM3.DLL</pMon>
+        <pMon>BIN\lmidk-agdi.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
@@ -140,11 +140,6 @@
           <Number>0</Number>
           <Key>ARMDBGFLAGS</Key>
           <Name></Name>
-        </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
-          <Key>UL2CM3</Key>
-          <Name>-UV1011BME -O47 -S0 -C0 -N00("ARM CoreSight JTAG-DP") -D00(4BA00477) -L00(4) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20000000 -FC0 -FN1 -FF0LM3S_128 -FS00 -FL020000</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <DebugFlag>
@@ -288,50 +283,18 @@
     </File>
   </Group>
 
-  <AlienFiles>
-    <PathWithFilename>C:\StellarisWare\boards\ek-lm3s9b92\timers\timers.sct</PathWithFilename>
-    <TopLine>18</TopLine>
-    <CurrentLine>30</CurrentLine>
-    <Constant>0</Constant>
-    <WindowPosition>
-      <length>0</length>
-      <flags>0</flags>
-      <showCmd>0</showCmd>
-      <MinPosition>
-        <xPos>0</xPos>
-        <yPos>0</yPos>
-      </MinPosition>
-      <MaxPosition>
-        <xPos>0</xPos>
-        <yPos>0</yPos>
-      </MaxPosition>
-      <NormalPosition>
-        <Top>0</Top>
-        <Left>0</Left>
-        <Right>0</Right>
-        <Bottom>0</Bottom>
-      </NormalPosition>
-    </WindowPosition>
-  </AlienFiles>
-
   <MDIGroups>
     <Orientation>1</Orientation>
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>1</ActiveTab>
+      <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
           <Name>.\readme.txt</Name>
           <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
           <CurrentLine>1</CurrentLine>
-        </Doc>
-        <Doc>
-          <Name>C:\StellarisWare\boards\ek-lm3s9b92\timers\timers.sct</Name>
-          <ColumnNumber>19</ColumnNumber>
-          <TopLine>18</TopLine>
-          <CurrentLine>30</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

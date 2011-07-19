@@ -1,8 +1,9 @@
 //*****************************************************************************
 //
-// boot_demo_usb.c - Main routines for the USB HID/DFU composite device example.
+// boot_demo_usb.c - Main routines for the USB HID/DFU composite device
+//                   example.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -75,14 +76,15 @@
 //! as a pure DFU device capable of uploading and downloading firmware images.
 //!
 //! Windows device drivers for both the runtime and DFU mode of operation can
-//! be found in C:/StellarisWare/windows_drivers assuming you installed
-//! StellarisWare in the default directory.
+//! be found in <tt>C:/StellarisWare/windows_drivers</tt> assuming you
+//! installed StellarisWare in the default directory.
 //!
 //! To illustrate runtime DFU capability, use the <tt>dfuprog</tt> tool which
 //! is part of the Stellaris Windows USB Examples package (SW-USB-win-xxxx.msi)
 //! Assuming this package is installed in the default location, the
 //! <tt>dfuprog</tt> executable can be found in the
-//! <tt>C:/Program Files/Texas Instruments/Stellaris/usb_examples</tt> directory.
+//! <tt>C:/Program Files/Texas Instruments/Stellaris/usb_examples</tt>
+//! directory.
 //!
 //! With the device connected to your PC and the device driver installed, enter
 //! the following command to enumerate DFU devices:
@@ -637,8 +639,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -655,9 +657,9 @@ main(void)
     //
     // Set the system tick to fire 100 times per second.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    SysTickIntEnable();
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+    ROM_SysTickIntEnable();
+    ROM_SysTickEnable();
 
     //
     // Initialize the display driver.

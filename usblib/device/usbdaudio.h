@@ -2,7 +2,7 @@
 //
 // usbdaudio.h - USB audio device class driver.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -119,7 +119,7 @@ typedef struct
     //
     // Current Volume setting.
     //
-    unsigned short usVolume;
+    short sVolume;
 
     //
     // Current Mute setting.
@@ -338,9 +338,9 @@ extern void *USBDAudioInit(unsigned long ulIndex,
 extern void *USBDAudioCompositeInit(unsigned long ulIndex,
                                     const tUSBDAudioDevice *psAudioDevice);
 extern void USBDAudioTerm(void *pvInstance);
-extern int USBAudioBufferOut(void *pvInstance, void *pvBuffer,
-                             unsigned long ulSize,
-                             tUSBAudioBufferCallback pfnCallback);
+extern long USBAudioBufferOut(void *pvInstance, void *pvBuffer,
+                              unsigned long ulSize,
+                              tUSBAudioBufferCallback pfnCallback);
 
 //*****************************************************************************
 //

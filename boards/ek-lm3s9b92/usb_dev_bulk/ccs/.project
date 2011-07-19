@@ -26,9 +26,9 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/usb_dev_bulk.c</locationURI>
 		</link>
 		<link>
-			<name>utils/ustdlib.c</name>
+			<name>usb_bulk_structs.c/usb_bulk_structs.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/usb_bulk_structs.c</locationURI>
 		</link>
 		<link>
 			<name>utils/uartstdio.c</name>
@@ -36,9 +36,9 @@
 			<locationURI>SW_ROOT/utils/uartstdio.c</locationURI>
 		</link>
 		<link>
-			<name>usb_dev_bulk_ccs.cmd</name>
+			<name>utils/ustdlib.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/usb_dev_bulk_ccs.cmd</locationURI>
+			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
 		</link>
 		<link>
 			<name>startup_ccs.c</name>
@@ -46,9 +46,9 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/startup_ccs.c</locationURI>
 		</link>
 		<link>
-			<name>usb_bulk_structs.c/usb_bulk_structs.c</name>
+			<name>usb_dev_bulk_ccs.cmd</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/usb_bulk_structs.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_bulk/usb_dev_bulk_ccs.cmd</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

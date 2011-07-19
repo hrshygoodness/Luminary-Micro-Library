@@ -3,7 +3,7 @@
 // uart_echo.c - Example for reading data from and writing data to the UART in
 //               an interrupt driven fashion.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -79,22 +80,22 @@ UARTIntHandler(void)
     //
     // Get the interrrupt status.
     //
-    ulStatus = UARTIntStatus(UART0_BASE, true);
+    ulStatus = ROM_UARTIntStatus(UART0_BASE, true);
 
     //
     // Clear the asserted interrupts.
     //
-    UARTIntClear(UART0_BASE, ulStatus);
+    ROM_UARTIntClear(UART0_BASE, ulStatus);
 
     //
     // Loop while there are characters in the receive FIFO.
     //
-    while(UARTCharsAvail(UART0_BASE))
+    while(ROM_UARTCharsAvail(UART0_BASE))
     {
         //
         // Read the next character from the UART and write it back to the UART.
         //
-        UARTCharPutNonBlocking(UART0_BASE,
+        ROM_UARTCharPutNonBlocking(UART0_BASE,
                                    UARTCharGetNonBlocking(UART0_BASE));
     }
 }
@@ -115,7 +116,7 @@ UARTSend(const unsigned char *pucBuffer, unsigned long ulCount)
         //
         // Write the next character to the UART.
         //
-        UARTCharPutNonBlocking(UART0_BASE, *pucBuffer++);
+        ROM_UARTCharPutNonBlocking(UART0_BASE, *pucBuffer++);
     }
 }
 
@@ -132,7 +133,7 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -192,7 +193,7 @@ main(void)
     // Enable the (non-GPIO) peripherals used by this example.  PinoutSet()
     // already enabled GPIO Port A.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
 
     //
     // Enable processor interrupts.
@@ -202,20 +203,20 @@ main(void)
     //
     // Set GPIO A0 and A1 as UART pins.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Configure the UART for 115,200, 8-N-1 operation.
     //
-    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+    ROM_UARTConfigSetExpClk(UART0_BASE, ROM_SysCtlClockGet(), 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_NONE));
 
     //
     // Enable the UART interrupt.
     //
-    IntEnable(INT_UART0);
-    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+    ROM_IntEnable(INT_UART0);
+    ROM_UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
 
     //
     // Prompt for text to be entered.

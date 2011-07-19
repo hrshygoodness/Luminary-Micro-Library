@@ -2,7 +2,7 @@
 //
 // hibernate.c - Driver for the Hibernation module
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -608,7 +608,7 @@ HibernateRTCTrimGet(void)
 void
 HibernateDataSet(unsigned long *pulData, unsigned long ulCount)
 {
-    unsigned int uIdx;
+    unsigned long ulIdx;
 
     //
     // Check the arguments.
@@ -619,12 +619,12 @@ HibernateDataSet(unsigned long *pulData, unsigned long ulCount)
     //
     // Loop through all the words to be stored, storing one at a time.
     //
-    for(uIdx = 0; uIdx < ulCount; uIdx++)
+    for(ulIdx = 0; ulIdx < ulCount; ulIdx++)
     {
         //
         // Write a word to the non-volatile storage area.
         //
-        HWREG(HIB_DATA + (uIdx * 4)) = pulData[uIdx];
+        HWREG(HIB_DATA + (ulIdx * 4)) = pulData[ulIdx];
 
         //
         // Add a delay between writes to the data area.
@@ -665,7 +665,7 @@ HibernateDataSet(unsigned long *pulData, unsigned long ulCount)
 void
 HibernateDataGet(unsigned long *pulData, unsigned long ulCount)
 {
-    unsigned int uIdx;
+    unsigned long ulIdx;
 
     //
     // Check the arguments.
@@ -676,13 +676,13 @@ HibernateDataGet(unsigned long *pulData, unsigned long ulCount)
     //
     // Loop through all the words to be restored, reading one at a time.
     //
-    for(uIdx = 0; uIdx < ulCount; uIdx++)
+    for(ulIdx = 0; ulIdx < ulCount; ulIdx++)
     {
         //
         // Read a word from the non-volatile storage area.  No delay is
         // required between reads.
         //
-        pulData[uIdx] = HWREG(HIB_DATA + (uIdx * 4));
+        pulData[ulIdx] = HWREG(HIB_DATA + (ulIdx * 4));
     }
 }
 
@@ -896,14 +896,14 @@ HibernateIntStatus(tBoolean bMasked)
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to the HibernateIntEnable() function.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -945,7 +945,7 @@ HibernateIntClear(unsigned long ulIntFlags)
 //! not.
 //
 //*****************************************************************************
-unsigned int
+unsigned long
 HibernateIsActive(void)
 {
     //

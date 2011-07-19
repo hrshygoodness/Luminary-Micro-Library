@@ -2,7 +2,7 @@
 //
 // calibrate.c - Calibration routine for the touch screen driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/uart.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "utils/ustdlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
@@ -89,8 +90,8 @@ main(void)
     //
     // Enable the PLL and clock the part at 50 MHz.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.

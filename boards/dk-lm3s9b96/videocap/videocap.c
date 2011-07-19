@@ -1,9 +1,9 @@
 //*****************************************************************************
 //
 // videocap.c - An example application supporting video capture using the
-//              dk-lm3s9b96 FPGA/Camera Daughter Board.
+//              FPGA/Camera Daughter Board.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -27,6 +27,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "grlib/canvas.h"
@@ -999,7 +1000,7 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ);
 
     //
@@ -1027,14 +1028,14 @@ main(void)
     //
     // Configure SysTick for a 100Hz interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / TICKS_PER_SECOND);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Enable Interrupts
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Initialize the video capture widget.  This must be done before the

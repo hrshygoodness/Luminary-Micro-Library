@@ -2,7 +2,7 @@
  *
  * udma_timer_ccp.ld - Linker configuration file for udma_timer_ccp.
  *
- * Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+ * Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
  * Software License Agreement
  * 
  * Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+ * This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
  *
  *****************************************************************************/
 
@@ -38,6 +38,7 @@ SECTIONS
         *(.rodata*)
         _etext = .;
     } > FLASH
+
     .data : AT(ADDR(.text) + SIZEOF(.text))
     {
         _data = .;
@@ -45,6 +46,7 @@ SECTIONS
         *(.data*)
         _edata = .;
     } > SRAM
+
     .bss :
     {
         _bss = .;

@@ -2,7 +2,7 @@
 //
 // hw_udma.h - Macros for use in accessing the UDMA registers.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -53,6 +53,7 @@
 #define UDMA_PRIOCLR            0x400FF03C  // DMA Channel Priority Clear
 #define UDMA_ERRCLR             0x400FF04C  // DMA Bus Error Clear
 #define UDMA_CHASGN             0x400FF500  // DMA Channel Assignment
+#define UDMA_CHIS               0x400FF504  // DMA Channel Interrupt Status
 
 //*****************************************************************************
 //
@@ -209,6 +210,13 @@
                                             // assignment
 #define UDMA_CHASGN_SECONDARY   0x00000001  // Use the secondary channel
                                             // assignment
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the UDMA_CHIS register.
+//
+//*****************************************************************************
+#define UDMA_CHIS_M             0xFFFFFFFF  // Channel [n] Interrupt Status
 
 //*****************************************************************************
 //

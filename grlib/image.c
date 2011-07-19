@@ -2,7 +2,7 @@
 //
 // image.c - Routines for drawing bitmap images.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Graphics Library.
+// This is part of revision 7611 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -68,7 +68,7 @@ GrImageDraw(const tContext *pContext, const unsigned char *pucImage, long lX,
     unsigned long ulByte, ulBits, ulMatch, ulSize, ulIdx, ulCount, ulNum;
     long lBPP, lWidth, lHeight, lX0, lX1, lX2;
     const unsigned char *pucPalette;
-    unsigned char pucBWPalette[8];
+    unsigned long pulBWPalette[2];
 
     //
     // Check the arguments.
@@ -149,13 +149,13 @@ GrImageDraw(const tContext *pContext, const unsigned char *pucImage, long lX,
         // Construct a local "black & white" palette based on the foreground
         // and background colors of the drawing context.
         //
-        *(unsigned long *)pucBWPalette = pContext->ulBackground;
-        *(unsigned long *)(pucBWPalette + 4) = pContext->ulForeground;
+        pulBWPalette[0] = pContext->ulBackground;
+        pulBWPalette[1] = pContext->ulForeground;
 
         //
         // Set the palette pointer to the local "black & white" palette.
         //
-        pucPalette = pucBWPalette;
+        pucPalette = (unsigned char *)pulBWPalette;
     }
     else
     {

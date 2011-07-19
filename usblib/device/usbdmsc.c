@@ -2,7 +2,7 @@
 //
 // usbdmsc.c - USB mass storage device class driver.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,14 +18,15 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/usb.h"
 #include "driverlib/udma.h"
@@ -522,14 +523,14 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
     //
     // Get the endpoints status.
     //
-    ulEPStatus = USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
 
     //
     // Handler for the bulk IN data endpoint.
     //
     if((ulStatus & (1 << USB_EP_TO_INDEX(psInst->ucINEndpoint))) ||
        ((psInst->ulFlags & USBD_FLAG_DMA_IN) &&
-        (uDMAChannelModeGet(psInst->ucINDMA) == UDMA_MODE_STOP)))
+        (MAP_uDMAChannelModeGet(psInst->ucINDMA) == UDMA_MODE_STOP)))
     {
         switch(psInst->ucSCSIState)
         {
@@ -564,8 +565,8 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
                     //
                     // Disable uDMA on the endpoint
                     //
-                    USBEndpointDMADisable(USB0_BASE, psInst->ucINEndpoint,
-                                          USB_EP_DEV_IN);
+                    MAP_USBEndpointDMADisable(USB0_BASE, psInst->ucINEndpoint,
+                                              USB_EP_DEV_IN);
 
                     //
                     // Send back the status once this transfer is complete.
@@ -601,13 +602,13 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
                 //
                 // Reset the DMA transfer and enable the DMA channel.
                 //
-                uDMAChannelTransferSet(psInst->ucINDMA,
-                                       UDMA_MODE_BASIC,
-                                       psInst->pulBuffer,
-                                       (void *)USBFIFOAddrGet(USB0_BASE,
-                                           psInst->ucINEndpoint),
-                                       (MAX_TRANSFER_SIZE >> 2));
-                uDMAChannelEnable(psInst->ucINDMA);
+                MAP_uDMAChannelTransferSet(psInst->ucINDMA,
+                                           UDMA_MODE_BASIC,
+                                           psInst->pulBuffer,
+                                           (void *)USBFIFOAddrGet(USB0_BASE,
+                                               psInst->ucINEndpoint),
+                                           (MAX_TRANSFER_SIZE >> 2));
+                MAP_uDMAChannelEnable(psInst->ucINDMA);
 
                 break;
             }
@@ -652,12 +653,12 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
     //
     if((ulStatus & (0x10000 << USB_EP_TO_INDEX(psInst->ucOUTEndpoint))) ||
         ((psInst->ulFlags & USBD_FLAG_DMA_OUT) &&
-         (uDMAChannelModeGet(psInst->ucOUTDMA) == UDMA_MODE_STOP)))
+         (MAP_uDMAChannelModeGet(psInst->ucOUTDMA) == UDMA_MODE_STOP)))
     {
         //
         // Get the endpoint status to see why we were called.
         //
-        ulEPStatus = USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
+        ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
 
         switch(psInst->ucSCSIState)
         {
@@ -708,8 +709,8 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
                     //
                     // Disable uDMA on the endpoint
                     //
-                    USBEndpointDMADisable(USB0_BASE, psInst->ucOUTEndpoint,
-                                          USB_EP_DEV_OUT);
+                    MAP_USBEndpointDMADisable(USB0_BASE, psInst->ucOUTEndpoint,
+                                              USB_EP_DEV_OUT);
 
                     //
                     // If there is an event callback then call it to notify
@@ -726,17 +727,17 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
                     //
                     // Configure and enable DMA for the OUT transfer.
                     //
-                    uDMAChannelTransferSet(psInst->ucOUTDMA,
-                                           UDMA_MODE_BASIC,
-                                           (void *)USBFIFOAddrGet(USB0_BASE,
-                                               psInst->ucOUTEndpoint),
-                                           psInst->pulBuffer,
-                                           (MAX_TRANSFER_SIZE >> 2));
+                    MAP_uDMAChannelTransferSet(psInst->ucOUTDMA,
+                                               UDMA_MODE_BASIC,
+                                               (void *)USBFIFOAddrGet(USB0_BASE,
+                                                   psInst->ucOUTEndpoint),
+                                               psInst->pulBuffer,
+                                               (MAX_TRANSFER_SIZE >> 2));
 
                     //
                     // Start the DMA transfer.
                     //
-                    uDMAChannelEnable(psInst->ucOUTDMA);
+                    MAP_uDMAChannelEnable(psInst->ucOUTDMA);
                 }
 
                 break;
@@ -756,15 +757,16 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
                 // Receive the command.
                 //
                 ulSize = COMMAND_BUFFER_SIZE;
-                USBEndpointDataGet(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                   g_pucCommand, &ulSize);
+                MAP_USBEndpointDataGet(psInst->ulUSBBase, psInst->ucOUTEndpoint,
+                                       g_pucCommand, &ulSize);
                 pSCSICBW = (tMSCCBW *)g_pucCommand;
 
                 //
                 // Acknowledge the OUT data packet.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                      false);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint,
+                                          false);
 
                 //
                 // If this is a valid CBW then handle it.
@@ -800,7 +802,8 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
         //
         // Clear the status bits.
         //
-        USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
+        MAP_USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint,
+                                      ulEPStatus);
     }
 }
 
@@ -854,16 +857,16 @@ HandleDevice(void *pvInstance, unsigned long ulRequest, void *pvRequestData)
                 //
                 // Basic configuration for DMA on the IN endpoint.
                 //
-                uDMAChannelControlSet(psInst->ucINDMA,
-                                     (UDMA_SIZE_32 | UDMA_SRC_INC_32|
-                                      UDMA_DST_INC_NONE | UDMA_ARB_16));
+                MAP_uDMAChannelControlSet(psInst->ucINDMA,
+                                          (UDMA_SIZE_32 | UDMA_SRC_INC_32|
+                                           UDMA_DST_INC_NONE | UDMA_ARB_16));
 
                 //
                 // Select this channel for this endpoint, this only affects
                 // devices that have this feature.
                 //
-                USBEndpointDMAChannel(USB0_BASE, psInst->ucINEndpoint,
-                                      psInst->ucINDMA);
+                MAP_USBEndpointDMAChannel(USB0_BASE, psInst->ucINEndpoint,
+                                          psInst->ucINDMA);
             }
             else
             {
@@ -877,16 +880,16 @@ HandleDevice(void *pvInstance, unsigned long ulRequest, void *pvRequestData)
                 //
                 // Basic configuration for DMA on the OUT endpoint.
                 //
-                uDMAChannelControlSet(psInst->ucOUTDMA,
-                                      (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
-                                       UDMA_DST_INC_32 | UDMA_ARB_16));
+                MAP_uDMAChannelControlSet(psInst->ucOUTDMA,
+                                          (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
+                                           UDMA_DST_INC_32 | UDMA_ARB_16));
 
                 //
                 // Select this channel for this endpoint, this only affects
                 // devices that have this feature.
                 //
-                USBEndpointDMAChannel(USB0_BASE, psInst->ucOUTEndpoint,
-                                      psInst->ucOUTDMA);
+                MAP_USBEndpointDMAChannel(USB0_BASE, psInst->ucOUTEndpoint,
+                                          psInst->ucOUTDMA);
             }
             break;
         }
@@ -964,8 +967,34 @@ ConfigChangeHandler(void *pvInstance, unsigned long ulValue)
     //
     // Insure that DMA is disable whenever the configuration is set.
     //
-    USBEndpointDMADisable(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
-    USBEndpointDMADisable(USB0_BASE, psInst->ucOUTEndpoint, USB_EP_DEV_OUT);
+    MAP_USBEndpointDMADisable(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+    MAP_USBEndpointDMADisable(USB0_BASE, psInst->ucOUTEndpoint, USB_EP_DEV_OUT);
+
+    //
+    // Basic configuration for DMA on the OUT endpoint.
+    //
+    MAP_uDMAChannelControlSet(psInst->ucOUTDMA, UDMA_SIZE_32 |
+                                                UDMA_SRC_INC_NONE|
+                                                UDMA_DST_INC_32 |
+                                                UDMA_ARB_16);
+
+    //
+    // Select this channel for this endpoint, this only affects devices that
+    // have this feature.
+    //
+    MAP_USBEndpointDMAChannel(USB0_BASE, psInst->ucOUTEndpoint, psInst->ucOUTDMA);
+
+    //
+    // Basic configuration for DMA on the IN endpoint.
+    //
+    MAP_uDMAChannelControlSet(psInst->ucINDMA, UDMA_SIZE_32 | UDMA_SRC_INC_32|
+                                               UDMA_DST_INC_NONE | UDMA_ARB_16);
+
+    //
+    // Select this channel for this endpoint, this only affects devices that
+    // have this feature.
+    //
+    MAP_USBEndpointDMAChannel(USB0_BASE, psInst->ucINEndpoint, psInst->ucINDMA);
 
     //
     // If we have a control callback, let the client know we are open for
@@ -1025,37 +1054,9 @@ USBDMSCInit(unsigned long ulIndex, const tUSBDMSCDevice *psDevice)
     USBDCDInit(ulIndex, psDevice->psPrivateData->psDevInfo);
 
     //
-    // Basic configuration for DMA on the OUT endpoint.
-    //
-    uDMAChannelControlSet(psDevice->psPrivateData->ucOUTDMA,
-                          (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
-                           UDMA_DST_INC_32 | UDMA_ARB_16));
-
-    //
-    // Select this channel for this endpoint, this only affects devices that
-    // have this feature.
-    //
-    USBEndpointDMAChannel(USB0_BASE, psDevice->psPrivateData->ucOUTEndpoint,
-                          psDevice->psPrivateData->ucOUTDMA);
-
-    //
-    // Basic configuration for DMA on the IN endpoint.
-    //
-    uDMAChannelControlSet(psDevice->psPrivateData->ucINDMA,
-                          (UDMA_SIZE_32 | UDMA_SRC_INC_32|
-                           UDMA_DST_INC_NONE | UDMA_ARB_16));
-
-    //
-    // Select this channel for this endpoint, this only affects devices that
-    // have this feature.
-    //
-    USBEndpointDMAChannel(USB0_BASE, psDevice->psPrivateData->ucINEndpoint,
-                          psDevice->psPrivateData->ucINDMA);
-
-    //
     // Return the pointer to the instance indicating that everything went well.
     //
-    return ((void *)psDevice);
+    return((void *)psDevice);
 }
 
 //*****************************************************************************
@@ -1147,8 +1148,8 @@ USBDMSCCompositeInit(unsigned long ulIndex, const tUSBDMSCDevice *psDevice)
     //
     // If DMA is in use then clear all DMA attributes.
     //
-    uDMAChannelAttributeDisable(psInst->ucINDMA, UDMA_ATTR_ALL);
-    uDMAChannelAttributeDisable(psInst->ucOUTDMA, UDMA_ATTR_ALL);
+    MAP_uDMAChannelAttributeDisable(psInst->ucINDMA, UDMA_ATTR_ALL);
+    MAP_uDMAChannelAttributeDisable(psInst->ucOUTDMA, UDMA_ATTR_ALL);
 
     //
     // Open the drive requested.
@@ -1175,12 +1176,12 @@ USBDMSCCompositeInit(unsigned long ulIndex, const tUSBDMSCDevice *psDevice)
     //
     // Enable Clocking to the USB controller.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 
     //
     // Turn on USB Phy clock.
     //
-    SysCtlUSBPLLEnable();
+    MAP_SysCtlUSBPLLEnable();
 
     //
     // Return the pointer to the instance indicating that everything went well.
@@ -1211,6 +1212,11 @@ USBDMSCTerm(void *pvInstance)
     ASSERT(pvInstance != 0);
 
     //
+    // Cleanly exit device mode.
+    //
+    USBDCDTerm(0);
+
+    //
     // Create a device instance pointer.
     //
     psDevice = pvInstance;
@@ -1218,16 +1224,11 @@ USBDMSCTerm(void *pvInstance)
     //
     // If the media was opened the close it out.
     //
-    if(psDevice->psPrivateData->pvMedia == 0)
+    if(psDevice->psPrivateData->pvMedia != 0)
     {
         psDevice->psPrivateData->pvMedia = 0;
         psDevice->sMediaFunctions.Close(0);
     }
-
-    //
-    // Cleanly exit device mode.
-    //
-    USBDCDTerm(0);
 }
 
 //*****************************************************************************
@@ -1294,8 +1295,14 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
 static void
 USBDSCSIInquiry(const tUSBDMSCDevice *psDevice)
 {
-    int iIdx;
+    long lIdx;
     tMSCInstance *psInst;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)g_pucCommand;
 
     //
     // Create the serial instance data.
@@ -1305,46 +1312,46 @@ USBDSCSIInquiry(const tUSBDMSCDevice *psDevice)
     //
     // Direct Access device, Removable storage and SCSI 1 responses.
     //
-    *(unsigned long *)&g_pucCommand[0] = SCSI_INQ_PDT_SBC | (SCSI_INQ_RMB << 8);
+    pulData[0] = SCSI_INQ_PDT_SBC | (SCSI_INQ_RMB << 8);
 
     //
     // Additional Length is fixed at 31 bytes.
     //
-    *(unsigned long *)&g_pucCommand[4] = 31;
+    pulData[1] = 31;
 
     //
     // Copy the Vendor string.
     //
-    for(iIdx = 0; iIdx < 8; iIdx++)
+    for(lIdx = 0; lIdx < 8; lIdx++)
     {
-        g_pucCommand[iIdx + 8] = psDevice->pucVendor[iIdx];
+        g_pucCommand[lIdx + 8] = psDevice->pucVendor[lIdx];
     }
 
     //
     // Copy the Product string.
     //
-    for(iIdx = 0; iIdx < 16; iIdx++)
+    for(lIdx = 0; lIdx < 16; lIdx++)
     {
-        g_pucCommand[iIdx + 16] = psDevice->pucProduct[iIdx];
+        g_pucCommand[lIdx + 16] = psDevice->pucProduct[lIdx];
     }
 
     //
     // Copy the Version string.
     //
-    for(iIdx = 0; iIdx < 16; iIdx++)
+    for(lIdx = 0; lIdx < 16; lIdx++)
     {
-        g_pucCommand[iIdx + 32] = psDevice->pucVersion[iIdx];
+        g_pucCommand[lIdx + 32] = psDevice->pucVersion[lIdx];
     }
 
     //
     // Send the SCSI Inquiry Response.
     //
-    USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 36);
+    MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 36);
 
     //
     // Send the data to the host.
     //
-    USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+    MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
     //
     // Set the status so that it can be sent when this response has
@@ -1367,6 +1374,12 @@ USBDSCSIReadCapacities(const tUSBDMSCDevice *psDevice)
 {
     unsigned long ulBlocks;
     tMSCInstance *psInst;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)g_pucCommand;
 
     //
     // Get our instance data pointer.
@@ -1377,7 +1390,7 @@ USBDSCSIReadCapacities(const tUSBDMSCDevice *psDevice)
     {
         ulBlocks = psDevice->sMediaFunctions.NumBlocks(psInst->pvMedia);
 
-        *(unsigned long *)&g_pucCommand[0] = 0x08000000;
+        pulData[0] = 0x08000000;
 
         //
         // Fill in the number of blocks, the bytes endianness must be changed.
@@ -1402,8 +1415,9 @@ USBDSCSIReadCapacities(const tUSBDMSCDevice *psDevice)
         //
         // Send out the 12 bytes that are in this response.
         //
-        USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 12);
-        USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+        MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand,
+                               12);
+        MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
         //
         // Set the status so that it can be sent when this response has
@@ -1424,7 +1438,7 @@ USBDSCSIReadCapacities(const tUSBDMSCDevice *psDevice)
         //
         // Stall the IN endpoint
         //
-        USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+        MAP_USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
 
         //
         // Mark the sense code as valid and indicate that these is no media
@@ -1491,8 +1505,9 @@ USBDSCSIReadCapacity(const tUSBDMSCDevice *psDevice)
         //
         // Send the SCSI Inquiry Response.
         //
-        USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 8);
-        USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+        MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand,
+                               8);
+        MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
         //
         // Set the status so that it can be sent when this response has
@@ -1513,7 +1528,7 @@ USBDSCSIReadCapacity(const tUSBDMSCDevice *psDevice)
         //
         // Stall the IN endpoint
         //
-        USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+        MAP_USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
 
         //
         // Mark the sense code as valid and indicate that these is no media
@@ -1567,8 +1582,8 @@ USBDSCSIRequestSense(const tUSBDMSCDevice *psDevice)
     //
     // Send the SCSI Inquiry Response.
     //
-    USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 18);
-    USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+    MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 18);
+    MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
     //
     // Reset the valid flag on errors.
@@ -1646,17 +1661,18 @@ USBDSCSIRead10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Enable DMA on the endpoint
         //
-        USBEndpointDMAEnable(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+        MAP_USBEndpointDMAEnable(USB0_BASE, psInst->ucINEndpoint,
+                                 USB_EP_DEV_IN);
 
         //
         // Configure the DMA transfer and enable the DMA channel.
         //
-        uDMAChannelTransferSet(psInst->ucINDMA,
-                               UDMA_MODE_BASIC,
-                               psInst->pulBuffer,
-                               (void *)USBFIFOAddrGet(USB0_BASE,
-                                                      psInst->ucINEndpoint),
-                               (MAX_TRANSFER_SIZE >> 2));
+        MAP_uDMAChannelTransferSet(psInst->ucINDMA,
+                                   UDMA_MODE_BASIC,
+                                   psInst->pulBuffer,
+                                   (void *)USBFIFOAddrGet(USB0_BASE,
+                                                          psInst->ucINEndpoint),
+                                   (MAX_TRANSFER_SIZE >> 2));
 
         //
         // Remember that a DMA is in progress.
@@ -1668,7 +1684,7 @@ USBDSCSIRead10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         psInst->ulBytesToTransfer = (DEVICE_BLOCK_SIZE * usNumBlocks);
 
-        uDMAChannelEnable(psInst->ucINDMA);
+        MAP_uDMAChannelEnable(psInst->ucINDMA);
 
         //
         // Move on and start sending blocks.
@@ -1692,7 +1708,7 @@ USBDSCSIRead10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Stall the IN endpoint
         //
-        USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+        MAP_USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
 
         //
         // Mark the sense code as valid and indicate that these is no media
@@ -1753,17 +1769,18 @@ USBDSCSIWrite10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Enable uDMA on the endpoint
         //
-        USBEndpointDMAEnable(USB0_BASE, psInst->ucOUTEndpoint, USB_EP_DEV_OUT);
+        MAP_USBEndpointDMAEnable(USB0_BASE, psInst->ucOUTEndpoint,
+                                 USB_EP_DEV_OUT);
 
         //
         // Configure the DMA for the OUT transfer.
         //
-        uDMAChannelTransferSet(psInst->ucOUTDMA,
-                               UDMA_MODE_BASIC,
-                               (void *)USBFIFOAddrGet(USB0_BASE,
-                                                      psInst->ucOUTEndpoint),
-                                                      psInst->pulBuffer,
-                               (MAX_TRANSFER_SIZE >> 2));
+        MAP_uDMAChannelTransferSet(psInst->ucOUTDMA,
+                                   UDMA_MODE_BASIC,
+                                   (void *)USBFIFOAddrGet(USB0_BASE,
+                                                         psInst->ucOUTEndpoint),
+                                                         psInst->pulBuffer,
+                                   (MAX_TRANSFER_SIZE >> 2));
 
         //
         // Remember that a DMA is in progress.
@@ -1773,7 +1790,7 @@ USBDSCSIWrite10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Enable the OUT DMA transfer.
         //
-        uDMAChannelEnable(psInst->ucOUTDMA);
+        MAP_uDMAChannelEnable(psInst->ucOUTDMA);
 
         //
         // Notify the application of the write event.
@@ -1795,7 +1812,8 @@ USBDSCSIWrite10(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Stall the IN endpoint
         //
-        USBDevEndpointStall(USB0_BASE, psInst->ucOUTEndpoint, USB_EP_DEV_OUT);
+        MAP_USBDevEndpointStall(USB0_BASE, psInst->ucOUTEndpoint,
+                                USB_EP_DEV_OUT);
 
         //
         // Mark the sense code as valid and indicate that these is no media
@@ -1841,8 +1859,9 @@ USBDSCSIModeSense6(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Manually send the response back to the host.
         //
-        USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand, 4);
-        USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+        MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint, g_pucCommand,
+                               4);
+        MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
         //
         // Set the status so that it can be sent when this response has
@@ -1863,7 +1882,7 @@ USBDSCSIModeSense6(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
         //
         // Stall the IN endpoint
         //
-        USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
+        MAP_USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint, USB_EP_DEV_IN);
 
         //
         // Mark the sense code as valid and indicate that these is no media
@@ -1896,9 +1915,9 @@ USBDSCSISendStatus(const tUSBDMSCDevice *psDevice)
     //
     // Respond with the requested status.
     //
-    USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint,
-                       (unsigned char *)&g_sSCSICSW, 13);
-    USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
+    MAP_USBEndpointDataPut(USB0_BASE, psInst->ucINEndpoint,
+                           (unsigned char *)&g_sSCSICSW, 13);
+    MAP_USBEndpointDataSend(USB0_BASE, psInst->ucINEndpoint, USB_TRANS_IN);
 
     //
     // Move the state to status sent so that the next interrupt will move the
@@ -2061,16 +2080,16 @@ USBDSCSICommand(const tUSBDMSCDevice *psDevice, tMSCCBW *pSCSICBW)
                     //
                     // Stall the IN endpoint
                     //
-                    USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint,
-                                        USB_EP_DEV_IN);
+                    MAP_USBDevEndpointStall(USB0_BASE, psInst->ucINEndpoint,
+                                            USB_EP_DEV_IN);
                 }
                 else
                 {
                     //
                     // Stall the OUT endpoint
                     //
-                    USBDevEndpointStall(USB0_BASE, psInst->ucOUTEndpoint,
-                                        USB_EP_DEV_OUT);
+                    MAP_USBDevEndpointStall(USB0_BASE, psInst->ucOUTEndpoint,
+                                            USB_EP_DEV_OUT);
 
                 }
                 //

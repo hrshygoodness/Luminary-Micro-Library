@@ -2,7 +2,7 @@
 //
 // can.c - Driver for the CAN module.
 //
-// Copyright (c) 2006-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2006-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -233,7 +233,7 @@ CANIntNumberGet(unsigned long ulBase)
 static unsigned long
 CANRegRead(unsigned long ulRegAddress)
 {
-    volatile int iDelay;
+    volatile unsigned long ulDelay;
     unsigned long ulRetVal;
     unsigned long ulIntNumber;
     unsigned long ulReenableInts;
@@ -271,7 +271,7 @@ CANRegRead(unsigned long ulRegAddress)
     //
     // This delay is necessary for the CAN have the correct data on the bus.
     //
-    for(iDelay = 0; iDelay < CAN_RW_DELAY; iDelay++)
+    for(ulDelay = 0; ulDelay < CAN_RW_DELAY; ulDelay++)
     {
     }
 
@@ -317,7 +317,7 @@ CANRegRead(unsigned long ulRegAddress)
 static void
 CANRegWrite(unsigned long ulRegAddress, unsigned long ulRegValue)
 {
-    volatile int iDelay;
+    volatile unsigned long ulDelay;
 
     //
     // Trigger the initial write to the CAN controller.  The value will not make
@@ -328,7 +328,7 @@ CANRegWrite(unsigned long ulRegAddress, unsigned long ulRegValue)
     //
     // Delay to allow the CAN controller to receive the new data.
     //
-    for(iDelay = 0; iDelay < CAN_RW_DELAY; iDelay++)
+    for(ulDelay = 0; ulDelay < CAN_RW_DELAY; ulDelay++)
     {
     }
 }
@@ -360,29 +360,29 @@ CANRegWrite(unsigned long ulRegAddress, unsigned long ulRegValue)
 //
 //*****************************************************************************
 static void
-CANDataRegWrite(unsigned char *pucData, unsigned long *pulRegister, int iSize)
+CANDataRegWrite(unsigned char *pucData, unsigned long *pulRegister,
+                unsigned long ulSize)
 {
-    int iIdx;
-    unsigned long ulValue;
+    unsigned long ulIdx, ulValue;
 
     //
     // Loop always copies 1 or 2 bytes per iteration.
     //
-    for(iIdx = 0; iIdx < iSize; )
+    for(ulIdx = 0; ulIdx < ulSize; )
     {
 
         //
         // Write out the data 16 bits at a time since this is how the registers
         // are aligned in memory.
         //
-        ulValue = pucData[iIdx++];
+        ulValue = pucData[ulIdx++];
 
         //
         // Only write the second byte if needed otherwise it will be zero.
         //
-        if(iIdx < iSize)
+        if(ulIdx < ulSize)
         {
-            ulValue |= (pucData[iIdx++] << 8);
+            ulValue |= (pucData[ulIdx++] << 8);
         }
         CANRegWrite((unsigned long)(pulRegister++), ulValue);
     }
@@ -415,15 +415,15 @@ CANDataRegWrite(unsigned char *pucData, unsigned long *pulRegister, int iSize)
 //
 //*****************************************************************************
 static void
-CANDataRegRead(unsigned char *pucData, unsigned long *pulRegister, int iSize)
+CANDataRegRead(unsigned char *pucData, unsigned long *pulRegister,
+               unsigned long ulSize)
 {
-    int iIdx;
-    unsigned long ulValue;
+    unsigned long ulIdx, ulValue;
 
     //
     // Loop always copies 1 or 2 bytes per iteration.
     //
-    for(iIdx = 0; iIdx < iSize; )
+    for(ulIdx = 0; ulIdx < ulSize; )
     {
         //
         // Read out the data 16 bits at a time since this is how the registers
@@ -434,14 +434,14 @@ CANDataRegRead(unsigned char *pucData, unsigned long *pulRegister, int iSize)
         //
         // Store the first byte.
         //
-        pucData[iIdx++] = (unsigned char)ulValue;
+        pucData[ulIdx++] = (unsigned char)ulValue;
 
         //
         // Only read the second byte if needed.
         //
-        if(iIdx < iSize)
+        if(ulIdx < ulSize)
         {
-            pucData[iIdx++] = (unsigned char)(ulValue >> 8);
+            pucData[ulIdx++] = (unsigned char)(ulValue >> 8);
         }
     }
 }
@@ -465,7 +465,7 @@ CANDataRegRead(unsigned char *pucData, unsigned long *pulRegister, int iSize)
 void
 CANInit(unsigned long ulBase)
 {
-    int iMsg;
+    unsigned long ulMsg;
 
     //
     // Check the arguments.
@@ -499,7 +499,7 @@ CANInit(unsigned long ulBase)
     //
     // Loop through to program all 32 message objects
     //
-    for(iMsg = 1; iMsg <= 32; iMsg++)
+    for(ulMsg = 1; ulMsg <= 32; ulMsg++)
     {
         //
         // Wait for busy bit to clear
@@ -511,7 +511,7 @@ CANInit(unsigned long ulBase)
         //
         // Initiate programming the message object
         //
-        CANRegWrite(ulBase + CAN_O_IF1CRQ, iMsg);
+        CANRegWrite(ulBase + CAN_O_IF1CRQ, ulMsg);
     }
 
     //
@@ -524,7 +524,7 @@ CANInit(unsigned long ulBase)
     //
     // Loop through to program all 32 message objects
     //
-    for(iMsg = 1; iMsg <= 32; iMsg++)
+    for(ulMsg = 1; ulMsg <= 32; ulMsg++)
     {
         //
         // Wait for busy bit to clear.
@@ -536,7 +536,7 @@ CANInit(unsigned long ulBase)
         //
         // Initiate programming the message object
         //
-        CANRegWrite(ulBase + CAN_O_IF1CRQ, iMsg);
+        CANRegWrite(ulBase + CAN_O_IF1CRQ, ulMsg);
     }
 
     //
@@ -628,7 +628,7 @@ CANDisable(unsigned long ulBase)
 void
 CANBitTimingGet(unsigned long ulBase, tCANBitClkParms *pClkParms)
 {
-    unsigned int uBitReg;
+    unsigned long ulBitReg;
 
     //
     // Check the arguments.
@@ -639,30 +639,30 @@ CANBitTimingGet(unsigned long ulBase, tCANBitClkParms *pClkParms)
     //
     // Read out all the bit timing values from the CAN controller registers.
     //
-    uBitReg = CANRegRead(ulBase + CAN_O_BIT);
+    ulBitReg = CANRegRead(ulBase + CAN_O_BIT);
 
     //
     // Set the phase 2 segment.
     //
-    pClkParms->uPhase2Seg =
-        ((uBitReg & CAN_BIT_TSEG2_M) >> CAN_BIT_TSEG2_S) + 1;
+    pClkParms->ulPhase2Seg =
+        ((ulBitReg & CAN_BIT_TSEG2_M) >> CAN_BIT_TSEG2_S) + 1;
 
     //
     // Set the phase 1 segment.
     //
-    pClkParms->uSyncPropPhase1Seg =
-        ((uBitReg & CAN_BIT_TSEG1_M) >> CAN_BIT_TSEG1_S) + 1;
+    pClkParms->ulSyncPropPhase1Seg =
+        ((ulBitReg & CAN_BIT_TSEG1_M) >> CAN_BIT_TSEG1_S) + 1;
 
     //
     // Set the synchronous jump width.
     //
-    pClkParms->uSJW = ((uBitReg & CAN_BIT_SJW_M) >> CAN_BIT_SJW_S) + 1;
+    pClkParms->ulSJW = ((ulBitReg & CAN_BIT_SJW_M) >> CAN_BIT_SJW_S) + 1;
 
     //
     // Set the pre-divider for the CAN bus bit clock.
     //
-    pClkParms->uQuantumPrescaler =
-        ((uBitReg & CAN_BIT_BRP_M) |
+    pClkParms->ulQuantumPrescaler =
+        ((ulBitReg & CAN_BIT_BRP_M) |
          ((CANRegRead(ulBase + CAN_O_BRPE) & CAN_BRPE_BRPE_M) << 6)) + 1;
 }
 
@@ -826,16 +826,16 @@ CANBitRateSet(unsigned long ulBase, unsigned long ulSourceClock,
 //! Propagation segment, Phase Buffer 1 segment, Phase Buffer 2 segment, and
 //! the Synchronization Jump Width.  The values for Propagation and Phase
 //! Buffer 1 segments are derived from the combination
-//! \e pClkParms->uSyncPropPhase1Seg parameter.  Phase Buffer 2 is determined
-//! from the \e pClkParms->uPhase2Seg parameter.  These two parameters, along
-//! with \e pClkParms->uSJW are based in units of bit time quanta.  The actual
-//! quantum time is determined by the \e pClkParms->uQuantumPrescaler value,
+//! \e pClkParms->ulSyncPropPhase1Seg parameter.  Phase Buffer 2 is determined
+//! from the \e pClkParms->ulPhase2Seg parameter.  These two parameters, along
+//! with \e pClkParms->ulSJW are based in units of bit time quanta.  The actual
+//! quantum time is determined by the \e pClkParms->ulQuantumPrescaler value,
 //! which specifies the divisor for the CAN module clock.
 //!
 //! The total bit time, in quanta, will be the sum of the two Seg parameters,
 //! as follows:
 //!
-//! bit_time_q = uSyncPropPhase1Seg + uPhase2Seg + 1
+//! bit_time_q = ulSyncPropPhase1Seg + ulPhase2Seg + 1
 //!
 //! Note that the Sync_Seg is always one quantum in duration, and will be added
 //! to derive the correct duration of Prop_Seg and Phase1_Seg.
@@ -843,10 +843,10 @@ CANBitRateSet(unsigned long ulBase, unsigned long ulSourceClock,
 //! The equation to determine the actual bit rate is as follows:
 //!
 //! CAN Clock /
-//! ((\e uSyncPropPhase1Seg + \e uPhase2Seg + 1) * (\e uQuantumPrescaler))
+//! ((\e ulSyncPropPhase1Seg + \e ulPhase2Seg + 1) * (\e ulQuantumPrescaler))
 //!
-//! This means that with \e uSyncPropPhase1Seg = 4, \e uPhase2Seg = 1,
-//! \e uQuantumPrescaler = 2 and an 8 MHz CAN clock, that the bit rate will be
+//! This means that with \e ulSyncPropPhase1Seg = 4, \e ulPhase2Seg = 1,
+//! \e ulQuantumPrescaler = 2 and an 8 MHz CAN clock, that the bit rate will be
 //! (8 MHz) / ((5 + 2 + 1) * 2) or 500 Kbit/sec.
 //!
 //! This function replaces the original CANSetBitTiming() API and performs the
@@ -859,8 +859,7 @@ CANBitRateSet(unsigned long ulBase, unsigned long ulSourceClock,
 void
 CANBitTimingSet(unsigned long ulBase, tCANBitClkParms *pClkParms)
 {
-    unsigned int uBitReg;
-    unsigned int uSavedInit;
+    unsigned long ulBitReg, ulSavedInit;
 
     //
     // Check the arguments.
@@ -871,63 +870,63 @@ CANBitTimingSet(unsigned long ulBase, tCANBitClkParms *pClkParms)
     //
     // The phase 1 segment must be in the range from 2 to 16.
     //
-    ASSERT((pClkParms->uSyncPropPhase1Seg >= 2) &&
-           (pClkParms->uSyncPropPhase1Seg <= 16));
+    ASSERT((pClkParms->ulSyncPropPhase1Seg >= 2) &&
+           (pClkParms->ulSyncPropPhase1Seg <= 16));
 
     //
     // The phase 2 segment must be in the range from 1 to 8.
     //
-    ASSERT((pClkParms->uPhase2Seg >= 1) && (pClkParms->uPhase2Seg <= 8));
+    ASSERT((pClkParms->ulPhase2Seg >= 1) && (pClkParms->ulPhase2Seg <= 8));
 
     //
     // The synchronous jump windows must be in the range from 1 to 4.
     //
-    ASSERT((pClkParms->uSJW >= 1) && (pClkParms->uSJW <= 4));
+    ASSERT((pClkParms->ulSJW >= 1) && (pClkParms->ulSJW <= 4));
 
     //
     // The CAN clock pre-divider must be in the range from 1 to 1024.
     //
-    ASSERT((pClkParms->uQuantumPrescaler <= 1024) &&
-           (pClkParms->uQuantumPrescaler >= 1));
+    ASSERT((pClkParms->ulQuantumPrescaler <= 1024) &&
+           (pClkParms->ulQuantumPrescaler >= 1));
 
     //
     // To set the bit timing register, the controller must be placed in init
     // mode (if not already), and also configuration change bit enabled.  State
     // of the init bit should be saved so it can be restored at the end.
     //
-    uSavedInit = CANRegRead(ulBase + CAN_O_CTL);
-    CANRegWrite(ulBase + CAN_O_CTL, uSavedInit | CAN_CTL_INIT | CAN_CTL_CCE);
+    ulSavedInit = CANRegRead(ulBase + CAN_O_CTL);
+    CANRegWrite(ulBase + CAN_O_CTL, ulSavedInit | CAN_CTL_INIT | CAN_CTL_CCE);
 
     //
     // Set the bit fields of the bit timing register according to the parms.
     //
-    uBitReg = (((pClkParms->uPhase2Seg - 1) << CAN_BIT_TSEG2_S) &
-               CAN_BIT_TSEG2_M);
-    uBitReg |= (((pClkParms->uSyncPropPhase1Seg - 1) << CAN_BIT_TSEG1_S) &
-                CAN_BIT_TSEG1_M);
-    uBitReg |= ((pClkParms->uSJW - 1) << CAN_BIT_SJW_S) & CAN_BIT_SJW_M;
-    uBitReg |= (pClkParms->uQuantumPrescaler - 1) & CAN_BIT_BRP_M;
-    CANRegWrite(ulBase + CAN_O_BIT, uBitReg);
+    ulBitReg = (((pClkParms->ulPhase2Seg - 1) << CAN_BIT_TSEG2_S) &
+                CAN_BIT_TSEG2_M);
+    ulBitReg |= (((pClkParms->ulSyncPropPhase1Seg - 1) << CAN_BIT_TSEG1_S) &
+                 CAN_BIT_TSEG1_M);
+    ulBitReg |= ((pClkParms->ulSJW - 1) << CAN_BIT_SJW_S) & CAN_BIT_SJW_M;
+    ulBitReg |= (pClkParms->ulQuantumPrescaler - 1) & CAN_BIT_BRP_M;
+    CANRegWrite(ulBase + CAN_O_BIT, ulBitReg);
 
     //
     // Set the divider upper bits in the extension register.
     //
     CANRegWrite(ulBase + CAN_O_BRPE,
-                ((pClkParms->uQuantumPrescaler - 1) >> 6) & CAN_BRPE_BRPE_M);
+                ((pClkParms->ulQuantumPrescaler - 1) >> 6) & CAN_BRPE_BRPE_M);
 
     //
     // Clear the config change bit, and restore the init bit.
     //
-    uSavedInit &= ~CAN_CTL_CCE;
+    ulSavedInit &= ~CAN_CTL_CCE;
 
     //
     // If Init was not set before, then clear it.
     //
-    if(uSavedInit & CAN_CTL_INIT)
+    if(ulSavedInit & CAN_CTL_INIT)
     {
-        uSavedInit &= ~CAN_CTL_INIT;
+        ulSavedInit &= ~CAN_CTL_INIT;
     }
-    CANRegWrite(ulBase + CAN_O_CTL, uSavedInit);
+    CANRegWrite(ulBase + CAN_O_CTL, ulSavedInit);
 }
 
 //*****************************************************************************
@@ -1012,14 +1011,14 @@ CANIntUnregister(unsigned long ulBase)
     ulIntNumber = CANIntNumberGet(ulBase);
 
     //
-    // Register the interrupt handler.
-    //
-    IntUnregister(ulIntNumber);
-
-    //
     // Disable the CAN interrupt.
     //
     IntDisable(ulIntNumber);
+
+    //
+    // Register the interrupt handler.
+    //
+    IntUnregister(ulIntNumber);
 }
 
 //*****************************************************************************
@@ -1185,6 +1184,7 @@ CANIntStatus(unsigned long ulBase, tCANIntStsReg eIntStsReg)
             break;
         }
     }
+
     //
     // Return the interrupt status value
     //
@@ -1212,14 +1212,14 @@ CANIntStatus(unsigned long ulBase, tCANIntStsReg eIntStsReg)
 //! using CANStatusGet().  A specific message object interrupt is normally
 //! cleared by reading the message object using CANMessageGet().
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -1928,11 +1928,9 @@ CANMessageSet(unsigned long ulBase, unsigned long ulObjID,
     CANRegWrite(ulBase + CAN_O_IF1MCTL, usMsgCtrl);
 
     //
-    // Transfer the message object to the message object specifiec by ulObjID.
+    // Transfer the message object to the message object specified by ulObjID.
     //
     CANRegWrite(ulBase + CAN_O_IF1CRQ, ulObjID & CAN_IF1CRQ_MNUM_M);
-
-    return;
 }
 
 //*****************************************************************************

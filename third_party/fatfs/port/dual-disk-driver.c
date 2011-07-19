@@ -22,6 +22,7 @@
 /*                                                                       */
 /* DISK0_EK_LM3S3748 - Logical disk 0 is an EK-LM3S3748 SD Card.         */
 /* DISK0_DK_LM3S9B96 - Logical disk 0 is an DK-LM3S9B96 SD Card.         */
+/* DISK0_DK_LM3S9D96 - Logical disk 0 is an DK-LM3S9D96 SD Card.         */
 /* DISK0_RDK_IDM_SBC - Logical disk 0 is an RDK-IDM-SBC SD Card.         */
 /* DISK0_RDK_IDM     - Logical disk 0 is an RDK-IDM SD Card.             */
 /* DISK0_USB_MSC     - Logical disk 0 is a USB Mass Storage Class        */
@@ -29,6 +30,7 @@
 /*                                                                       */
 /* DISK1_EK_LM3S3748 - Logical disk 1 is an EK-LM3S3748 SD Card.         */
 /* DISK1_DK_LM3S9B96 - Logical disk 1 is an DK-LM3S9B96 SD Card.         */
+/* DISK1_DK_LM3S9D96 - Logical disk 1 is an DK-LM3S9D96 SD Card.         */
 /* DISK1_RDK_IDM_SBC - Logical disk 1 is an RDK-IDM-SBC SD Card.         */
 /* DISK1_RDK_IDM     - Logical disk 1 is an RDK-IDM SD Card.             */
 /* DISK1_USB_MSC     - Logical disk 1 is a USB Mass Storage Class        */
@@ -45,6 +47,10 @@
 #else
 #ifdef DISK0_DK_LM3S9B96
 #define DRIVE0_DRIVER "mmc-dk-lm3s9b96.c"
+#define DRIVE0_TIMERPROC
+#else
+#ifdef DISK0_DK_LM3S9D96
+#define DRIVE0_DRIVER "mmc-dk-lm3s9d96.c"
 #define DRIVE0_TIMERPROC
 #else
 #ifdef DISK0_RDK_IDM_SBC
@@ -65,6 +71,7 @@
 #endif
 #endif
 #endif
+#endif
 
 #ifdef DISK1_EK_LM3S3748
 #define DRIVE1_DRIVER "mmc-ek-lm3s3748.c"
@@ -72,6 +79,10 @@
 #else
 #ifdef DISK1_DK_LM3S9B96
 #define DRIVE1_DRIVER "mmc-dk-lm3s9b96.c"
+#define DRIVE1_TIMERPROC
+#else
+#ifdef DISK1_DK_LM3S9D96
+#define DRIVE1_DRIVER "mmc-dk-lm3s9d96.c"
 #define DRIVE1_TIMERPROC
 #else
 #ifdef DISK1_RDK_IDM_SBC
@@ -87,6 +98,7 @@
 #undef DRIVE0_TIMERPROC
 #else
 #error "Unrecognized/undefined driver for DISK1!"
+#endif
 #endif
 #endif
 #endif

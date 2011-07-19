@@ -2,7 +2,7 @@
 //
 // timer.c - Driver for the timer module.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -67,7 +67,7 @@ TimerBaseValid(unsigned long ulBase)
 //! \param ulTimer specifies the timer(s) to enable; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
 //!
-//! This will enable operation of the timer module.  The timer must be
+//! This function enables operation of the timer module.  The timer must be
 //! configured before it is enabled.
 //!
 //! \return None.
@@ -97,7 +97,7 @@ TimerEnable(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulTimer specifies the timer(s) to disable; must be one of
 //! \b TIMER_A, \b TIMER_B, or \b TIMER_BOTH.
 //!
-//! This will disable operation of the timer module.
+//! This function disables operation of the timer module.
 //!
 //! \return None.
 //
@@ -152,7 +152,11 @@ TimerDisable(unsigned long ulBase, unsigned long ulTimer)
 //! - \b TIMER_CFG_A_PERIODIC_UP - 16-bit periodic timer that counts up instead
 //!   of down (not available on all parts)
 //! - \b TIMER_CFG_A_CAP_COUNT - 16-bit edge count capture
+//! - \b TIMER_CFG_A_CAP_COUNT_UP - 16-bit edge count capture that counts up
+//!   instead of down (not available on all parts)
 //! - \b TIMER_CFG_A_CAP_TIME - 16-bit edge time capture
+//! - \b TIMER_CFG_A_CAP_TIME_UP - 16-bit edge time capture that counts up
+//!   instead of down (not available on all parts)
 //! - \b TIMER_CFG_A_PWM - 16-bit PWM output
 //!
 //! Similarly, the second timer is configured by setting \e ulConfig to
@@ -188,7 +192,9 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
              ((ulConfig & 0x0000ff00) == TIMER_CFG_B_PERIODIC) ||
              ((ulConfig & 0x0000ff00) == TIMER_CFG_B_PERIODIC_UP) ||
              ((ulConfig & 0x0000ff00) == TIMER_CFG_B_CAP_COUNT) ||
+             ((ulConfig & 0x0000ff00) == TIMER_CFG_B_CAP_COUNT_UP) ||
              ((ulConfig & 0x0000ff00) == TIMER_CFG_B_CAP_TIME) ||
+             ((ulConfig & 0x0000ff00) == TIMER_CFG_B_CAP_TIME_UP) ||
              ((ulConfig & 0x0000ff00) == TIMER_CFG_B_PWM))));
 
     //
@@ -219,8 +225,8 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
 //! \param bInvert specifies the output level.
 //!
 //! This function sets the PWM output level for the specified timer.  If the
-//! \e bInvert parameter is \b true, then the timer's output will be made
-//! active low; otherwise, it will be made active high.
+//! \e bInvert parameter is \b true, then the timer's output is made active
+//! low; otherwise, it is made active high.
 //!
 //! \return None.
 //
@@ -292,7 +298,7 @@ TimerControlTrigger(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_EVENT_POS_EDGE, \b TIMER_EVENT_NEG_EDGE, or
 //! \b TIMER_EVENT_BOTH_EDGES.
 //!
-//! This function sets the signal edge(s) that will trigger the timer when in
+//! This function sets the signal edge(s) that triggers the timer when in
 //! capture mode.
 //!
 //! \return None.
@@ -312,10 +318,9 @@ TimerControlEvent(unsigned long ulBase, unsigned long ulTimer,
     //
     // Set the event type.
     //
-    ulEvent &= ulTimer & (TIMER_CTL_TAEVENT_M | TIMER_CTL_TBEVENT_M);
-    HWREG(ulBase + TIMER_O_CTL) = ((HWREG(ulBase + TIMER_O_CTL) &
-                                    ~(TIMER_CTL_TAEVENT_M |
-                                      TIMER_CTL_TBEVENT_M)) | ulEvent);
+    ulTimer &= TIMER_CTL_TAEVENT_M | TIMER_CTL_TBEVENT_M;
+    HWREG(ulBase + TIMER_O_CTL) = ((HWREG(ulBase + TIMER_O_CTL) & ~ulTimer) |
+                                   (ulEvent & ulTimer));
 }
 
 //*****************************************************************************
@@ -328,8 +333,8 @@ TimerControlEvent(unsigned long ulBase, unsigned long ulTimer,
 //! \param bStall specifies the response to a stall signal.
 //!
 //! This function controls the stall response for the specified timer.  If the
-//! \e bStall parameter is \b true, then the timer will stop counting if the
-//! processor enters debug mode; otherwise the timer will keep running while in
+//! \e bStall parameter is \b true, then the timer stops counting if the
+//! processor enters debug mode; otherwise the timer keeps running while in
 //! debug mode.
 //!
 //! \return None.
@@ -337,7 +342,7 @@ TimerControlEvent(unsigned long ulBase, unsigned long ulTimer,
 //*****************************************************************************
 void
 TimerControlStall(unsigned long ulBase, unsigned long ulTimer,
-                  tBoolean  bStall)
+                  tBoolean bStall)
 {
     //
     // Check the arguments.
@@ -401,7 +406,7 @@ TimerControlWaitOnTrigger(unsigned long ulBase, unsigned long ulTimer,
     }
 
     //
-    // Set the wait on trigger mode for timer A.
+    // Set the wait on trigger mode for timer B.
     //
     if((ulTimer & TIMER_B) != 0)
     {
@@ -423,7 +428,7 @@ TimerControlWaitOnTrigger(unsigned long ulBase, unsigned long ulTimer,
 //! \param ulBase is the base address of the timer module.
 //!
 //! This function causes the timer to start counting when in RTC mode.  If not
-//! configured for RTC mode, this will do nothing.
+//! configured for RTC mode, this function does nothing.
 //!
 //! \return None.
 //
@@ -481,6 +486,10 @@ TimerRTCDisable(unsigned long ulBase)
 //! is only operational when in 16-bit mode and is used to extend the range of
 //! the 16-bit timer modes.
 //!
+//! \note The availability of the prescaler varies with the Stellaris part and
+//! timer mode in use.  Please consult the datasheet for the part you are using
+//! to determine whether this support is available.
+//!
 //! \return None.
 //
 //*****************************************************************************
@@ -525,6 +534,10 @@ TimerPrescaleSet(unsigned long ulBase, unsigned long ulTimer,
 //! is only operational when in 16-bit mode and is used to extend the range of
 //! the 16-bit timer modes.
 //!
+//! \note The availability of the prescaler varies with the Stellaris part and
+//! timer mode in use.  Please consult the datasheet for the part you are using
+//! to determine whether this support is available.
+//!
 //! \return The value of the timer prescaler.
 //
 //*****************************************************************************
@@ -559,7 +572,9 @@ TimerPrescaleGet(unsigned long ulBase, unsigned long ulTimer)
 //! When in a 16-bit mode that uses the counter match and the prescaler, the
 //! prescale match effectively extends the range of the counter to 24-bits.
 //!
-//! \note This functionality is not available on all parts.
+//! \note The availability of the prescaler match varies with the Stellaris
+//! part and timer mode in use.  Please consult the datasheet for the part you
+//! are using to determine whether this support is available.
 //!
 //! \return None.
 //
@@ -605,7 +620,9 @@ TimerPrescaleMatchSet(unsigned long ulBase, unsigned long ulTimer,
 //! When in a 16-bit mode that uses the counter match and prescaler, the
 //! prescale match effectively extends the range of the counter to 24-bits.
 //!
-//! \note This functionality is not available on all parts.
+//! \note The availability of the prescaler match varies with the Stellaris
+//! part and timer mode in use.  Please consult the datasheet for the part you
+//! are using to determine whether this support is available.
 //!
 //! \return The value of the timer prescale match.
 //
@@ -817,10 +834,11 @@ TimerMatchGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param pfnHandler is a pointer to the function to be called when the timer
 //! interrupt occurs.
 //!
-//! This sets the handler to be called when a timer interrupt occurs.  This
-//! will enable the global interrupt in the interrupt controller; specific
-//! timer interrupts must be enabled via TimerIntEnable().  It is the interrupt
-//! handler's responsibility to clear the interrupt source via TimerIntClear().
+//! This function sets the handler to be called when a timer interrupt occurs.
+//! In addition, this function enables the global interrupt in the interrupt
+//! controller; specific timer interrupts must be enabled via TimerIntEnable().
+//! It is the interrupt handler's responsibility to clear the interrupt source
+//! via TimerIntClear().
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -887,9 +905,9 @@ TimerIntRegister(unsigned long ulBase, unsigned long ulTimer,
 //! \param ulTimer specifies the timer(s); must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
 //!
-//! This function will clear the handler to be called when a timer interrupt
-//! occurs.  This will also mask off the interrupt in the interrupt controller
-//! so that the interrupt handler no longer is called.
+//! This function clears the handler to be called when a timer interrupt
+//! occurs.  This function also masks off the interrupt in the interrupt
+//! controller so that the interrupt handler no longer is called.
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -1025,9 +1043,9 @@ TimerIntDisable(unsigned long ulBase, unsigned long ulIntFlags)
 //! \param bMasked is false if the raw interrupt status is required and true if
 //! the masked interrupt status is required.
 //!
-//! This returns the interrupt status for the timer module.  Either the raw
-//! interrupt status or the status of interrupts that are allowed to reflect to
-//! the processor can be returned.
+//! This function returns the interrupt status for the timer module.  Either
+//! the raw interrupt status or the status of interrupts that are allowed to
+//! reflect to the processor can be returned.
 //!
 //! \return The current interrupt status, enumerated as a bit field of
 //! values described in TimerIntEnable().
@@ -1057,20 +1075,20 @@ TimerIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! \param ulIntFlags is a bit mask of the interrupt sources to be cleared.
 //!
 //! The specified timer interrupt sources are cleared, so that they no longer
-//! assert.  This must be done in the interrupt handler to keep it from being
-//! called again immediately upon exit.
+//! assert.  This function must be called in the interrupt handler to keep the
+//! interrupt from being triggered again immediately upon exit.
 //!
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to TimerIntEnable().
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //

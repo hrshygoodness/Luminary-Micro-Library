@@ -2,7 +2,7 @@
 //
 // enet_io.c - I/O control via a web server.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -34,6 +34,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "utils/locator.h"
 #include "utils/lwiplib.h"
 #include "utils/uartstdio.h"
@@ -474,7 +475,7 @@ AnimTimerIntHandler(void)
     //
     // Clear the timer interrupt.
     //
-    TimerIntClear(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_TimerIntClear(TIMER2_BASE, TIMER_TIMA_TIMEOUT);
 
     //
     // Indicate that a timer interrupt has occurred.
@@ -624,8 +625,8 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the pinout appropriately for this board.
@@ -668,8 +669,8 @@ main(void)
     //
     // Enable and Reset the Ethernet Controller.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
-    SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
+    ROM_SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
 
     //
     // Enable Port F for Ethernet LEDs.
@@ -681,14 +682,14 @@ main(void)
     //
     // Configure SysTick for a periodic interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKHZ);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKHZ);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Enable processor interrupts.
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Configure the hardware MAC address for Ethernet Controller filtering of
@@ -698,7 +699,7 @@ main(void)
     // non-volatile USER0 and USER1 registers.  These registers can be read
     // using the FlashUserGet function, as illustrated below.
     //
-    FlashUserGet(&ulUser0, &ulUser1);
+    ROM_FlashUserGet(&ulUser0, &ulUser1);
     if((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff))
     {
         //
@@ -834,10 +835,10 @@ main(void)
         // been naughty and set this app up so that it accesses the graphics
         // library from two different contexts.
         //
-        IntDisable(INT_ETH);
+        ROM_IntDisable(INT_ETH);
         GrContextForegroundSet(&g_sContext, ulColor);
         GrLineDrawV(&g_sContext, ulAnimPos, (ANIM_TOP + 1),
                     (ANIM_TOP + ANIM_HEIGHT) - 2);
-        IntEnable(INT_ETH);
+        ROM_IntEnable(INT_ETH);
     }
 }

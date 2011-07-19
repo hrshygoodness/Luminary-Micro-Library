@@ -2,7 +2,7 @@
 //
 // i2c.h - Prototypes for the I2C Driver.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -103,6 +103,7 @@ extern "C"
 //*****************************************************************************
 #define I2C_MASTER_MAX_RETRIES  1000        // Number of retries
 
+
 //*****************************************************************************
 //
 // I2C Slave interrupts.
@@ -111,6 +112,7 @@ extern "C"
 #define I2C_SLAVE_INT_STOP      0x00000004  // Stop Condition Interrupt.
 #define I2C_SLAVE_INT_START     0x00000002  // Start Condition Interrupt.
 #define I2C_SLAVE_INT_DATA      0x00000001  // Data Interrupt.
+
 
 //*****************************************************************************
 //

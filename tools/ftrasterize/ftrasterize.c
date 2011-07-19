@@ -3,7 +3,7 @@
 // ftrasterize.c - Program to convert FreeType-compatible fonts to compressed
 //                 bitmap fonts using FreeType.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -82,10 +82,11 @@ tGlyph;
 
 //*****************************************************************************
 //
-// An array of glyphs for the ASCII characters 32 (space) through 126 (~).
+// An array of glyphs for the first 256 ASCII characters (though normally we
+// will only store 32 (space) through 126 (~)).
 //
 //*****************************************************************************
-tGlyph g_pGlyphs[95];
+tGlyph g_pGlyphs[256];
 
 //*****************************************************************************
 //
@@ -97,9 +98,17 @@ Usage(char *argv)
 {
     fprintf(stderr, "Usage: %s [-b] [-f <filename>] [-i] [-m] [-s <size>] "
                     "<font>\n", basename(argv));
-    fprintf(stderr, "Converts any font that FreeType recognizes into a "
-                    "compressed font for use by\n");
-    fprintf(stderr, "the Stellaris Graphics Library.\n");
+    fprintf(stderr, "Converts any font that FreeType recognizes into a compressed font for use by\n");
+    fprintf(stderr, "the Stellaris Graphics Library.  The font generated is indexed using 8 bit\n");
+    fprintf(stderr, "character IDs allowing encoding of ISO/IEC8859 character set.\n");
+    fprintf(stderr, "\n");
+    fprintf(stderr, "The tool will generate a font containing a contiguous block of glyphs\n");
+    fprintf(stderr, "identified by the first and last character numbers provided.  To allow\n");
+    fprintf(stderr, "encoding of some ISO8859 character sets from Unicode fonts where these\n");
+    fprintf(stderr, "characters appear at higher codepoints (for example Latin/Cyrillic \n");
+    fprintf(stderr, "where the ISO8859-5 mapping appears at offset 0x400 in Unicode space),\n");
+    fprintf(stderr, "additional parametesr may be supplied to translate a block of source font\n");
+    fprintf(stderr, "codepoint numbers downwards into the 0-255 ISO8859 range during conversion.\n");
     fprintf(stderr, "\n");
     fprintf(stderr, "  -b            Specifies that this is a bold font.\n");
     fprintf(stderr, "  -f <filename> Specifies the base name for this font "
@@ -110,11 +119,30 @@ Usage(char *argv)
                     "font.\n");
     fprintf(stderr, "  -s <size>     Specifies the size of this font "
                     "[default=20]\n");
+    fprintf(stderr, "  -w <num>      Forces a character to be whitespace "
+                    "[default=32]\n");
+    fprintf(stderr, "  -n            Do not force whitespace (-w ignored)\n");
+    fprintf(stderr, "  -p <num>      Specifies the first character to encode "
+                    "[default=32]\n");
+    fprintf(stderr, "  -e <num>      Specifies the last character to encode "
+                    "[default=126]\n");
+    fprintf(stderr, "  -t <num>      Specifies the codepoint of the first output font character\n"
+                                     "to translate downwards [default=0]\n");
+    fprintf(stderr, "  -o <num>      Specifies the source font codepoint for the first character in\n"
+                    "                the translated block [default=0]\n");
+    fprintf(stderr, "  -u            Use Unicode character mapping in the source font.\n");
     fprintf(stderr, "\n");
-    fprintf(stderr, "Example:\n");
-    fprintf(stderr, "  %s -f foobar -s 24 foobar.ttf\n", basename(argv));
+    fprintf(stderr, "Examples:\n\n");
+    fprintf(stderr, "  %s -f foobar -s 24 foobar.ttf\n\n", basename(argv));
     fprintf(stderr, "Produces fontfoobar24.c with a 24 point version of the "
-                    "font in foobar.ttf.\n");
+                    "font in foobar.ttf.\n\n");
+    fprintf(stderr, "  %s -f cyrillic -s 12 -u -p 32 -e 255 -t 160 -o 1024 unicode.ttf\n\n",
+            basename(argv));
+    fprintf(stderr, "Produces fontcyrillic12.c with a 12 point version of the "
+                    "font in unicode.ttf\n"
+                    "with characters numbered 160-255 in the output (ISO8859-5"
+                    "Cyrillic glyphs) taken\n"
+                    "from the codepoints starting at 1024 in the source, unicode font.\n");
     fprintf(stderr, "\n");
     fprintf(stderr, "Report bugs to <support_lmi@ti.com>\n");
 }
@@ -128,11 +156,12 @@ Usage(char *argv)
 int
 main(int argc, char *argv[])
 {
-    int iSize, iOpt, iXMin, iYMin, iXMax, iYMax, iX, iY, iWidth;
-    int iPrevBit, iBit, iZero, iOne, iBold, iItalic, iMono;
+    int iSize, iOpt, iXMin, iYMin, iXMax, iYMax, iX, iY, iWidth, iNewStruct;
+    int iPrevBit, iBit, iZero, iOne, iBold, iItalic, iMono, iFirst, iLast;
+    int iSpaceChar, iNoForceSpace, iTranslateStart, iTranslateSource, iUnicode;
     char *pcFilename, *pcCapFilename;
     unsigned char pucChar[512];
-    FT_UInt uiChar, uiIndex;
+    FT_UInt uiChar, uiSrcChar, uiIndex;
     FT_Library pLibrary;
     FT_GlyphSlot pSlot;
     FT_Bitmap *ppMap;
@@ -149,11 +178,25 @@ main(int argc, char *argv[])
     iBold = 0;
     iItalic = 0;
     iMono = 0;
+    iFirst = 32;
+    iLast = 126;
+    iNewStruct = 0;
+    iSpaceChar = 32;
+    iNoForceSpace = 0;
+    iUnicode = 0;
+
+    //
+    // Set the defaults for the translated block of character such that no
+    // translation takes place and we always encode directly from the [0-255]
+    // codepoint range in the source font.
+    //
+    iTranslateStart = 256;
+    iTranslateSource = 0;
 
     //
     // Process the command line arguments with getopt.
     //
-    while((iOpt = getopt(argc, argv, "bf:ims:")) != -1)
+    while((iOpt = getopt(argc, argv, "bf:ims:e:p:nw:t:o:u")) != -1)
     {
         //
         // See which argument was found.
@@ -169,6 +212,22 @@ main(int argc, char *argv[])
                 // Indicate that this is a bold font.
                 //
                 iBold = 1;
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-u" switch was found.
+            //
+            case 'u':
+            {
+                //
+                // Indicate that we are to use the Unicode character mapping.
+                //
+                iUnicode = 1;
 
                 //
                 // This switch has been handled.
@@ -225,6 +284,23 @@ main(int argc, char *argv[])
             }
 
             //
+            // The "-n" switch was found.
+            //
+            case 'n':
+            {
+                //
+                // Set a flag to tell us not to substitute a space character
+                // when we encode character 32.
+                //
+                iNoForceSpace = 1;
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
             // The "-s" switch was found.
             //
             case 's':
@@ -233,6 +309,88 @@ main(int argc, char *argv[])
                 // Save the font size.
                 //
                 iSize = strtoul(optarg, 0, 0);
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-p" switch was found.
+            //
+            case 'p':
+            {
+                //
+                // Save the first character index.
+                //
+                iFirst = strtoul(optarg, 0, 0);
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-w" switch was found.
+            //
+            case 'w':
+            {
+                //
+                // Save the character that we need to substitute a space for.
+                //
+                iSpaceChar = strtoul(optarg, 0, 0);
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-e" switch was found.
+            //
+            case 'e':
+            {
+                //
+                // Save the last character index.
+                //
+                iLast = strtoul(optarg, 0, 0);
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-t" switch was found.
+            //
+            case 't':
+            {
+                //
+                // Save the codepoint number for the start of the translated
+                // block
+                //
+                iTranslateStart = strtoul(optarg, 0, 0);
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-o" switch was found.
+            //
+            case 'o':
+            {
+                //
+                // Save the offset of the translated block within the source
+                // font.
+                //
+                iTranslateSource = strtoul(optarg, 0, 0);
 
                 //
                 // This switch has been handled.
@@ -286,6 +444,34 @@ main(int argc, char *argv[])
     }
 
     //
+    // Check to see that the indices passed are sensible.
+    //
+    if((iFirst < 0) || (iFirst > 254) || (iLast < iFirst) || (iLast > 255))
+    {
+        fprintf(stderr, "%s: First and last characters passed (%d, %d) are "
+                "invalid. Must be [0,255]\n", basename(argv[0]), iFirst, iLast);
+        return(1);
+    }
+
+    //
+    // Check that the whitespace character passed is valid.
+    //
+    if(!iNoForceSpace && ((iSpaceChar > iLast) || (iSpaceChar < iFirst)))
+    {
+        fprintf(stderr, "%s: Forced whitespace character %d is outside the "
+                        "encoded range.\n", basename(argv[0]), iSpaceChar);
+        return(1);
+    }
+
+    //
+    // Do we need to use the new structure format?
+    //
+    iNewStruct = ((iFirst == 32) && (iLast == 126)) ? 0 : 1;
+
+    printf("Encoding characters %d to %d. Using %s format.\n", iFirst, iLast,
+           iNewStruct ? "tFontEx" : "tFont");
+
+    //
     // Initialize the FreeType library.
     //
     if(FT_Init_FreeType(&pLibrary) != 0)
@@ -308,9 +494,10 @@ main(int argc, char *argv[])
     //
     // Select the Adobe Custom character map if it exists (it is the proper
     // character map to use for the Computer Modern fonts).  If it does not
-    // exist, then select the Unicode character map.
+    // exist, or we have been specifically told to use Unicode, then select the
+    // Unicode character map.
     //
-    if(FT_Select_Charmap(pFace, FT_ENCODING_ADOBE_CUSTOM) != 0)
+    if( iUnicode || (FT_Select_Charmap(pFace, FT_ENCODING_ADOBE_CUSTOM) != 0))
     {
         FT_Select_Charmap(pFace, FT_ENCODING_UNICODE);
     }
@@ -334,58 +521,76 @@ main(int argc, char *argv[])
     ppMap = &(pSlot->bitmap);
 
     //
-    // No need to render the space character; it contains nothing.
-    //
-    g_pGlyphs[0].iWidth = 0;
-    g_pGlyphs[0].iRows = 0;
-    g_pGlyphs[0].iPitch = 0;
-    g_pGlyphs[0].iBitmapTop = 0;
-    g_pGlyphs[0].pucData = 0;
-
-    //
     // Loop through the ASCII characters.
     //
-    for(uiChar = 1; uiChar < 0x5f; uiChar++)
+    for(uiChar = iFirst; uiChar <= iLast; uiChar++)
     {
         //
-        // Get the index of this character.
+        // Were we asked to force this character to be a space?
         //
-        uiIndex = FT_Get_Char_Index(pFace, uiChar + 0x20);
-
-        //
-        // Load the glyph for this character.
-        //
-        if(FT_Load_Glyph(pFace, uiIndex,
-                         FT_LOAD_DEFAULT | FT_LOAD_TARGET_MONO) == 0)
+        if((uiChar == iSpaceChar) && !iNoForceSpace)
         {
             //
-            // If this is an outline glyph, then render it.
+            // Yes. Substitute a "blank" glyph structure to tell the later
+            // code that this is a space.
             //
-            if(pSlot->format == FT_GLYPH_FORMAT_OUTLINE)
-            {
-                FT_Render_Glyph(pSlot, FT_RENDER_MODE_MONO);
-            }
-
-            //
-            // Save the relevant information about this character glyph.
-            //
-            g_pGlyphs[uiChar].iWidth = ppMap->width;
-            g_pGlyphs[uiChar].iRows = ppMap->rows;
-            g_pGlyphs[uiChar].iPitch = ppMap->pitch;
-            g_pGlyphs[uiChar].iBitmapTop = pSlot->bitmap_top;
-            g_pGlyphs[uiChar].pucData = malloc(ppMap->rows * ppMap->pitch);
-            memcpy(g_pGlyphs[uiChar].pucData, ppMap->buffer,
-                   ppMap->rows * ppMap->pitch);
-            if((ppMap->width == 0) && (uiChar != 0))
-            {
-                printf("%s: Warning: Zero width glyph for '%c'\n",
-                       basename(argv[0]), uiChar + 0x20);
-            }
+            g_pGlyphs[uiChar].iWidth = 0;
+            g_pGlyphs[uiChar].iRows = 0;
+            g_pGlyphs[uiChar].iPitch = 0;
+            g_pGlyphs[uiChar].iBitmapTop = 0;
+            g_pGlyphs[uiChar].pucData = 0;
         }
         else
         {
-            printf("%s: Warning: Could not load glyph for '%c'\n",
-                   basename(argv[0]), uiChar + 0x20);
+            //
+            // Determine the source character we are interested in.  This will
+            // depend upon whether we are currently encoding the translated
+            // block or the original block.
+            //
+            uiSrcChar = (uiChar < iTranslateStart) ? uiChar :
+                        ((uiChar - iTranslateStart) + iTranslateSource);
+
+            //
+            // This is not a character we have been told to encode as a space
+            // so get the index of this character.
+            //
+            uiIndex = FT_Get_Char_Index(pFace, uiSrcChar);
+
+            //
+            // Load the glyph for this character.
+            //
+            if(FT_Load_Glyph(pFace, uiIndex,
+                             FT_LOAD_DEFAULT | FT_LOAD_TARGET_MONO) == 0)
+            {
+                //
+                // If this is an outline glyph, then render it.
+                //
+                if(pSlot->format == FT_GLYPH_FORMAT_OUTLINE)
+                {
+                    FT_Render_Glyph(pSlot, FT_RENDER_MODE_MONO);
+                }
+
+                //
+                // Save the relevant information about this character glyph.
+                //
+                g_pGlyphs[uiChar].iWidth = ppMap->width;
+                g_pGlyphs[uiChar].iRows = ppMap->rows;
+                g_pGlyphs[uiChar].iPitch = ppMap->pitch;
+                g_pGlyphs[uiChar].iBitmapTop = pSlot->bitmap_top;
+                g_pGlyphs[uiChar].pucData = malloc(ppMap->rows * ppMap->pitch);
+                memcpy(g_pGlyphs[uiChar].pucData, ppMap->buffer,
+                       ppMap->rows * ppMap->pitch);
+                if((ppMap->width == 0) && (uiChar != iSpaceChar))
+                {
+                    printf("%s: Warning: Zero width glyph for '%c' (%d)\n",
+                           basename(argv[0]), uiChar, uiChar);
+                }
+            }
+            else
+            {
+                printf("%s: Warning: Could not load glyph for '%c' (%d)\n",
+                       basename(argv[0]), uiChar, uiChar);
+            }
         }
     }
 
@@ -403,8 +608,8 @@ main(int argc, char *argv[])
     // Loop through the glyphs, finding the minimum and maximum X and Y values
     // for the glyphs.
     //
-    for(pGlyph = g_pGlyphs, iYMin = 0, iYMax = 0, iWidth = 0;
-        pGlyph < (g_pGlyphs + 95); pGlyph++)
+    for(pGlyph = &g_pGlyphs[iFirst], iYMin = 0, iYMax = 0, iWidth = 0;
+        pGlyph <= &g_pGlyphs[iLast]; pGlyph++)
     {
         //
         // Adjust the minimum Y value if necessary.
@@ -490,7 +695,7 @@ main(int argc, char *argv[])
     //
     // Loop through the glyphs, compressing each one.
     //
-    for(pGlyph = g_pGlyphs, uiChar = 32; pGlyph != (g_pGlyphs + 0x5f);
+    for(pGlyph = &g_pGlyphs[iFirst], uiChar = iFirst; pGlyph <= &g_pGlyphs[iLast];
         pGlyph++, uiChar++)
     {
         //
@@ -833,7 +1038,8 @@ main(int argc, char *argv[])
     //
     // Get the total size of the compressed font.
     //
-    for(pGlyph = g_pGlyphs, iOpt = 0; pGlyph < (g_pGlyphs + 95); pGlyph++)
+    for(pGlyph = &g_pGlyphs[iFirst], iOpt = 0; pGlyph <= &g_pGlyphs[iLast];
+        pGlyph++)
     {
         iOpt += pGlyph->pucChar[0];
     }
@@ -847,6 +1053,7 @@ main(int argc, char *argv[])
                    "*********************\n");
     fprintf(pFile, "//\n");
     fprintf(pFile, "// Details of this font:\n");
+    fprintf(pFile, "//     Characters: %d to %d inclusive\n", iFirst, iLast);
     fprintf(pFile, "//     Style: %s\n", pcFilename);
     fprintf(pFile, "//     Size: %d point\n", iSize);
     fprintf(pFile, "//     Bold: %s\n", iBold ? "yes" : "no");
@@ -866,6 +1073,8 @@ main(int argc, char *argv[])
     fprintf(pFile, "// The compressed data for the %d point %s%s%s font.\n",
             iSize, pcCapFilename, iBold ? " bold" : "",
             iItalic ? " italic" : "");
+    fprintf(pFile, "// Contains characters %d to %d inclusive.\n", iFirst,
+            iLast);
     fprintf(pFile, "//\n");
     fprintf(pFile, "//********************************************************"
                    "*********************\n");
@@ -876,7 +1085,7 @@ main(int argc, char *argv[])
     //
     // Loop through the glyphs.
     //
-    for(pGlyph = g_pGlyphs, iOpt = 0; pGlyph != (g_pGlyphs + 95); pGlyph++)
+    for(pGlyph = &g_pGlyphs[iFirst], iOpt = 0; pGlyph <= &g_pGlyphs[iLast]; pGlyph++)
     {
         //
         // Loop through the bytes of the compressed data for this glyph.
@@ -912,69 +1121,169 @@ main(int argc, char *argv[])
     fprintf(pFile, "\n");
 
     //
-    // Write the font definition header to the output file.
+    // If we are using the new structure format, write the offset table as a
+    // separate array.
     //
-    fprintf(pFile, "//********************************************************"
-                   "*********************\n");
-    fprintf(pFile, "//\n");
-    fprintf(pFile, "// The font definition for the %d point %s%s%s font.\n",
-            iSize, pcCapFilename, iBold ? " bold" : "",
-            iItalic ? " italic" : "");
-    fprintf(pFile, "//\n");
-    fprintf(pFile, "//********************************************************"
-                   "*********************\n");
-
-    //
-    // Write the font definition to the output file.
-    //
-    fprintf(pFile, "const tFont g_sFont%s%d%s%s =\n", pcCapFilename, iSize,
-            iBold ? "b" : "", iItalic ? "i" : "");
-    fprintf(pFile, "{\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // The format of the font.\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    FONT_FMT_PIXEL_RLE,\n");
-    fprintf(pFile, "\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // The maximum width of the font.\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    %d,\n", iWidth);
-    fprintf(pFile, "\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // The height of the font.\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    %d,\n", iYMin - iYMax + 1);
-    fprintf(pFile, "\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // The baseline of the font.\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    %d,\n", iYMin);
-    fprintf(pFile, "\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // The offset to each character in the font.\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    {\n");
-    for(iY = 0, iOpt = 0; iY < 12; iY++)
+    if(iNewStruct)
     {
-        fprintf(pFile, "       ");
-        for(iX = 0; iX < 8; iX++)
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "// The glyph offset table for the %d point %s%s%s font.\n",
+                iSize, pcCapFilename, iBold ? " bold" : "",
+                iItalic ? " italic" : "");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n\n");
+
+        fprintf(pFile, "const unsigned short g_usFontOffset%s%d%s%s[] =\n",
+                pcCapFilename, iSize, iBold ? "b" : "", iItalic ? "i" : "");
+
+        fprintf(pFile, "{");
+        for(iY = 0, iOpt = 0; iY < ((iLast - iFirst) + 1); iY++)
         {
-            if((iY != 11) || (iX != 7))
+            if(!(iY % 8))
             {
-                fprintf(pFile, " %4d,", iOpt);
-                iOpt += g_pGlyphs[(iY * 8) + iX].pucChar[0];
+                fprintf(pFile, "\n       ");
             }
+            fprintf(pFile, " %4d,", iOpt);
+            iOpt += g_pGlyphs[iY + iFirst].pucChar[0];
         }
+        fprintf(pFile, "\n};\n\n");
+
+        //
+        // Write the font definition header to the output file (original tFont
+        // structure).
+        //
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "// The font definition for the %d point %s%s%s font.\n",
+                iSize, pcCapFilename, iBold ? " bold" : "",
+                iItalic ? " italic" : "");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n");
+
+        //
+        // Write the font definition to the output file (using the new tFontEx
+        // structure.
+        //
+        fprintf(pFile, "const tFontEx g_sFontEx%s%d%s%s =\n", pcCapFilename, iSize,
+                iBold ? "b" : "", iItalic ? "i" : "");
+        fprintf(pFile, "{\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The format of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    FONT_FMT_EX_PIXEL_RLE,\n");
         fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The maximum width of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iWidth);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The height of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iYMin - iYMax + 1);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The baseline of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iYMin);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The first encoded character in the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iFirst);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The last encoded character in the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iLast);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // A pointer to the character offset table.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    g_usFontOffset%s%d%s%s,\n", pcCapFilename, iSize,
+                iBold ? "b" : "", iItalic ? "i" : "");
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // A pointer to the actual font data\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    g_puc%s%d%s%sData\n", pcCapFilename, iSize,
+                iBold ? "b" : "", iItalic ? "i" : "");
+        fprintf(pFile, "};\n");
+
     }
-    fprintf(pFile, "    },\n");
-    fprintf(pFile, "\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    // A pointer to the actual font data\n");
-    fprintf(pFile, "    //\n");
-    fprintf(pFile, "    g_puc%s%d%s%sData\n", pcCapFilename, iSize,
-            iBold ? "b" : "", iItalic ? "i" : "");
-    fprintf(pFile, "};\n");
+    else
+    {
+        //
+        // Write the font definition header to the output file (original tFont
+        // structure).
+        //
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "// The font definition for the %d point %s%s%s font.\n",
+                iSize, pcCapFilename, iBold ? " bold" : "",
+                iItalic ? " italic" : "");
+        fprintf(pFile, "//\n");
+        fprintf(pFile, "//****************************************************"
+                       "*************************\n");
+
+        //
+        // Write the font definition to the output file.
+        //
+        fprintf(pFile, "const tFont g_sFont%s%d%s%s =\n", pcCapFilename, iSize,
+                iBold ? "b" : "", iItalic ? "i" : "");
+        fprintf(pFile, "{\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The format of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    FONT_FMT_PIXEL_RLE,\n");
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The maximum width of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iWidth);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The height of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iYMin - iYMax + 1);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The baseline of the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    %d,\n", iYMin);
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // The offset to each character in the font.\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    {\n");
+        for(iY = 0, iOpt = 0; iY < 12; iY++)
+        {
+            fprintf(pFile, "       ");
+            for(iX = 0; iX < 8; iX++)
+            {
+                if((iY != 11) || (iX != 7))
+                {
+                    fprintf(pFile, " %4d,", iOpt);
+                    iOpt += g_pGlyphs[(iY * 8) + iX + iFirst].pucChar[0];
+                }
+            }
+            fprintf(pFile, "\n");
+        }
+        fprintf(pFile, "    },\n");
+        fprintf(pFile, "\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    // A pointer to the actual font data\n");
+        fprintf(pFile, "    //\n");
+        fprintf(pFile, "    g_puc%s%d%s%sData\n", pcCapFilename, iSize,
+                iBold ? "b" : "", iItalic ? "i" : "");
+        fprintf(pFile, "};\n");
+    }
 
     //
     // Close the output file.

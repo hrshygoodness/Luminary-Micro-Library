@@ -2,7 +2,7 @@
 //
 // udma.h - Prototypes and macros for the uDMA controller.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -35,6 +35,13 @@
 extern "C"
 {
 #endif
+
+//*****************************************************************************
+//
+//! \addtogroup udma_api
+//! @{
+//
+//*****************************************************************************
 
 //*****************************************************************************
 //
@@ -66,6 +73,104 @@ typedef struct
     volatile unsigned long ulSpare;
 }
 tDMAControlTable;
+
+//*****************************************************************************
+//
+//! A helper macro for building scatter-gather task table entries.
+//!
+//! \param ulTransferCount is the count of items to transfer for this task.
+//! \param ulItemSize is the bit size of the items to transfer for this task.
+//! \param ulSrcIncrement is the bit size increment for source data.
+//! \param pvSrcAddr is the starting address of the data to transfer.
+//! \param ulDstIncrement is the bit size increment for destination data.
+//! \param pvDstAddr is the starting address of the destination data.
+//! \param ulArbSize is the arbitration size to use for the transfer task.
+//! \param ulMode is the transfer mode for this task.
+//!
+//! This macro is intended to be used to help populate a table of uDMA tasks
+//! for a scatter-gather transfer.  This macro will calculate the values for
+//! the fields of a task structure entry based on the input parameters.
+//!
+//! There are specific requirements for the values of each parameter.  No
+//! checking is done so it is up to the caller to ensure that correct values
+//! are used for the parameters.
+//!
+//! The \e ulTransferCount parameter is the number of items that will be
+//! transferred by this task.  It must be in the range 1-1024.
+//!
+//! The \e ulItemSize parameter is the bit size of the transfer data.  It must
+//! be one of \b UDMA_SIZE_8, \b UDMA_SIZE_16, or \b UDMA_SIZE_32.
+//!
+//! The \e ulSrcIncrement parameter is the increment size for the source data.
+//! It must be one of \b UDMA_SRC_INC_8, \b UDMA_SRC_INC_16,
+//! \b UDMA_SRC_INC_32, or \b UDMA_SRC_INC_NONE.
+//!
+//! The \e pvSrcAddr parameter is a void pointer to the beginning of the source
+//! data.
+//!
+//! The \e ulDstIncrement parameter is the increment size for the destination
+//! data.  It must be one of \b UDMA_DST_INC_8, \b UDMA_DST_INC_16,
+//! \b UDMA_DST_INC_32, or \b UDMA_DST_INC_NONE.
+//!
+//! The \e pvDstAddr parameter is a void pointer to the beginning of the
+//! location where the data will be transferred.
+//!
+//! The \e ulArbSize parameter is the arbitration size for the transfer, and
+//! must be one of \b UDMA_ARB_1, \b UDMA_ARB_2, \b UDMA_ARB_4, and so on
+//! up to \b UDMA_ARB_1024.  This is used to select the arbitration size in
+//! powers of 2, from 1 to 1024.
+//!
+//! The \e ulMode parameter is the mode to use for this transfer task.  It
+//! must be one of \b UDMA_MODE_BASIC, \b UDMA_MODE_AUTO,
+//! \b UDMA_MODE_MEM_SCATTER_GATHER, or \b UDMA_MODE_PER_SCATTER_GATHER.  Note
+//! that normally all tasks will be one of the scatter-gather modes while the
+//! last task is a task list will be AUTO or BASIC.
+//!
+//! This macro is intended to be used to initialize individual entries of
+//! a structure of tDMAControlTable type, like this:
+//!
+//! \verbatim
+//!     tDMAControlTable MyTaskList[] =
+//!     {
+//!         uDMATaskStructEntry(Task1Count, UDMA_SIZE_8,
+//!                             UDMA_SRC_INC_8, MySourceBuf,
+//!                             UDMA_DST_INC_8, MyDestBuf,
+//!                             UDMA_ARB_8, UDMA_MODE_MEM_SCATTER_GATHER),
+//!         uDMATaskStructEntry(Task2Count, ... ),
+//!     }
+//! \endverbatim
+//!
+//! \return Nothing; this is not a function.
+//
+//*****************************************************************************
+#define uDMATaskStructEntry(ulTransferCount,                                  \
+                            ulItemSize,                                       \
+                            ulSrcIncrement,                                   \
+                            pvSrcAddr,                                        \
+                            ulDstIncrement,                                   \
+                            pvDstAddr,                                        \
+                            ulArbSize,                                        \
+                            ulMode)                                           \
+    {                                                                         \
+        (((ulSrcIncrement) == UDMA_SRC_INC_NONE) ? (pvSrcAddr) :              \
+            ((void *)(&((unsigned char *)(pvSrcAddr))[((ulTransferCount) <<   \
+                                         ((ulSrcIncrement) >> 26)) - 1]))),   \
+        (((ulDstIncrement) == UDMA_DST_INC_NONE) ? (pvDstAddr) :              \
+            ((void *)(&((unsigned char *)(pvDstAddr))[((ulTransferCount) <<   \
+                                         ((ulDstIncrement) >> 30)) - 1]))),   \
+        (ulSrcIncrement) | (ulDstIncrement) | (ulItemSize) | (ulArbSize) |    \
+        (((ulTransferCount) - 1) << 4) |                                      \
+        ((((ulMode) == UDMA_MODE_MEM_SCATTER_GATHER) ||                       \
+          ((ulMode) == UDMA_MODE_PER_SCATTER_GATHER)) ?                       \
+                (ulMode) | UDMA_MODE_ALT_SELECT : (ulMode)), 0                \
+    }
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************
 
 //*****************************************************************************
 //
@@ -296,30 +401,36 @@ extern void uDMAEnable(void);
 extern void uDMADisable(void);
 extern unsigned long uDMAErrorStatusGet(void);
 extern void uDMAErrorStatusClear(void);
-extern void uDMAChannelEnable(unsigned long ulChannel);
-extern void uDMAChannelDisable(unsigned long ulChannel);
-extern tBoolean uDMAChannelIsEnabled(unsigned long ulChannel);
+extern void uDMAChannelEnable(unsigned long ulChannelNum);
+extern void uDMAChannelDisable(unsigned long ulChannelNum);
+extern tBoolean uDMAChannelIsEnabled(unsigned long ulChannelNum);
 extern void uDMAControlBaseSet(void *pControlTable);
 extern void *uDMAControlBaseGet(void);
-extern void uDMAChannelRequest(unsigned long ulChannel);
-extern void uDMAChannelAttributeEnable(unsigned long ulChannel,
+extern void *uDMAControlAlternateBaseGet(void);
+extern void uDMAChannelRequest(unsigned long ulChannelNum);
+extern void uDMAChannelAttributeEnable(unsigned long ulChannelNum,
                                        unsigned long ulAttr);
-extern void uDMAChannelAttributeDisable(unsigned long ulChannel,
+extern void uDMAChannelAttributeDisable(unsigned long ulChannelNum,
                                         unsigned long ulAttr);
-extern unsigned long uDMAChannelAttributeGet(unsigned long ulChannel);
-extern void uDMAChannelControlSet(unsigned long ulChannel,
+extern unsigned long uDMAChannelAttributeGet(unsigned long ulChannelNum);
+extern void uDMAChannelControlSet(unsigned long ulChannelStructIndex,
                                   unsigned long ulControl);
-extern void uDMAChannelTransferSet(unsigned long ulChannel,
+extern void uDMAChannelTransferSet(unsigned long ulChannelStructIndex,
                                    unsigned long ulMode, void *pvSrcAddr,
                                    void *pvDstAddr,
                                    unsigned long ulTransferSize);
-extern unsigned long uDMAChannelSizeGet(unsigned long ulChannel);
-extern unsigned long uDMAChannelModeGet(unsigned long ulChannel);
+extern void uDMAChannelScatterGatherSet(unsigned long ulChannelNum,
+                                        unsigned ulTaskCount, void *pvTaskList,
+                                        unsigned long ulIsPeriphSG);
+extern unsigned long uDMAChannelSizeGet(unsigned long ulChannelStructIndex);
+extern unsigned long uDMAChannelModeGet(unsigned long ulChannelStructIndex);
 extern void uDMAIntRegister(unsigned long ulIntChannel,
                             void (*pfnHandler)(void));
 extern void uDMAIntUnregister(unsigned long ulIntChannel);
 extern void uDMAChannelSelectDefault(unsigned long ulDefPeriphs);
 extern void uDMAChannelSelectSecondary(unsigned long ulSecPeriphs);
+extern unsigned long uDMAIntStatus(void);
+extern void uDMAIntClear(unsigned long ulChanMask);
 
 //*****************************************************************************
 //

@@ -2,7 +2,7 @@
 //
 // usbdaudio.c - USB audio device class driver.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,15 +18,15 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
 #include "driverlib/udma.h"
 #include "usblib/usblib.h"
@@ -578,7 +578,8 @@ DataReceived(void *pvInstance, unsigned long ulInfo)
         //
         // Only handling interface requests.
         //
-        if(psInst->usRequestType == USB_RTYPE_INTERFACE)
+        if((psInst->usRequestType & USB_RTYPE_RECIPIENT_M) ==
+           USB_RTYPE_INTERFACE)
         {
             if(psInst->usUpdate == VOLUME_CONTROL)
             {
@@ -586,7 +587,7 @@ DataReceived(void *pvInstance, unsigned long ulInfo)
                 // Inform the callback of the new volume.
                 //
                 psDevice->pfnCallback(0, USBD_AUDIO_EVENT_VOLUME,
-                                      psInst->usVolume, 0);
+                                      psInst->sVolume, 0);
             }
             else if(psDevice->psPrivateData->usUpdate == MUTE_CONTROL)
             {
@@ -631,7 +632,7 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
     // Make sure this was for the isochronous out endpoint.
     //
     if((psInst->sBuffer.pvData != 0) &&
-       (uDMAChannelModeGet(psInst->ucOUTDMA) == UDMA_MODE_STOP))
+       (MAP_uDMAChannelModeGet(psInst->ucOUTDMA) == UDMA_MODE_STOP))
     {
         //
         // Save the pointer to the data buffer.
@@ -652,18 +653,19 @@ HandleEndpoints(void *pvInstance, unsigned long ulStatus)
         //
         // Read out the current endpoint status.
         //
-        ulEPStatus = USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
+        ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
 
         //
         // Acknowledge that the data was read, this will not cause a bus
         // acknowledgment.
         //
-        USBDevEndpointDataAck(USB0_BASE, psInst->ucOUTEndpoint, 0);
+        MAP_USBDevEndpointDataAck(USB0_BASE, psInst->ucOUTEndpoint, 0);
 
         //
         // Clear the status bits.
         //
-        USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
+        MAP_USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint,
+                                      ulEPStatus);
     }
 }
 
@@ -734,16 +736,16 @@ HandleDevice(void *pvInstance, unsigned long ulRequest, void *pvRequestData)
                 //
                 // Basic configuration for DMA on the OUT endpoint.
                 //
-                uDMAChannelControlSet(psInst->ucOUTDMA,
-                                      (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
-                                       UDMA_DST_INC_32 | UDMA_ARB_16));
+                MAP_uDMAChannelControlSet(psInst->ucOUTDMA,
+                                          (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
+                                           UDMA_DST_INC_32 | UDMA_ARB_16));
 
                 //
                 // Select this channel for this endpoint, this only affects
                 // devices that have this feature.
                 //
-                USBEndpointDMAChannel(USB0_BASE, psInst->ucOUTEndpoint,
-                                      psInst->ucOUTDMA);
+                MAP_USBEndpointDMAChannel(USB0_BASE, psInst->ucOUTEndpoint,
+                                          psInst->ucOUTDMA);
             }
             break;
         }
@@ -820,10 +822,10 @@ InterfaceChange(void *pvInstance, unsigned char ucInterface,
     //
     // Check which interface to change into.
     //
-    if(ucInterface == AUDIO_INTERFACE_CONTROL)
+    if(ucAlternateSetting == 0)
     {
         //
-        // Interface 0 is an inactive state.
+        // Alternate setting 0 is an inactive state.
         //
         if(psDevice->pfnCallback)
         {
@@ -833,7 +835,7 @@ InterfaceChange(void *pvInstance, unsigned char ucInterface,
     else
     {
         //
-        // Interface 1 is the active state.
+        // Alternate setting 1 is the active state.
         //
         if(psDevice->pfnCallback)
         {
@@ -844,9 +846,9 @@ InterfaceChange(void *pvInstance, unsigned char ucInterface,
         // Enable uDMA on the endpoint now that the active configuration
         // has been selected.
         //
-        USBEndpointDMAEnable(USB0_BASE,
-                             psDevice->psPrivateData->ucOUTEndpoint,
-                             USB_EP_DEV_OUT);
+        MAP_USBEndpointDMAEnable(USB0_BASE,
+                                 psDevice->psPrivateData->ucOUTEndpoint,
+                                 USB_EP_DEV_OUT);
     }
 }
 
@@ -928,21 +930,21 @@ USBDAudioInit(unsigned long ulIndex, const tUSBDAudioDevice *psDevice)
     //
     // Basic configuration for DMA on the OUT endpoint.
     //
-    uDMAChannelControlSet(psDevice->psPrivateData->ucOUTDMA,
-                          (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
-                           UDMA_DST_INC_32 | UDMA_ARB_16));
+    MAP_uDMAChannelControlSet(psDevice->psPrivateData->ucOUTDMA,
+                              (UDMA_SIZE_32 | UDMA_SRC_INC_NONE|
+                               UDMA_DST_INC_32 | UDMA_ARB_16));
 
     //
     // Select this channel for this endpoint, this only affects devices that
     // have this feature.
     //
-    USBEndpointDMAChannel(USB0_BASE, psDevice->psPrivateData->ucOUTEndpoint,
-                          psDevice->psPrivateData->ucOUTDMA);
+    MAP_USBEndpointDMAChannel(USB0_BASE, psDevice->psPrivateData->ucOUTEndpoint,
+                              psDevice->psPrivateData->ucOUTDMA);
 
     //
     // Return the pointer to the instance indicating that everything went well.
     //
-    return ((void *)psDevice);
+    return((void *)psDevice);
 }
 
 //*****************************************************************************
@@ -1031,7 +1033,6 @@ USBDAudioCompositeInit(unsigned long ulIndex, const tUSBDAudioDevice *psDevice)
     psDevDesc = (tDeviceDescriptor *)psInst->psDevInfo->pDeviceDescriptor;
     psDevDesc->idVendor = psDevice->usVID;
     psDevDesc->idProduct = psDevice->usPID;
-
     //
     // Fix up the configuration descriptor with client-supplied values.
     //
@@ -1051,7 +1052,7 @@ USBDAudioCompositeInit(unsigned long ulIndex, const tUSBDAudioDevice *psDevice)
     //
     // Return the pointer to the instance indicating that everything went well.
     //
-    return ((void *)psDevice);
+    return((void *)psDevice);
 }
 
 //*****************************************************************************
@@ -1100,7 +1101,7 @@ static void
 HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
 {
     unsigned long ulControl;
-    unsigned long ulRequestType;
+    unsigned long ulRecipient;
     unsigned long ulStall;
     tAudioInstance *psInst;
     const tUSBDAudioDevice *psDevice;
@@ -1118,20 +1119,11 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
     psInst = psDevice->psPrivateData;
 
     //
-    // Make sure the request was for the control interface.
-    //
-    if(((unsigned char)pUSBRequest->wIndex != psInst->ucInterfaceControl) &&
-       ((unsigned char)pUSBRequest->wIndex != psInst->ucInterfaceAudio))
-    {
-        return;
-    }
-
-    //
     // Make sure to acknowledge that the data was read, this will not send and
     // ACK that has already been done at this point.  This just tells the
     // hardware that the data was read.
     //
-    USBDevEndpointDataAck(USB0_BASE, USB_EP_0, false);
+    MAP_USBDevEndpointDataAck(USB0_BASE, USB_EP_0, false);
 
     //
     // Don't stall by default.
@@ -1141,24 +1133,24 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
     //
     // Get the request type.
     //
-    ulRequestType = pUSBRequest->bmRequestType & USB_RTYPE_RECIPIENT_M;
+    ulRecipient = pUSBRequest->bmRequestType & USB_RTYPE_RECIPIENT_M;
 
     //
     // Save the request type and request value.
     //
-    psInst->usRequestType = ulRequestType;
+    psInst->usRequestType = pUSBRequest->bmRequestType;
     psInst->ucRequest = pUSBRequest->bRequest;
 
     //
     // Check if this is an endpoint request to the audio streaming endpoint.
     //
-    if((ulRequestType == USB_RTYPE_ENDPOINT) &&
+    if((ulRecipient == USB_RTYPE_ENDPOINT) &&
        (pUSBRequest->wIndex == USB_EP_TO_INDEX(psInst->ucOUTEndpoint)))
     {
         //
         // Determine the type of request.
         //
-        switch(pUSBRequest->bRequest)
+        switch(psInst->ucRequest)
         {
             case USB_AC_SET_CUR:
             {
@@ -1207,8 +1199,16 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             }
         }
     }
-    else if(ulRequestType == USB_RTYPE_INTERFACE)
+    else if(ulRecipient == USB_RTYPE_INTERFACE)
     {
+        //
+        // Make sure the request was for the control interface.
+        //
+        if((unsigned char)pUSBRequest->wIndex != psInst->ucInterfaceControl)
+        {
+            return;
+        }
+
         //
         // Extract the control value from the message.
         //
@@ -1222,7 +1222,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // Determine the type of request.
             //
-            switch(pUSBRequest->bRequest)
+            switch(psInst->ucRequest)
             {
                 case USB_AC_GET_MAX:
                 {
@@ -1292,7 +1292,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
                         // Send back the current volume level.
                         //
                         USBDCDSendDataEP0(0,
-                                          (unsigned char *)&psInst->usVolume,
+                                          (unsigned char *)&psInst->sVolume,
                                           2);
                     }
                     else if(ulControl == MUTE_CONTROL)
@@ -1320,7 +1320,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
                         // Read the new volume level.
                         //
                         USBDCDRequestDataEP0(0,
-                                             (unsigned char *)&psInst->usVolume,
+                                             (unsigned char *)&psInst->sVolume,
                                              2);
 
                         //
@@ -1424,7 +1424,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
 //! buffer will not be filled.
 //
 //*****************************************************************************
-int
+long
 USBAudioBufferOut(void *pvInstance, void *pvBuffer, unsigned long ulSize,
                   tUSBAudioBufferCallback pfnCallback)
 {
@@ -1464,15 +1464,15 @@ USBAudioBufferOut(void *pvInstance, void *pvBuffer, unsigned long ulSize,
     //
     // Configure and enable DMA for the OUT transfer.
     //
-    uDMAChannelTransferSet(psInst->ucOUTDMA, UDMA_MODE_BASIC,
-                           (void *)USBFIFOAddrGet(USB0_BASE,
-                                                  psInst->ucOUTEndpoint),
-                           psInst->sBuffer.pvData, ulSize >> 2);
+    MAP_uDMAChannelTransferSet(psInst->ucOUTDMA, UDMA_MODE_BASIC,
+                               (void *)USBFIFOAddrGet(USB0_BASE,
+                                                      psInst->ucOUTEndpoint),
+                               psInst->sBuffer.pvData, ulSize >> 2);
 
     //
     // Start the DMA transfer.
     //
-    uDMAChannelEnable(psInst->ucOUTDMA);
+    MAP_uDMAChannelEnable(psInst->ucOUTDMA);
 
     return(0);
 }

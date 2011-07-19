@@ -3,7 +3,7 @@
 // uart_echo.c - Example for reading data from and writing data to the UART in
 //               an interrupt driven fashion.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -36,7 +36,7 @@
 //*****************************************************************************
 //
 //! \addtogroup example_list
-//! <h1>UART (uart_echo)</h1>
+//! <h1>UART Echo (uart_echo)</h1>
 //!
 //! This example application utilizes the UART to echo text.  The first UART
 //! (connected to the FTDI virtual serial port on the evaluation board) will be

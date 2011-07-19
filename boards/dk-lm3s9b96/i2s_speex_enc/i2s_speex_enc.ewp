@@ -198,7 +198,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>1111111</state>
+          <state>0000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>

@@ -2,7 +2,7 @@
 //
 // usb_dev_bulk.c - Main routines for the generic bulk device example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -26,13 +26,15 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
+#ifdef DEBUG
 #include "driverlib/gpio.h"
+#endif
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/timer.h"
 #include "driverlib/uart.h"
-#include "driverlib/usb.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/usb-ids.h"
@@ -55,22 +57,20 @@
 //! Data received from the host is assumed to be ASCII text and it is
 //! echoed back with the case of all alphabetic characters swapped.
 //!
-//! A Windows INF file for the device is provided on the installation CD.  This
-//! INF contains information required to install the WinUSB subsystem on
-//! WindowsXP and Vista PCs.  WinUSB is a Windows subsystem allowing user mode
-//! applications to access the USB device without the need for a
-//! vendor-specific kernel mode driver.  The device driver may also be
-//! downloaded from http://www.luminarymicro.com/products/software_updates.html
-//! as part of the ``Stellaris embedded USB drivers'' package
-//! (SW-USB-windrivers).
+//! A Windows INF file for the device is provided on the installation CD and
+//! in the C:/StellarisWare/windows_drivers directory of StellarisWare
+//! releases.  This INF contains information required to install the WinUSB
+//! subsystem on WindowsXP and Vista PCs.  WinUSB is a Windows subsystem
+//! allowing user mode applications to access the USB device without the need
+//! for a vendor-specific kernel mode driver.
 //!
 //! A sample Windows command-line application, usb_bulk_example, illustrating
 //! how to connect to and communicate with the bulk device is also provided.
 //! The application binary is installed as part of the ``Windows-side examples
 //! for USB kits'' package (SW-USB-win) on the installation CD or via download
-//! from http://www.luminarymicro.com/products/software_updates.html .  Project
-//! files are included to allow the examples to be built using Microsoft
-//! VisualStudio.  Source code for this application can be found in directory
+//! from http://www.ti.com/stellarisware .  Project files are included to allow
+//! the examples to be built using Microsoft VisualStudio 2008.  Source code
+//! for this application can be found in directory
 //! StellarisWare/tools/usb_bulk_example.
 //
 //*****************************************************************************
@@ -507,8 +507,8 @@ main(void)
     //
     // Set the clocking to run from the PLL at 50MHz
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -519,7 +519,7 @@ main(void)
     //
     // Configure the relevant pins such that UART0 owns them.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Open UART0 for debug output.
@@ -575,9 +575,9 @@ main(void)
     //
     // Enable the system tick.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    SysTickIntEnable();
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+    ROM_SysTickIntEnable();
+    ROM_SysTickEnable();
 
     //
     // Show the application name on the display and UART output.

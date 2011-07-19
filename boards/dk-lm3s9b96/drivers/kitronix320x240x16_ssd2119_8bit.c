@@ -6,7 +6,7 @@
 //                                     8080-8bit interface between the micro
 //                                     and display (PS3-0 = 0011b).
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -22,7 +22,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -41,7 +41,7 @@
 #include "driverlib/epi.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -294,7 +294,7 @@ WriteDataGPIO(unsigned short usData)
 //*****************************************************************************
 //
 // Writes a data word to the SSD2119 via the EPI interface as wired when using
-// the lm3s9b96 development kit SRAM/flash daughter board.
+// the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -307,7 +307,7 @@ WriteDataEPI(unsigned short usData)
 //*****************************************************************************
 //
 // Writes a command word to the SSD2119 via the EPI interface as wired when
-// using the lm3s9b96 development kit SRAM/flash daughter board.
+// using the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -320,7 +320,7 @@ WriteCommandEPI(unsigned char ucData)
 //*****************************************************************************
 //
 // Writes a data word to the SSD2119 via the EPI interface as wired when using
-// the lm3s9b96 development kit SRAM/flash daughter board.
+// the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -333,7 +333,7 @@ WriteDataFPGA(unsigned short usData)
 //*****************************************************************************
 //
 // Writes a command word to the SSD2119 via the EPI interface as wired when
-// using the lm3s9b96 development kit SRAM/flash daughter board.
+// using the development kit SRAM/flash daughter board.
 //
 //*****************************************************************************
 static void
@@ -421,9 +421,9 @@ InitGPIOLCDInterface(unsigned long ulClockMS)
     //
     // Make PB7 an output.
     //
-    GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
 
     //
     // Clear the commit register, effectively locking access to registers
@@ -435,31 +435,31 @@ InitGPIOLCDInterface(unsigned long ulClockMS)
     //
     // Configure the pins that connect to the LCD as GPIO outputs.
     //
-    GPIODirModeSet(LCD_DATAH_BASE, LCD_DATAH_PINS, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(LCD_DATAH_BASE, LCD_DATAH_PINS, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(LCD_DC_BASE, LCD_DC_PIN, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(LCD_DC_BASE, LCD_DC_PIN, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(LCD_RD_BASE, LCD_RD_PIN, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(LCD_RD_BASE, LCD_RD_PIN, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(LCD_WR_BASE, LCD_WR_PIN, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(LCD_WR_BASE, LCD_WR_PIN, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
-    GPIODirModeSet(LCD_RST_BASE, LCD_RST_PIN, GPIO_DIR_MODE_OUT);
-    GPIOPadConfigSet(LCD_RST_BASE, LCD_RST_PIN, GPIO_STRENGTH_8MA,
-                     GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(LCD_DATAH_BASE, LCD_DATAH_PINS, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(LCD_DATAH_BASE, LCD_DATAH_PINS, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(LCD_DC_BASE, LCD_DC_PIN, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(LCD_DC_BASE, LCD_DC_PIN, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(LCD_RD_BASE, LCD_RD_PIN, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(LCD_RD_BASE, LCD_RD_PIN, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(LCD_WR_BASE, LCD_WR_PIN, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(LCD_WR_BASE, LCD_WR_PIN, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
+    ROM_GPIODirModeSet(LCD_RST_BASE, LCD_RST_PIN, GPIO_DIR_MODE_OUT);
+    ROM_GPIOPadConfigSet(LCD_RST_BASE, LCD_RST_PIN, GPIO_STRENGTH_8MA,
+                         GPIO_PIN_TYPE_STD);
 
     //
     // Set the LCD control pins to their default values.  This also asserts the
     // LCD reset signal.
     //
-    GPIOPinWrite(LCD_DATAH_BASE, LCD_DATAH_PINS, 0x00);
-    GPIOPinWrite(LCD_DC_BASE, LCD_DC_PIN, 0x00);
-    GPIOPinWrite(LCD_RD_BASE, LCD_RD_PIN, LCD_RD_PIN);
-    GPIOPinWrite(LCD_WR_BASE, LCD_WR_PIN, LCD_WR_PIN);
-    GPIOPinWrite(LCD_RST_BASE, LCD_RST_PIN, 0x00);
+    ROM_GPIOPinWrite(LCD_DATAH_BASE, LCD_DATAH_PINS, 0x00);
+    ROM_GPIOPinWrite(LCD_DC_BASE, LCD_DC_PIN, 0x00);
+    ROM_GPIOPinWrite(LCD_RD_BASE, LCD_RD_PIN, LCD_RD_PIN);
+    ROM_GPIOPinWrite(LCD_WR_BASE, LCD_WR_PIN, LCD_WR_PIN);
+    ROM_GPIOPinWrite(LCD_RST_BASE, LCD_RST_PIN, 0x00);
 
     //
     // Delay for 1ms.
@@ -469,7 +469,7 @@ InitGPIOLCDInterface(unsigned long ulClockMS)
     //
     // Deassert the LCD reset signal.
     //
-    GPIOPinWrite(LCD_RST_BASE, LCD_RST_PIN, LCD_RST_PIN);
+    ROM_GPIOPinWrite(LCD_RST_BASE, LCD_RST_PIN, LCD_RST_PIN);
 
     //
     // Delay for 1ms while the LCD comes out of reset.
@@ -524,8 +524,8 @@ InitSRAMDaughterLCDInterface(unsigned long ulClockMS)
     //
     // Turn on the backlight.
     //
-    GPIOPinTypeGPIOOutput(LCD_BACKLIGHT_BASE, LCD_BACKLIGHT_PIN);
-    GPIOPinWrite(LCD_BACKLIGHT_BASE, LCD_BACKLIGHT_PIN, LCD_BACKLIGHT_PIN);
+    ROM_GPIOPinTypeGPIOOutput(LCD_BACKLIGHT_BASE, LCD_BACKLIGHT_PIN);
+    ROM_GPIOPinWrite(LCD_BACKLIGHT_BASE, LCD_BACKLIGHT_PIN, LCD_BACKLIGHT_PIN);
 }
 
 //*****************************************************************************
@@ -597,7 +597,7 @@ Kitronix320x240x16_SSD2119Init(void)
     //
     // Get the current processor clock frequency.
     //
-    ulClockMS = SysCtlClockGet() / (3 * 1000);
+    ulClockMS = ROM_SysCtlClockGet() / (3 * 1000);
 
     //
     // Perform low level interface initialization depending upon how the LCD

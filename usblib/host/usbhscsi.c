@@ -2,7 +2,7 @@
 //
 // usbhscsi.c - USB host SCSI layer used by the USB host MSC driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -182,6 +182,12 @@ USBHSCSIInquiry(unsigned long ulInPipe, unsigned long ulOutPipe,
                 unsigned char *pucData, unsigned long *pulSize)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // The number of bytes of data that the host expects to transfer on the
@@ -211,14 +217,14 @@ USBHSCSIInquiry(unsigned long ulInPipe, unsigned long ulOutPipe,
     //
     // Send Inquiry command with no request for vital product data.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = SCSI_INQUIRY_CMD;
+    pulData[0] = SCSI_INQUIRY_CMD;
 
     //
     // Allocation length.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = SCSI_INQUIRY_DATA_SZ;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[1] = SCSI_INQUIRY_DATA_SZ;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -255,6 +261,12 @@ USBHSCSIReadCapacity(unsigned long ulInPipe, unsigned long ulOutPipe,
                      unsigned char *pucData, unsigned long *pulSize)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // Set the size of the command data.
@@ -280,10 +292,10 @@ USBHSCSIReadCapacity(unsigned long ulInPipe, unsigned long ulOutPipe,
     // Only use the first byte and set it to the Read Capacity command.  The
     // rest are set to 0.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = SCSI_READ_CAPACITY;
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[0] = SCSI_READ_CAPACITY;
+    pulData[1] = 0;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -316,6 +328,12 @@ USBHSCSIReadCapacities(unsigned long ulInPipe, unsigned long ulOutPipe,
                        unsigned char *pucData, unsigned long *pulSize)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // This is an IN request.
@@ -336,10 +354,10 @@ USBHSCSIReadCapacities(unsigned long ulInPipe, unsigned long ulOutPipe,
     // Only use the first byte and set it to the Read Capacity command.  The
     // rest are set to 0.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = SCSI_READ_CAPACITIES;
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[0] = SCSI_READ_CAPACITIES;
+    pulData[1] = 0;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -410,6 +428,12 @@ USBHSCSIModeSense6(unsigned long ulInPipe, unsigned long ulOutPipe,
                    unsigned long *pulSize)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // This is an IN request.
@@ -429,10 +453,10 @@ USBHSCSIModeSense6(unsigned long ulInPipe, unsigned long ulOutPipe,
     //
     // Set the options for the Mode Sense Command (6).
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = (SCSI_MODE_SENSE_6 | ulFlags);
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = (unsigned char)*pulSize;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[0] = (SCSI_MODE_SENSE_6 | ulFlags);
+    pulData[1] = (unsigned char)*pulSize;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -461,6 +485,12 @@ USBHSCSITestUnitReady(unsigned long ulInPipe, unsigned long ulOutPipe)
 {
     tMSCCBW SCSICmd;
     unsigned long ulSize;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // No data in this command.
@@ -485,10 +515,10 @@ USBHSCSITestUnitReady(unsigned long ulInPipe, unsigned long ulOutPipe)
     //
     // Set the parameter options.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = SCSI_TEST_UNIT_READY;
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[0] = SCSI_TEST_UNIT_READY;
+    pulData[1] = 0;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -521,6 +551,12 @@ USBHSCSIRequestSense(unsigned long ulInPipe, unsigned long ulOutPipe,
                      unsigned char *pucData, unsigned long *pulSize)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // This is an IN request.
@@ -540,10 +576,10 @@ USBHSCSIRequestSense(unsigned long ulInPipe, unsigned long ulOutPipe,
     //
     // Set the parameter options.
     //
-    *((unsigned long *)&SCSICmd.CBWCB[0]) = SCSI_REQUEST_SENSE;
-    *((unsigned long *)&SCSICmd.CBWCB[4]) = 18;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = 0;
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+    pulData[0] = SCSI_REQUEST_SENSE;
+    pulData[1] = 18;
+    pulData[2] = 0;
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.
@@ -666,6 +702,12 @@ USBHSCSIWrite10(unsigned long ulInPipe, unsigned long ulOutPipe,
                 unsigned long *pulSize, unsigned long ulNumBlocks)
 {
     tMSCCBW SCSICmd;
+    unsigned long *pulData;
+
+    //
+    // Create a local unsigned long pointer to the command.
+    //
+    pulData = (unsigned long *)SCSICmd.CBWCB;
 
     //
     // This is an IN request.
@@ -710,8 +752,16 @@ USBHSCSIWrite10(unsigned long ulInPipe, unsigned long ulOutPipe,
     // This also sets the Control value to 0 at offset 9.
     //
     SCSICmd.CBWCB[7] = (ulNumBlocks & 0xFF00) >> 8;
-    *((unsigned long *)&SCSICmd.CBWCB[8]) = (ulNumBlocks & 0xFF);
-    *((unsigned long *)&SCSICmd.CBWCB[12]) = 0;
+
+    //
+    // The blocks go into is byte offset 8 or word address 2.
+    //
+    pulData[2] = (ulNumBlocks & 0xFF);
+
+    //
+    // The blocks go into is byte offset 12 or word address 3.
+    //
+    pulData[3] = 0;
 
     //
     // Send the command and get the results.

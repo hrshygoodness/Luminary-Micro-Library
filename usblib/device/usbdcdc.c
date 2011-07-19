@@ -2,7 +2,7 @@
 //
 // usbdcdc.c - USB CDC ACM (serial) device class driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,15 +18,15 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
 #include "usblib/usbcdc.h"
@@ -323,7 +323,7 @@ const unsigned char g_pCDCSerCommInterface[] =
     USB_EP_DESC_IN | USB_EP_TO_INDEX(CONTROL_ENDPOINT),
     USB_EP_ATTR_INT,                // Endpoint is an interrupt endpoint.
     USBShort(CTL_IN_EP_MAX_SIZE),   // The maximum packet size.
-    10                             // The polling interval for this endpoint.
+    1                               // The polling interval for this endpoint.
 };
 
 const tConfigSection g_sCDCSerCommInterfaceSection =
@@ -633,7 +633,7 @@ DeviceConsumedAllData(const tUSBDCDCDevice *psDevice)
     //
     // If any data remains to be processed, return false, else return true.
     //
-    return (ulRemaining ? false : true);
+    return(ulRemaining ? false : true);
 }
 
 //*****************************************************************************
@@ -800,7 +800,7 @@ CheckAndSendBreak(const tUSBDCDCDevice *psDevice, unsigned short usDuration)
     //
     // Tell the caller whether or not we sent the notification.
     //
-    return (bCanSend);
+    return(bCanSend);
 }
 
 //*****************************************************************************
@@ -845,7 +845,7 @@ CheckAndSendLineCodingChange(const tUSBDCDCDevice *psDevice)
     //
     // Tell the caller whether or not we sent the notification.
     //
-    return (bCanSend);
+    return(bCanSend);
 }
 
 //*****************************************************************************
@@ -890,7 +890,7 @@ CheckAndSendLineStateChange(const tUSBDCDCDevice *psDevice)
     //
     // Tell the caller whether or not we sent the notification.
     //
-    return (bCanSend);
+    return(bCanSend);
 }
 
 //*****************************************************************************
@@ -913,7 +913,7 @@ SendSerialState(const tUSBDCDCDevice *psDevice)
     tUSBRequest sRequest;
     unsigned short usSerialState;
     tCDCSerInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     //
     // Get a pointer to our instance data.
@@ -948,35 +948,36 @@ SendSerialState(const tUSBDCDCDevice *psDevice)
     //
     // Write the request structure to the USB FIFO.
     //
-    iRetcode = USBEndpointDataPut(psInst->ulUSBBase, psInst->ucControlEndpoint,
-                                  (unsigned char *)&sRequest,
-                                  sizeof(tUSBRequest));
-    iRetcode = USBEndpointDataPut(psInst->ulUSBBase, psInst->ucControlEndpoint,
-                                  (unsigned char *)&usSerialState,
-                                  USB_CDC_NOTIFY_SERIAL_STATE_SIZE);
+    lRetcode = MAP_USBEndpointDataPut(psInst->ulUSBBase,
+                                      psInst->ucControlEndpoint,
+                                      (unsigned char *)&sRequest,
+                                      sizeof(tUSBRequest));
+    lRetcode = MAP_USBEndpointDataPut(psInst->ulUSBBase, psInst->ucControlEndpoint,
+                                      (unsigned char *)&usSerialState,
+                                      USB_CDC_NOTIFY_SERIAL_STATE_SIZE);
 
     //
     // Did we correctly write the data to the endpoint FIFO?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // We put the data into the FIFO so now schedule it to be
         // sent.
         //
-        iRetcode = USBEndpointDataSend(psInst->ulUSBBase,
-                                       psInst->ucControlEndpoint,
-                                       USB_TRANS_IN);
+        lRetcode = MAP_USBEndpointDataSend(psInst->ulUSBBase,
+                                           psInst->ucControlEndpoint,
+                                           USB_TRANS_IN);
     }
 
     //
     // If an error occurred, mark the endpoint as idle (to prevent possible
     // lockup) and return an error.
     //
-    if(iRetcode == -1)
+    if(lRetcode == -1)
     {
         psInst->eCDCInterruptState = CDC_STATE_IDLE;
-        return (false);
+        return(false);
     }
     else
     {
@@ -985,7 +986,7 @@ SendSerialState(const tUSBDCDCDevice *psDevice)
         // and return true.
         //
         psInst->usSerialState &= ~(usSerialState & USB_CDC_SERIAL_ERRORS);
-        return (true);
+        return(true);
     }
 }
 
@@ -1021,14 +1022,14 @@ ProcessDataFromHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase,
-                                   psInst->ucBulkOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucBulkOUTEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucBulkOUTEndpoint,
-                              ulEPStatus);
+    MAP_USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucBulkOUTEndpoint,
+                                  ulEPStatus);
 
     //
     // Has a packet been received?
@@ -1051,8 +1052,8 @@ ProcessDataFromHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
             //
             // How big is the packet we've just been sent?
             //
-            ulSize = USBEndpointDataAvail(psInst->ulUSBBase,
-                                          psInst->ucBulkOUTEndpoint);
+            ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                              psInst->ucBulkOUTEndpoint);
 
             //
             // The receive channel is not blocked so let the caller know
@@ -1081,10 +1082,10 @@ ProcessDataFromHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
                                     (void *)0);
         }
 
-        return (false);
+        return(false);
     }
 
-    return (true);
+    return(true);
 }
 
 //*****************************************************************************
@@ -1123,14 +1124,14 @@ ProcessNotificationToHost(const tUSBDCDCDevice *psDevice,
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase,
-                                   psInst->ucControlEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucControlEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(psInst->ulUSBBase,
-                              psInst->ucControlEndpoint, ulEPStatus);
+    MAP_USBDevEndpointStatusClear(psInst->ulUSBBase,
+                                  psInst->ucControlEndpoint, ulEPStatus);
 
     //
     // Did the state change while we were waiting for the previous notification
@@ -1156,7 +1157,7 @@ ProcessNotificationToHost(const tUSBDCDCDevice *psDevice,
     //
     // Tell the caller how things went.
     //
-    return (bRetcode);
+    return(bRetcode);
 }
 
 //*****************************************************************************
@@ -1180,6 +1181,7 @@ ProcessDataToHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
 {
     tCDCSerInstance *psInst;
     unsigned long ulEPStatus, ulSize;
+    tBoolean bSentFullPacket;
 
     //
     // Get a pointer to our instance data.
@@ -1189,14 +1191,14 @@ ProcessDataToHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase,
-                                   psInst->ucBulkINEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucBulkINEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(psInst->ulUSBBase,
-                              psInst->ucBulkINEndpoint, ulEPStatus);
+    MAP_USBDevEndpointStatusClear(psInst->ulUSBBase,
+                                  psInst->ucBulkINEndpoint, ulEPStatus);
 
     //
     // Our last transmission completed.  Clear our state back to idle and
@@ -1205,14 +1207,49 @@ ProcessDataToHost(const tUSBDCDCDevice *psDevice, unsigned long ulStatus)
     psInst->eCDCTxState = CDC_STATE_IDLE;
 
     //
-    // Notify the client that the last transmission completed.
+    // If this notification isn't as a result of sending a zero-length packet,
+    // call back to the client to let it know we sent the last thing it passed
+    // us.
     //
-    ulSize = (unsigned long)psInst->usLastTxSize;
-    psInst->usLastTxSize = 0;
-    psDevice->pfnTxCallback(psDevice->pvTxCBData, USB_EVENT_TX_COMPLETE,
-                            ulSize, (void *)0);
+    if(psInst->usLastTxSize)
+    {
+        //
+        // Have we just sent a 64 byte packet?
+        //
+        bSentFullPacket = (psInst->usLastTxSize == DATA_IN_EP_MAX_SIZE) ?
+                           true : false;
 
-    return (true);
+        //
+        // Notify the client that the last transmission completed.
+        //
+        ulSize = (unsigned long)psInst->usLastTxSize;
+        psInst->usLastTxSize = 0;
+        psDevice->pfnTxCallback(psDevice->pvTxCBData, USB_EVENT_TX_COMPLETE,
+                                ulSize, (void *)0);
+
+        //
+        // If we had previously sent a full packet and the callback didn't
+        // schedule a new transmission, send a zero length packet to indicate
+        // the end of the transfer.
+        //
+        if(bSentFullPacket && !psInst->usLastTxSize)
+        {
+            //
+            // We can expect another transmit complete notification after doing
+            // this.
+            //
+            psInst->eCDCTxState = CDC_STATE_WAIT_DATA;
+
+            //
+            // Send the zero-length packet.
+            //
+            MAP_USBEndpointDataSend(psInst->ulUSBBase,
+                                    psInst->ucBulkINEndpoint,
+                                    USB_TRANS_IN);
+        }
+    }
+
+    return(true);
 }
 
 //*****************************************************************************
@@ -1413,7 +1450,8 @@ HandleEP0Data(void *pvInstance, unsigned long ulDataSize)
             //
         default:
         {
-            USBDCDStallEP0(0);ASSERT(0);
+            USBDCDStallEP0(0);
+            ASSERT(0);
             break;
         }
     }
@@ -1667,7 +1705,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             // data may return before we have set the stack state appropriately
             // to receive it.
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
 
             break;
         }
@@ -1682,7 +1720,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // ACK what we have already received
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
 
             //
             // Ask the client for the current line coding.
@@ -1705,7 +1743,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // ACK what we have already received
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
 
             //
             // Set the handshake lines as required.
@@ -1742,7 +1780,7 @@ HandleRequests(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // ACK what we have already received
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
 
             //
             // Keep a copy of the requested break duration.
@@ -2051,8 +2089,8 @@ CDCTickHandler(void *pvInstance, unsigned long ulTimemS)
                 //
                 // Yes - how big is the waiting packet?
                 //
-                ulSize = USBEndpointDataAvail(psInst->ulUSBBase,
-                                              psInst->ucBulkOUTEndpoint);
+                ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                                  psInst->ucBulkOUTEndpoint);
 
                 // Tell the client that there is a packet waiting for it.
                 //
@@ -2351,7 +2389,7 @@ USBDCDCSetControlCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback data value.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -2393,7 +2431,7 @@ USBDCDCSetRxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback pointer.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -2435,7 +2473,7 @@ USBDCDCSetTxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback pointer.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -2475,7 +2513,7 @@ USBDCDCPacketWrite(void *pvInstance, unsigned char *pcData,
                    unsigned long ulLength, tBoolean bLast)
 {
     tCDCSerInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -2494,20 +2532,20 @@ USBDCDCPacketWrite(void *pvInstance, unsigned char *pcData,
         // Either the packet was too big or we are in the middle of sending
         // another packet.  Return 0 to indicate that we can't send this data.
         //
-        return (0);
+        return(0);
     }
 
     //
     // Copy the data into the USB endpoint FIFO.
     //
-    iRetcode = USBEndpointDataPut(psInst->ulUSBBase,
-                                  psInst->ucBulkINEndpoint, pcData,
-                                  ulLength);
+    lRetcode = MAP_USBEndpointDataPut(psInst->ulUSBBase,
+                                      psInst->ucBulkINEndpoint, pcData,
+                                      ulLength);
 
     //
     // Did we copy the data successfully?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // Remember how many bytes we sent.
@@ -2524,28 +2562,28 @@ USBDCDCPacketWrite(void *pvInstance, unsigned char *pcData,
             // can expect for this packet.
             //
             psInst->eCDCTxState = CDC_STATE_WAIT_DATA;
-            iRetcode = USBEndpointDataSend(psInst->ulUSBBase,
-                                           psInst->ucBulkINEndpoint,
-                                           USB_TRANS_IN);
+            lRetcode = MAP_USBEndpointDataSend(psInst->ulUSBBase,
+                                               psInst->ucBulkINEndpoint,
+                                               USB_TRANS_IN);
         }
     }
 
     //
     // Did an error occur while trying to send the data?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // No - tell the caller we sent all the bytes provided.
         //
-        return (ulLength);
+        return(ulLength);
     }
     else
     {
         //
         // Yes - tell the caller we couldn't send the data.
         //
-        return (0);
+        return(0);
     }
 }
 
@@ -2578,7 +2616,7 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
 {
     unsigned long ulEPStatus, ulCount, ulPkt;
     tCDCSerInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -2590,8 +2628,8 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase,
-                                   psInst->ucBulkOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucBulkOUTEndpoint);
 
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
@@ -2604,7 +2642,7 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
         {
             SetDeferredOpFlag(&psInst->usDeferredOpFlags,
                               CDC_DO_PACKET_RX, true);
-            return (0);
+            return(0);
         }
         else
         {
@@ -2612,16 +2650,16 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
             // It is OK to receive the new packet.  How many bytes are
             // available for us to receive?
             //
-            ulPkt = USBEndpointDataAvail(psInst->ulUSBBase,
-                                         psInst->ucBulkOUTEndpoint);
+            ulPkt = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                             psInst->ucBulkOUTEndpoint);
 
             //
             // Get as much data as we can.
             //
             ulCount = ulLength;
-            iRetcode = USBEndpointDataGet(psInst->ulUSBBase,
-                                          psInst->ucBulkOUTEndpoint,
-                                          pcData, &ulCount);
+            lRetcode = MAP_USBEndpointDataGet(psInst->ulUSBBase,
+                                              psInst->ucBulkOUTEndpoint,
+                                              pcData, &ulCount);
 
             //
             // Did we read the last of the packet data?
@@ -2632,17 +2670,17 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
                 // Clear the endpoint status so that we know no packet is
                 // waiting.
                 //
-                USBDevEndpointStatusClear(psInst->ulUSBBase,
-                                          psInst->ucBulkOUTEndpoint,
-                                          ulEPStatus);
+                MAP_USBDevEndpointStatusClear(psInst->ulUSBBase,
+                                              psInst->ucBulkOUTEndpoint,
+                                              ulEPStatus);
 
                 //
                 // Acknowledge the data, thus freeing the host to send the
                 // next packet.
                 //
-                USBDevEndpointDataAck(psInst->ulUSBBase,
-                                      psInst->ucBulkOUTEndpoint,
-                                      true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase,
+                                          psInst->ucBulkOUTEndpoint,
+                                          true);
 
                 //
                 // Clear the flag we set to indicate that a packet read is
@@ -2656,9 +2694,9 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
             //
             // If all went well, tell the caller how many bytes they got.
             //
-            if(iRetcode != -1)
+            if(lRetcode != -1)
             {
-                return (ulCount);
+                return(ulCount);
             }
         }
     }
@@ -2667,7 +2705,7 @@ USBDCDCPacketRead(void *pvInstance, unsigned char *pcData,
     // No packet was available or an error occurred while reading so tell
     // the caller no bytes were returned.
     //
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -2705,7 +2743,7 @@ USBDCDCTxPacketAvailable(void *pvInstance)
         //
         // We are not ready to receive a new packet so return 0.
         //
-        return (0);
+        return(0);
     }
     else
     {
@@ -2713,7 +2751,7 @@ USBDCDCTxPacketAvailable(void *pvInstance)
         // We can receive a packet so return the max packet size for the
         // relevant endpoint.
         //
-        return (DATA_IN_EP_MAX_SIZE);
+        return(DATA_IN_EP_MAX_SIZE);
     }
 }
 
@@ -2752,31 +2790,31 @@ USBDCDCRxPacketAvailable(void *pvInstance)
     //
     if(psInst->bRxBlocked || psInst->bControlBlocked)
     {
-        return (0);
+        return(0);
     }
 
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase,
-                                   psInst->ucBulkOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucBulkOUTEndpoint);
 
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
         //
         // Yes - a packet is waiting.  How big is it?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase,
-                                      psInst->ucBulkOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucBulkOUTEndpoint);
 
-        return (ulSize);
+        return(ulSize);
     }
     else
     {
         //
         // There is no packet waiting to be received.
         //
-        return (0);
+        return(0);
     }
 }
 

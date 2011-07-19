@@ -3,7 +3,7 @@
 // gui_widgets.c - Functions and structures related to the graphical user
 //                 interface for the qs-checkout application.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -129,7 +129,7 @@ Canvas(g_sEKTitle, &g_sHomeScreen, &g_sStellarisWare, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 34, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_HCENTER),
        CLR_BACKGROUND, 0, CLR_TEXT, &g_sFontCmss22b,
-       "LM3S9B96 Evaluation Kit", 0, 0);
+       "LM3S9B96 Development Kit", 0, 0);
 
 ImageButton(g_sIOExamplesBtn, &g_sHomeScreen, &g_sEKTitle, 0,
             &g_sKitronix320x240x16_SSD2119, 20, 64, 180, 32,

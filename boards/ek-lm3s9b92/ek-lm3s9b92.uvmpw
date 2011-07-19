@@ -38,6 +38,16 @@
   </project>
 
   <project>
+    <PathAndName>.\boot_usb\boot_usb.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\boot_demo_usb\boot_demo_usb.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
     <PathAndName>.\enet_lwip\enet_lwip.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
@@ -83,6 +93,11 @@
   </project>
 
   <project>
+    <PathAndName>.\softuart_echo\softuart_echo.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
     <PathAndName>.\timers\timers.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
@@ -104,6 +119,11 @@
 
   <project>
     <PathAndName>.\udma_timer_ccp\udma_timer_ccp.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\udma_uart_sg\udma_uart_sg.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

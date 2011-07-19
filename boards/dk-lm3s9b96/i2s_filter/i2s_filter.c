@@ -3,7 +3,7 @@
 // i2s_filter.c - Example program that records the line input from the codec and
 // plays it back out the output.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //******************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
 #include "driverlib/i2s.h"
+#include "driverlib/rom.h"
 #include "drivers/sound.h"
 #include "drivers/set_pinout.h"
 
@@ -196,8 +197,8 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
 
     //
@@ -208,15 +209,15 @@ main(void)
     //
     // Configure and enable uDMA
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Enable Interrupts
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Not playing anything right now.

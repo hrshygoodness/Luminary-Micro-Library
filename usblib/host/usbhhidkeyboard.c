@@ -3,7 +3,7 @@
 // usbhhidkeyboard.c - This file holds the application interfaces for USB
 //                     keyboard devices.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -486,8 +486,7 @@ USBHKeyboardPollRateSet(unsigned long ulInstance, unsigned long ulPollRate)
 static void
 UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
 {
-    int iNewKey;
-    int iOldKey;
+    long lNewKey, lOldKey;
 
     //
     // rollover code so ignore this buffer.
@@ -518,12 +517,12 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
     // This loop checks for keys that have been released to make room for new
     // ones that may have been pressed.
     //
-    for(iOldKey = 2; iOldKey < 8; iOldKey++)
+    for(lOldKey = 2; lOldKey < 8; lOldKey++)
     {
         //
         // If there is no old key pressed in this entry go to the next one.
         //
-        if(pUSBHKeyboard->pucKeyState[iOldKey] == 0)
+        if(pUSBHKeyboard->pucKeyState[lOldKey] == 0)
         {
             continue;
         }
@@ -532,13 +531,13 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
         // Check if this old key is still in the list of currently pressed
         // keys.
         //
-        for(iNewKey = 2; iNewKey < 8; iNewKey++)
+        for(lNewKey = 2; lNewKey < 8; lNewKey++)
         {
             //
             // Break out if the key is still present.
             //
-            if(pUSBHKeyboard->pucBuffer[iNewKey]
-                            == pUSBHKeyboard->pucKeyState[iOldKey])
+            if(pUSBHKeyboard->pucBuffer[lNewKey]
+                            == pUSBHKeyboard->pucKeyState[lOldKey])
             {
                 break;
             }
@@ -547,19 +546,19 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
         // If the old key was no longer in the list of pressed keys then
         // notify the application of the key release.
         //
-        if(iNewKey == 8)
+        if(lNewKey == 8)
         {
             //
             // Send the key release notification to the application.
             //
             pUSBHKeyboard->pfnCallback(0,
                                        USBH_EVENT_HID_KB_REL,
-                                       pUSBHKeyboard->pucKeyState[iOldKey],
+                                       pUSBHKeyboard->pucKeyState[lOldKey],
                                        0);
             //
             // Remove the old key from the currently held key list.
             //
-            pUSBHKeyboard->pucKeyState[iOldKey] = 0;
+            pUSBHKeyboard->pucKeyState[lOldKey] = 0;
 
         }
     }
@@ -567,12 +566,12 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
     //
     // This loop checks for new keys that have been pressed.
     //
-    for(iNewKey = 2; iNewKey < 8; iNewKey++)
+    for(lNewKey = 2; lNewKey < 8; lNewKey++)
     {
         //
         // The new list is empty so no new keys are pressed.
         //
-        if(pUSBHKeyboard->pucBuffer[iNewKey] == 0)
+        if(pUSBHKeyboard->pucBuffer[lNewKey] == 0)
         {
             break;
         }
@@ -580,13 +579,13 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
         //
         // This loop checks if the current key was already pressed.
         //
-        for(iOldKey = 2; iOldKey < 8; iOldKey++)
+        for(lOldKey = 2; lOldKey < 8; lOldKey++)
         {
             //
             // If it is in both lists then it was already pressed so ignore it.
             //
-            if(pUSBHKeyboard->pucBuffer[iNewKey]
-                            == pUSBHKeyboard->pucKeyState[iOldKey])
+            if(pUSBHKeyboard->pucBuffer[lNewKey]
+                            == pUSBHKeyboard->pucKeyState[lOldKey])
             {
                 break;
             }
@@ -594,24 +593,24 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
         //
         // The key in the new list was not found so it is new.
         //
-        if(iOldKey == 8)
+        if(lOldKey == 8)
         {
             //
             // Look for a free location to store this key usage code.
             //
-            for(iOldKey = 2; iOldKey < 8; iOldKey++)
+            for(lOldKey = 2; lOldKey < 8; lOldKey++)
             {
                 //
                 // If an empty location is found, store it and notify the
                 // application.
                 //
-                if(pUSBHKeyboard->pucKeyState[iOldKey] == 0)
+                if(pUSBHKeyboard->pucKeyState[lOldKey] == 0)
                 {
                     //
                     // Save the newly pressed key.
                     //
-                    pUSBHKeyboard->pucKeyState[iOldKey]
-                                    = pUSBHKeyboard->pucBuffer[iNewKey];
+                    pUSBHKeyboard->pucKeyState[lOldKey]
+                                    = pUSBHKeyboard->pucBuffer[lNewKey];
 
                     //
                     // Notify the application of the new key that has been
@@ -620,7 +619,7 @@ UpdateKeyboardState(tUSBHKeyboard *pUSBHKeyboard)
                     pUSBHKeyboard->pfnCallback(
                         0,
                         USBH_EVENT_HID_KB_PRESS,
-                        pUSBHKeyboard->pucBuffer[iNewKey],
+                        pUSBHKeyboard->pucBuffer[lNewKey],
                         0);
 
                     break;
@@ -710,7 +709,7 @@ USBHKeyboardCallback(void *pvCBData, unsigned long ulEvent,
             break;
         }
     }
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************

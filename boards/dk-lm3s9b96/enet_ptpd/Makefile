@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the Ethernet with PTP.
 #
-# Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -58,7 +58,6 @@ IPATH+=../../../third_party/lwip-1.3.2/src/include
 IPATH+=../../../third_party/lwip-1.3.2/src/include/ipv4
 IPATH+=../../../third_party
 
-#
 # The default rule, which causes the Ethernet with PTP to be built.
 #
 all: ${COMPILER}
@@ -74,7 +73,7 @@ clean:
 # The rule to create the target directory.
 #
 ${COMPILER}:
-	@mkdir ${COMPILER}
+	@mkdir -p ${COMPILER}
 
 #
 # Rules for building the Ethernet with PTP.

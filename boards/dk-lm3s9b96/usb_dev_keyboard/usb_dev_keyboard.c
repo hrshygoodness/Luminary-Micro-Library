@@ -2,7 +2,7 @@
 //
 // usb_dev_keyboard.c - Main routines for the keyboard example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/usb.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "usblib/usblib.h"
@@ -1299,7 +1300,7 @@ void KeyboardLEDsChanged(void)
     //
     // Set the CAPSLOCK LED appropriately.
     //
-    GPIOPinWrite(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN,
+    ROM_GPIOPinWrite(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN,
     bCapsOn ? CAPSLOCK_ACTIVE : CAPSLOCK_INACTIVE);
 }
 
@@ -1984,8 +1985,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                    SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -1997,14 +1998,14 @@ main(void)
     // initially.  Note that PinoutSet() already enabled the GPIO peripheral
     // containing this pin
     //
-    GPIOPinTypeGPIOOutput(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN);
-    GPIOPinWrite(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN, CAPSLOCK_INACTIVE);
+    ROM_GPIOPinTypeGPIOOutput(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN);
+    ROM_GPIOPinWrite(CAPSLOCK_GPIO_BASE, CAPSLOCK_GPIO_PIN, CAPSLOCK_INACTIVE);
 
 #ifdef DEBUG
     //
     // Configure the relevant pins such that UART0 owns them.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Open UART0 for debug output.
@@ -2056,7 +2057,7 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //
     // Pass our device information to the USB HID device class driver,
@@ -2068,9 +2069,9 @@ main(void)
     //
     // Set the system tick to fire 100 times per second.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    SysTickIntEnable();
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+    ROM_SysTickIntEnable();
+    ROM_SysTickEnable();
 
     //
     // Initialize the touch screen driver.

@@ -2,7 +2,7 @@
 //
 // hw_flash.h - Macros used when accessing the flash controller.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -43,7 +43,6 @@
 #define FLASH_FCTL              0x400FD0F8  // Flash Control
 #define FLASH_FWBN              0x400FD100  // Flash Write Buffer n
 #define FLASH_RMCTL             0x400FE0F0  // ROM Control
-#define FLASH_RMVER             0x400FE0F4  // ROM Version Register
 #define FLASH_FMPRE             0x400FE130  // Flash Memory Protection Read
                                             // Enable
 #define FLASH_FMPPE             0x400FE134  // Flash Memory Protection Program
@@ -63,6 +62,14 @@
                                             // Enable 2
 #define FLASH_FMPRE3            0x400FE20C  // Flash Memory Protection Read
                                             // Enable 3
+#define FLASH_FMPRE4            0x400FE210  // Flash Memory Protection Read
+                                            // Enable 4
+#define FLASH_FMPRE5            0x400FE214  // Flash Memory Protection Read
+                                            // Enable 5
+#define FLASH_FMPRE6            0x400FE218  // Flash Memory Protection Read
+                                            // Enable 6
+#define FLASH_FMPRE7            0x400FE21C  // Flash Memory Protection Read
+                                            // Enable 7
 #define FLASH_FMPPE0            0x400FE400  // Flash Memory Protection Program
                                             // Enable 0
 #define FLASH_FMPPE1            0x400FE404  // Flash Memory Protection Program
@@ -71,13 +78,21 @@
                                             // Enable 2
 #define FLASH_FMPPE3            0x400FE40C  // Flash Memory Protection Program
                                             // Enable 3
+#define FLASH_FMPPE4            0x400FE410  // Flash Memory Protection Program
+                                            // Enable 4
+#define FLASH_FMPPE5            0x400FE414  // Flash Memory Protection Program
+                                            // Enable 5
+#define FLASH_FMPPE6            0x400FE418  // Flash Memory Protection Program
+                                            // Enable 6
+#define FLASH_FMPPE7            0x400FE41C  // Flash Memory Protection Program
+                                            // Enable 7
 
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the FLASH_FMA register.
 //
 //*****************************************************************************
-#define FLASH_FMA_OFFSET_M      0x0003FFFF  // Address Offset
+#define FLASH_FMA_OFFSET_M      0x0007FFFF  // Address Offset
 #define FLASH_FMA_OFFSET_S      0
 
 //*****************************************************************************
@@ -161,25 +176,6 @@
 //
 //*****************************************************************************
 #define FLASH_RMCTL_BA          0x00000001  // Boot Alias
-
-//*****************************************************************************
-//
-// The following are defines for the bit fields in the FLASH_RMVER register.
-//
-//*****************************************************************************
-#define FLASH_RMVER_CONT_M      0xFF000000  // ROM Contents
-#define FLASH_RMVER_CONT_LM_AES 0x02000000  // Stellaris Boot Loader &
-                                            // DriverLib with AES
-#define FLASH_RMVER_CONT_LM_AES_SAFERTOS \
-                                0x03000000  // Stellaris Boot Loader &
-                                            // DriverLib with AES and SAFERTOS
-#define FLASH_RMVER_CONT_LM_AES2 \
-                                0x05000000  // Stellaris Boot Loader &
-                                            // DriverLib with AES
-#define FLASH_RMVER_VER_M       0x0000FF00  // ROM Version
-#define FLASH_RMVER_REV_M       0x000000FF  // ROM Revision
-#define FLASH_RMVER_VER_S       8
-#define FLASH_RMVER_REV_S       0
 
 //*****************************************************************************
 //
@@ -323,6 +319,13 @@
 
 //*****************************************************************************
 //
+// The following are deprecated defines for the FLASH register offsets.
+//
+//*****************************************************************************
+#define FLASH_RMVER             0x400FE0F4  // ROM Version Register
+
+//*****************************************************************************
+//
 // The following are deprecated defines for the bit fields in the FLASH_FMC
 // register.
 //
@@ -364,8 +367,21 @@
 // register.
 //
 //*****************************************************************************
+#define FLASH_RMVER_CONT_M      0xFF000000  // ROM Contents
 #define FLASH_RMVER_CONT_LM     0x00000000  // Stellaris Boot Loader &
                                             // DriverLib
+#define FLASH_RMVER_CONT_LM_AES 0x02000000  // Stellaris Boot Loader &
+                                            // DriverLib with AES
+#define FLASH_RMVER_CONT_LM_AES_SAFERTOS \
+                                0x03000000  // Stellaris Boot Loader &
+                                            // DriverLib with AES and SAFERTOS
+#define FLASH_RMVER_CONT_LM_AES2 \
+                                0x05000000  // Stellaris Boot Loader &
+                                            // DriverLib with AES
+#define FLASH_RMVER_VER_M       0x0000FF00  // ROM Version
+#define FLASH_RMVER_REV_M       0x000000FF  // ROM Revision
+#define FLASH_RMVER_VER_S       8
+#define FLASH_RMVER_REV_S       0
 
 //*****************************************************************************
 //

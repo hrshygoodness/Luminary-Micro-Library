@@ -20,14 +20,14 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>pwmgen.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/pwmgen/pwmgen.c</locationURI>
+		</link>
+		<link>
 			<name>utils/uartstdio.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/utils/uartstdio.c</locationURI>
-		</link>
-		<link>
-			<name>pwmgen_ccs.cmd</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/pwmgen/pwmgen_ccs.cmd</locationURI>
 		</link>
 		<link>
 			<name>startup_ccs.c</name>
@@ -35,9 +35,9 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/pwmgen/startup_ccs.c</locationURI>
 		</link>
 		<link>
-			<name>pwmgen.c</name>
+			<name>pwmgen_ccs.cmd</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s9b92/pwmgen/pwmgen.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s9b92/pwmgen/pwmgen_ccs.cmd</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -2,7 +2,7 @@
 //
 // udma_demo.c - uDMA example.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -156,7 +156,7 @@ static const char g_pcTwirl[4] = { '\\', '|', '/', '-' };
 unsigned char ucControlTable[1024];
 #elif defined(ccs)
 #pragma DATA_ALIGN(ucControlTable, 1024)
-tDMAControlTable ucControlTable[1024];
+unsigned char ucControlTable[1024];
 #else
 unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 #endif

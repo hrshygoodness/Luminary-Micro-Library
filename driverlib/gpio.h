@@ -2,7 +2,7 @@
 //
 // gpio.h - Defines and Macros for GPIO API.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -121,6 +121,7 @@ extern "C"
 // GPIO pin A2
 //
 #define GPIO_PA2_SSI0CLK        0x00000801
+#define GPIO_PA2_TXD2           0x00000803
 #define GPIO_PA2_PWM4           0x00000804
 #define GPIO_PA2_I2S0RXSD       0x00000809
 
@@ -128,6 +129,7 @@ extern "C"
 // GPIO pin A3
 //
 #define GPIO_PA3_SSI0FSS        0x00000c01
+#define GPIO_PA3_TXD1           0x00000c03
 #define GPIO_PA3_PWM5           0x00000c04
 #define GPIO_PA3_I2S0RXMCLK     0x00000c09
 
@@ -135,6 +137,7 @@ extern "C"
 // GPIO pin A4
 //
 #define GPIO_PA4_SSI0RX         0x00001001
+#define GPIO_PA4_TXD0           0x00001003
 #define GPIO_PA4_PWM6           0x00001004
 #define GPIO_PA4_CAN0RX         0x00001005
 #define GPIO_PA4_I2S0TXSCK      0x00001009
@@ -143,6 +146,7 @@ extern "C"
 // GPIO pin A5
 //
 #define GPIO_PA5_SSI0TX         0x00001401
+#define GPIO_PA5_RXDV           0x00001403
 #define GPIO_PA5_PWM7           0x00001404
 #define GPIO_PA5_CAN0TX         0x00001405
 #define GPIO_PA5_I2S0TXWS       0x00001409
@@ -152,6 +156,7 @@ extern "C"
 //
 #define GPIO_PA6_I2C1SCL        0x00001801
 #define GPIO_PA6_CCP1           0x00001802
+#define GPIO_PA6_RXCK           0x00001803
 #define GPIO_PA6_PWM0           0x00001804
 #define GPIO_PA6_PWM4           0x00001805
 #define GPIO_PA6_CAN0RX         0x00001806
@@ -163,6 +168,7 @@ extern "C"
 //
 #define GPIO_PA7_I2C1SDA        0x00001c01
 #define GPIO_PA7_CCP4           0x00001c02
+#define GPIO_PA7_RXER           0x00001c03
 #define GPIO_PA7_PWM1           0x00001c04
 #define GPIO_PA7_PWM5           0x00001c05
 #define GPIO_PA7_CAN0TX         0x00001c06
@@ -238,6 +244,7 @@ extern "C"
 // GPIO pin B7
 //
 #define GPIO_PB7_NMI            0x00011c04
+#define GPIO_PB7_RXD1           0x00011c07
 
 //
 // GPIO pin C0
@@ -264,6 +271,7 @@ extern "C"
 //
 #define GPIO_PC4_CCP5           0x00021001
 #define GPIO_PC4_PHA0           0x00021002
+#define GPIO_PC4_TXD3           0x00021003
 #define GPIO_PC4_PWM6           0x00021004
 #define GPIO_PC4_CCP2           0x00021005
 #define GPIO_PC4_CCP4           0x00021006
@@ -313,6 +321,7 @@ extern "C"
 #define GPIO_PD0_U2RX           0x00030004
 #define GPIO_PD0_U1RX           0x00030005
 #define GPIO_PD0_CCP6           0x00030006
+#define GPIO_PD0_RXDV           0x00030007
 #define GPIO_PD0_I2S0RXSCK      0x00030008
 #define GPIO_PD0_U1CTS          0x00030009
 
@@ -325,6 +334,7 @@ extern "C"
 #define GPIO_PD1_U2TX           0x00030404
 #define GPIO_PD1_U1TX           0x00030405
 #define GPIO_PD1_CCP7           0x00030406
+#define GPIO_PD1_TXER           0x00030407
 #define GPIO_PD1_I2S0RXWS       0x00030408
 #define GPIO_PD1_U1DCD          0x00030409
 #define GPIO_PD1_CCP2           0x0003040a
@@ -353,6 +363,7 @@ extern "C"
 //
 #define GPIO_PD4_CCP0           0x00031001
 #define GPIO_PD4_CCP3           0x00031002
+#define GPIO_PD4_TXD3           0x00031004
 #define GPIO_PD4_I2S0RXSD       0x00031008
 #define GPIO_PD4_U1RI           0x00031009
 #define GPIO_PD4_EPI0S19        0x0003100a
@@ -362,6 +373,7 @@ extern "C"
 //
 #define GPIO_PD5_CCP2           0x00031401
 #define GPIO_PD5_CCP4           0x00031402
+#define GPIO_PD5_TXD2           0x00031404
 #define GPIO_PD5_I2S0RXMCLK     0x00031408
 #define GPIO_PD5_U2RX           0x00031409
 #define GPIO_PD5_EPI0S28        0x0003140a
@@ -370,6 +382,7 @@ extern "C"
 // GPIO pin D6
 //
 #define GPIO_PD6_FAULT0         0x00031801
+#define GPIO_PD6_TXD1           0x00031804
 #define GPIO_PD6_I2S0TXSCK      0x00031808
 #define GPIO_PD6_U2TX           0x00031809
 #define GPIO_PD6_EPI0S29        0x0003180a
@@ -380,6 +393,7 @@ extern "C"
 #define GPIO_PD7_IDX0           0x00031c01
 #define GPIO_PD7_C0O            0x00031c02
 #define GPIO_PD7_CCP1           0x00031c03
+#define GPIO_PD7_TXD0           0x00031c04
 #define GPIO_PD7_I2S0TXWS       0x00031c08
 #define GPIO_PD7_U1DTR          0x00031c09
 #define GPIO_PD7_EPI0S30        0x00031c0a
@@ -427,15 +441,18 @@ extern "C"
 // GPIO pin E4
 //
 #define GPIO_PE4_CCP3           0x00041001
+#define GPIO_PE4_CAN2RX         0x00041002
 #define GPIO_PE4_FAULT0         0x00041004
 #define GPIO_PE4_U2TX           0x00041005
 #define GPIO_PE4_CCP2           0x00041006
+#define GPIO_PE4_RXD0           0x00041007
 #define GPIO_PE4_I2S0TXWS       0x00041009
 
 //
 // GPIO pin E5
 //
 #define GPIO_PE5_CCP5           0x00041401
+#define GPIO_PE5_CAN2TX         0x00041402
 #define GPIO_PE5_I2S0TXSD       0x00041409
 
 //
@@ -458,6 +475,7 @@ extern "C"
 #define GPIO_PF0_CAN1RX         0x00050001
 #define GPIO_PF0_PHB0           0x00050002
 #define GPIO_PF0_PWM0           0x00050003
+#define GPIO_PF0_RXCK           0x00050004
 #define GPIO_PF0_I2S0TXSD       0x00050008
 #define GPIO_PF0_U1DSR          0x00050009
 
@@ -467,6 +485,7 @@ extern "C"
 #define GPIO_PF1_CAN1TX         0x00050401
 #define GPIO_PF1_IDX1           0x00050402
 #define GPIO_PF1_PWM1           0x00050403
+#define GPIO_PF1_RXER           0x00050404
 #define GPIO_PF1_I2S0TXMCLK     0x00050408
 #define GPIO_PF1_U1RTS          0x00050409
 #define GPIO_PF1_CCP3           0x0005040a
@@ -476,6 +495,7 @@ extern "C"
 //
 #define GPIO_PF2_LED1           0x00050801
 #define GPIO_PF2_PWM4           0x00050802
+#define GPIO_PF2_PHYINT         0x00050803
 #define GPIO_PF2_PWM2           0x00050804
 #define GPIO_PF2_SSI1CLK        0x00050809
 
@@ -484,6 +504,7 @@ extern "C"
 //
 #define GPIO_PF3_LED0           0x00050c01
 #define GPIO_PF3_PWM5           0x00050c02
+#define GPIO_PF3_MDC            0x00050c03
 #define GPIO_PF3_PWM3           0x00050c04
 #define GPIO_PF3_SSI1FSS        0x00050c09
 
@@ -492,6 +513,7 @@ extern "C"
 //
 #define GPIO_PF4_CCP0           0x00051001
 #define GPIO_PF4_C0O            0x00051002
+#define GPIO_PF4_MDIO           0x00051003
 #define GPIO_PF4_FAULT0         0x00051004
 #define GPIO_PF4_EPI0S12        0x00051008
 #define GPIO_PF4_SSI1RX         0x00051009
@@ -501,6 +523,7 @@ extern "C"
 //
 #define GPIO_PF5_CCP2           0x00051401
 #define GPIO_PF5_C1O            0x00051402
+#define GPIO_PF5_RXD3           0x00051403
 #define GPIO_PF5_EPI0S15        0x00051408
 #define GPIO_PF5_SSI1TX         0x00051409
 
@@ -509,6 +532,7 @@ extern "C"
 //
 #define GPIO_PF6_CCP1           0x00051801
 #define GPIO_PF6_C2O            0x00051802
+#define GPIO_PF6_RXD2           0x00051803
 #define GPIO_PF6_PHA0           0x00051804
 #define GPIO_PF6_I2S0TXMCLK     0x00051809
 #define GPIO_PF6_U1RTS          0x0005180a
@@ -517,6 +541,7 @@ extern "C"
 // GPIO pin F7
 //
 #define GPIO_PF7_CCP4           0x00051c01
+#define GPIO_PF7_RXD1           0x00051c03
 #define GPIO_PF7_PHB0           0x00051c04
 #define GPIO_PF7_EPI0S12        0x00051c08
 #define GPIO_PF7_FAULT1         0x00051c09
@@ -544,6 +569,7 @@ extern "C"
 // GPIO pin G2
 //
 #define GPIO_PG2_PWM0           0x00060801
+#define GPIO_PG2_COL            0x00060803
 #define GPIO_PG2_FAULT0         0x00060804
 #define GPIO_PG2_IDX1           0x00060808
 #define GPIO_PG2_I2S0RXSD       0x00060809
@@ -552,6 +578,7 @@ extern "C"
 // GPIO pin G3
 //
 #define GPIO_PG3_PWM1           0x00060c01
+#define GPIO_PG3_CRS            0x00060c03
 #define GPIO_PG3_FAULT2         0x00060c04
 #define GPIO_PG3_FAULT0         0x00060c08
 #define GPIO_PG3_I2S0RXMCLK     0x00060c09
@@ -560,6 +587,7 @@ extern "C"
 // GPIO pin G4
 //
 #define GPIO_PG4_CCP3           0x00061001
+#define GPIO_PG4_RXD0           0x00061003
 #define GPIO_PG4_FAULT1         0x00061004
 #define GPIO_PG4_EPI0S15        0x00061008
 #define GPIO_PG4_PWM6           0x00061009
@@ -569,6 +597,7 @@ extern "C"
 // GPIO pin G5
 //
 #define GPIO_PG5_CCP5           0x00061401
+#define GPIO_PG5_TXEN           0x00061403
 #define GPIO_PG5_IDX0           0x00061404
 #define GPIO_PG5_FAULT1         0x00061405
 #define GPIO_PG5_PWM7           0x00061408
@@ -579,6 +608,7 @@ extern "C"
 // GPIO pin G6
 //
 #define GPIO_PG6_PHA1           0x00061801
+#define GPIO_PG6_TXCK           0x00061803
 #define GPIO_PG6_PWM6           0x00061804
 #define GPIO_PG6_FAULT1         0x00061808
 #define GPIO_PG6_I2S0RXWS       0x00061809
@@ -588,6 +618,7 @@ extern "C"
 // GPIO pin G7
 //
 #define GPIO_PG7_PHB1           0x00061c01
+#define GPIO_PG7_TXER           0x00061c03
 #define GPIO_PG7_PWM7           0x00061c04
 #define GPIO_PG7_CCP5           0x00061c08
 #define GPIO_PG7_EPI0S31        0x00061c09
@@ -615,6 +646,7 @@ extern "C"
 #define GPIO_PH2_C1O            0x00070802
 #define GPIO_PH2_FAULT3         0x00070804
 #define GPIO_PH2_EPI0S1         0x00070808
+#define GPIO_PH2_TXD3           0x00070809
 
 //
 // GPIO pin H3
@@ -623,18 +655,21 @@ extern "C"
 #define GPIO_PH3_FAULT0         0x00070c02
 #define GPIO_PH3_USB0EPEN       0x00070c04
 #define GPIO_PH3_EPI0S0         0x00070c08
+#define GPIO_PH3_TXD2           0x00070c09
 
 //
 // GPIO pin H4
 //
 #define GPIO_PH4_USB0PFLT       0x00071004
 #define GPIO_PH4_EPI0S10        0x00071008
+#define GPIO_PH4_TXD1           0x00071009
 #define GPIO_PH4_SSI1CLK        0x0007100b
 
 //
 // GPIO pin H5
 //
 #define GPIO_PH5_EPI0S11        0x00071408
+#define GPIO_PH5_TXD0           0x00071409
 #define GPIO_PH5_FAULT2         0x0007140a
 #define GPIO_PH5_SSI1FSS        0x0007140b
 
@@ -642,12 +677,14 @@ extern "C"
 // GPIO pin H6
 //
 #define GPIO_PH6_EPI0S26        0x00071808
+#define GPIO_PH6_RXDV           0x00071809
 #define GPIO_PH6_PWM4           0x0007180a
 #define GPIO_PH6_SSI1RX         0x0007180b
 
 //
 // GPIO pin H7
 //
+#define GPIO_PH7_RXCK           0x00071c03
 #define GPIO_PH7_EPI0S27        0x00071c08
 #define GPIO_PH7_PWM5           0x00071c0a
 #define GPIO_PH7_SSI1TX         0x00071c0b
@@ -655,6 +692,7 @@ extern "C"
 //
 // GPIO pin J0
 //
+#define GPIO_PJ0_RXER           0x00080003
 #define GPIO_PJ0_EPI0S16        0x00080008
 #define GPIO_PJ0_PWM0           0x0008000a
 #define GPIO_PJ0_I2C1SCL        0x0008000b
@@ -741,6 +779,7 @@ extern void GPIOPinTypeCAN(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeComparator(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeEPI(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeEthernetLED(unsigned long ulPort, unsigned char ucPins);
+extern void GPIOPinTypeEthernetMII(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeGPIOInput(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeGPIOOutput(unsigned long ulPort, unsigned char ucPins);
 extern void GPIOPinTypeGPIOOutputOD(unsigned long ulPort,

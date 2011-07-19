@@ -4,7 +4,7 @@
 // codec encodes it using Speex and then decodes it and plays it back out the
 // output of the codec.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -34,6 +34,7 @@
 #include "driverlib/udma.h"
 #include "driverlib/uart.h"
 #include "driverlib/i2s.h"
+#include "driverlib/rom.h"
 #include "drivers/sound.h"
 #include "drivers/set_pinout.h"
 #include "utils/cmdline.h"
@@ -482,8 +483,8 @@ main(void)
     //
     // Set the system clock to run at 80MHz from the PLL.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Give bget some memory to work with.
@@ -498,7 +499,7 @@ main(void)
     //
     // Configure the relevant pins such that UART0 owns them.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Open the UART for I/O
@@ -510,15 +511,15 @@ main(void)
     //
     // Configure and enable uDMA
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Enable Interrupts
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Configure the I2S peripheral.

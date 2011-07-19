@@ -2,7 +2,7 @@
 //
 // hw_uart.h - Macros and defines used when accessing the UART hardware.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -277,9 +277,9 @@
 // The following are defines for the bit fields in the UART_O_ICR register.
 //
 //*****************************************************************************
-#define UART_ICR_LME5MIC        0x00008000  // LIN Mode Edge 5 Interrupt Clear
-#define UART_ICR_LME1MIC        0x00004000  // LIN Mode Edge 1 Interrupt Clear
-#define UART_ICR_LMSBMIC        0x00002000  // LIN Mode Sync Break Interrupt
+#define UART_ICR_LME5IC         0x00008000  // LIN Mode Edge 5 Interrupt Clear
+#define UART_ICR_LME1IC         0x00004000  // LIN Mode Edge 1 Interrupt Clear
+#define UART_ICR_LMSBIC         0x00002000  // LIN Mode Sync Break Interrupt
                                             // Clear
 #define UART_ICR_OEIC           0x00000400  // Overrun Error Interrupt Clear
 #define UART_ICR_BEIC           0x00000200  // Break Error Interrupt Clear
@@ -418,6 +418,10 @@
 // register.
 //
 //*****************************************************************************
+#define UART_ICR_LME5MIC        0x00008000  // LIN Mode Edge 5 Interrupt Clear
+#define UART_ICR_LME1MIC        0x00004000  // LIN Mode Edge 1 Interrupt Clear
+#define UART_ICR_LMSBMIC        0x00002000  // LIN Mode Sync Break Interrupt
+                                            // Clear
 #define UART_RSR_ANY            (UART_RSR_OE | UART_RSR_BE | UART_RSR_PE | \
                                  UART_RSR_FE)
 

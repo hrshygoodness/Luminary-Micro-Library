@@ -2,7 +2,7 @@
 //
 // enet_lwip.c - Sample WebServer Application using lwIP.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -32,6 +32,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
+#include "driverlib/rom.h"
 #include "utils/locator.h"
 #include "utils/lwiplib.h"
 #include "utils/uartstdio.h"
@@ -278,8 +279,8 @@ main(void)
     //
     // Set the system clock to run at 50MHz from the PLL.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the pinout appropriately for this board.
@@ -289,7 +290,7 @@ main(void)
     //
     // Initialize the UART for debug output.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
     UARTStdioInit(0);
 
     //
@@ -328,8 +329,8 @@ main(void)
     //
     // Enable and Reset the Ethernet Controller.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
-    SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_ETH);
+    ROM_SysCtlPeripheralReset(SYSCTL_PERIPH_ETH);
 
     //
     // Enable Port F for Ethernet LEDs.
@@ -341,14 +342,14 @@ main(void)
     //
     // Configure SysTick for a periodic interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKHZ);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKHZ);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Enable processor interrupts.
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Initialize the file system.
@@ -363,7 +364,7 @@ main(void)
     // non-volatile USER0 and USER1 registers.  These registers can be read
     // using the FlashUserGet function, as illustrated below.
     //
-    FlashUserGet(&ulUser0, &ulUser1);
+    ROM_FlashUserGet(&ulUser0, &ulUser1);
     if((ulUser0 == 0xffffffff) || (ulUser1 == 0xffffffff))
     {
         //
@@ -425,9 +426,9 @@ main(void)
     // processed.  This is very likely since all the TCP/IP and HTTP work is
     // done in the context of the Ethernet interrupt.
     //
-    IntPriorityGroupingSet(4);
-    IntPrioritySet(INT_ETH, ETHERNET_INT_PRIORITY);
-    IntPrioritySet(FAULT_SYSTICK, SYSTICK_INT_PRIORITY);
+    ROM_IntPriorityGroupingSet(4);
+    ROM_IntPrioritySet(INT_ETH, ETHERNET_INT_PRIORITY);
+    ROM_IntPrioritySet(FAULT_SYSTICK, SYSTICK_INT_PRIORITY);
 
     //
     // Loop forever.  All the work is done in interrupt handlers.

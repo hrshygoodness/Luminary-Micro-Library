@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
 
-  <SchemaVersion>1.1</SchemaVersion>
+  <SchemaVersion>1.0</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
@@ -29,7 +29,6 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -136,7 +135,7 @@
             <RestoreToolbox>1</RestoreToolbox>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>4</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -150,7 +149,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>BIN\lmidk-agdi.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -158,12 +157,12 @@
             <UseTargetDll>1</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
-            <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
+            <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4096</DriverSelection>
+            <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash2>BIN\lmidk-agdi.dll</Flash2>
+          <Flash3></Flash3>
           <Flash4></Flash4>
         </Utilities>
         <TargetArmAds>

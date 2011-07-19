@@ -2,7 +2,7 @@
 //
 // usbhaudio.c - USB host audio driver.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,12 +18,11 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_types.h"
-#include "driverlib/sysctl.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
 #include "usblib/usbaudio.h"
@@ -238,12 +237,12 @@ AudioTerminalGet(tConfigDescriptor *pConfigDesc, unsigned long ulTerminal,
     tACOutputTerminal *pOutput;
     tACFeatureUnit *pFeature;
     tDescriptorHeader *pHeader;
-    int iBytesRemaining;
+    long lBytesRemaining;
 
     pHeader = (tDescriptorHeader *)pConfigDesc;
-    iBytesRemaining = pConfigDesc->wTotalLength;
+    lBytesRemaining = pConfigDesc->wTotalLength;
 
-    while(iBytesRemaining > 0)
+    while(lBytesRemaining > 0)
     {
         //
         // Output and input terminals are the same past the bDescriptorSubtype
@@ -284,7 +283,7 @@ AudioTerminalGet(tConfigDescriptor *pConfigDesc, unsigned long ulTerminal,
         //
         // Decrease the bytes remaining by the size of this descriptor.
         //
-        iBytesRemaining -=  pHeader->bLength;
+        lBytesRemaining -=  pHeader->bLength;
 
         //
         // Move the pointer to the next header.
@@ -317,10 +316,10 @@ AudioControlGet(tConfigDescriptor *pConfigDesc)
     tDescriptorHeader *pHeader;
     tInterfaceDescriptor *pInterface;
     unsigned long ulInterface;
-    int iBytes;
+    long lBytes;
 
     pHeader = (tDescriptorHeader *)pConfigDesc;
-    iBytes = pConfigDesc->wTotalLength;
+    lBytes = pConfigDesc->wTotalLength;
 
     //
     // Initialize the interface number to an invalid value.
@@ -330,7 +329,7 @@ AudioControlGet(tConfigDescriptor *pConfigDesc)
     //
     // Search the whole configuration descriptor.
     //
-    while(iBytes > 0)
+    while(lBytes > 0)
     {
         //
         // Find an interface descriptor and see if it is a control interface.
@@ -354,7 +353,7 @@ AudioControlGet(tConfigDescriptor *pConfigDesc)
         //
         // Decrease the bytes remaining by the size of this descriptor.
         //
-        iBytes -= pHeader->bLength;
+        lBytes -= pHeader->bLength;
 
         //
         // Move the pointer to the next header.
@@ -385,7 +384,7 @@ AudioGetInterface(tUSBHostAudioInstance *pAudioDevice,
     tEndpointDescriptor *pEndpoint;
     unsigned char *pucValue;
     unsigned long ulValue;
-    int iBytes, iIdx;
+    long lBytes, lIdx;
 
     //
     // Initialize the Interface pointer to null.
@@ -399,9 +398,9 @@ AudioGetInterface(tUSBHostAudioInstance *pAudioDevice,
     //
     pHeader = (tDescriptorHeader *)pAudioDevice->pDevice->pConfigDescriptor;
 
-    iBytes = pAudioDevice->pDevice->pConfigDescriptor->wTotalLength;
+    lBytes = pAudioDevice->pDevice->pConfigDescriptor->wTotalLength;
 
-    while(iBytes > 0)
+    while(lBytes > 0)
     {
         if(pHeader->bDescriptorType == USB_DTYPE_INTERFACE)
         {
@@ -481,10 +480,10 @@ AudioGetInterface(tUSBHostAudioInstance *pAudioDevice,
                     // Attempt to find the sample rate in the sample rate
                     // table for this interface.
                     //
-                    for(iIdx = 0; iIdx < pFormat->bSamFreqType; iIdx++)
+                    for(lIdx = 0; lIdx < pFormat->bSamFreqType; lIdx++)
                     {
-                        ulValue = *((unsigned long *)&pucValue[iIdx*3]) &
-                                  0xffffff;
+                        ulValue = (*((unsigned long *)&pucValue[lIdx * 3]) &
+                                   0xffffff);
 
                         if(ulValue == ulSampleRate)
                         {
@@ -497,7 +496,7 @@ AudioGetInterface(tUSBHostAudioInstance *pAudioDevice,
                     // pointer to null so that the rest of this interface is
                     // ignored.
                     //
-                    if(iIdx == pFormat->bSamFreqType)
+                    if(lIdx == pFormat->bSamFreqType)
                     {
                         pInterface = 0;
                     }
@@ -561,7 +560,7 @@ AudioGetInterface(tUSBHostAudioInstance *pAudioDevice,
         //
         // Decrease the bytes remaining by the size of this descriptor.
         //
-        iBytes -= pHeader->bLength;
+        lBytes -= pHeader->bLength;
 
         //
         // Move the pointer to the next header.
@@ -1373,7 +1372,7 @@ USBHostAudioFormatSet(unsigned long ulInstance, unsigned long ulSampleRate,
 //! device present or the request could not be satisfied at this time.
 //
 //*****************************************************************************
-int
+long
 USBHostAudioPlay(unsigned long ulInstance, void *pvBuffer,
                  unsigned long ulSize, tUSBHostAudioCallback pfnCallback)
 {
@@ -1455,7 +1454,7 @@ USBHostAudioPlay(unsigned long ulInstance, void *pvBuffer,
 //! device present or the device does not support audio input.
 //
 //*****************************************************************************
-int
+long
 USBHostAudioRecord(unsigned long ulInstance, void *pvBuffer,
                    unsigned long ulSize, tUSBHostAudioCallback pfnCallback)
 {

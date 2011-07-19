@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the ek-lm3s9b92 examples.
 #
-# Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+# This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 #
 #******************************************************************************
 
@@ -29,6 +29,8 @@ DIRS=aes_expanded_key  \
      aes_set_key       \
      bitband           \
      blinky            \
+     boot_usb          \
+     boot_demo_usb     \
      enet_lwip         \
      enet_ptpd         \
      enet_uip          \
@@ -38,11 +40,13 @@ DIRS=aes_expanded_key  \
      mpu_fault         \
      pwmgen            \
      qs-adventure      \
+     softuart_echo     \
      timers            \
      uart_echo         \
      udma_demo         \
      udma_timer        \
      udma_timer_ccp    \
+     udma_uart_sg      \
      usb_dev_bulk      \
      usb_dev_chidcdc   \
      usb_dev_keyboard  \

@@ -2,7 +2,7 @@
 //
 // timers.c - Timers example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -83,7 +84,7 @@ Timer0IntHandler(void)
     //
     // Clear the timer interrupt.
     //
-    TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 
     //
     // Toggle the flag for the first timer.
@@ -93,10 +94,10 @@ Timer0IntHandler(void)
     //
     // Update the interrupt status on the display.
     //
-    IntMasterDisable();
+    ROM_IntMasterDisable();
     GrStringDraw(&g_sContext, (HWREGBITW(&g_ulFlags, 0) ? "1" : "0"), -1, 195,
                  150, 1);
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 }
 
 //*****************************************************************************
@@ -110,7 +111,7 @@ Timer1IntHandler(void)
     //
     // Clear the timer interrupt.
     //
-    TimerIntClear(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_TimerIntClear(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
 
     //
     // Toggle the flag for the second timer.
@@ -120,10 +121,10 @@ Timer1IntHandler(void)
     //
     // Update the interrupt status on the display.
     //
-    IntMasterDisable();
+    ROM_IntMasterDisable();
     GrStringDraw(&g_sContext, (HWREGBITW(&g_ulFlags, 1) ? "1" : "0"), -1, 195,
                  120, 1);
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 }
 
 //*****************************************************************************
@@ -140,8 +141,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -191,35 +192,35 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
 
     //
     // Enable processor interrupts.
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Configure the two 32-bit periodic timers.
     //
-    TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_PER);
-    TimerConfigure(TIMER1_BASE, TIMER_CFG_32_BIT_PER);
-    TimerLoadSet(TIMER0_BASE, TIMER_A, SysCtlClockGet());
-    TimerLoadSet(TIMER1_BASE, TIMER_A, SysCtlClockGet() / 2);
+    ROM_TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_PER);
+    ROM_TimerConfigure(TIMER1_BASE, TIMER_CFG_32_BIT_PER);
+    ROM_TimerLoadSet(TIMER0_BASE, TIMER_A, ROM_SysCtlClockGet());
+    ROM_TimerLoadSet(TIMER1_BASE, TIMER_A, ROM_SysCtlClockGet() / 2);
 
     //
     // Setup the interrupts for the timer timeouts.
     //
-    IntEnable(INT_TIMER0A);
-    IntEnable(INT_TIMER1A);
-    TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
-    TimerIntEnable(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_IntEnable(INT_TIMER0A);
+    ROM_IntEnable(INT_TIMER1A);
+    ROM_TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
+    ROM_TimerIntEnable(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
 
     //
     // Enable the timers.
     //
-    TimerEnable(TIMER0_BASE, TIMER_A);
-    TimerEnable(TIMER1_BASE, TIMER_A);
+    ROM_TimerEnable(TIMER0_BASE, TIMER_A);
+    ROM_TimerEnable(TIMER1_BASE, TIMER_A);
 
     //
     // Loop forever while the timers run.

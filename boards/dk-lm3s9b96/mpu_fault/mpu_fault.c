@@ -2,7 +2,7 @@
 //
 // mpu_fault.c - MPU example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/mpu.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "drivers/kitronix320x240x16_ssd2119_8bit.h"
 #include "drivers/set_pinout.h"
@@ -152,8 +153,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -200,29 +201,29 @@ main(void)
     // region.  This region is needed so that the program can execute from
     // flash.
     //
-    MPURegionSet(0, FLASH_BASE,
-                 MPU_RGN_SIZE_16K | MPU_RGN_PERM_EXEC |
-                 MPU_RGN_PERM_PRV_RO_USR_RO | MPU_SUB_RGN_DISABLE_7 |
-                 MPU_RGN_ENABLE);
+    ROM_MPURegionSet(0, FLASH_BASE,
+                     MPU_RGN_SIZE_16K | MPU_RGN_PERM_EXEC |
+                     MPU_RGN_PERM_PRV_RO_USR_RO | MPU_SUB_RGN_DISABLE_7 |
+                     MPU_RGN_ENABLE);
 
     //
     // Configure a read-write MPU region for RAM.  It is a 64 KB region.  There
     // is a 8 KB sub-region in the middle that is disabled in order to open up
     // a hole in which different permissions can be applied.
     //
-    MPURegionSet(1, SRAM_BASE,
-                 MPU_RGN_SIZE_64K | MPU_RGN_PERM_NOEXEC |
-                 MPU_RGN_PERM_PRV_RW_USR_RW | MPU_SUB_RGN_DISABLE_4 |
-                 MPU_RGN_ENABLE);
+    ROM_MPURegionSet(1, SRAM_BASE,
+                     MPU_RGN_SIZE_64K | MPU_RGN_PERM_NOEXEC |
+                     MPU_RGN_PERM_PRV_RW_USR_RW | MPU_SUB_RGN_DISABLE_4 |
+                     MPU_RGN_ENABLE);
 
     //
     // Configure a read-only MPU region for the 8 KB of RAM that is disabled in
     // the previous region.  This region is used for demonstrating read-only
     // permissions.
     //
-    MPURegionSet(2, SRAM_BASE + 0x8000,
-                 MPU_RGN_SIZE_2K | MPU_RGN_PERM_NOEXEC |
-                 MPU_RGN_PERM_PRV_RO_USR_RO | MPU_RGN_ENABLE);
+    ROM_MPURegionSet(2, SRAM_BASE + 0x8000,
+                     MPU_RGN_SIZE_2K | MPU_RGN_PERM_NOEXEC |
+                     MPU_RGN_PERM_PRV_RO_USR_RO | MPU_RGN_ENABLE);
 
     //
     // Configure a read-write MPU region for peripherals.  The region is 512 KB
@@ -230,27 +231,27 @@ main(void)
     // where there are no peripherals.  This region is needed because the
     // program needs access to some peripherals.
     //
-    MPURegionSet(3, 0x40000000,
-                 MPU_RGN_SIZE_512K | MPU_RGN_PERM_NOEXEC |
-                 MPU_RGN_PERM_PRV_RW_USR_RW | MPU_SUB_RGN_DISABLE_1 |
-                 MPU_SUB_RGN_DISABLE_6 | MPU_SUB_RGN_DISABLE_7 |
-                 MPU_RGN_ENABLE);
+    ROM_MPURegionSet(3, 0x40000000,
+                     MPU_RGN_SIZE_512K | MPU_RGN_PERM_NOEXEC |
+                     MPU_RGN_PERM_PRV_RW_USR_RW | MPU_SUB_RGN_DISABLE_1 |
+                     MPU_SUB_RGN_DISABLE_6 | MPU_SUB_RGN_DISABLE_7 |
+                     MPU_RGN_ENABLE);
 
     //
     // Configure a read-write MPU region for access to the NVIC.  The region is
     // 4 KB in size.  This region is needed because NVIC registers are needed
     // in order to control the MPU.
     //
-    MPURegionSet(4, NVIC_BASE,
-                 MPU_RGN_SIZE_4K | MPU_RGN_PERM_NOEXEC |
-                 MPU_RGN_PERM_PRV_RW_USR_RW | MPU_RGN_ENABLE);
+    ROM_MPURegionSet(4, NVIC_BASE,
+                     MPU_RGN_SIZE_4K | MPU_RGN_PERM_NOEXEC |
+                     MPU_RGN_PERM_PRV_RW_USR_RW | MPU_RGN_ENABLE);
 
     //
     // Configure a read-write MPU region for the top 32KB of RAM.
     //
-    MPURegionSet(5, SRAM_BASE + (64 * 1024),
-                 MPU_RGN_SIZE_32K | MPU_RGN_PERM_NOEXEC |
-                 MPU_RGN_PERM_PRV_RW_USR_RW | MPU_RGN_ENABLE);
+    ROM_MPURegionSet(5, SRAM_BASE + (64 * 1024),
+                     MPU_RGN_SIZE_32K | MPU_RGN_PERM_NOEXEC |
+                     MPU_RGN_PERM_PRV_RW_USR_RW | MPU_RGN_ENABLE);
 
     //
     // Need to clear the NVIC fault status register to make sure there is no
@@ -262,7 +263,7 @@ main(void)
     //
     // Enable the MPU fault.
     //
-    IntEnable(FAULT_MPU);
+    ROM_IntEnable(FAULT_MPU);
 
     //
     // Enable the MPU.  This will begin to enforce the memory protection
@@ -270,7 +271,7 @@ main(void)
     // exceptions, a default map will be used.  Neither of these should occur
     // in this example program.
     //
-    MPUEnable(MPU_CONFIG_HARDFLT_NMI);
+    ROM_MPUEnable(MPU_CONFIG_HARDFLT_NMI);
 
     //
     // Attempt to write to the flash.  This should cause a protection fault due
@@ -298,7 +299,7 @@ main(void)
     // The MPU was disabled when the previous fault occurred, so it needs to be
     // re-enabled.
     //
-    MPUEnable(MPU_CONFIG_HARDFLT_NMI);
+    ROM_MPUEnable(MPU_CONFIG_HARDFLT_NMI);
 
     //
     // Attempt to read from the disabled section of flash, the upper 2 KB of
@@ -326,7 +327,7 @@ main(void)
     // The MPU was disabled when the previous fault occurred, so it needs to be
     // re-enabled.
     //
-    MPUEnable(MPU_CONFIG_HARDFLT_NMI);
+    ROM_MPUEnable(MPU_CONFIG_HARDFLT_NMI);
 
     //
     // Attempt to read from the read-only area of RAM, the middle 8 KB of the
@@ -354,7 +355,7 @@ main(void)
     // supposed to cause a fault.  But if it did cause a fault, then the MPU
     // will be disabled, so re-enable it here anyway, just in case.
     //
-    MPUEnable(MPU_CONFIG_HARDFLT_NMI);
+    ROM_MPUEnable(MPU_CONFIG_HARDFLT_NMI);
 
     //
     // Attempt to write to the read-only area of RAM, the middle 8 KB of the
@@ -396,7 +397,7 @@ main(void)
     // Disable the MPU, so there are no lingering side effects if another
     // program is run.
     //
-    MPUDisable();
+    ROM_MPUDisable();
 
     //
     // Loop forever.

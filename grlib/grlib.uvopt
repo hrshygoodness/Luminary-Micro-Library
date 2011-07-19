@@ -2612,7 +2612,7 @@
       <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
-          <Name>C:\StellarisWare\driverlib\readme.txt</Name>
+          <Name>.\readme.txt</Name>
           <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
           <CurrentLine>1</CurrentLine>

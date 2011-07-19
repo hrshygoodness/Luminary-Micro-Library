@@ -1,7 +1,8 @@
+//*****************************************************************************
 //
 // usblib.h - Main header file for the USB Library.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -82,7 +83,6 @@ extern "C"
 #else
 #error Unrecognized COMPILER!
 #endif
-
 //*****************************************************************************
 //
 // Assorted language IDs from the document "USB_LANGIDs.pdf" provided by the
@@ -107,6 +107,7 @@ extern "C"
 #define USB_LANG_SWAHILI        0x0441      // Swahili (Kenya)
 #define USB_LANG_URDU_IN        0x0820      // Urdu (India)
 #define USB_LANG_URDU_PK        0x0420      // Urdu (Pakistan)
+
 //*****************************************************************************
 //
 //! \addtogroup usbchap9_src
@@ -1387,9 +1388,9 @@ typedef unsigned long (* tUSBCallback)(void *pvCBData, unsigned long ulEvent,
 //! The device has been disconnected from the USB host (used by device classes
 //! only).
 //!
-//! Note: Due to a hardware erratum in revision A of LM3S3748, this
-//! event is not posted to self-powered USB devices when they are disconnected
-//! from the USB host.
+//! \note In device mode, the USB_EVENT_DISCONNECTED will not be reported if the
+//! MCU's PB1/USB0VBUS pin is connected to a fixed +5 Volts rather than
+//! directly to the VBUS pin on the USB connector.
 //
 #define USB_EVENT_DISCONNECTED (USB_EVENT_BASE + 1)
 

@@ -2,9 +2,9 @@ Daughter Board EEPROM Read/Write Example
 
 This application may be used to read and write the ID structures written
 into the 128 byte EEPROMs found on the optional Flash/SRAM and FPGA
-daughter boards for dk-lm3s9b96.  A command line interface is provided
-via UART 0 and commands allow the existing ID EEPROM content to be read
-and one of the standard structures identifying the available daughter
+daughter boards for the development board.  A command line interface is
+provided via UART 0 and commands allow the existing ID EEPROM content to be
+read and one of the standard structures identifying the available daughter
 boards to be written to the device.
 
 The ID EEPROM is read in function PinoutSet() and used to configure the
@@ -14,7 +14,7 @@ example applications will typically show merely a blank display when run.
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -30,4 +30,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.

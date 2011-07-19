@@ -2,7 +2,7 @@
 //
 // boot_eth_ext.c - External flash Ethernet boot loader description.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/uart.h"
 #include "driverlib/flash.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "utils/uartstdio.h"
 #include "utils/ustdlib.h"
@@ -54,9 +55,8 @@
 //!
 //! The configuration is set to boot applications which are linked to run from
 //! address 0x60000000 (EPI-connected external flash) and requires that the
-//! DK-LM3S9B96 Flash/SRAM Daughter Board be installed.  If the daughter board
-//! is not present, the boot loader will warn the user via a message on the
-//! display.
+//! SRAM/Flash Daughter Board be installed.  If the daughter board is not
+//! present, the boot loader will warn the user via a message on the display.
 //!
 //! Note that execution from external flash should be avoided if at all
 //! possible due to significantly lower performance than achievable from
@@ -124,13 +124,14 @@ __error__(char *pcFilename, unsigned long ulLine)
 // of the main application image.  The image is assumed to exist and be valid
 // if the first word at APP_START_ADDRESS is a valid pointer to a location in
 // SRAM (and, hence, likely to be a good stack pointer) and the second word is
-// a pointer to a location in external flash and ends in a 1 (making it a likely
-// candidate for a valid reset vector).
+// a pointer to a location in external flash and ends in a 1 (making it a
+// likely candidate for a valid reset vector).
 //
 // If a valid image is found, the function also checks the state of the GPIO
-// pin connected to the user button on the dk-lm3s9b96 board.  If this indicates
-// that the button is pressed, the boot loader is told to retain control, thus
-// providing the user a method of preventing the main image from being booted.
+// pin connected to the user button on the development board.  If this
+// indicates that the button is pressed, the boot loader is told to retain
+// control, thus providing the user a method of preventing the main image from
+// being booted.
 //
 //*****************************************************************************
 unsigned long
@@ -211,11 +212,11 @@ BootExtCheckUpdate(void)
 // Low level hardware initialization for the boot_eth_ext boot loader.
 //
 // This function is called by the boot loader immediately after it relocates
-// itself to SRAM.  It is responsible for performing any implementation-specific
-// low level hardware initialization.  In this case, we set the system clock
-// to the same rate that we know the Ethernet boot loader is using, configure
-// the device pinout appropriately for the dk-lm3s9b96 board, and configure
-// the EPI to allow access to daughter board flash and SRAM.
+// itself to SRAM.  It is responsible for performing any
+// implementation-specific low level hardware initialization.  In this case,
+// the system clock is set to the same rate that the Ethernet boot loader is
+// using, configure the device pinout appropriately for the development board,
+// and configure the EPI to allow access to daughter board flash and SRAM.
 //
 //*****************************************************************************
 void
@@ -224,8 +225,8 @@ BootExtHwInit(void)
     //
     // Set the system to run at 12.5MHz.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_16 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_16 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Initialize the device pinout appropriately for this application.
@@ -240,12 +241,12 @@ BootExtHwInit(void)
     //
     // Enable the peripherals used by this example.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //
     // Set GPIO A0 and A1 as UART.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_1 | GPIO_PIN_0);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_1 | GPIO_PIN_0);
 
     //
     // Initialize UART0 for output.
@@ -326,7 +327,7 @@ BootExtInit(void)
     //
     // Get the MAC address from the user registers in NV ram.
     //
-    FlashUserGet(&ulUser0, &ulUser1);
+    ROM_FlashUserGet(&ulUser0, &ulUser1);
 
     //
     // Convert the 24/24 split MAC address from NV ram into a MAC address

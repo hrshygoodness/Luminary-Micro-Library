@@ -1,7 +1,7 @@
 <!--
 Configuration file for Sourcery G++ workspace ek-lm3s9b92
 
-Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 -->
 
 <workspace>
@@ -31,6 +31,8 @@ This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
   <project description="aes_set_key/aes_set_key.sgxx" />
   <project description="bitband/bitband.sgxx" />
   <project description="blinky/blinky.sgxx" />
+  <project description="boot_usb/boot_usb.sgxx" />
+  <project description="boot_demo_usb/boot_demo_usb.sgxx" />
   <project description="enet_lwip/enet_lwip.sgxx" />
   <project description="enet_ptpd/enet_ptpd.sgxx" />
   <project description="enet_uip/enet_uip.sgxx" />
@@ -40,11 +42,13 @@ This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
   <project description="mpu_fault/mpu_fault.sgxx" />
   <project description="pwmgen/pwmgen.sgxx" />
   <project description="qs-adventure/qs-adventure.sgxx" />
+  <project description="softuart_echo/softuart_echo.sgxx" />
   <project description="timers/timers.sgxx" />
   <project description="uart_echo/uart_echo.sgxx" />
   <project description="udma_demo/udma_demo.sgxx" />
   <project description="udma_timer/udma_timer.sgxx" />
   <project description="udma_timer_ccp/udma_timer_ccp.sgxx" />
+  <project description="udma_uart_sg/udma_uart_sg.sgxx" />
   <project description="usb_dev_bulk/usb_dev_bulk.sgxx" />
   <project description="usb_dev_chidcdc/usb_dev_chidcdc.sgxx" />
   <project description="usb_dev_keyboard/usb_dev_keyboard.sgxx" />

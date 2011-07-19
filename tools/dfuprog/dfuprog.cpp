@@ -3,7 +3,7 @@
 // dfuprog.cpp : A simple command-line utility for programming a USB-connected
 //               Stellaris board running the USB DFU boot loader.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -56,7 +56,8 @@ bool g_bWaitOnExit   = false;
 bool g_bReset        = false;
 bool g_bSwitchMode   = false;
 char *g_pszFile      = NULL;
-unsigned long g_ulAddress   = 0;
+unsigned long g_ulAddress  = 0;
+unsigned long g_ulAddressOverride  = 0xFFFFFFFF;
 unsigned long g_ulLength = 0;
 int g_iDeviceIndex = 0;
 
@@ -100,7 +101,7 @@ PrintWelcome(void)
     }
 
     printf("\nUSB Device Firmware Upgrade Example\n");
-    printf("Copyright (c) 2008 Texas Instruments Incorporated\n\n");
+    printf("Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.\n\n");
 }
 
 //*****************************************************************************
@@ -249,7 +250,7 @@ ParseCommandLine(int argc, char *argv[])
                 break;
 
             case 'a':
-                g_ulAddress = (unsigned long)strtol(pcOptArg, NULL, 0);
+                g_ulAddressOverride = (unsigned long)strtol(pcOptArg, NULL, 0);
                 iParm++;
                 break;
 
@@ -473,15 +474,19 @@ UploadImage(tLMDFUHandle hHandle, tLMDFUParams *psDFU)
         return(40);
     }
 
-
     //
-    // Where should we start uploading from?  If the start address is not
-    // specified, assume the start of the writeable area.
+    // Check if the address has a override value.
     //
-    if(g_ulAddress == 0)
+    if(g_ulAddressOverride != 0xFFFFFFFF)
+    {
+        g_ulAddress = g_ulAddressOverride;
+    }
+    else if(g_ulAddress == 0)
     {
         //
-        // Download from the application start address.
+        // Where should we start uploading from?  If the start address is not
+        // specified, assume the start of the writeable area. Upload from
+        // the application start address.
         //
         g_ulAddress = psDFU->ulAppStartAddr;
     }
@@ -650,6 +655,14 @@ DownloadImage(tLMDFUHandle hHandle, tLMDFUParams *psDFU)
 
     QUIETPRINT("Downloading %s to device...\n", g_pszFile);
 
+    //
+    // Check if the address has a override value.
+    //
+    if(g_ulAddressOverride != 0xFFFFFFFF)
+    {
+        g_ulAddress = g_ulAddressOverride;
+    }
+    
     //
     // Does the input file exist?
     //
@@ -950,7 +963,7 @@ main(int argc,char* argv[])
                             // Yes - switch the device into DFU mode.
                             //
                             eRetcode = _LMDFUModeSwitch(hHandle);
-                            
+
                             //
                             // Set an appropriate return code.
                             //
@@ -972,7 +985,7 @@ main(int argc,char* argv[])
                     {
                         //
                         // If we were asked to switch modes and the device is already in
-                        // DFU mode, check that we were passed some other operation to 
+                        // DFU mode, check that we were passed some other operation to
                         // perform.
                         //
                         if(g_bSwitchMode)

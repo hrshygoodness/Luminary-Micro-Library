@@ -2,7 +2,7 @@
 //
 // usb_stick_update.c - Example to update flash from a USB memory stick.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -680,11 +680,6 @@ UpdaterMain(void)
     //
     ROM_SysCtlClockSet(SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
                        SYSCTL_XTAL_16MHZ | SYSCTL_SYSDIV_8);
-
-    //
-    // Set the flash programming based on the 25MHz system clock.
-    //
-    HWREG(FLASH_USECRL) = (25 - 1);
 
     //
     // Configure the USB interface and power the bus.

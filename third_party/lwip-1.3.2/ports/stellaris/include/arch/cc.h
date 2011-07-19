@@ -71,17 +71,43 @@ typedef u32_t               mem_ptr_t;
     #define PACK_STRUCT_FIELD(x) x
 #endif
 
+//*****************************************************************************
+//
+// Define LWIP_PLATFORM_DIAG and LWIP_PLATFORM_ASSERT macros.  Both of these
+// are expected to display the message argument using a platform/app specific
+// display routine.  The ASSERT macro should then abort execution.
+//
+// In general, the user should define these in the target/application specific
+// LWIPOPTS.H file, using whatever display mechanisms are availble for the
+// board/application.  However, some general default macros are provided here
+// to allow the LWIP code to build properly with/without the DEBUG macro
+// defined.
+//
+//*****************************************************************************
+//
+// Define an empty DIAG display maro here ... since we have no knowledge of
+// what display routines are available.
+//
+#ifndef LWIP_PLATFORM_DIAG
+#define LWIP_PLATFORM_DIAG(msg)
+#endif
+
+//
+// Define a generic ASSERT display macro here ... use the DIAG macro to display
+// the message, then use the __error__ function, which should always be
+// defined by the user application for DEBUG builds, to abandon execution.
+//
+#ifndef LWIP_PLATFORM_ASSERT
 #ifdef DEBUG
 extern void __error__(char *pcFilename, unsigned long ulLine);
-#define LWIP_PLATFORM_ASSERT(expr)      \
+#define LWIP_PLATFORM_ASSERT(msg)       \
 {                                       \
-    if(!(expr))                         \
-    {                                   \
-        __error__(__FILE__, __LINE__);  \
-    }                                   \
+    LWIP_PLATFORM_DIAG(msg);            \
+    __error__(__FILE__, __LINE__);      \
 }
 #else
-#define LWIP_PLATFORM_ASSERT(expr)
+#define LWIP_PLATFORM_ASSERT(msg)
+#endif
 #endif
 
 #endif /* __CC_H__ */

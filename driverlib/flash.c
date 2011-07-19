@@ -2,7 +2,7 @@
 //
 // flash.c - Driver for programming the on-chip flash.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -174,12 +174,9 @@ FlashErase(unsigned long ulAddress)
 //! of four.
 //!
 //! This function will program a sequence of words into the on-chip flash.
-//! Programming each location consists of the result of an AND operation
-//! of the new data and the existing data; in other words bits that contain
-//! 1 can remain 1 or be changed to 0, but bits that are 0 cannot be changed
-//! to 1.  Therefore, a word can be programmed multiple times as long as these
-//! rules are followed; if a program operation attempts to change a 0 bit to
-//! a 1 bit, that bit will not have its value changed.
+//! Each word in a page of flash can only be programmed one time between an
+//! erase of that page; programming a word multiple times will result in an
+//! unpredictable value in that word of flash.
 //!
 //! Since the flash is programmed one word at a time, the starting address and
 //! byte count must both be multiples of four.  It is up to the caller to
@@ -536,7 +533,7 @@ FlashProtectSet(unsigned long ulAddress, tFlashProtection eProtect)
     {
         ulProtectRE &= ~(FLASH_FMP_BLOCK_31 | FLASH_FMP_BLOCK_30);
         ulProtectRE |= (HWREG(g_pulFMPRERegs[ulBank]) &
-                (FLASH_FMP_BLOCK_31 | FLASH_FMP_BLOCK_30));
+                        (FLASH_FMP_BLOCK_31 | FLASH_FMP_BLOCK_30));
     }
 
     //
@@ -567,7 +564,7 @@ FlashProtectSet(unsigned long ulAddress, tFlashProtection eProtect)
 long
 FlashProtectSave(void)
 {
-    int ulTemp, ulLimit;
+    unsigned long ulTemp, ulLimit;
 
     //
     // If running on a Sandstorm-class device, only trigger a save of the first
@@ -883,14 +880,14 @@ FlashIntStatus(tBoolean bMasked)
 //! no longer assert.  This must be done in the interrupt handler to keep it
 //! from being called again immediately upon exit.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //

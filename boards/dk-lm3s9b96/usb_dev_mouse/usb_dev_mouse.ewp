@@ -135,6 +135,7 @@
           <name>CCDefines</name>
           <state>ewarm</state>
           <state>PART_LM3S9B96</state>
+          <state>TARGET_IS_TEMPEST_RB1</state>
           <state>UART_BUFFERED</state>
         </option>
         <option>

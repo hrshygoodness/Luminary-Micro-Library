@@ -21,14 +21,15 @@ transfer control to the USB boot loader via the normal means to reenumerate
 as a pure DFU device capable of uploading and downloading firmware images.
 
 Windows device drivers for both the runtime and DFU mode of operation can
-be found in C:/StellarisWare/windows_drivers assuming you installed
-StellarisWare in the default directory.
+be found in <tt>C:/StellarisWare/windows_drivers</tt> assuming you
+installed StellarisWare in the default directory.
 
 To illustrate runtime DFU capability, use the <tt>dfuprog</tt> tool which
 is part of the Stellaris Windows USB Examples package (SW-USB-win-xxxx.msi)
 Assuming this package is installed in the default location, the
 <tt>dfuprog</tt> executable can be found in the
-<tt>C:/Program Files/Texas Instruments/Stellaris/usb_examples</tt> directory.
+<tt>C:/Program Files/Texas Instruments/Stellaris/usb_examples</tt>
+directory.
 
 With the device connected to your PC and the device driver installed, enter
 the following command to enumerate DFU devices:
@@ -50,7 +51,7 @@ may be used to send a new application binary to the device.
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -66,4 +67,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.

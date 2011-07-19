@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the Sample SD Card Application.
 #
-# Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -52,7 +52,6 @@ IPATH=..
 IPATH+=../../..
 IPATH+=../../../third_party
 
-#
 # The default rule, which causes the Sample SD Card Application to be built.
 #
 all: ${COMPILER}
@@ -68,7 +67,7 @@ clean:
 # The rule to create the target directory.
 #
 ${COMPILER}:
-	@mkdir ${COMPILER}
+	@mkdir -p ${COMPILER}
 
 #
 # Rules for building the Sample SD Card Application.
@@ -88,7 +87,7 @@ ${COMPILER}/sd_card.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/sd_card.axf: sd_card.ld
 SCATTERgcc_sd_card=sd_card.ld
 ENTRY_sd_card=ResetISR
-CFLAGSgcc=-DUART_BUFFERED
+CFLAGSgcc=-DTARGET_IS_TEMPEST_RB1 -DUART_BUFFERED
 
 #
 # Include the automatically generated dependency files.

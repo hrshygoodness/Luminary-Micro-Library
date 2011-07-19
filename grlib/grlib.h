@@ -3,7 +3,7 @@
 // grlib.h - Prototypes for the low level primitives provided by the graphics
 //           library.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Graphics Library.
+// This is part of revision 7611 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -196,6 +196,71 @@ tFont;
 
 //*****************************************************************************
 //
+//! This is a newer version of the structure which describes a font used
+//! for drawing text onto the screen.  This variant allows a font to contain an
+//! arbitrary, contiguous block of codepoints from the 256 basic characters in
+//! an ISO8859-n font and allows support for accented characters in Western
+//! European languages and any left-to-right typeface supported by an ISO8859
+//! variant. Fonts encoded in this format may be used interchangeably with the
+//! original fonts merely by casting the structure pointer when calling any
+//! function or macro which expects a font pointer as a parameter.
+//
+//*****************************************************************************
+typedef struct
+{
+    //
+    //! The format of the font.  Can be one of FONT_FMT_EX_UNCOMPRESSED or
+    //! FONT_FMT_EX_PIXEL_RLE.
+    //
+    unsigned char ucFormat;
+
+    //
+    //! The maximum width of a character; this is the width of the widest
+    //! character in the font, though any individual character may be narrower
+    //! than this width.
+    //
+    unsigned char ucMaxWidth;
+
+    //
+    //! The height of the character cell; this may be taller than the font data
+    //! for the characters (to provide inter-line spacing).
+    //
+    unsigned char ucHeight;
+
+    //
+    //! The offset between the top of the character cell and the baseline of
+    //! the glyph.  The baseline is the bottom row of a capital letter, below
+    //! which only the descenders of the lower case letters occur.
+    //
+    unsigned char ucBaseline;
+
+    //
+    //! The codepoint number representing the first character encoded in the
+    //! font.
+    //
+    unsigned char ucFirst;
+
+    //
+    //! The codepoint number representing the last character encoded in the
+    //! font.
+    //
+    unsigned char ucLast;
+
+    //
+    //! A pointer to a table containing the offset within pucData to the data
+    //! for each character in the font.
+    //
+    const unsigned short *pusOffset;
+
+    //
+    //! A pointer to the data for the font.
+    //
+    const unsigned char *pucData;
+}
+tFontEx;
+
+//*****************************************************************************
+//
 //! Indicates that the font data is stored in an uncompressed format.
 //
 //*****************************************************************************
@@ -207,6 +272,30 @@ tFont;
 //
 //*****************************************************************************
 #define FONT_FMT_PIXEL_RLE      0x01
+
+//*****************************************************************************
+//
+//! A marker used in the ucFormat field of a font to indicates that the font
+//! data is stored using the new tFontEx structure.
+//
+//*****************************************************************************
+#define FONT_EX_MARKER          0x80
+
+//*****************************************************************************
+//
+//! Indicates that the font data is stored in an uncompressed format and uses
+//! the tFontEx structure format.
+//
+//*****************************************************************************
+#define FONT_FMT_EX_UNCOMPRESSED   (FONT_FMT_UNCOMPRESSED | FONT_EX_MARKER)
+
+//*****************************************************************************
+//
+//! Indicates that the font data is stored using a pixel-based RLE format and
+//! uses the tFontEx structure format.
+//
+//*****************************************************************************
+#define FONT_FMT_EX_PIXEL_RLE      (FONT_FMT_PIXEL_RLE | FONT_EX_MARKER)
 
 //*****************************************************************************
 //
@@ -378,7 +467,8 @@ tContext;
 //! \param pFnt is a pointer to the font to be used.
 //!
 //! This function sets the font to be used for string drawing operations in the
-//! specified drawing context.
+//! specified drawing context.  If a tFontEx type font is to be used, cast its
+//! pointer to a pFont pointer before passing it as the pFnt parameter.
 //!
 //! \return None.
 //
@@ -1325,7 +1415,7 @@ extern long GrStringWidthGet(const tContext *pContext, const char *pcString,
                              long lLength);
 extern void GrStringTableSet(const void *pvTable);
 unsigned long GrStringLanguageSet(unsigned short usLangID);
-unsigned long GrStringGet(int iIndex, char *pcData, unsigned long ulSize);
+unsigned long GrStringGet(long lIndex, char *pcData, unsigned long ulSize);
 extern long GrRectOverlapCheck(tRectangle *psRect1, tRectangle *psRect2);
 extern long GrRectIntersectGet(tRectangle *psRect1, tRectangle *psRect2,
                                tRectangle *psIntersect);

@@ -3,7 +3,7 @@
 // bl_usbfuncs.c - The subset of USB library functions required by the USB DFU
 //                 boot loader.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -523,9 +523,9 @@ USBBLInit(void)
     // Determine the self- or bus-powered state based on bl_config.h setting.
     //
 #if USB_BUS_POWERED
-        g_sUSBDeviceState.ucStatus |= USB_STATUS_SELF_PWR;
-#else
         g_sUSBDeviceState.ucStatus &= ~USB_STATUS_SELF_PWR;
+#else
+        g_sUSBDeviceState.ucStatus |= USB_STATUS_SELF_PWR;
 #endif
 
     //
@@ -1276,11 +1276,12 @@ USBDSetAddress(tUSBRequest *pUSBRequest)
 static void
 USBDGetDescriptor(tUSBRequest *pUSBRequest)
 {
+    unsigned long ulStall;
+
     //
-    // Need to ack the data on end point 0 in this case without
-    // setting data end.
+    // Default to no stall.
     //
-    USBDevEndpoint0DataAck(false);
+    ulStall = 0;
 
     //
     // Which descriptor are we being asked for?
@@ -1398,30 +1399,43 @@ USBDGetDescriptor(tUSBRequest *pUSBRequest)
             // All other requests are not handled.
             //
             USBBLStallEP0();
+            ulStall = 1;
             break;
         }
     }
 
     //
-    // If this request has data to send, then send it.
+    // If there was no stall, ACK the data and see if data needs to be sent.
     //
-    if(g_sUSBDeviceState.pEP0Data)
+    if(ulStall == 0)
     {
         //
-        // If there is more data to send than is requested then just
-        // send the requested amount of data.
+        // Need to ack the data on end point 0 in this case without
+        // setting data end.
         //
-        if(g_sUSBDeviceState.ulEP0DataRemain > pUSBRequest->wLength)
-        {
-            g_sUSBDeviceState.ulEP0DataRemain = pUSBRequest->wLength;
-        }
+        USBDevEndpoint0DataAck(false);
 
         //
-        // Now in the transmit data state.  Be careful to call the correct
-        // function since we need to handle the config descriptor differently
-        // from the others.
+        // If this request has data to send, then send it.
         //
-        USBDEP0StateTx();
+        if(g_sUSBDeviceState.pEP0Data)
+        {
+            //
+            // If there is more data to send than is requested then just
+            // send the requested amount of data.
+            //
+            if(g_sUSBDeviceState.ulEP0DataRemain > pUSBRequest->wLength)
+            {
+                g_sUSBDeviceState.ulEP0DataRemain = pUSBRequest->wLength;
+            }
+
+            //
+            // Now in the transmit data state.  Be careful to call the correct
+            // function since we need to handle the config descriptor differently
+            // from the others.
+            //
+            USBDEP0StateTx();
+        }
     }
 }
 
@@ -1638,9 +1652,9 @@ USBDSetConfiguration(tUSBRequest *pUSBRequest)
             // Set the power state
             //
 #if USB_BUS_POWERED
-            g_sUSBDeviceState.ucStatus |= USB_STATUS_SELF_PWR;
-#else
             g_sUSBDeviceState.ucStatus &= ~USB_STATUS_SELF_PWR;
+#else
+            g_sUSBDeviceState.ucStatus |= USB_STATUS_SELF_PWR;
 #endif
         }
 

@@ -1,7 +1,7 @@
 <!--
 Configuration file for Code Red project uart_echo
 
-Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 -->
 
 <project chip="LM3S9B92"
@@ -25,7 +25,7 @@ This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
          type="LMI Basic C project"
          vendor="LMI">
   <import src=".">
-    <exclude>{(Makefile|ccs|codered|ewarm|gcc|rvmdk|sourcerygxx)}</exclude>
+    <exclude>{(Makefile|Makefile\..*|ccs|codered|ewarm|gcc|rvmdk|sourcerygxx)}</exclude>
     <exclude>{startup_(ewarm|gcc|rvmdk|sourcerygxx|ccs).(c|S)}</exclude>
     <exclude>{.*\.(ewd|ewp|eww|icf|Opt|sct|sgxx|Uv2|uvopt|uvproj|xml|ld|cmd)}</exclude>
   </import>

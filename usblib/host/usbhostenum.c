@@ -2,7 +2,7 @@
 //
 // usbhostenum.c - Device enumeration code for the USB host library.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -26,6 +26,8 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_sysctl.h"
 #include "inc/hw_types.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/debug.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
@@ -98,7 +100,7 @@ volatile unsigned long g_ulDMAPending = 0;
 // with Rev A0 silicon.
 //
 //*****************************************************************************
-static unsigned int g_bUseDMAWA = 0;
+static unsigned long g_bUseDMAWA = 0;
 
 //*****************************************************************************
 //
@@ -234,7 +236,7 @@ static volatile unsigned long g_ulCurrentTick = 0;
 // The current active driver.
 //
 //*****************************************************************************
-static int g_iUSBHActiveDriver = -1;
+static long g_lUSBHActiveDriver = -1;
 static void *g_pvDriverInstance = 0;
 
 //*****************************************************************************
@@ -437,7 +439,7 @@ typedef struct
     //
     // This is the index in the driver list of the event driver.
     //
-    int iEventDriver;
+    long lEventDriver;
 
     //
     // This is the generic event information used by the event driver.
@@ -465,8 +467,8 @@ static tUSBHCD g_sUSBHCD;
 static void
 SendUnknownConnect(unsigned long ulClass, unsigned long ulInstance)
 {
-    if((g_sUSBHCD.iEventDriver != -1) &&
-       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler))
+    if((g_sUSBHCD.lEventDriver != -1) &&
+       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
     {
         //
         // Send the generic connected event.
@@ -479,7 +481,7 @@ SendUnknownConnect(unsigned long ulClass, unsigned long ulInstance)
         g_sUSBHCD.ulClass = ulClass;
         g_sUSBHCD.EventInfo.ulInstance = ulInstance;
 
-        g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler(
+        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
            &g_sUSBHCD.EventInfo);
     }
 }
@@ -725,15 +727,14 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                     unsigned long ulDevAddr, unsigned long ulSize,
                     tHCDPipeCallback pfnCallback)
 {
-    int iIdx;
-    int iDMAIdx;
+    long lIdx, lDMAIdx;
 
     ASSERT(ulIndex == 0);
 
     //
     // Find a USB pipe that is free.
     //
-    for(iIdx = 0; iIdx < MAX_NUM_PIPES; iIdx++)
+    for(lIdx = 0; lIdx < MAX_NUM_PIPES; lIdx++)
     {
         //
         // Handle OUT Pipes.
@@ -743,7 +744,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
             //
             // A zero address indicates free.
             //
-            if(g_sUSBHCD.USBOUTPipes[iIdx].ulDevAddr == 0)
+            if(g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr == 0)
             {
                 //
                 // Set up uDMA for the pipe.
@@ -755,21 +756,21 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                     // parts so bias the pipes to match this as best is
                     // possible.
                     //
-                    if(iIdx < 3)
+                    if(lIdx < 3)
                     {
                         //
                         // Check if the fixed channel is available for this
                         // USB pipe.
                         //
-                        if((g_sUSBHCD.ucDMAChannels[1 + (iIdx * 2)] ==
+                        if((g_sUSBHCD.ucDMAChannels[1 + (lIdx * 2)] ==
                                       USBHCD_DMA_UNUSED))
                         {
                             //
                             // The default channel was available so use it.
                             //
-                            g_sUSBHCD.ucDMAChannels[1 + (iIdx * 2)] = iIdx;
-                            g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel =
-                                1 + (iIdx * 2);
+                            g_sUSBHCD.ucDMAChannels[1 + (lIdx * 2)] = lIdx;
+                            g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel =
+                                1 + (lIdx * 2);
                         }
                         else
                         {
@@ -787,22 +788,22 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                         // pipe index was more than the first 3 pipes that are
                         // available on all parts.
                         //
-                        for(iDMAIdx = 1; iDMAIdx < MAX_NUM_DMA_CHANNELS;
-                            iDMAIdx += 2)
+                        for(lDMAIdx = 1; lDMAIdx < MAX_NUM_DMA_CHANNELS;
+                            lDMAIdx += 2)
                         {
                             //
                             // Find any available channel.
                             //
-                            if(g_sUSBHCD.ucDMAChannels[iDMAIdx] ==
+                            if(g_sUSBHCD.ucDMAChannels[lDMAIdx] ==
                                USBHCD_DMA_UNUSED)
                             {
                                 //
                                 // Save the index and the DMA channel
                                 // information.
                                 //
-                                g_sUSBHCD.ucDMAChannels[iDMAIdx] = iIdx;
-                                g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel =
-                                    iDMAIdx;
+                                g_sUSBHCD.ucDMAChannels[lDMAIdx] = lIdx;
+                                g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel =
+                                    lDMAIdx;
                             }
                         }
                     }
@@ -811,7 +812,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                     // If no DMA channel was available then just disable DMA
                     // on this pipe.
                     //
-                    if(g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel ==
+                    if(g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel ==
                        USBHCD_DMA_UNUSED)
                     {
                         ulEndpointType &= ~EP_PIPE_USE_UDMA;
@@ -822,22 +823,22 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                         // Set the DMA channel for this endpoint, this has no
                         // effect on parts without configurable DMA.
                         //
-                        USBEndpointDMAChannel(
-                            USB0_BASE, INDEX_TO_USB_EP(iIdx + 1),
-                            g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel);
+                        MAP_USBEndpointDMAChannel(
+                            USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                            g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel);
 
                         //
                         // Clear all the attributes for the channel
                         //
-                        uDMAChannelAttributeDisable(
-                            g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel,
+                        MAP_uDMAChannelAttributeDisable(
+                            g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel,
                             UDMA_ATTR_ALL);
 
                         //
                         // Configure the uDMA channel for the pipe
                         //
-                        uDMAChannelControlSet(
-                            g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel,
+                        MAP_uDMAChannelControlSet(
+                            g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel,
                             (UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE |
                              UDMA_ARB_64));
                     }
@@ -847,34 +848,42 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // Save the endpoint type and device address and callback
                 // function.
                 //
-                g_sUSBHCD.USBOUTPipes[iIdx].ulType = ulEndpointType;
-                g_sUSBHCD.USBOUTPipes[iIdx].ulDevAddr = ulDevAddr;
-                g_sUSBHCD.USBOUTPipes[iIdx].pfnCallback = pfnCallback;
+                g_sUSBHCD.USBOUTPipes[lIdx].ulType = ulEndpointType;
+                g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr = ulDevAddr;
+                g_sUSBHCD.USBOUTPipes[lIdx].pfnCallback = pfnCallback;
+
+                //
+                // Clear out any pending status on this endpoint in case it
+                // was in use before a allowing a new device class to use it.
+                //
+                MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                               INDEX_TO_USB_EP(lIdx + 1),
+                                               USB_HOST_OUT_STATUS);
 
                 //
                 // Initialize the endpoint as idle.
                 //
-                g_sUSBHCD.USBOUTPipes[iIdx].eState = PIPE_IDLE;
+                g_sUSBHCD.USBOUTPipes[lIdx].eState = PIPE_IDLE;
 
                 //
                 // Allocate space in the FIFO for this endpoint.
                 //
-                if(FIFOAlloc(&g_sUSBHCD.USBOUTPipes[iIdx], ulSize) != 0)
+                if(FIFOAlloc(&g_sUSBHCD.USBOUTPipes[lIdx], ulSize) != 0)
                 {
                     //
                     // Configure the FIFO.
                     //
-                    USBFIFOConfigSet(USB0_BASE, INDEX_TO_USB_EP(iIdx + 1),
-                                     g_sUSBHCD.USBOUTPipes[iIdx].usFIFOAddr,
-                                     g_sUSBHCD.USBOUTPipes[iIdx].ucFIFOSize,
-                                     USB_EP_HOST_OUT);
+                    MAP_USBFIFOConfigSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                         g_sUSBHCD.USBOUTPipes[lIdx].usFIFOAddr,
+                                         g_sUSBHCD.USBOUTPipes[lIdx].ucFIFOSize,
+                                         USB_EP_HOST_OUT);
                 }
 
                 //
                 // Set the function address for this endpoint.
                 //
-                USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(iIdx + 1), ulDevAddr,
-                               USB_EP_HOST_OUT);
+                MAP_USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                   ulDevAddr, USB_EP_HOST_OUT);
 
                 break;
             }
@@ -887,7 +896,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
             //
             // A zero address indicates free.
             //
-            if(g_sUSBHCD.USBINPipes[iIdx].ulDevAddr == 0)
+            if(g_sUSBHCD.USBINPipes[lIdx].ulDevAddr == 0)
             {
                 //
                 // Set up uDMA for the pipe.
@@ -899,20 +908,20 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                     // parts so bias the pipes to match this as best is
                     // possible.
                     //
-                    if(iIdx < 3)
+                    if(lIdx < 3)
                     {
                         //
                         // Check if the fixed channel is available for this
                         // USB pipe.
                         //
-                        if(g_sUSBHCD.ucDMAChannels[iIdx * 2] ==
+                        if(g_sUSBHCD.ucDMAChannels[lIdx * 2] ==
                            USBHCD_DMA_UNUSED)
                         {
                             //
                             // The default channel was available so use it.
                             //
-                            g_sUSBHCD.ucDMAChannels[iIdx * 2] = iIdx;
-                            g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel = iIdx * 2;
+                            g_sUSBHCD.ucDMAChannels[lIdx * 2] = lIdx;
+                            g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel = lIdx * 2;
                         }
                         else
                         {
@@ -930,22 +939,22 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                         // pipe index was more than the first 3 pipes that are
                         // available on all parts.
                         //
-                        for(iDMAIdx = 0; iDMAIdx < MAX_NUM_DMA_CHANNELS;
-                            iDMAIdx += 2)
+                        for(lDMAIdx = 0; lDMAIdx < MAX_NUM_DMA_CHANNELS;
+                            lDMAIdx += 2)
                         {
                             //
                             // Find any available channel.
                             //
-                            if(g_sUSBHCD.ucDMAChannels[iDMAIdx] ==
+                            if(g_sUSBHCD.ucDMAChannels[lDMAIdx] ==
                                USBHCD_DMA_UNUSED)
                             {
                                 //
                                 // Save the index and the DMA channel
                                 // information.
                                 //
-                                g_sUSBHCD.ucDMAChannels[iDMAIdx] = iIdx;
-                                g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel =
-                                    iDMAIdx;
+                                g_sUSBHCD.ucDMAChannels[lDMAIdx] = lIdx;
+                                g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel =
+                                    lDMAIdx;
                             }
                         }
                     }
@@ -954,7 +963,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                     // If no DMA channel was available then just disable DMA
                     // on this pipe.
                     //
-                    if(g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel ==
+                    if(g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel ==
                        USBHCD_DMA_UNUSED)
                     {
                         ulEndpointType &= ~EP_PIPE_USE_UDMA;
@@ -966,22 +975,22 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                         // effect on parts without configurable DMA.
                         //
                         //
-                        USBEndpointDMAChannel(
-                            USB0_BASE, INDEX_TO_USB_EP(iIdx + 1),
-                            g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel);
+                        MAP_USBEndpointDMAChannel(
+                            USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                            g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel);
 
                         //
                         // Clear all the attributes for the channel
                         //
-                        uDMAChannelAttributeDisable(
-                            g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel,
+                        MAP_uDMAChannelAttributeDisable(
+                            g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel,
                             UDMA_ATTR_ALL);
 
                         //
                         // Configure the uDMA channel for the pipe
                         //
-                        uDMAChannelControlSet(
-                            g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel,
+                        MAP_uDMAChannelControlSet(
+                            g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel,
                             (UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 |
                              UDMA_ARB_64));
                     }
@@ -991,34 +1000,42 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // Save the endpoint type and device address and callback
                 // function.
                 //
-                g_sUSBHCD.USBINPipes[iIdx].ulType = ulEndpointType;
-                g_sUSBHCD.USBINPipes[iIdx].ulDevAddr = ulDevAddr;
-                g_sUSBHCD.USBINPipes[iIdx].pfnCallback = pfnCallback;
+                g_sUSBHCD.USBINPipes[lIdx].ulType = ulEndpointType;
+                g_sUSBHCD.USBINPipes[lIdx].ulDevAddr = ulDevAddr;
+                g_sUSBHCD.USBINPipes[lIdx].pfnCallback = pfnCallback;
+
+                //
+                // Clear out any pending status on this endpoint in case it
+                // was in use before a allowing a new device class to use it.
+                //
+                MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                               INDEX_TO_USB_EP(lIdx + 1),
+                                               USB_HOST_IN_STATUS);
 
                 //
                 // Allocate space in the FIFO for this endpoint.
                 //
-                if(FIFOAlloc(&g_sUSBHCD.USBINPipes[iIdx], ulSize) != 0)
+                if(FIFOAlloc(&g_sUSBHCD.USBINPipes[lIdx], ulSize) != 0)
                 {
                     //
                     // Configure the FIFO.
                     //
-                    USBFIFOConfigSet(USB0_BASE, INDEX_TO_USB_EP(iIdx + 1),
-                                     g_sUSBHCD.USBINPipes[iIdx].usFIFOAddr,
-                                     g_sUSBHCD.USBINPipes[iIdx].ucFIFOSize,
-                                     USB_EP_HOST_IN);
+                    MAP_USBFIFOConfigSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                         g_sUSBHCD.USBINPipes[lIdx].usFIFOAddr,
+                                         g_sUSBHCD.USBINPipes[lIdx].ucFIFOSize,
+                                         USB_EP_HOST_IN);
                 }
 
                 //
                 // Set the function address for this endpoint.
                 //
-                USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(iIdx + 1), ulDevAddr,
-                               USB_EP_HOST_IN);
+                MAP_USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                   ulDevAddr, USB_EP_HOST_IN);
 
                 //
                 // Reset the state of the pipe to idle.
                 //
-                g_sUSBHCD.USBINPipes[iIdx].eState = PIPE_IDLE;
+                g_sUSBHCD.USBINPipes[lIdx].eState = PIPE_IDLE;
 
                 break;
             }
@@ -1028,7 +1045,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
     //
     // Did not find a free pipe.
     //
-    if(iIdx == MAX_NUM_PIPES)
+    if(lIdx == MAX_NUM_PIPES)
     {
         return(0);
     }
@@ -1036,7 +1053,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
     //
     // Return the pipe index and type that was allocated.
     //
-    return(ulEndpointType | iIdx);
+    return(ulEndpointType | lIdx);
 }
 
 //*****************************************************************************
@@ -1311,17 +1328,18 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable uDMA on the USB endpoint
             //
-            USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
+            MAP_USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
 
             //
             // Put the data in the buffer.
             //
-            USBEndpointDataPut(USB0_BASE, ulEndpoint, pucData, ulByteToSend);
+            MAP_USBEndpointDataPut(USB0_BASE, ulEndpoint, pucData,
+                                   ulByteToSend);
 
             //
             // Schedule the data to be sent.
             //
-            USBEndpointDataSend(USB0_BASE, ulEndpoint, USB_TRANS_OUT);
+            MAP_USBEndpointDataSend(USB0_BASE, ulEndpoint, USB_TRANS_OUT);
         }
 
         //
@@ -1332,16 +1350,16 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             // Set up the uDMA transfer.
             //
-            uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2),
-                                   UDMA_MODE_AUTO, pucData,
-                                   (void *)USBFIFOAddrGet(USB0_BASE,
-                                                          ulEndpoint),
-                                   ulByteToSend);
+            MAP_uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2),
+                                       UDMA_MODE_AUTO, pucData,
+                                       (void *)USBFIFOAddrGet(USB0_BASE,
+                                                              ulEndpoint),
+                                       ulByteToSend);
 
             //
             // Enable uDMA on the USB endpoint
             //
-            USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
+            MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
 
             //
             // Set pending transmit DMA flag
@@ -1351,7 +1369,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the uDMA channel to start the transfer
             //
-            uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
+            MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
         }
 
         //
@@ -1391,7 +1409,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             if(ulPipe & EP_PIPE_USE_UDMA)
             {
-                uDMAChannelDisable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
+                MAP_uDMAChannelDisable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
             }
 
             //
@@ -1467,16 +1485,16 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Set up the uDMA transfer.
             //
-            uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2),
-                                   UDMA_MODE_AUTO, pucData,
-                                   (void *)USBFIFOAddrGet(USB0_BASE,
-                                                          ulEndpoint),
-                                   ulSize);
+            MAP_uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2),
+                                       UDMA_MODE_AUTO, pucData,
+                                       (void *)USBFIFOAddrGet(USB0_BASE,
+                                                              ulEndpoint),
+                                       ulSize);
 
             //
             // Enable uDMA on the USB endpoint
             //
-            USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
+            MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
 
             //
             // Set pending transmit DMA flag
@@ -1486,19 +1504,19 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the uDMA channel to start the transfer
             //
-            uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
+            MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
         }
         else
         {
             //
             // Put the data in the buffer.
             //
-            USBEndpointDataPut(USB0_BASE, ulEndpoint, pucData, ulSize);
+            MAP_USBEndpointDataPut(USB0_BASE, ulEndpoint, pucData, ulSize);
 
             //
             // Schedule the data to be sent.
             //
-            USBEndpointDataSend(USB0_BASE, ulEndpoint, USB_TRANS_OUT);
+            MAP_USBEndpointDataSend(USB0_BASE, ulEndpoint, USB_TRANS_OUT);
         }
     }
     else
@@ -1517,7 +1535,7 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable uDMA on the endpoint
             //
-            USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
+            MAP_USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
         }
         //
         // Otherwise, uDMA should be used for this transfer, so set up
@@ -1528,16 +1546,16 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Compute bytes to transfer and set up transfer
             //
-            uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2),
-                                   UDMA_MODE_AUTO,
-                                   (void *)USBFIFOAddrGet(USB0_BASE,
-                                                          ulEndpoint),
-                                   pucData, ulSize);
+            MAP_uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2),
+                                       UDMA_MODE_AUTO,
+                                       (void *)USBFIFOAddrGet(USB0_BASE,
+                                                              ulEndpoint),
+                                       pucData, ulSize);
 
             //
             // Enable uDMA on the endpoint
             //
-            USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
+            MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
 
             //
             // Set pending DMA flag
@@ -1547,13 +1565,13 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the uDMA channel to start the transfer
             //
-            uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
+            MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
         }
 
         //
         // Trigger a request for data from the device.
         //
-        USBHostRequestIN(USB0_BASE, ulEndpoint);
+        MAP_USBHostRequestIN(USB0_BASE, ulEndpoint);
 
         //
         // No data was put into or read from the buffer.
@@ -1596,12 +1614,12 @@ USBHCDPipeReadNonBlocking(unsigned long ulPipe, unsigned char *pucData,
     //
     // Read the data out of the USB endpoint interface.
     //
-    USBEndpointDataGet(USB0_BASE, ulEndpoint, pucData, &ulSize);
+    MAP_USBEndpointDataGet(USB0_BASE, ulEndpoint, pucData, &ulSize);
 
     //
     // Acknowledge that the data was read from the endpoint.
     //
-    USBHostEndpointDataAck(USB0_BASE, ulEndpoint);
+    MAP_USBHostEndpointDataAck(USB0_BASE, ulEndpoint);
 
     //
     // Go Idle once this state has been reached.
@@ -1679,7 +1697,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable uDMA on the endpoint
             //
-            USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
+            MAP_USBEndpointDMADisable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
         }
 
         //
@@ -1692,16 +1710,16 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             // Compute bytes to transfer and set up transfer
             //
             ulBytesRead = ulRemainingBytes > 64 ? 64 : ulRemainingBytes;
-            uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2),
-                                   UDMA_MODE_AUTO,
-                                   (void *)USBFIFOAddrGet(USB0_BASE,
-                                                          ulEndpoint),
-                                   pucData, ulBytesRead);
+            MAP_uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2),
+                                       UDMA_MODE_AUTO,
+                                       (void *)USBFIFOAddrGet(USB0_BASE,
+                                                              ulEndpoint),
+                                       pucData, ulBytesRead);
 
             //
             // Enable uDMA on the endpoint
             //
-            USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
+            MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
 
             //
             // Set pending DMA flag
@@ -1711,13 +1729,13 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the uDMA channel to start the transfer
             //
-            uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
+            MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
         }
 
         //
         // Trigger a request for data from the device.
         //
-        USBHostRequestIN(USB0_BASE, ulEndpoint);
+        MAP_USBHostRequestIN(USB0_BASE, ulEndpoint);
 
         //
         // Wait for a status change.
@@ -1746,13 +1764,13 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
                 //
                 // Read the data out of the USB endpoint interface.
                 //
-                USBEndpointDataGet(USB0_BASE, ulEndpoint, pucData,
-                                   &ulBytesRead);
+                MAP_USBEndpointDataGet(USB0_BASE, ulEndpoint, pucData,
+                                       &ulBytesRead);
 
                 //
                 // Acknowledge that the data was read from the endpoint.
                 //
-                USBHostEndpointDataAck(USB0_BASE, ulEndpoint);
+                MAP_USBHostEndpointDataAck(USB0_BASE, ulEndpoint);
             }
 
             //
@@ -1798,7 +1816,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             //
             if(ulPipe & EP_PIPE_USE_UDMA)
             {
-                uDMAChannelDisable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
+                MAP_uDMAChannelDisable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
             }
 
             //
@@ -1833,7 +1851,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
 void
 USBHCDPipeFree(unsigned long ulPipe)
 {
-    int iDMAIdx;
+    long lDMAIdx;
 
     if(ulPipe & EP_PIPE_TYPE_OUT)
     {
@@ -1847,12 +1865,12 @@ USBHCDPipeFree(unsigned long ulPipe)
         //
         // Get the dma channel used by this pipe.
         //
-        iDMAIdx = g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
+        lDMAIdx = g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
 
         //
         // Mark the channel as free for use.
         //
-        g_sUSBHCD.ucDMAChannels[iDMAIdx] = USBHCD_DMA_UNUSED;
+        g_sUSBHCD.ucDMAChannels[lDMAIdx] = USBHCD_DMA_UNUSED;
 
         //
         // Clear out the current channel in use by this pipe.
@@ -1878,14 +1896,27 @@ USBHCDPipeFree(unsigned long ulPipe)
         g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].pfnCallback = 0;
 
         //
-        // Get the dma channel used by this pipe.
+        // Get the DMA channel used by this pipe.
         //
-        iDMAIdx = g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
+        lDMAIdx = g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
 
         //
-        // Mark the channel as free for use.
+        // This is a debug check that will prevent accessing beyond the
+        // buffer allocated to the DMA channels.
         //
-        g_sUSBHCD.ucDMAChannels[iDMAIdx] = USBHCD_DMA_UNUSED;
+        ASSERT(lDMAIdx < MAX_NUM_DMA_CHANNELS);
+
+        //
+        // Make sure that the DMA index was actually valid because the value
+        // could be USBHCD_DMA_UNUSED.
+        //
+        if(lDMAIdx != USBHCD_DMA_UNUSED)
+        {
+            //
+            // Mark the channel as free for use.
+            //
+            g_sUSBHCD.ucDMAChannels[lDMAIdx] = USBHCD_DMA_UNUSED;
+        }
 
         //
         // Clear out the current channel in use by this pipe.
@@ -1924,7 +1955,7 @@ static void
 USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
                    unsigned long ulPoolSize)
 {
-    int iIdx;
+    long lIdx;
 
     ASSERT(ulIndex == 0);
 
@@ -1942,22 +1973,22 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     //
     // All Pipes are unused at start.
     //
-    for(iIdx = 0; iIdx < MAX_NUM_PIPES; iIdx++)
+    for(lIdx = 0; lIdx < MAX_NUM_PIPES; lIdx++)
     {
-        g_sUSBHCD.USBINPipes[iIdx].ulDevAddr = 0;
-        g_sUSBHCD.USBINPipes[iIdx].ulType = USBHCD_PIPE_UNUSED;
-        g_sUSBHCD.USBINPipes[iIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
-        g_sUSBHCD.USBOUTPipes[iIdx].ulDevAddr = 0;
-        g_sUSBHCD.USBOUTPipes[iIdx].ulType = USBHCD_PIPE_UNUSED;
-        g_sUSBHCD.USBOUTPipes[iIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
+        g_sUSBHCD.USBINPipes[lIdx].ulDevAddr = 0;
+        g_sUSBHCD.USBINPipes[lIdx].ulType = USBHCD_PIPE_UNUSED;
+        g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
+        g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr = 0;
+        g_sUSBHCD.USBOUTPipes[lIdx].ulType = USBHCD_PIPE_UNUSED;
+        g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
     }
 
     //
     // All DMA channels are unused at start.
     //
-    for(iIdx = 0; iIdx < MAX_NUM_DMA_CHANNELS; iIdx++)
+    for(lIdx = 0; lIdx < MAX_NUM_DMA_CHANNELS; lIdx++)
     {
-        g_sUSBHCD.ucDMAChannels[iIdx] = USBHCD_DMA_UNUSED;
+        g_sUSBHCD.ucDMAChannels[lIdx] = USBHCD_DMA_UNUSED;
     }
 
     //
@@ -2014,22 +2045,23 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
         //
         // Enable USB Interrupts.
         //
-        USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
-                                       USB_INTCTRL_DISCONNECT |
-                                       USB_INTCTRL_SOF |
-                                       USB_INTCTRL_SESSION |
-                                       USB_INTCTRL_BABBLE |
-                                       USB_INTCTRL_CONNECT |
-                                       USB_INTCTRL_RESUME |
-                                       USB_INTCTRL_SUSPEND |
-                                       USB_INTCTRL_VBUS_ERR |
-                                       USB_INTCTRL_POWER_FAULT);
-        USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
+        MAP_USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
+                                           USB_INTCTRL_DISCONNECT |
+                                           USB_INTCTRL_SOF |
+                                           USB_INTCTRL_SESSION |
+                                           USB_INTCTRL_BABBLE |
+                                           USB_INTCTRL_CONNECT |
+                                           USB_INTCTRL_RESUME |
+                                           USB_INTCTRL_SUSPEND |
+                                           USB_INTCTRL_VBUS_ERR |
+                                           USB_INTCTRL_POWER_FAULT);
+
+        MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
 
         //
         // Enable the USB interrupt.
         //
-        IntEnable(INT_USB0);
+        MAP_IntEnable(INT_USB0);
 
         //
         // There is no automatic power in pure host mode.
@@ -2037,15 +2069,9 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
         USBHCDPowerConfigSet(ulIndex, g_ulPowerConfig & ~USB_HOST_PWREN_AUTO);
 
         //
-        // Force the controller into host mode.  This does not work on all
-        // devices but will not cause any adverse effects on those controllers.
-        //
-        USBHostMode(USB0_BASE);
-
-        //
         // Force the power on as well as this point.
         //
-        USBHostPwrEnable(USB0_BASE);
+        MAP_USBHostPwrEnable(USB0_BASE);
 
         //
         // This is required to get into host mode on some parts.
@@ -2206,7 +2232,7 @@ USBHCDPowerConfigSet(unsigned long ulIndex, unsigned long ulConfig)
     //
     // Initialize the power configuration.
     //
-    USBHostPwrConfig(USB0_BASE, ulConfig);
+    MAP_USBHostPwrConfig(USB0_BASE, ulConfig);
 
     //
     // If not in manual mode then just turn on power.
@@ -2216,7 +2242,7 @@ USBHCDPowerConfigSet(unsigned long ulIndex, unsigned long ulConfig)
         //
         // Power the USB bus.
         //
-        USBHostPwrEnable(USB0_BASE);
+        MAP_USBHostPwrEnable(USB0_BASE);
     }
 
     //
@@ -2275,7 +2301,7 @@ USBHCDPowerAutomatic(unsigned long ulIndex)
 void
 USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
 {
-    int iDriver;
+    long lDriver;
 
     //
     // Check the arguments.
@@ -2309,17 +2335,17 @@ USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
         //
         // Reset the USB controller.
         //
-        SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
+        MAP_SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
 
         //
         // Enable Clocking to the USB controller.
         //
-        SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+        MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 
         //
         // Turn on USB Phy clock.
         //
-        SysCtlUSBPLLEnable();
+        MAP_SysCtlUSBPLLEnable();
     }
 
     //
@@ -2330,20 +2356,20 @@ USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
     //
     // No event driver is present by default.
     //
-    g_sUSBHCD.iEventDriver = -1;
+    g_sUSBHCD.lEventDriver = -1;
 
     //
     // Search through the Host Class driver list for the devices class.
     //
-    for(iDriver = 0; iDriver < g_sUSBHCD.ulNumClassDrivers; iDriver++)
+    for(lDriver = 0; lDriver < g_sUSBHCD.ulNumClassDrivers; lDriver++)
     {
-        if(g_sUSBHCD.pClassDrivers[iDriver]->ulInterfaceClass ==
+        if(g_sUSBHCD.pClassDrivers[lDriver]->ulInterfaceClass ==
            USB_CLASS_EVENTS)
         {
             //
             // Event driver was found so remember it.
             //
-            g_sUSBHCD.iEventDriver = iDriver;
+            g_sUSBHCD.lEventDriver = lDriver;
         }
     }
 
@@ -2351,7 +2377,7 @@ USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
     // Get the number of ticks per millisecond, this is only used by blocking
     // delays using the SysCtlDelay() function.
     //
-    g_ulTickms = SysCtlClockGet() / 3000;
+    g_ulTickms = MAP_SysCtlClockGet() / 3000;
 
     //
     // Check to see if uDMA workaround is needed.
@@ -2424,16 +2450,16 @@ USBHCDTerm(unsigned long ulIndex)
     //
     // Remove power from the USB bus.
     //
-    USBHostPwrDisable(USB0_BASE);
+    MAP_USBHostPwrDisable(USB0_BASE);
 
     //
     // Disable USB interrupts.
     //
-    IntDisable(INT_USB0);
+    MAP_IntDisable(INT_USB0);
 
-    USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
+    MAP_USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
 
-    USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
+    MAP_USBIntDisableEndpoint(USB0_BASE, USB_INTEP_ALL);
 
     //
     // Set the host controller state back to it's initial values.
@@ -2475,24 +2501,24 @@ USBHCDReset(unsigned long ulIndex)
     //
     // Start the reset signaling.
     //
-    USBHostReset(USB0_BASE, 1);
+    MAP_USBHostReset(USB0_BASE, 1);
 
     //
     // Wait 20ms
     //
-    SysCtlDelay(g_ulTickms * 20);
+    MAP_SysCtlDelay(g_ulTickms * 20);
 
     //
     // End reset signaling on the bus.
     //
-    USBHostReset(USB0_BASE, 0);
+    MAP_USBHostReset(USB0_BASE, 0);
 
     //
     // Need to wait at least 10ms to let the device recover from
     // the reset.  This is the delay specified in the USB 2.0 spec.
     // We will hold the reset for 20ms.
     //
-    SysCtlDelay(g_ulTickms * 20);
+    MAP_SysCtlDelay(g_ulTickms * 20);
 }
 
 //*****************************************************************************
@@ -2516,7 +2542,7 @@ USBHCDSuspend(unsigned long ulIndex)
     //
     // Start the suspend signaling.
     //
-    USBHostSuspend(USB0_BASE);
+    MAP_USBHostSuspend(USB0_BASE);
 }
 
 //*****************************************************************************
@@ -2540,17 +2566,17 @@ USBHCDResume(unsigned long ulIndex)
     //
     // Start the resume signaling.
     //
-    USBHostResume(USB0_BASE, 1);
+    MAP_USBHostResume(USB0_BASE, 1);
 
     //
     // Wait 100ms
     //
-    SysCtlDelay(g_ulTickms * 100);
+    MAP_SysCtlDelay(g_ulTickms * 100);
 
     //
     // End reset signaling on the bus.
     //
-    USBHostResume(USB0_BASE, 0);
+    MAP_USBHostResume(USB0_BASE, 0);
 }
 
 //*****************************************************************************
@@ -2798,7 +2824,7 @@ USBHCDSetAddress(unsigned long ulDevAddress)
     //
     // Must delay 2ms after setting the address.
     //
-    SysCtlDelay(g_ulTickms * 2);
+    MAP_SysCtlDelay(g_ulTickms * 2);
 }
 
 //*****************************************************************************
@@ -2876,19 +2902,19 @@ USBHCDClearFeature(unsigned long ulDevAddress, unsigned long ulPipe,
     //
     if(ulPipe & EP_PIPE_TYPE_IN)
     {
-        USBEndpointDataToggleClear(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
-                                   USB_EP_HOST_IN);
+        MAP_USBEndpointDataToggleClear(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                                       USB_EP_HOST_IN);
     }
     else
     {
-        USBEndpointDataToggleClear(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
-                                   USB_EP_HOST_OUT);
+        MAP_USBEndpointDataToggleClear(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                                       USB_EP_HOST_OUT);
     }
 
     //
     // Must delay 2ms after clearing the feature.
     //
-    SysCtlDelay(g_ulTickms * 2);
+    MAP_SysCtlDelay(g_ulTickms * 2);
 }
 
 //*****************************************************************************
@@ -3033,14 +3059,14 @@ USBHCDSetInterface(unsigned long ulIndex, unsigned long ulDevice,
 void
 USBHostCheckPipes(void)
 {
-    int iIdx;
+    long lIdx;
 
-    for(iIdx = 0; iIdx < 3; iIdx++)
+    for(lIdx = 0; lIdx < 3; lIdx++)
     {
         //
         // Skip unused pipes.
         //
-        if(g_sUSBHCD.USBINPipes[iIdx].ulType == USBHCD_PIPE_UNUSED)
+        if(g_sUSBHCD.USBINPipes[lIdx].ulType == USBHCD_PIPE_UNUSED)
         {
             continue;
         }
@@ -3048,23 +3074,23 @@ USBHostCheckPipes(void)
         //
         // If the tick has expired and it has an interval then update it.
         //
-        if((g_sUSBHCD.USBINPipes[iIdx].ulInterval != 0) &&
-           (g_sUSBHCD.USBINPipes[iIdx].ulNextEventTick == g_ulCurrentTick))
+        if((g_sUSBHCD.USBINPipes[lIdx].ulInterval != 0) &&
+           (g_sUSBHCD.USBINPipes[lIdx].ulNextEventTick == g_ulCurrentTick))
         {
             //
             // Schedule the next event.
             //
-            g_sUSBHCD.USBINPipes[iIdx].ulNextEventTick +=
-                g_sUSBHCD.USBINPipes[iIdx].ulInterval;
+            g_sUSBHCD.USBINPipes[lIdx].ulNextEventTick +=
+                g_sUSBHCD.USBINPipes[lIdx].ulInterval;
 
             //
             // If the pipe is IDLE and there is a callback, let the higher
             // level drivers know that a new transfer can be scheduled.
             //
-            if((g_sUSBHCD.USBINPipes[iIdx].eState == PIPE_IDLE) &&
-               (g_sUSBHCD.USBINPipes[iIdx].pfnCallback))
+            if((g_sUSBHCD.USBINPipes[lIdx].eState == PIPE_IDLE) &&
+               (g_sUSBHCD.USBINPipes[lIdx].pfnCallback))
             {
-                g_sUSBHCD.USBINPipes[iIdx].pfnCallback(IN_PIPE_HANDLE(iIdx),
+                g_sUSBHCD.USBINPipes[lIdx].pfnCallback(IN_PIPE_HANDLE(lIdx),
                                                        USB_EVENT_SCHEDULER);
             }
         }
@@ -3119,12 +3145,12 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         //
         // Turn off power to the bus.
         //
-        USBHostPwrDisable(USB0_BASE);
+        MAP_USBHostPwrDisable(USB0_BASE);
 
         //
         // Disable USB interrupts.
         //
-        IntDisable(INT_USB0);
+        MAP_IntDisable(INT_USB0);
 
         return;
     }
@@ -3166,7 +3192,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         //
         // Power the USB bus.
         //
-        USBHostPwrEnable(USB0_BASE);
+        MAP_USBHostPwrEnable(USB0_BASE);
 
         USBOTGSessionRequest(USB0_BASE, true);
     }
@@ -3192,7 +3218,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         //
         // Power the USB bus.
         //
-        USBHostPwrEnable(USB0_BASE);
+        MAP_USBHostPwrEnable(USB0_BASE);
     }
 
     //
@@ -3238,7 +3264,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
     //
     // Get the current endpoint interrupt status.
     //
-    ulStatus = USBIntStatusEndpoint(USB0_BASE);
+    ulStatus = MAP_USBIntStatusEndpoint(USB0_BASE);
 
     //
     // Handle end point 0 interrupts.
@@ -3274,8 +3300,8 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 if(uDMAChannelModeGet(UDMA_CHANNEL_USBEP1RX + (ulIdx * 2))
                         == UDMA_MODE_STOP)
                 {
-                    USBHostEndpointDataAck(USB0_BASE,
-                                           INDEX_TO_USB_EP(ulIdx + 1));
+                    MAP_USBHostEndpointDataAck(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1));
                     g_ulDMAPending &= ~(DMA_PEND_RECEIVE_FLAG << ulIdx);
 
                     //
@@ -3314,9 +3340,9 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 if(uDMAChannelModeGet(UDMA_CHANNEL_USBEP1TX + (ulIdx * 2))
                         == UDMA_MODE_STOP)
                 {
-                    USBEndpointDataSend(USB0_BASE,
-                                        INDEX_TO_USB_EP(ulIdx + 1),
-                                        USB_TRANS_OUT);
+                    MAP_USBEndpointDataSend(USB0_BASE,
+                                            INDEX_TO_USB_EP(ulIdx + 1),
+                                            USB_TRANS_OUT);
                     g_ulDMAPending &= ~(DMA_PEND_TRANSMIT_FLAG << ulIdx);
                 }
             }
@@ -3336,8 +3362,8 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
             //
             // Read the status of the endpoint connected to this pipe.
             //
-            ulEPStatus = USBEndpointStatus(USB0_BASE,
-                                           INDEX_TO_USB_EP(ulIdx + 1));
+            ulEPStatus = MAP_USBEndpointStatus(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1));
 
             //
             // Check if the device stalled the request.
@@ -3347,9 +3373,9 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 //
                 // Clear the stall condition on this endpoint pipe.
                 //
-                USBHostEndpointStatusClear(USB0_BASE,
-                                           INDEX_TO_USB_EP(ulIdx + 1),
-                                           USB_HOST_OUT_STALL);
+                MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1),
+                                               USB_HOST_OUT_STALL);
 
                 //
                 // Save the STALLED state.
@@ -3397,8 +3423,8 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
             //
             // Read the status of the endpoint connected to this pipe.
             //
-            ulEPStatus = USBEndpointStatus(USB0_BASE,
-                                           INDEX_TO_USB_EP(ulIdx + 1));
+            ulEPStatus = MAP_USBEndpointStatus(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1));
 
             //
             // Check if the device stalled the request.
@@ -3408,9 +3434,9 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 //
                 // Clear the stall condition on this endpoint pipe.
                 //
-                USBHostEndpointStatusClear(USB0_BASE,
-                                           INDEX_TO_USB_EP(ulIdx + 1),
-                                           USB_HOST_IN_STALL);
+                MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1),
+                                               USB_HOST_IN_STALL);
 
                 //
                 // Save the STALLED state.
@@ -3449,10 +3475,10 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
     //
     // If there is an active driver and it has a call back then call it.
     //
-    if((g_iUSBHActiveDriver >= 0) &&
-       (g_sUSBHCD.pClassDrivers[g_iUSBHActiveDriver]->pfnIntHandler))
+    if((g_lUSBHActiveDriver >= 0) &&
+       (g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->pfnIntHandler))
     {
-        g_sUSBHCD.pClassDrivers[g_iUSBHActiveDriver]->
+        g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->
             pfnIntHandler(g_pvDriverInstance);
     }
 }
@@ -3477,7 +3503,7 @@ USB0HostIntHandler(void)
     //
     // Get the control interrupt status.
     //
-    ulStatus = USBIntStatusControl(USB0_BASE);
+    ulStatus = MAP_USBIntStatusControl(USB0_BASE);
 
     //
     // Call the internal handler to process the interrupts.
@@ -3499,10 +3525,10 @@ USB0HostIntHandler(void)
 //! index of the driver found in the list of host class drivers.
 //
 //*****************************************************************************
-static int
+static long
 USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
 {
-    int iDriver;
+    long lDriver;
     unsigned long ulClass;
     tInterfaceDescriptor *pInterface;
 
@@ -3523,18 +3549,18 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
     //
     // Search through the Host Class driver list for the devices class.
     //
-    for(iDriver = 0; iDriver < g_sUSBHCD.ulNumClassDrivers; iDriver++)
+    for(lDriver = 0; lDriver < g_sUSBHCD.ulNumClassDrivers; lDriver++)
     {
         //
         // If a driver was found call the open for this driver and save which
         // driver is in use.
         //
-        if(g_sUSBHCD.pClassDrivers[iDriver]->ulInterfaceClass == ulClass)
+        if(g_sUSBHCD.pClassDrivers[lDriver]->ulInterfaceClass == ulClass)
         {
             //
             // Call the open function for the class driver.
             //
-            g_pvDriverInstance = g_sUSBHCD.pClassDrivers[iDriver]->pfnOpen(
+            g_pvDriverInstance = g_sUSBHCD.pClassDrivers[lDriver]->pfnOpen(
                 &g_sUSBHCD.USBDevice[0]);
 
             //
@@ -3552,7 +3578,7 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
     // If no drivers were found then return -1 to indicate an invalid
     // driver instance.
     //
-    if(iDriver == g_sUSBHCD.ulNumClassDrivers)
+    if(lDriver == g_sUSBHCD.ulNumClassDrivers)
     {
         //
         // Send an unknown connection event.
@@ -3562,10 +3588,10 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
         //
         // Indicate that no driver was found.
         //
-        iDriver = -1;
+        lDriver = -1;
     }
 
-    return(iDriver);
+    return(lDriver);
 }
 
 //*****************************************************************************
@@ -3588,15 +3614,15 @@ InternalUSBHCDSendEvent(unsigned long ulEvent)
     //
     // Make sure that an event driver has been registered.
     //
-    if((g_sUSBHCD.iEventDriver != -1) &&
-       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler))
+    if((g_sUSBHCD.lEventDriver != -1) &&
+       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
     {
         //
         // Send an event to the application.
         //
         g_sUSBHCD.EventInfo.ulEvent = ulEvent;
 
-        g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler(
+        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
            &g_sUSBHCD.EventInfo);
     }
 }
@@ -3646,31 +3672,31 @@ USBHCDDeviceDisconnected(unsigned long ulIndex)
     //
     // If this was an active driver then close it out.
     //
-    if(g_iUSBHActiveDriver >= 0)
+    if(g_lUSBHActiveDriver >= 0)
     {
         //
         // Call the driver Close entry point.
         //
-        g_sUSBHCD.pClassDrivers[g_iUSBHActiveDriver]->
+        g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->
             pfnClose(&g_sUSBHCD.USBDevice[0]);
 
         //
         // No active driver now present.
         //
-        g_iUSBHActiveDriver = -1;
+        g_lUSBHActiveDriver = -1;
         g_pvDriverInstance = 0;
     }
     else
     {
-        if((g_sUSBHCD.iEventDriver != -1) &&
-           (g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler))
+        if((g_sUSBHCD.lEventDriver != -1) &&
+           (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
         {
             //
             // Send the generic disconnect event.
             //
             g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_DISCONNECTED;
 
-            g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler(
+            g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
                &g_sUSBHCD.EventInfo);
 
             //
@@ -3728,22 +3754,22 @@ USBHCDMain(void)
         // Perform this fixup with interrupts disabled to prevent race
         // conditions related to g_ulUSBHIntEvents.
         //
-        ulIntState = IntMasterDisable();
+        ulIntState = MAP_IntMasterDisable();
 
         if(g_ulUSBHIntEvents & INT_EVENT_POWER_FAULT)
         {
             //
             // A power fault has occurred so notify the application.
             //
-            if((g_sUSBHCD.iEventDriver != -1) &&
-               (g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler))
+            if((g_sUSBHCD.lEventDriver != -1) &&
+               (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
             {
                 //
                 // Send the generic power fault event.
                 //
                 g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_POWER_FAULT;
 
-                g_sUSBHCD.pClassDrivers[g_sUSBHCD.iEventDriver]->pfnIntHandler(
+                g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
                    &g_sUSBHCD.EventInfo);
             }
 
@@ -3788,7 +3814,7 @@ USBHCDMain(void)
         //
         if(!ulIntState)
         {
-            IntMasterEnable();
+            MAP_IntMasterEnable();
         }
     }
 
@@ -3811,7 +3837,7 @@ USBHCDMain(void)
             //
             // Disable USB interrupts.
             //
-            IntDisable(INT_USB0);
+            MAP_IntDisable(INT_USB0);
 
             //
             // If there was a device in any state of connection then indicate
@@ -3828,12 +3854,12 @@ USBHCDMain(void)
             //
             // Reset the controller.
             //
-            SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
+            MAP_SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
 
             //
             // Wait for 100ms before trying to re-power the device.
             //
-            SysCtlDelay(g_ulTickms * 100);
+            MAP_SysCtlDelay(g_ulTickms * 100);
 
             //
             // Re-initialize the HCD.
@@ -3955,7 +3981,7 @@ USBHCDMain(void)
                 //
                 // Open the driver for device 0.
                 //
-                g_iUSBHActiveDriver = USBHCDOpenDriver(0, 0);
+                g_lUSBHActiveDriver = USBHCDOpenDriver(0, 0);
             }
             break;
         }
@@ -4004,6 +4030,11 @@ USBHCDMain(void)
         // Poorly behaving device are in limbo in this state until removed.
         //
         case HCD_DEV_ERROR:
+        {
+            g_ulUSBHIntEvents |= INT_EVENT_DISCONNECT;
+            g_sUSBHCD.eDeviceState[0] = HCD_IDLE;
+            break;
+        }
         default:
         {
             break;
@@ -4063,14 +4094,14 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     //
     // Set the address the host will used to communicate with the device.
     //
-    USBHostAddrSet(USB0_BASE, USB_EP_0, g_sUSBHEP0State.ulDevAddress,
-                   USB_EP_HOST_OUT);
+    MAP_USBHostAddrSet(USB0_BASE, USB_EP_0, g_sUSBHEP0State.ulDevAddress,
+                       USB_EP_HOST_OUT);
 
     //
     // Put the data in the correct FIFO.
     //
-    USBEndpointDataPut(USB0_BASE, USB_EP_0, (unsigned char *)pSetupPacket,
-                       sizeof(tUSBRequest));
+    MAP_USBEndpointDataPut(USB0_BASE, USB_EP_0, (unsigned char *)pSetupPacket,
+                           sizeof(tUSBRequest));
 
     //
     // If this is an IN request, change to that state.
@@ -4103,7 +4134,7 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     //
     // Send the Setup packet.
     //
-    USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_SETUP);
+    MAP_USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_SETUP);
 
     //
     // Block until endpoint 0 returns to the IDLE state.
@@ -4152,7 +4183,7 @@ USBHCDEnumHandler(void)
     //
     // Get the end point 0 status.
     //
-    ulEPStatus = USBEndpointStatus(USB0_BASE, USB_EP_0);
+    ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, USB_EP_0);
 
     //
     // If there was an error then go to the error state.
@@ -4163,8 +4194,8 @@ USBHCDEnumHandler(void)
         // Clear this status indicating that the status packet was
         // received.
         //
-        USBHostEndpointStatusClear(USB0_BASE, USB_EP_0, USB_HOST_EP0_ERROR);
-        USBFIFOFlush(USB0_BASE, USB_EP_0, 0);
+        MAP_USBHostEndpointStatusClear(USB0_BASE, USB_EP_0, USB_HOST_EP0_ERROR);
+        MAP_USBFIFOFlush(USB0_BASE, USB_EP_0, 0);
 
         //
         // Just go back to the idle state.
@@ -4191,9 +4222,9 @@ USBHCDEnumHandler(void)
                 // Clear this status indicating that the status packet was
                 // received.
                 //
-                USBHostEndpointStatusClear(USB0_BASE, USB_EP_0,
-                                           (USB_HOST_EP0_RXPKTRDY |
-                                            USB_HOST_EP0_STATUS));
+                MAP_USBHostEndpointStatusClear(USB0_BASE, USB_EP_0,
+                                               (USB_HOST_EP0_RXPKTRDY |
+                                                USB_HOST_EP0_STATUS));
             }
 
             //
@@ -4212,7 +4243,7 @@ USBHCDEnumHandler(void)
             //
             // Generate an IN request from the device.
             //
-            USBHostRequestStatus(USB0_BASE);
+            MAP_USBHostRequestStatus(USB0_BASE);
 
             //
             // Change to the status phase and wait for the response.
@@ -4253,7 +4284,7 @@ USBHCDEnumHandler(void)
             //
             // Generate a new IN request to the device.
             //
-            USBHostRequestIN(USB0_BASE, USB_EP_0);
+            MAP_USBHostRequestIN(USB0_BASE, USB_EP_0);
 
             //
             // Proceed to the RX state to receive the requested data.
@@ -4264,7 +4295,7 @@ USBHCDEnumHandler(void)
         }
 
         //
-        // The endponit remains in this state until all requested data has
+        // The endpoint remains in this state until all requested data has
         // been received.
         //
         case EP0_STATE_RX:
@@ -4280,7 +4311,7 @@ USBHCDEnumHandler(void)
                 //
                 // Clear the stalled state on endpoint 0.
                 //
-                USBHostEndpointStatusClear(USB0_BASE, USB_EP_0, ulEPStatus);
+                MAP_USBHostEndpointStatusClear(USB0_BASE, USB_EP_0, ulEPStatus);
                 break;
             }
             //
@@ -4306,8 +4337,9 @@ USBHCDEnumHandler(void)
                 //
                 // Get the data from the USB controller end point 0.
                 //
-                USBEndpointDataGet(USB0_BASE, USB_EP_0, g_sUSBHEP0State.pData,
-                                   &ulDataSize);
+                MAP_USBEndpointDataGet(USB0_BASE, USB_EP_0,
+                                       g_sUSBHEP0State.pData,
+                                       &ulDataSize);
             }
 
             //
@@ -4324,7 +4356,7 @@ USBHCDEnumHandler(void)
             // Need to ack the data on end point 0 in this case
             // without setting data end.
             //
-            USBDevEndpointDataAck(USB0_BASE, USB_EP_0, false);
+            MAP_USBHostEndpointDataAck(USB0_BASE, USB_EP_0);
 
             //
             // If there was not more than the maximum packet size bytes of data
@@ -4349,14 +4381,14 @@ USBHCDEnumHandler(void)
                 //
                 // Send a null packet to acknowledge that all data was received.
                 //
-                USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_STATUS);
+                MAP_USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_STATUS);
             }
             else
             {
                 //
                 // Request more data.
                 //
-                USBHostRequestIN(USB0_BASE, USB_EP_0);
+                MAP_USBHostRequestIN(USB0_BASE, USB_EP_0);
             }
             break;
         }
@@ -4432,7 +4464,7 @@ USBHCDEP0StateTx(void)
     //
     // Put the data in the correct FIFO.
     //
-    USBEndpointDataPut(USB0_BASE, USB_EP_0, pData, ulNumBytes);
+    MAP_USBEndpointDataPut(USB0_BASE, USB_EP_0, pData, ulNumBytes);
 
     //
     // If this is exactly 64 then don't set the last packet yet.
@@ -4444,14 +4476,14 @@ USBHCDEP0StateTx(void)
         // means that there is either more data coming or a null packet needs
         // to be sent to complete the transaction.
         //
-        USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_OUT);
+        MAP_USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_OUT);
     }
     else
     {
         //
         // Send the last bit of data.
         //
-        USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_OUT);
+        MAP_USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_OUT);
 
         //
         // Now go to the status state and wait for the transmit to complete.

@@ -4,7 +4,7 @@
 //      to open the Stellaris Generic Bulk USB device and exchange data
 //      with it.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -69,7 +69,7 @@
 // The build version number
 //
 //****************************************************************************
-#define BLDVER "6594"
+#define BLDVER "7611"
 
 //****************************************************************************
 //
@@ -269,8 +269,7 @@ int main(int argc, char *argv[])
             //
             // Yes - we are in echo mode.
             //
-            printf("Running in echo mode. Press Ctrl+C to exit.\n\n"
-                "Throughput:      0Kbps Packets:           0");
+            printf("Running in echo mode. Press Ctrl+C to exit.\n\n");
 
             while(1)
             {

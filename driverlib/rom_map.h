@@ -3,7 +3,7 @@
 // rom_map.h - Macros to facilitate calling functions in the ROM when they are
 //             available and in flash otherwise.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -213,6 +213,20 @@
 #define MAP_ADCPhaseDelayGet \
         ADCPhaseDelayGet
 #endif
+#ifdef ROM_ADCResolutionSet
+#define MAP_ADCResolutionSet \
+        ROM_ADCResolutionSet
+#else
+#define MAP_ADCResolutionSet \
+        ADCResolutionSet
+#endif
+#ifdef ROM_ADCResolutionGet
+#define MAP_ADCResolutionGet \
+        ROM_ADCResolutionGet
+#else
+#define MAP_ADCResolutionGet \
+        ADCResolutionGet
+#endif
 
 //*****************************************************************************
 //
@@ -396,7 +410,7 @@
 
 //*****************************************************************************
 //
-// Macros for the Ethernet API.
+// Macros for the EPI API.
 //
 //*****************************************************************************
 #ifdef ROM_EPIIntStatus
@@ -691,6 +705,20 @@
 #else
 #define MAP_EthernetPHYRead \
         EthernetPHYRead
+#endif
+#ifdef ROM_EthernetPHYPowerOff
+#define MAP_EthernetPHYPowerOff \
+        ROM_EthernetPHYPowerOff
+#else
+#define MAP_EthernetPHYPowerOff \
+        EthernetPHYPowerOff
+#endif
+#ifdef ROM_EthernetPHYPowerOn
+#define MAP_EthernetPHYPowerOn \
+        ROM_EthernetPHYPowerOn
+#else
+#define MAP_EthernetPHYPowerOn \
+        EthernetPHYPowerOn
 #endif
 
 //*****************************************************************************
@@ -1651,6 +1679,20 @@
 #else
 #define MAP_IntPendClear \
         IntPendClear
+#endif
+#ifdef ROM_IntPriorityMaskSet
+#define MAP_IntPriorityMaskSet \
+        ROM_IntPriorityMaskSet
+#else
+#define MAP_IntPriorityMaskSet \
+        IntPriorityMaskSet
+#endif
+#ifdef ROM_IntPriorityMaskGet
+#define MAP_IntPriorityMaskGet \
+        ROM_IntPriorityMaskGet
+#else
+#define MAP_IntPriorityMaskGet \
+        IntPriorityMaskGet
 #endif
 
 //*****************************************************************************
@@ -2959,6 +3001,20 @@
 #define MAP_uDMAChannelSelectDefault \
         uDMAChannelSelectDefault
 #endif
+#ifdef ROM_uDMAControlAlternateBaseGet
+#define MAP_uDMAControlAlternateBaseGet \
+        ROM_uDMAControlAlternateBaseGet
+#else
+#define MAP_uDMAControlAlternateBaseGet \
+        uDMAControlAlternateBaseGet
+#endif
+#ifdef ROM_uDMAChannelScatterGatherSet
+#define MAP_uDMAChannelScatterGatherSet \
+        ROM_uDMAChannelScatterGatherSet
+#else
+#define MAP_uDMAChannelScatterGatherSet \
+        uDMAChannelScatterGatherSet
+#endif
 
 //*****************************************************************************
 //
@@ -3020,6 +3076,13 @@
 #else
 #define MAP_USBDevEndpointStall \
         USBDevEndpointStall
+#endif
+#ifdef ROM_USBDevEndpointStallClear
+#define MAP_USBDevEndpointStallClear \
+        ROM_USBDevEndpointStallClear
+#else
+#define MAP_USBDevEndpointStallClear \
+        USBDevEndpointStallClear
 #endif
 #ifdef ROM_USBDevEndpointStatusClear
 #define MAP_USBDevEndpointStatusClear \
@@ -3084,6 +3147,13 @@
 #define MAP_USBFIFOConfigSet \
         USBFIFOConfigSet
 #endif
+#ifdef ROM_USBFIFOFlush
+#define MAP_USBFIFOFlush \
+        ROM_USBFIFOFlush
+#else
+#define MAP_USBFIFOFlush \
+        USBFIFOFlush
+#endif
 #ifdef ROM_USBFrameNumberGet
 #define MAP_USBFrameNumberGet \
         ROM_USBFrameNumberGet
@@ -3104,13 +3174,6 @@
 #else
 #define MAP_USBHostAddrSet \
         USBHostAddrSet
-#endif
-#ifdef ROM_USBHostEndpointConfig
-#define MAP_USBHostEndpointConfig \
-        ROM_USBHostEndpointConfig
-#else
-#define MAP_USBHostEndpointConfig \
-        USBHostEndpointConfig
 #endif
 #ifdef ROM_USBHostEndpointDataAck
 #define MAP_USBHostEndpointDataAck \
@@ -3245,6 +3308,20 @@
 #define MAP_USBDevEndpointConfigGet \
         USBDevEndpointConfigGet
 #endif
+#ifdef ROM_USBEndpointDMAEnable
+#define MAP_USBEndpointDMAEnable \
+        ROM_USBEndpointDMAEnable
+#else
+#define MAP_USBEndpointDMAEnable \
+        USBEndpointDMAEnable
+#endif
+#ifdef ROM_USBEndpointDMADisable
+#define MAP_USBEndpointDMADisable \
+        ROM_USBEndpointDMADisable
+#else
+#define MAP_USBEndpointDMADisable \
+        USBEndpointDMADisable
+#endif
 #ifdef ROM_USBEndpointDataAvail
 #define MAP_USBEndpointDataAvail \
         ROM_USBEndpointDataAvail
@@ -3314,6 +3391,34 @@
 #else
 #define MAP_USBIntStatusEndpoint \
         USBIntStatusEndpoint
+#endif
+#ifdef ROM_USBHostMode
+#define MAP_USBHostMode \
+        ROM_USBHostMode
+#else
+#define MAP_USBHostMode \
+        USBHostMode
+#endif
+#ifdef ROM_USBDevMode
+#define MAP_USBDevMode \
+        ROM_USBDevMode
+#else
+#define MAP_USBDevMode \
+        USBDevMode
+#endif
+#ifdef ROM_USBPHYPowerOff
+#define MAP_USBPHYPowerOff \
+        ROM_USBPHYPowerOff
+#else
+#define MAP_USBPHYPowerOff \
+        USBPHYPowerOff
+#endif
+#ifdef ROM_USBPHYPowerOn
+#define MAP_USBPHYPowerOn \
+        ROM_USBPHYPowerOn
+#else
+#define MAP_USBPHYPowerOn \
+        USBPHYPowerOn
 #endif
 
 //*****************************************************************************

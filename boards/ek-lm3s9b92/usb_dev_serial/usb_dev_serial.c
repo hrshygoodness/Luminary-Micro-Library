@@ -2,7 +2,7 @@
 //
 // usb_dev_serial.c - Main routines for the USB CDC serial example.
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -46,9 +46,12 @@
 //! This example application turns the evaluation kit into a virtual serial
 //! port when connected to the USB host system.  The application supports the
 //! USB Communication Device Class, Abstract Control Model to redirect UART0
-//! traffic to and from the USB host system.  File usb_dev_serial_win2k.inf may
-//! be used to install the example as a virtual COM port on a Windows2000
-//! system.  For WindowsXP or Vista, usb_dev_serial.inf should be used.
+//! traffic to and from the USB host system.
+//!
+//! Assuming you installed StellarisWare in the default directory, a
+//! driver information (INF) file for use with Windows XP, Windows Vista and
+//! Windows7 can be found in C:/StellarisWare/windows_drivers. For Windows
+//! 2000, the required INF file is in C:/StellarisWare/windows_drivers/win2K.
 //
 //*****************************************************************************
 

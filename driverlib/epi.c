@@ -2,7 +2,7 @@
 //
 // epi.c - Driver for the EPI module.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -215,16 +215,15 @@ EPIConfigSDRAMSet(unsigned long ulBase, unsigned long ulConfig,
 //! rate resulting from the divider in the lower 16 bits of the parameter passed
 //! to EPIDividerSet().
 //! - one of \b EPI_HB8_CSCFG_CS, \b EPI_HB8_CSCFG_ALE,
-//! \b EPI_HB8_CSCFG_DUAL_CS or \b EPI_HB8_CSCFG_ALE_DUAL_CS. \b
-//! EPI_HB8_CSCFG_CS sets EPI30 to operate as a Chip Select (CSn) signal.  When
-//! using this mode, \b EPI_HB8_MODE_ADMUX must not be specified. \b
-//! EPI_HB8_CSCFG_ALE sets EPI30 to operate as an address latch (ALE). \b
-//! EPI_HB8_CSCFG_DUAL_CS sets EPI30 to operate as CS0n and EPI27 as CS1n with
+//! \b EPI_HB8_CSCFG_DUAL_CS or \b EPI_HB8_CSCFG_ALE_DUAL_CS.
+//! \b EPI_HB8_CSCFG_CS sets EPI30 to operate as a Chip Select (CSn) signal.
+//! \b EPI_HB8_CSCFG_ALE sets EPI30 to operate as an address latch (ALE).
+//! \b EPI_HB8_CSCFG_DUAL_CS sets EPI30 to operate as CS0n and EPI27 as CS1n
+//! with the asserted chip select determined from the most significant address
+//! bit for the respective external address map.  \b EPI_HB8_CSCFG_ALE_DUAL_CS
+//! sets EPI30 as an address latch (ALE), EPI27 as CS0n and EPI26 as CS1n with
 //! the asserted chip select determined from the most significant address bit
-//! for the respective external address map. \b EPI_HB8_CSCFG_ALE_DUAL_CS sets
-//! EPI30 as an address latch (ALE), EPI27 as CS0n and EPI26 as CS1n with the
-//! asserted chip select determined from the most significant address bit for
-//! the respective external address map.
+//! for the respective external address map.
 //!
 //! The parameter \e ulMaxWait is used if the FIFO mode is chosen.  If a
 //! FIFO is used along with RXFULL or TXEMPTY ready signals, then this
@@ -250,7 +249,9 @@ EPIConfigHB8Set(unsigned long ulBase, unsigned long ulConfig,
     //
     HWREG(ulBase + EPI_O_HB8CFG2) = (((ulConfig & EPI_HB8_WORD_ACCESS) ?
                                        EPI_HB8CFG2_WORD : 0) |
-                                     ((ulConfig & EPI_HB8_CSBAUD_DUAL) ?                                       EPI_HB8CFG2_CSBAUD : 0) |                                      ((ulConfig & EPI_HB8_CSCFG_MASK) << 15));
+                                     ((ulConfig & EPI_HB8_CSBAUD_DUAL) ?
+                                       EPI_HB8CFG2_CSBAUD : 0) |
+                                      ((ulConfig & EPI_HB8_CSCFG_MASK) << 15));
     //
     // Fill in the max wait field of the configuration word.
     //
@@ -303,13 +304,12 @@ EPIConfigHB8Set(unsigned long ulBase, unsigned long ulConfig,
 //! rate resulting from the divider in the lower 16 bits of the parameter passed
 //! to EPIDividerSet().
 //! - one of \b EPI_HB16_CSCFG_CS, \b EPI_HB16_CSCFG_ALE,
-//! \b EPI_HB16_CSCFG_DUAL_CS or \b EPI_HB16_CSCFG_ALE_DUAL_CS. \b
-//! EPI_HB16_CSCFG_CS sets EPI30 to operate as a Chip Select (CSn) signal.
-//! When using this mode, \b EPI_HB16_MODE_ADMUX must not be specified. \b
-//! EPI_HB16_CSCFG_ALE sets EPI30 to operate as an address latch (ALE).
+//! \b EPI_HB16_CSCFG_DUAL_CS or \b EPI_HB16_CSCFG_ALE_DUAL_CS.
+//! \b EPI_HB16_CSCFG_CS sets EPI30 to operate as a Chip Select (CSn) signal.
+//! \b EPI_HB16_CSCFG_ALE sets EPI30 to operate as an address latch (ALE).
 //! \b EPI_HB16_CSCFG_DUAL_CS sets EPI30 to operate as CS0n and EPI27 as CS1n
 //! with the asserted chip select determined from the most significant address
-//! bit for the respective external address map. \b EPI_HB16_CSCFG_ALE_DUAL_CS
+//! bit for the respective external address map.  \b EPI_HB16_CSCFG_ALE_DUAL_CS
 //! sets EPI30 as an address latch (ALE), EPI27 as CS0n and EPI26 as CS1n with
 //! the asserted chip select determined from the most significant address bit
 //! for the respective external address map.

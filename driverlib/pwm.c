@@ -2,7 +2,7 @@
 //
 // pwm.c - API for the PWM modules
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -1218,14 +1218,14 @@ PWMGenIntStatus(unsigned long ulBase, unsigned long ulGen, tBoolean bMasked)
 //! \b PWM_INT_CNT_LOAD, \b PWM_INT_CNT_AU, \b PWM_INT_CNT_AD,
 //! \b PWM_INT_CNT_BU, or \b PWM_INT_CNT_BD.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -1331,14 +1331,14 @@ PWMIntDisable(unsigned long ulBase, unsigned long ulGenFault)
 //! used instead since it supports all fault interrupts supported on devices
 //! with and without extended PWM fault handling support.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -1415,13 +1415,14 @@ PWMIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! generators.  On a device without extended PWM fault handling, the interrupt
 //! is directly related to the state of the single FAULT pin.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several cycles before the interrupt source is actually cleared.  Therefore,
-//! it is recommended that the interrupt source be cleared early in the
-//! interrupt handler (as opposed to the very last action) to avoid returning
-//! from the interrupt handler before the interrupt source is actually cleared.
-//! Failure to do so may result in the interrupt handler being immediately
-//! reentered (since NVIC still sees the interrupt source asserted).
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
+//! Therefore, it is recommended that the interrupt source be cleared early in
+//! the interrupt handler (as opposed to the very last action) to avoid
+//! returning from the interrupt handler before the interrupt source is
+//! actually cleared.  Failure to do so may result in the interrupt handler
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -1513,9 +1514,9 @@ PWMGenFaultConfigure(unsigned long ulBase, unsigned long ulGen,
 //! \b PWM_FAULT_GROUP_0, this will be the logical OR of \b PWM_FAULT_FAULT0,
 //! \b PWM_FAULT_FAULT1, \b PWM_FAULT_FAULT2, or \b PWM_FAULT_FAULT3.  For
 //! \b PWM_FAULT_GROUP_1, this will be the logical OR of \b PWM_FAULT_DCMP0,
-//!  \b PWM_FAULT_DCMP1, \b PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3, \b
-//! PWM_FAULT_DCMP4, \b PWM_FAULT_DCMP5, \b PWM_FAULT_DCMP6, or \b
-//! PWM_FAULT_DCMP7.
+//! \b PWM_FAULT_DCMP1, \b PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3,
+//! \b PWM_FAULT_DCMP4, \b PWM_FAULT_DCMP5, \b PWM_FAULT_DCMP6, or
+//! \b PWM_FAULT_DCMP7.
 //!
 //! This function allows selection of the set of fault inputs that will be
 //! combined to generate a fault condition to a given PWM generator.  By
@@ -1592,9 +1593,9 @@ PWMGenFaultTriggerSet(unsigned long ulBase, unsigned long ulGen,
 //! provided.  For \b PWM_FAULT_GROUP_0, the returned value will be a logical
 //! OR of \b PWM_FAULT_FAULT0, \b PWM_FAULT_FAULT1, \b PWM_FAULT_FAULT2, or
 //! \b PWM_FAULT_FAULT3.  For \b PWM_FAULT_GROUP_1, the return value will be
-//! the logical OR of \b PWM_FAULT_DCMP0, \b PWM_FAULT_DCMP1, \b
-//! PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3, \b PWM_FAULT_DCMP4, \b PWM_FAULT_DCMP5,
-//! \b PWM_FAULT_DCMP6, or \b PWM_FAULT_DCMP7.
+//! the logical OR of \b PWM_FAULT_DCMP0, \b PWM_FAULT_DCMP1,
+//! \b PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3, \b PWM_FAULT_DCMP4,
+//! \b PWM_FAULT_DCMP5, \b PWM_FAULT_DCMP6, or \b PWM_FAULT_DCMP7.
 //
 //*****************************************************************************
 unsigned long
@@ -1651,9 +1652,9 @@ PWMGenFaultTriggerGet(unsigned long ulBase, unsigned long ulGen,
 //! \b PWM_FAULT_GROUP_0, the returned value will be a logical OR of
 //! \b PWM_FAULT_FAULT0, \b PWM_FAULT_FAULT1, \b PWM_FAULT_FAULT2, or
 //! \b PWM_FAULT_FAULT3.  For \b PWM_FAULT_GROUP_1, the return value will be
-//! the logical OR of \b PWM_FAULT_DCMP0, \b PWM_FAULT_DCMP1, \b
-//! PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3, \b PWM_FAULT_DCMP4, \b PWM_FAULT_DCMP5,
-//! \b PWM_FAULT_DCMP6, or \b PWM_FAULT_DCMP7.
+//! the logical OR of \b PWM_FAULT_DCMP0, \b PWM_FAULT_DCMP1,
+//! \b PWM_FAULT_DCMP2, \b PWM_FAULT_DCMP3, \b PWM_FAULT_DCMP4,
+//! \b PWM_FAULT_DCMP5, \b PWM_FAULT_DCMP6, or \b PWM_FAULT_DCMP7.
 //
 //*****************************************************************************
 unsigned long

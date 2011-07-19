@@ -2,7 +2,7 @@
 //
 // gpio.c - API for GPIO ports
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Peripheral Driver Library.
+// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -101,7 +101,7 @@ GPIOBaseValid(unsigned long ulPort)
 static long
 GPIOGetIntNumber(unsigned long ulPort)
 {
-    unsigned int ulInt;
+    long lInt;
 
     //
     // Determine the GPIO interrupt number for the given module.
@@ -111,63 +111,63 @@ GPIOGetIntNumber(unsigned long ulPort)
         case GPIO_PORTA_BASE:
         case GPIO_PORTA_AHB_BASE:
         {
-            ulInt = INT_GPIOA;
+            lInt = INT_GPIOA;
             break;
         }
 
         case GPIO_PORTB_BASE:
         case GPIO_PORTB_AHB_BASE:
         {
-            ulInt = INT_GPIOB;
+            lInt = INT_GPIOB;
             break;
         }
 
         case GPIO_PORTC_BASE:
         case GPIO_PORTC_AHB_BASE:
         {
-            ulInt = INT_GPIOC;
+            lInt = INT_GPIOC;
             break;
         }
 
         case GPIO_PORTD_BASE:
         case GPIO_PORTD_AHB_BASE:
         {
-            ulInt = INT_GPIOD;
+            lInt = INT_GPIOD;
             break;
         }
 
         case GPIO_PORTE_BASE:
         case GPIO_PORTE_AHB_BASE:
         {
-            ulInt = INT_GPIOE;
+            lInt = INT_GPIOE;
             break;
         }
 
         case GPIO_PORTF_BASE:
         case GPIO_PORTF_AHB_BASE:
         {
-            ulInt = INT_GPIOF;
+            lInt = INT_GPIOF;
             break;
         }
 
         case GPIO_PORTG_BASE:
         case GPIO_PORTG_AHB_BASE:
         {
-            ulInt = INT_GPIOG;
+            lInt = INT_GPIOG;
             break;
         }
 
         case GPIO_PORTH_BASE:
         case GPIO_PORTH_AHB_BASE:
         {
-            ulInt = INT_GPIOH;
+            lInt = INT_GPIOH;
             break;
         }
 
         case GPIO_PORTJ_BASE:
         case GPIO_PORTJ_AHB_BASE:
         {
-            ulInt = INT_GPIOJ;
+            lInt = INT_GPIOJ;
             break;
         }
 
@@ -180,7 +180,7 @@ GPIOGetIntNumber(unsigned long ulPort)
     //
     // Return GPIO interrupt number.
     //
-    return(ulInt);
+    return(lInt);
 }
 
 //*****************************************************************************
@@ -423,7 +423,7 @@ GPIOIntTypeGet(unsigned long ulPort, unsigned char ucPin)
 //! where \b GPIO_PIN_TYPE_STD* specifies a push-pull pin, \b GPIO_PIN_TYPE_OD*
 //! specifies an open-drain pin, \b *_WPU specifies a weak pull-up, \b *_WPD
 //! specifies a weak pull-down, and \b GPIO_PIN_TYPE_ANALOG specifies an
-//! analog input (for the comparators).
+//! analog input.
 //!
 //! The pin(s) are specified using a bit-packed byte, where each bit that is
 //! set identifies the pin to be accessed, and where bit 0 of the byte
@@ -663,14 +663,14 @@ GPIOPinIntStatus(unsigned long ulPort, tBoolean bMasked)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note Since there is a write buffer in the Cortex-M3 processor, it may take
-//! several clock cycles before the interrupt source is actually cleared.
+//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
 //! returning from the interrupt handler before the interrupt source is
 //! actually cleared.  Failure to do so may result in the interrupt handler
-//! being immediately reentered (since NVIC still sees the interrupt source
-//! asserted).
+//! being immediately reentered (because the interrupt controller still sees
+//! the interrupt source asserted).
 //!
 //! \return None.
 //
@@ -964,6 +964,129 @@ GPIOPinTypeComparator(unsigned long ulPort, unsigned char ucPins)
 
 //*****************************************************************************
 //
+//! Configures pin(s) for use by the external peripheral interface.
+//!
+//! \param ulPort is the base address of the GPIO port.
+//! \param ucPins is the bit-packed representation of the pin(s).
+//!
+//! The external peripheral interface pins must be properly configured for the
+//! external peripheral interface to function correctly.  This function
+//! provides a typical configuration for those pin(s); other configurations may
+//! work as well depending upon the board setup (for example, using the on-chip
+//! pull-ups).
+//!
+//! The pin(s) are specified using a bit-packed byte, where each bit that is
+//! set identifies the pin to be accessed, and where bit 0 of the byte
+//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
+//!
+//! \note This cannot be used to turn any pin into an external peripheral
+//! interface pin; it only configures an external peripheral interface pin for
+//! proper operation.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+GPIOPinTypeEPI(unsigned long ulPort, unsigned char ucPins)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulPort));
+
+    //
+    // Make the pin(s) be peripheral controlled.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
+
+    //
+    // Set the pad(s) for standard push-pull operation.
+    //
+    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
+}
+
+//*****************************************************************************
+//
+//! Configures pin(s) for use by the Ethernet peripheral as LED signals.
+//!
+//! \param ulPort is the base address of the GPIO port.
+//! \param ucPins is the bit-packed representation of the pin(s).
+//!
+//! The Ethernet peripheral provides two signals that can be used to drive
+//! an LED (e.g. for link status/activity).  This function provides a typical
+//! configuration for the pins.
+//!
+//! The pin(s) are specified using a bit-packed byte, where each bit that is
+//! set identifies the pin to be accessed, and where bit 0 of the byte
+//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
+//!
+//! \note This cannot be used to turn any pin into an Ethernet LED pin; it only
+//! configures an Ethernet LED pin for proper operation.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+GPIOPinTypeEthernetLED(unsigned long ulPort, unsigned char ucPins)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulPort));
+
+    //
+    // Make the pin(s) be peripheral controlled.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
+
+    //
+    // Set the pad(s) for standard push-pull operation.
+    //
+    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
+}
+
+//*****************************************************************************
+//
+//! Configures pin(s) for use by the Ethernet peripheral as MII signals.
+//!
+//! \param ulPort is the base address of the GPIO port.
+//! \param ucPins is the bit-packed representation of the pin(s).
+//!
+//! The Ethernet peripheral on some parts provides a set of MII signals that
+//! are used to connect to an external PHY.  This function provides a typical
+//! configuration for the pins.
+//!
+//! The pin(s) are specified using a bit-packed byte, where each bit that is
+//! set identifies the pin to be accessed, and where bit 0 of the byte
+//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
+//!
+//! \note This cannot be used to turn any pin into an Ethernet MII pin; it only
+//! configures an Ethernet MII pin for proper operation.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+GPIOPinTypeEthernetMII(unsigned long ulPort, unsigned char ucPins)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulPort));
+
+    //
+    // Make the pin(s) be peripheral controlled.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
+
+    //
+    // Set the pad(s) for standard push-pull operation.
+    //
+    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
+}
+
+//*****************************************************************************
+//
 //! Configures pin(s) for use as GPIO inputs.
 //!
 //! \param ulPort is the base address of the GPIO port.
@@ -1028,14 +1151,14 @@ GPIOPinTypeGPIOOutput(unsigned long ulPort, unsigned char ucPins)
     ASSERT(GPIOBaseValid(ulPort));
 
     //
-    // Make the pin(s) be outputs.
-    //
-    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_OUT);
-
-    //
     // Set the pad(s) for standard push-pull operation.
     //
     GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+
+    //
+    // Make the pin(s) be outputs.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_OUT);
 }
 
 //*****************************************************************************
@@ -1066,14 +1189,14 @@ GPIOPinTypeGPIOOutputOD(unsigned long ulPort, unsigned char ucPins)
     ASSERT(GPIOBaseValid(ulPort));
 
     //
-    // Make the pin(s) be outputs.
-    //
-    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_OUT);
-
-    //
     // Set the pad(s) for standard push-pull operation.
     //
     GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+
+    //
+    // Make the pin(s) be outputs.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_OUT);
 }
 
 //*****************************************************************************
@@ -1114,6 +1237,47 @@ GPIOPinTypeI2C(unsigned long ulPort, unsigned char ucPins)
     // Set the pad(s) for open-drain operation with a weak pull-up.
     //
     GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD_WPU);
+}
+
+//*****************************************************************************
+//
+//! Configures pin(s) for use by the I2S peripheral.
+//!
+//! \param ulPort is the base address of the GPIO port.
+//! \param ucPins is the bit-packed representation of the pin(s).
+//!
+//! Some I2S pins must be properly configured for the I2S peripheral to
+//! function correctly.  This function provides a typical configuration for
+//! the digital I2S pin(s); other configurations may work as well depending
+//! upon the board setup (for example, using the on-chip pull-ups).
+//!
+//! The pin(s) are specified using a bit-packed byte, where each bit that is
+//! set identifies the pin to be accessed, and where bit 0 of the byte
+//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
+//!
+//! \note This cannot be used to turn any pin into a I2S pin; it only
+//! configures a I2S pin for proper operation.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+GPIOPinTypeI2S(unsigned long ulPort, unsigned char ucPins)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulPort));
+
+    //
+    // Make the pin(s) be peripheral controlled.
+    //
+    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
+
+    //
+    // Set the pad(s) for standard push-pull operation.
+    //
+    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
 }
 
 //*****************************************************************************
@@ -1328,51 +1492,6 @@ GPIOPinTypeUART(unsigned long ulPort, unsigned char ucPins)
 //! \param ulPort is the base address of the GPIO port.
 //! \param ucPins is the bit-packed representation of the pin(s).
 //!
-//! Some USB digital pins must be properly configured for the USB peripheral to
-//! function correctly.  This function provides a typical configuration for
-//! the digital USB pin(s); other configurations may work as well depending
-//! upon the board setup (for example, using the on-chip pull-ups).
-//!
-//! This function should only be used with EPEN and PFAULT pins as all other
-//! USB pins are analog in nature or are not used in devices without OTG
-//! functionality.
-//!
-//! The pin(s) are specified using a bit-packed byte, where each bit that is
-//! set identifies the pin to be accessed, and where bit 0 of the byte
-//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
-//!
-//! \note This cannot be used to turn any pin into a USB pin; it only
-//! configures a USB pin for proper operation.
-//!
-//! \return None.
-//
-//*****************************************************************************
-void
-GPIOPinTypeUSBDigital(unsigned long ulPort, unsigned char ucPins)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(GPIOBaseValid(ulPort));
-
-    //
-    // Make the pin(s) be peripheral controlled.
-    //
-    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
-
-    //
-    // Set the pad(s) for standard push-pull operation.
-    //
-    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-}
-
-//*****************************************************************************
-//
-//! Configures pin(s) for use by the USB peripheral.
-//!
-//! \param ulPort is the base address of the GPIO port.
-//! \param ucPins is the bit-packed representation of the pin(s).
-//!
 //! Some USB analog pins must be properly configured for the USB peripheral to
 //! function correctly.  This function provides the proper configuration for
 //! any USB pin(s).  This can also be used to configure the EPEN and PFAULT pins
@@ -1409,28 +1528,32 @@ GPIOPinTypeUSBAnalog(unsigned long ulPort, unsigned char ucPins)
 
 //*****************************************************************************
 //
-//! Configures pin(s) for use by the I2S peripheral.
+//! Configures pin(s) for use by the USB peripheral.
 //!
 //! \param ulPort is the base address of the GPIO port.
 //! \param ucPins is the bit-packed representation of the pin(s).
 //!
-//! Some I2S pins must be properly configured for the I2S peripheral to
+//! Some USB digital pins must be properly configured for the USB peripheral to
 //! function correctly.  This function provides a typical configuration for
-//! the digital I2S pin(s); other configurations may work as well depending
+//! the digital USB pin(s); other configurations may work as well depending
 //! upon the board setup (for example, using the on-chip pull-ups).
+//!
+//! This function should only be used with EPEN and PFAULT pins as all other
+//! USB pins are analog in nature or are not used in devices without OTG
+//! functionality.
 //!
 //! The pin(s) are specified using a bit-packed byte, where each bit that is
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This cannot be used to turn any pin into a I2S pin; it only
-//! configures a I2S pin for proper operation.
+//! \note This cannot be used to turn any pin into a USB pin; it only
+//! configures a USB pin for proper operation.
 //!
 //! \return None.
 //
 //*****************************************************************************
 void
-GPIOPinTypeI2S(unsigned long ulPort, unsigned char ucPins)
+GPIOPinTypeUSBDigital(unsigned long ulPort, unsigned char ucPins)
 {
     //
     // Check the arguments.
@@ -1446,89 +1569,6 @@ GPIOPinTypeI2S(unsigned long ulPort, unsigned char ucPins)
     // Set the pad(s) for standard push-pull operation.
     //
     GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
-}
-
-//*****************************************************************************
-//
-//! Configures pin(s) for use by the Ethernet peripheral as LED signals.
-//!
-//! \param ulPort is the base address of the GPIO port.
-//! \param ucPins is the bit-packed representation of the pin(s).
-//!
-//! The Ethernet peripheral provides two signals that can be used to drive
-//! an LED (e.g. for link status/activity).  This function provides a typical
-//! configuration for the pins.
-//!
-//! The pin(s) are specified using a bit-packed byte, where each bit that is
-//! set identifies the pin to be accessed, and where bit 0 of the byte
-//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
-//!
-//! \note This cannot be used to turn any pin into an Ethernet LED pin; it only
-//! configures an Ethernet LED pin for proper operation.
-//!
-//! \return None.
-//
-//*****************************************************************************
-void
-GPIOPinTypeEthernetLED(unsigned long ulPort, unsigned char ucPins)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(GPIOBaseValid(ulPort));
-
-    //
-    // Make the pin(s) be peripheral controlled.
-    //
-    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
-
-    //
-    // Set the pad(s) for standard push-pull operation.
-    //
-    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
-}
-
-//*****************************************************************************
-//
-//! Configures pin(s) for use by the external peripheral interface.
-//!
-//! \param ulPort is the base address of the GPIO port.
-//! \param ucPins is the bit-packed representation of the pin(s).
-//!
-//! The external peripheral interface pins must be properly configured for the
-//! external peripheral interface to function correctly.  This function
-//! provides a typica configuration for those pin(s); other configurations may
-//! work as well depending upon the board setup (for exampe, using the on-chip
-//! pull-ups).
-//!
-//! The pin(s) are specified using a bit-packed byte, where each bit that is
-//! set identifies the pin to be accessed, and where bit 0 of the byte
-//! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
-//!
-//! \note This cannot be used to turn any pin into an external peripheral
-//! interface pin; it only configures an external peripheral interface pin for
-//! proper operation.
-//!
-//! \return None.
-//
-//*****************************************************************************
-void
-GPIOPinTypeEPI(unsigned long ulPort, unsigned char ucPins)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(GPIOBaseValid(ulPort));
-
-    //
-    // Make the pin(s) be peripheral controlled.
-    //
-    GPIODirModeSet(ulPort, ucPins, GPIO_DIR_MODE_HW);
-
-    //
-    // Set the pad(s) for standard push-pull operation.
-    //
-    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
 }
 
 //*****************************************************************************

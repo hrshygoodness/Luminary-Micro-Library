@@ -1,7 +1,7 @@
 <!--
 Configuration file for Code Red workspace ek-lm3s9b92
 
-Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 -->
 
 <workspace>
@@ -31,6 +31,8 @@ This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
   <project description="aes_set_key/cr_project.xml" />
   <project description="bitband/cr_project.xml" />
   <project description="blinky/cr_project.xml" />
+  <project description="boot_usb/cr_project.xml" />
+  <project description="boot_demo_usb/cr_project.xml" />
   <project description="enet_lwip/cr_project.xml" />
   <project description="enet_ptpd/cr_project.xml" />
   <project description="enet_uip/cr_project.xml" />
@@ -40,11 +42,13 @@ This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
   <project description="mpu_fault/cr_project.xml" />
   <project description="pwmgen/cr_project.xml" />
   <project description="qs-adventure/cr_project.xml" />
+  <project description="softuart_echo/cr_project.xml" />
   <project description="timers/cr_project.xml" />
   <project description="uart_echo/cr_project.xml" />
   <project description="udma_demo/cr_project.xml" />
   <project description="udma_timer/cr_project.xml" />
   <project description="udma_timer_ccp/cr_project.xml" />
+  <project description="udma_uart_sg/cr_project.xml" />
   <project description="usb_dev_bulk/cr_project.xml" />
   <project description="usb_dev_chidcdc/cr_project.xml" />
   <project description="usb_dev_keyboard/cr_project.xml" />

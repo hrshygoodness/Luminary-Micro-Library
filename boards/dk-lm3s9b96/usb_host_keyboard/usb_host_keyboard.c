@@ -2,7 +2,7 @@
 //
 // usb_host_keyboard.c - main application code for the host keyboard example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/usbhid.h"
@@ -821,8 +822,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the part pinout appropriately for this device.
@@ -839,24 +840,24 @@ main(void)
     //
     // Enable Clocking to the USB controller.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
 
     //
     // Configure SysTick for a 100Hz interrupt.
     //
-    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
-    SysTickEnable();
-    SysTickIntEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / TICKS_PER_SECOND);
+    ROM_SysTickEnable();
+    ROM_SysTickIntEnable();
 
     //
     // Enable Interrupts
     //
-    IntMasterEnable();
+    ROM_IntMasterEnable();
 
     //
     // Configure the relevant pins such that UART0 owns them.
     //
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Open UART0 for debug output.
@@ -866,8 +867,8 @@ main(void)
     //
     // Configure the required pins for USB operation.
     //
-    GPIOPinTypeUSBDigital(GPIO_PORTA_BASE, GPIO_PIN_6 | GPIO_PIN_7);
-    GPIOPinTypeUSBDigital(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    ROM_GPIOPinTypeUSBDigital(GPIO_PORTA_BASE, GPIO_PIN_6 | GPIO_PIN_7);
+    ROM_GPIOPinTypeUSBDigital(GPIO_PORTB_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
     // Initialize the USB stack mode and pass in a mode callback.

@@ -129,7 +129,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>lmidk-agdi</Key>
-          <Name>-O4614 -S3 -FO29</Name>
+          <Name>-O4614 -S2 -FO29</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -140,11 +140,6 @@
           <Number>0</Number>
           <Key>ARMDBGFLAGS</Key>
           <Name></Name>
-        </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
-          <Key>UL2CM3</Key>
-          <Name>-UU0086R8E -O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC0 -FN1 -FF0 -FS00 -FL00</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <DebugFlag>
@@ -548,7 +543,7 @@
       <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
-          <Name>C:\StellarisWare\driverlib\readme.txt</Name>
+          <Name>..\..\..\boot_loader\readme.txt</Name>
           <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
           <CurrentLine>1</CurrentLine>

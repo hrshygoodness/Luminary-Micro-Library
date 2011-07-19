@@ -2,7 +2,7 @@
 //
 // audioplay.c - WAV file player function for the Tempest checkout application
 //
-// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/udma.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/i2s.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "grlib/widget.h"
 #include "grlib/pushbutton.h"
@@ -833,7 +834,7 @@ WavePlay(tWaveHeader *pWaveHeader)
     //
     // Must disable I2S interrupts during this time to prevent state problems.
     //
-    IntDisable(INT_I2S0);
+    ROM_IntDisable(INT_I2S0);
 
     //
     // If the refill flag gets cleared then fill the requested side of the
@@ -967,7 +968,7 @@ WavePlay(tWaveHeader *pWaveHeader)
     // Re-enable I2S interrupts now that we are finished playing with the
     // buffers.
     //
-    IntEnable(INT_I2S0);
+    ROM_IntEnable(INT_I2S0);
 
     return(0);
 }

@@ -1,8 +1,8 @@
-//*****************************************************************************
+//****************************************************************************
 //
 // usb_dev_audio.c - Main routines for audio device example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,19 +18,19 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
-//*****************************************************************************
+//****************************************************************************
 
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/hw_sysctl.h"
 #include "inc/hw_udma.h"
-#include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/usb-ids.h"
@@ -42,7 +42,7 @@
 #include "drivers/set_pinout.h"
 #include "usb_audio_structs.h"
 
-//*****************************************************************************
+//****************************************************************************
 //
 //! \addtogroup example_list
 //! <h1>USB Audio Device (usb_dev_audio)</h1>
@@ -93,11 +93,11 @@ tDMAControlTable sDMAControlTable[64];
 tDMAControlTable sDMAControlTable[64] __attribute__ ((aligned(1024)));
 #endif
 
-//******************************************************************************
+//****************************************************************************
 //
 // Buffer management and flags.
 //
-//******************************************************************************
+//****************************************************************************
 #define AUDIO_PACKET_SIZE       ((48000*4)/1000)
 #define AUDIO_BUFFER_SIZE       (AUDIO_PACKET_SIZE*20)
 
@@ -131,21 +131,21 @@ struct
     volatile unsigned long ulFlags;
 } g_sBuffer;
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This macro is used to convert the 16 bit signed 8.8 fixed point number to
 // a number that ranges from 0 - 100.
 //
-//*****************************************************************************
-#define CONVERT_TO_PERCENT(dbVolume)                                          \
-    ((dbVolume - (short)VOLUME_MAX + (short)VOLUME_MIN) * 100) /              \
+//****************************************************************************
+#define CONVERT_TO_PERCENT(dbVolume)                                         \
+    ((dbVolume - (short)VOLUME_MAX + (short)VOLUME_MIN) * 100) /             \
     ((short)VOLUME_MAX - (short)VOLUME_MIN) + 100;
 
-//*****************************************************************************
+//****************************************************************************
 //
 // The current volume setting.
 //
-//*****************************************************************************
+//****************************************************************************
 short g_sVolume;
 
 //*****************************************************************************
@@ -159,23 +159,23 @@ void *g_pvAudioDevice;
 //
 // A volume update is pending.
 //
-#define FLAG_VOLUME_UPDATE      0x00000001
+#define FLAG_VOLUME_UPDATE      0
 
 //
 // A mute update is pending.
 //
-#define FLAG_MUTE_UPDATE        0x00000002
+#define FLAG_MUTE_UPDATE        1
 
 //
 // The current state of the mute flag.
 //
-#define FLAG_MUTED              0x00000004
+#define FLAG_MUTED              2
 
 //
 // A flag used to indicate whether or not we are currently connected to the USB
 // host.
 //
-#define FLAG_CONNECTED          0x00000008
+#define FLAG_CONNECTED          3
 volatile unsigned long g_ulFlags;
 
 //*****************************************************************************
@@ -197,7 +197,7 @@ __error__(char *pcFilename, unsigned long ulLine)
 }
 #endif
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This function is used to modify the MCLK used by the I2S interface by a
 // given amount.
@@ -210,12 +210,12 @@ __error__(char *pcFilename, unsigned long ulLine)
 // specified in the \e iMClkAdjust parameter and is an 8.4 signed fixed point
 // number.  Some care should be used as only small changes should be made to
 // prevent noise that may occur due to a rapid change in rate.  This is not
-// meant to be a sample rate conversion, it is used to correct for small errors
-// in sample rate.
+// meant to be a sample rate conversion, it is used to correct for small
+// errors in sample rate.
 //
 // \return None.
 //
-//*****************************************************************************
+//****************************************************************************
 void
 SysCtlI2SMClkAdjust(int iMClkAdjust)
 {
@@ -249,11 +249,11 @@ SysCtlI2SMClkAdjust(int iMClkAdjust)
                                 SYSCTL_I2SMCLKCFG_RXF_S);
 }
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This function is called back for events in the USB Audio Class.
 //
-//*****************************************************************************
+//****************************************************************************
 unsigned long
 AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
                     unsigned long ulMsgParam, void *pvMsgData)
@@ -270,10 +270,9 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
             //
             // Now connected.
             //
-            g_ulFlags |= FLAG_CONNECTED;
+            HWREGBITW(&g_ulFlags, FLAG_CONNECTED) = 1;
             break;
         }
-
 
         //
         // Mute update.
@@ -288,15 +287,16 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
                 //
                 // Flag the update as a mute.
                 //
-                g_ulFlags |= FLAG_MUTE_UPDATE | FLAG_MUTED;
+                HWREGBITW(&g_ulFlags, FLAG_MUTED) = 1;
+                HWREGBITW(&g_ulFlags, FLAG_MUTE_UPDATE) = 1;
             }
             else
             {
                 //
                 // Flag the update as an unmute.
                 //
-                g_ulFlags &= ~(FLAG_MUTE_UPDATE | FLAG_MUTED);
-                g_ulFlags |= FLAG_MUTE_UPDATE;
+                HWREGBITW(&g_ulFlags, FLAG_MUTED) = 0;
+                HWREGBITW(&g_ulFlags, FLAG_MUTE_UPDATE) = 1;
             }
             break;
         }
@@ -306,10 +306,10 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
         //
         case USBD_AUDIO_EVENT_VOLUME:
         {
-            g_ulFlags |= FLAG_VOLUME_UPDATE;
+            HWREGBITW(&g_ulFlags, FLAG_VOLUME_UPDATE) = 1;
 
             //
-            // Chek for the special case of maximum attenuation.
+            // Check for the special case of maximum attenuation.
             //
             if(ulMsgParam == 0x8000)
             {
@@ -336,7 +336,7 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
             //
             // No longer connected.
             //
-            g_ulFlags &= ~FLAG_CONNECTED;
+            HWREGBITW(&g_ulFlags, FLAG_CONNECTED) = 0;
         }
         default:
         {
@@ -346,11 +346,11 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
     return(0);
 }
 
-//******************************************************************************
+//****************************************************************************
 //
 // Handler for buffers being released by the sound driver.
 //
-//******************************************************************************
+//****************************************************************************
 void
 SoundBufferCallback(void *pvBuffer, unsigned long ulEvent)
 {
@@ -392,11 +392,11 @@ SoundBufferCallback(void *pvBuffer, unsigned long ulEvent)
     }
 }
 
-//******************************************************************************
+//****************************************************************************
 //
 // Handler for buffers coming from the USB audio device class.
 //
-//******************************************************************************
+//****************************************************************************
 void
 USBBufferCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
 {
@@ -488,11 +488,11 @@ USBBufferCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
                       AUDIO_PACKET_SIZE, USBBufferCallback);
 }
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This function updates the mute area of the status bar.
 //
-//*****************************************************************************
+//****************************************************************************
 void
 UpdateMute(void)
 {
@@ -502,8 +502,8 @@ UpdateMute(void)
     //
     // Set the bounds of the mute rectangle.
     //
-    sRect.sXMin = GrContextDpyWidthGet(&g_sContext) - DISPLAY_STATUS_MUTE_TEXT -
-                  DISPLAY_STATUS_MUTE_INSET;
+    sRect.sXMin = GrContextDpyWidthGet(&g_sContext) -
+                  DISPLAY_STATUS_MUTE_TEXT - DISPLAY_STATUS_MUTE_INSET;
 
     sRect.sYMin = GrContextDpyHeightGet(&g_sContext) -
                   DISPLAY_BANNER_HEIGHT - 1 + DISPLAY_STATUS_MUTE_INSET;
@@ -517,7 +517,7 @@ UpdateMute(void)
     //
     // See if the current state is muted or not.
     //
-    if(g_ulFlags & FLAG_MUTED)
+    if(HWREGBITW(&g_ulFlags, FLAG_MUTED))
     {
         //
         // Set the volume to 0.
@@ -561,11 +561,11 @@ UpdateMute(void)
     }
 }
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This function updates the volume as well as the volume status bar.
 //
-//*****************************************************************************
+//****************************************************************************
 void
 UpdateVolume(void)
 {
@@ -591,7 +591,7 @@ UpdateVolume(void)
     //
     // Don't update the actual volume if muted.
     //
-    if((g_ulFlags & FLAG_MUTED) == 0)
+    if(HWREGBITW(&g_ulFlags, FLAG_MUTED) == 0)
     {
         //
         // Set the volume to the current setting.
@@ -600,12 +600,12 @@ UpdateVolume(void)
     }
 }
 
-//*****************************************************************************
+//****************************************************************************
 //
 // This function updates the status area of the screen.  It uses the current
 // state of the application to print the status bar.
 //
-//*****************************************************************************
+//****************************************************************************
 void
 UpdateStatus(void)
 {
@@ -639,7 +639,7 @@ UpdateStatus(void)
     //
     // Update the status on the screen.
     //
-    if(g_ulFlags & FLAG_CONNECTED)
+    if(HWREGBITW(&g_ulFlags, FLAG_CONNECTED))
     {
         //
         // Device is currently connected.
@@ -679,8 +679,8 @@ main(void)
     //
     // Set the clocking to run directly from the crystal.
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pin out appropriately for this board.
@@ -690,10 +690,10 @@ main(void)
     //
     // Configure and enable uDMA
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
     SysCtlDelay(10);
-    uDMAControlBaseSet(&sDMAControlTable[0]);
-    uDMAEnable();
+    ROM_uDMAControlBaseSet(&sDMAControlTable[0]);
+    ROM_uDMAEnable();
 
     //
     // Initialize the display driver.
@@ -746,7 +746,7 @@ main(void)
     SoundInit(0);
 
     //
-    // Set the format of the playback in the sound driver.
+    // Set the format of the play back in the sound driver.
     //
     SoundSetFormat(48000, 16, 2);
 
@@ -754,7 +754,7 @@ main(void)
     // Must disable I2S interrupts during this time to prevent state
     // problems.
     //
-    IntEnable(INT_I2S0);
+    ROM_IntEnable(INT_I2S0);
 
     //
     // Update the status bar.
@@ -769,7 +769,7 @@ main(void)
         //
         // Wait for USB configuration to complete.
         //
-        while((g_ulFlags & FLAG_CONNECTED) == 0)
+        while(HWREGBITW(&g_ulFlags, FLAG_CONNECTED) == 0)
         {
         }
 
@@ -798,17 +798,17 @@ main(void)
         //
         // Now keep processing as long as the host is connected.
         //
-        while(g_ulFlags & FLAG_CONNECTED)
+        while(HWREGBITW(&g_ulFlags, FLAG_CONNECTED))
         {
             //
             // Check if there was a volume update.
             //
-            if(g_ulFlags & FLAG_VOLUME_UPDATE)
+            if(HWREGBITW(&g_ulFlags, FLAG_VOLUME_UPDATE))
             {
                 //
                 // Clear the volume update flag.
                 //
-                g_ulFlags &= ~FLAG_VOLUME_UPDATE;
+                HWREGBITW(&g_ulFlags, FLAG_VOLUME_UPDATE) = 0;
 
                 //
                 // Update the current volume.
@@ -819,7 +819,7 @@ main(void)
             //
             // Check if there was a mute update.
             //
-            if(g_ulFlags & FLAG_MUTE_UPDATE)
+            if(HWREGBITW(&g_ulFlags, FLAG_MUTE_UPDATE))
             {
                 //
                 // Update the current mute setting.
@@ -829,7 +829,7 @@ main(void)
                 //
                 // Clear both mute flags.
                 //
-                g_ulFlags &= ~FLAG_MUTE_UPDATE;
+                HWREGBITW(&g_ulFlags, FLAG_MUTE_UPDATE) = 0;
             }
         }
 

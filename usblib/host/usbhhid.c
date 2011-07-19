@@ -2,7 +2,7 @@
 //
 // usbhhid.c - This file contains the host HID driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -138,7 +138,7 @@ USBHHIDOpen(tHIDSubClassProtocol eDeviceType, tUSBCallback pfnCallback,
     //
     if(g_HIDDevice.pfnCallback)
     {
-        return (0);
+        return(0);
     }
 
     //
@@ -233,7 +233,7 @@ HIDIntINCallback(unsigned long ulPipe, unsigned long ulEvent)
 static void *
 HIDDriverOpen(tUSBHostDevice *pDevice)
 {
-    int iIdx;
+    long lIdx;
     tEndpointDescriptor *pEndpointDescriptor;
     tInterfaceDescriptor *pInterface;
 
@@ -242,7 +242,7 @@ HIDDriverOpen(tUSBHostDevice *pDevice)
     //
     if(g_HIDDevice.pDevice)
     {
-        return (0);
+        return(0);
     }
 
     //
@@ -261,12 +261,12 @@ HIDDriverOpen(tUSBHostDevice *pDevice)
     //
     g_HIDDevice.pDevice = pDevice;
 
-    for(iIdx = 0; iIdx < 3; iIdx++)
+    for(lIdx = 0; lIdx < 3; lIdx++)
     {
         //
         // Get the first endpoint descriptor.
         //
-        pEndpointDescriptor = USBDescGetInterfaceEndpoint(pInterface, iIdx,
+        pEndpointDescriptor = USBDescGetInterfaceEndpoint(pInterface, lIdx,
                                                           256);
 
         //
@@ -317,7 +317,7 @@ HIDDriverOpen(tUSBHostDevice *pDevice)
     //
     g_HIDDevice.pDevice = pDevice;
 
-    return (&g_HIDDevice);
+    return(&g_HIDDevice);
 }
 
 //*****************************************************************************
@@ -426,7 +426,7 @@ USBHHIDSetIdle(unsigned long ulInstance, unsigned char ucDuration,
                           0,
                           MAX_PACKET_SIZE_EP0);
 
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -495,7 +495,7 @@ USBHHIDGetReportDescriptor(unsigned long ulInstance, unsigned char *pucBuffer,
                 ulSize,
                 pHIDInstance->pDevice->DeviceDescriptor.bMaxPacketSize0);
 
-    return (ulBytes);
+    return(ulBytes);
 }
 
 //*****************************************************************************
@@ -571,7 +571,7 @@ USBHHIDSetProtocol(unsigned long ulInstance, unsigned long ulBootProtocol)
         0,
         pHIDInstance->pDevice->DeviceDescriptor.bMaxPacketSize0);
 
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -676,7 +676,7 @@ USBHHIDSetReport(unsigned long ulInstance, unsigned long ulInterface,
                           pucData, ulSize,
                       pHIDInstance->pDevice->DeviceDescriptor.bMaxPacketSize0);
 
-    return (ulSize);
+    return(ulSize);
 }
 
 //*****************************************************************************

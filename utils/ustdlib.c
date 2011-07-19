@@ -2,7 +2,7 @@
 //
 // ustdlib.c - Simple standard library functions.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -40,6 +40,66 @@
 //
 //*****************************************************************************
 static const char * const g_pcHex = "0123456789abcdef";
+
+//*****************************************************************************
+//
+//! Copies a certain number of characters from one string to another.
+//!
+//! \param pcDst is a pointer to the destination buffer into which characters
+//!   are to be copied.
+//! \param pcSrc is a pointer to the string from which characters are to be
+//!   copied.
+//! \param iNum is the number of characters to copy to the destination buffer.
+//!
+//! This function copies at most \e iNum characters from the string pointed to
+//! by \e pcSrc into the buffer pointed to by \e pcDst.  If the end of \e
+//! pcSrc is found before \e iNum characters have been copied, remaining
+//! characters in \e pcDst will be padded with zeroes until \e iNum characters
+//! have been written.  Note that the destination string will only be NULL
+//! terminated if the number of characters to be copied is greater than the
+//! length of \e pcSrc.
+//!
+//! \return Returns \e pcDst.
+//
+//*****************************************************************************
+char *
+ustrncpy (char *pcDst, const char *pcSrc, int iNum)
+{
+    int iCount;
+
+    ASSERT(pcSrc);
+    ASSERT(pcDst);
+
+    //
+    // Start at the beginning of the source string.
+    //
+    iCount = 0;
+
+    //
+    // Copy the source string until we run out of source characters or
+    // destination space.
+    //
+    while(iNum && pcSrc[iCount])
+    {
+        pcDst[iCount] = pcSrc[iCount];
+        iCount++;
+        iNum--;
+    }
+
+    //
+    // Pad the destination if we are not yet done.
+    //
+    while(iNum)
+    {
+        pcDst[iCount++] = (char)0;
+        iNum--;
+    }
+
+    //
+    // Pass the destination pointer back to the caller.
+    //
+    return(pcDst);
+}
 
 //*****************************************************************************
 //
@@ -140,13 +200,13 @@ uvsnprintf(char *pcBuf, unsigned long ulSize, const char *pcString,
         //
         if(ulIdx > ulSize)
         {
-            strncpy(pcBuf, pcString, ulSize);
+            ustrncpy(pcBuf, pcString, ulSize);
             pcBuf += ulSize;
             ulSize = 0;
         }
         else
         {
-            strncpy(pcBuf, pcString, ulIdx);
+            ustrncpy(pcBuf, pcString, ulIdx);
             pcBuf += ulIdx;
             ulSize -= ulIdx;
         }
@@ -338,13 +398,13 @@ again:
                     //
                     if(ulIdx > ulSize)
                     {
-                        strncpy(pcBuf, pcStr, ulSize);
+                        ustrncpy(pcBuf, pcStr, ulSize);
                         pcBuf += ulSize;
                         ulSize = 0;
                     }
                     else
                     {
-                        strncpy(pcBuf, pcStr, ulIdx);
+                        ustrncpy(pcBuf, pcStr, ulIdx);
                         pcBuf += ulIdx;
                         ulSize -= ulIdx;
 
@@ -587,13 +647,13 @@ convert:
                     //
                     if(ulSize >= 5)
                     {
-                        strncpy(pcBuf, "ERROR", 5);
+                        ustrncpy(pcBuf, "ERROR", 5);
                         pcBuf += 5;
                         ulSize -= 5;
                     }
                     else
                     {
-                        strncpy(pcBuf, "ERROR", ulSize);
+                        ustrncpy(pcBuf, "ERROR", ulSize);
                         pcBuf += ulSize;
                         ulSize = 0;
                     }
@@ -1062,6 +1122,48 @@ ustrtoul(const char *pcStr, const char **ppcStrRet, int iBase)
 
 //*****************************************************************************
 //
+//! Retruns the length of a null-terminated string.
+//!
+//! \param pcStr is a pointer to the string whose length is to be found.
+//!
+//! This function is very similar to the C library <tt>strlen()</tt> function.
+//! It determines the length of the null-terminated string passed and returns
+//! this to the caller.
+//!
+//! This implementation assumes that single byte character strings are passed
+//! and will return incorrect values if passed some UTF-8 strings.
+//!
+//! \return Returns the length of the string pointed to by \e pcStr.
+//
+//*****************************************************************************
+int
+ustrlen(const char * pcStr)
+{
+    int iLen;
+
+    ASSERT(pcStr);
+
+    //
+    // Initialize the length.
+    //
+    iLen = 0;
+
+    //
+    // Step throug the string looking for a zero character (marking its end).
+    //
+    while(pcStr[iLen])
+    {
+        //
+        // Zero not found so move on to the next character.
+        //
+        iLen++;
+    }
+
+    return(iLen);
+}
+
+//*****************************************************************************
+//
 //! Finds a substring within a string.
 //!
 //! \param pcHaystack is a pointer to the string that will be searched.
@@ -1085,7 +1187,7 @@ ustrstr(const char *pcHaystack, const char *pcNeedle)
     //
     // Get the length of the string to be found.
     //
-    ulLength = strlen(pcNeedle);
+    ulLength = ustrlen(pcNeedle);
 
     //
     // Loop while we have not reached the end of the string.
@@ -1208,6 +1310,57 @@ ustrcasecmp(const char *pcStr1, const char *pcStr2)
     // Just let ustrnicmp() handle this.
     //
     return(ustrnicmp(pcStr1, pcStr2, -1));
+}
+
+//*****************************************************************************
+//
+// Random Number Generator Seed Value
+//
+//*****************************************************************************
+static unsigned long g_ulRandomSeed = 1;
+
+//*****************************************************************************
+//
+//! Set the random number generator seed.
+//!
+//! \param ulSeed is the new seed value to use for the random number generator.
+//!
+//! This function is very similar to the C library <tt>srand()</tt> function.
+//! It will set the seed value used in the <tt>urand()</tt> function.
+//!
+//! \return None
+//
+//*****************************************************************************
+void
+usrand(unsigned long ulSeed)
+{
+    g_ulRandomSeed = ulSeed;
+}
+
+//*****************************************************************************
+//
+//! Generate a new (pseudo) random number
+//!
+//! This function is very similar to the C library <tt>rand()</tt> function.
+//! It will generate a pseudo-random number sequence based on the seed value.
+//!
+//! \return A pseudo-random number will be returned.
+//
+//*****************************************************************************
+int
+urand(void)
+{
+    //
+    // Generate a new pseudo-random number with a linear congruence random
+    // number generator.  This new random number becomes the seed for the next
+    // random number.
+    //
+    g_ulRandomSeed = (g_ulRandomSeed * 1664525) + 1013904223;
+
+    //
+    // Return the new random number.
+    //
+    return((int)g_ulRandomSeed);
 }
 
 //*****************************************************************************

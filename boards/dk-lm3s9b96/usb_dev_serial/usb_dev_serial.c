@@ -2,7 +2,7 @@
 //
 // usb_dev_serial.c - Main routines for the USB CDC serial example.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -34,6 +34,7 @@
 #include "driverlib/timer.h"
 #include "driverlib/uart.h"
 #include "driverlib/usb.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/usbcdc.h"
@@ -397,7 +398,7 @@ USBUARTPrimeTransmit(unsigned long ulBase)
             //
             // Place the character in the UART transmit FIFO.
             //
-            UARTCharPutNonBlocking(ulBase, ucChar);
+            ROM_UARTCharPutNonBlocking(ulBase, ucChar);
 
             //
             // Update our count of bytes transmitted via the UART.
@@ -442,8 +443,8 @@ USBUARTIntHandler(void)
     //
     // Get and clear the current interrupt source(s)
     //
-    ulInts = UARTIntStatus(USB_UART_BASE, true);
-    UARTIntClear(USB_UART_BASE, ulInts);
+    ulInts = ROM_UARTIntStatus(USB_UART_BASE, true);
+    ROM_UARTIntClear(USB_UART_BASE, ulInts);
 
     //
     // Are we being interrupted because the TX FIFO has space available?
@@ -460,7 +461,7 @@ USBUARTIntHandler(void)
         //
         if(!USBBufferDataAvailable(&g_sRxBuffer))
         {
-            UARTIntDisable(USB_UART_BASE, UART_INT_TX);
+            ROM_UARTIntDisable(USB_UART_BASE, UART_INT_TX);
         }
     }
 
@@ -636,8 +637,8 @@ SetLineCoding(tLineCoding *psLineCoding)
     //
     // Set the UART mode appropriately.
     //
-    UARTConfigSetExpClk(USB_UART_BASE, SysCtlClockGet(), psLineCoding->ulRate,
-                        ulConfig);
+    ROM_UARTConfigSetExpClk(USB_UART_BASE, ROM_SysCtlClockGet(),
+                            psLineCoding->ulRate, ulConfig);
 
     //
     // Let the caller know if we had a problem or not.
@@ -659,8 +660,8 @@ GetLineCoding(tLineCoding *psLineCoding)
     //
     // Get the current line coding set in the UART.
     //
-    UARTConfigGetExpClk(USB_UART_BASE, SysCtlClockGet(), &ulRate,
-                        &ulConfig);
+    ROM_UARTConfigGetExpClk(USB_UART_BASE, ROM_SysCtlClockGet(), &ulRate,
+                            &ulConfig);
     psLineCoding->ulRate = ulRate;
 
     //
@@ -770,7 +771,7 @@ SendBreak(tBoolean bSend)
         //
         // Remove the break condition on the line.
         //
-        UARTBreakCtl(USB_UART_BASE, false);
+        ROM_UARTBreakCtl(USB_UART_BASE, false);
         g_bSendingBreak = false;
     }
     else
@@ -778,7 +779,7 @@ SendBreak(tBoolean bSend)
         //
         // Start sending a break condition on the line.
         //
-        UARTBreakCtl(USB_UART_BASE, true);
+        ROM_UARTBreakCtl(USB_UART_BASE, true);
         g_bSendingBreak = true;
     }
 }
@@ -975,12 +976,12 @@ ControlHandler(void *pvCBData, unsigned long ulEvent,
             //
             // Tell the main loop to update the display.
             //
-            ulIntsOff = IntMasterDisable();
+            ulIntsOff = ROM_IntMasterDisable();
             g_pcStatus = "Host connected.";
             g_ulFlags |= COMMAND_STATUS_UPDATE;
             if(!ulIntsOff)
             {
-                IntMasterEnable();
+                ROM_IntMasterEnable();
             }
             break;
 
@@ -989,12 +990,12 @@ ControlHandler(void *pvCBData, unsigned long ulEvent,
         //
         case USB_EVENT_DISCONNECTED:
             g_bUSBConfigured = false;
-            ulIntsOff = IntMasterDisable();
+            ulIntsOff = ROM_IntMasterDisable();
             g_pcStatus = "Host disconnected.";
             g_ulFlags |= COMMAND_STATUS_UPDATE;
             if(!ulIntsOff)
             {
-                IntMasterEnable();
+                ROM_IntMasterEnable();
             }
             break;
 
@@ -1142,7 +1143,7 @@ RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue,
             // interrupt so we are told when there is more space.
             //
             USBUARTPrimeTransmit(USB_UART_BASE);
-            UARTIntEnable(USB_UART_BASE, UART_INT_TX);
+            ROM_UARTIntEnable(USB_UART_BASE, UART_INT_TX);
             break;
         }
 
@@ -1207,8 +1208,8 @@ main(void)
     //
     // Set the clocking to run from the PLL at 50MHz
     //
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                   SYSCTL_XTAL_16MHZ);
+    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+                       SYSCTL_XTAL_16MHZ);
 
     //
     // Set the device pinout appropriately for this board.
@@ -1267,15 +1268,15 @@ main(void)
     //
     // Enable the UART that we will be redirecting.
     //
-    SysCtlPeripheralEnable(USB_UART_PERIPH);
+    ROM_SysCtlPeripheralEnable(USB_UART_PERIPH);
 
     //
     // Enable and configure the UART RX and TX pins
     //
-    SysCtlPeripheralEnable(TX_GPIO_PERIPH);
-    SysCtlPeripheralEnable(RX_GPIO_PERIPH);
-    GPIOPinTypeUART(TX_GPIO_BASE, TX_GPIO_PIN);
-    GPIOPinTypeUART(RX_GPIO_BASE, RX_GPIO_PIN);
+    ROM_SysCtlPeripheralEnable(TX_GPIO_PERIPH);
+    ROM_SysCtlPeripheralEnable(RX_GPIO_PERIPH);
+    ROM_GPIOPinTypeUART(TX_GPIO_BASE, TX_GPIO_PIN);
+    ROM_GPIOPinTypeUART(RX_GPIO_BASE, RX_GPIO_PIN);
 
     //
     // TODO: Add code to configure handshake GPIOs if required.
@@ -1284,23 +1285,23 @@ main(void)
     //
     // Set the default UART configuration.
     //
-    UARTConfigSetExpClk(USB_UART_BASE, SysCtlClockGet(), DEFAULT_BIT_RATE,
-                        DEFAULT_UART_CONFIG);
-    UARTFIFOLevelSet(USB_UART_BASE, UART_FIFO_TX4_8, UART_FIFO_RX4_8);
+    ROM_UARTConfigSetExpClk(USB_UART_BASE, ROM_SysCtlClockGet(),
+                            DEFAULT_BIT_RATE, DEFAULT_UART_CONFIG);
+    ROM_UARTFIFOLevelSet(USB_UART_BASE, UART_FIFO_TX4_8, UART_FIFO_RX4_8);
 
     //
     // Configure and enable UART interrupts.
     //
-    UARTIntClear(USB_UART_BASE, UARTIntStatus(USB_UART_BASE, false));
-    UARTIntEnable(USB_UART_BASE, (UART_INT_OE | UART_INT_BE | UART_INT_PE |
-                  UART_INT_FE | UART_INT_RT | UART_INT_TX | UART_INT_RX));
+    ROM_UARTIntClear(USB_UART_BASE, ROM_UARTIntStatus(USB_UART_BASE, false));
+    ROM_UARTIntEnable(USB_UART_BASE, (UART_INT_OE | UART_INT_BE | UART_INT_PE |
+                      UART_INT_FE | UART_INT_RT | UART_INT_TX | UART_INT_RX));
 
     //
     // Enable the system tick.
     //
-    SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    SysTickIntEnable();
-    SysTickEnable();
+    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+    ROM_SysTickIntEnable();
+    ROM_SysTickEnable();
 
     //
     // Tell the user what we are up to.
@@ -1333,7 +1334,7 @@ main(void)
     //
     // Enable interrupts now that the application is ready to start.
     //
-    IntEnable(USB_UART_INT);
+    ROM_IntEnable(USB_UART_INT);
 
     //
     // Main application loop.
@@ -1349,9 +1350,9 @@ main(void)
             //
             // Clear the command flag
             //
-            IntMasterDisable();
+            ROM_IntMasterDisable();
             g_ulFlags &= ~COMMAND_STATUS_UPDATE;
-            IntMasterEnable();
+            ROM_IntMasterEnable();
 
             DisplayStatus(&g_sContext, g_pcStatus);
         }

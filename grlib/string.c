@@ -2,7 +2,7 @@
 //
 // string.c - Routines for drawing text.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,10 +18,11 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Graphics Library.
+// This is part of revision 7611 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
+#include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "grlib/grlib.h"
 
@@ -35,7 +36,8 @@
 //*****************************************************************************
 //
 // The character printed by GrStringDraw in place of any character in the
-// string which does not appear in the font.
+// string which does not appear in the font.  When using a font which does not
+// include this character, a space is left instead.
 //
 //*****************************************************************************
 #define ABSENT_CHAR_REPLACEMENT '.'
@@ -93,6 +95,7 @@ GrStringWidthGet(const tContext *pContext, const char *pcString, long lLength)
 {
     const unsigned short *pusOffset;
     const unsigned char *pucData;
+    unsigned char ucFirst, ucLast, ucAbsent;
     long lWidth;
 
     //
@@ -106,8 +109,46 @@ GrStringWidthGet(const tContext *pContext, const char *pcString, long lLength)
     // easier, and give the compiler a hint about extraneous loads that it can
     // avoid.
     //
-    pucData = pContext->pFont->pucData;
-    pusOffset = pContext->pFont->pusOffset;
+    if(pContext->pFont->ucFormat & FONT_EX_MARKER)
+    {
+        tFontEx *pFont;
+
+        pFont = (tFontEx *)(pContext->pFont);
+
+        pucData = pFont->pucData;
+        pusOffset = pFont->pusOffset;
+        ucFirst = pFont->ucFirst;
+        ucLast = pFont->ucLast;
+
+        //
+        // Does the default absent character replacement exist in the font?
+        //
+        if((ABSENT_CHAR_REPLACEMENT >= ucFirst) &&
+           (ABSENT_CHAR_REPLACEMENT <= ucLast))
+        {
+            //
+            // Yes - use the standard character when an absent character is
+            // found.
+            //
+            ucAbsent = ABSENT_CHAR_REPLACEMENT;
+        }
+        else
+        {
+            //
+            // The default absent character is not present in the font so use
+            // the first character (we only use its width here) instead.
+            //
+            ucAbsent = pFont->ucFirst;
+        }
+    }
+    else
+    {
+        pucData = pContext->pFont->pucData;
+        pusOffset = pContext->pFont->pusOffset;
+        ucFirst = 32;
+        ucLast = 126;
+        ucAbsent = ABSENT_CHAR_REPLACEMENT;
+    }
 
     //
     // Loop through the characters in the string.
@@ -119,12 +160,12 @@ GrStringWidthGet(const tContext *pContext, const char *pcString, long lLength)
         // string.  If there is not a glyph for the next character, replace it
         // with a ".".
         //
-        if((*pcString >= ' ') && (*pcString <= '~'))
+        if((*pcString >= ucFirst) && (*pcString <= ucLast))
         {
             //
             // Add the width of this character as drawn with the given font.
             //
-            lWidth += pucData[pusOffset[*pcString - ' '] + 1];
+            lWidth += pucData[pusOffset[*pcString - ucFirst] + 1];
         }
         else
         {
@@ -134,7 +175,7 @@ GrStringWidthGet(const tContext *pContext, const char *pcString, long lLength)
             // and ensures that the width returned here represents the
             // rendered dimension of the string.
             //
-            lWidth += pucData[pusOffset[ABSENT_CHAR_REPLACEMENT - ' '] + 1];
+            lWidth += pucData[pusOffset[ucAbsent - ucFirst] + 1];
         }
     }
 
@@ -174,6 +215,9 @@ GrStringDraw(const tContext *pContext, const char *pcString, long lLength,
 {
     long lIdx, lX0, lY0, lCount, lOff, lOn, lBit;
     const unsigned char *pucData;
+    const unsigned char *pucGlyphs;
+    const unsigned short *pusOffset;
+    unsigned char ucFirst, ucLast, ucAbsent;
     tContext sCon;
 
     //
@@ -186,6 +230,51 @@ GrStringDraw(const tContext *pContext, const char *pcString, long lLength,
     // Copy the drawing context into a local structure that can be modified.
     //
     sCon = *pContext;
+
+    //
+    // Extract various parameters from the font depending upon whether it's
+    // in the tFont or tFontEx format.
+    //
+    if(pContext->pFont->ucFormat & FONT_EX_MARKER)
+    {
+        tFontEx *pFont;
+
+        pFont = (tFontEx *)(pContext->pFont);
+
+        pucGlyphs = pFont->pucData;
+        pusOffset = pFont->pusOffset;
+        ucFirst = pFont->ucFirst;
+        ucLast = pFont->ucLast;
+
+        //
+        // Does the default absent character replacement exist in the font?
+        //
+        if((ABSENT_CHAR_REPLACEMENT >= ucFirst) &&
+           (ABSENT_CHAR_REPLACEMENT <= ucLast))
+        {
+            //
+            // Yes - use the standard character when an absent character is
+            // found.
+            //
+            ucAbsent = ABSENT_CHAR_REPLACEMENT;
+        }
+        else
+        {
+            //
+            // The default absent character is not present in the font so use
+            // the first character instead.
+            //
+            ucAbsent = pFont->ucFirst;
+        }
+    }
+    else
+    {
+        pucGlyphs = pContext->pFont->pucData;
+        pusOffset = pContext->pFont->pusOffset;
+        ucFirst = 32;
+        ucLast = 126;
+        ucAbsent = ABSENT_CHAR_REPLACEMENT;
+    }
 
     //
     // Loop through the characters in the string.
@@ -204,19 +293,17 @@ GrStringDraw(const tContext *pContext, const char *pcString, long lLength,
         //
         // Get a pointer to the font data for the next character from the
         // string.  If there is not a glyph for the next character, replace it
-        // with a ".".
+        // with the "absent" character (usually '.').
         //
-        if((*pcString >= ' ') && (*pcString <= '~'))
+        if((*pcString >= ucFirst) && (*pcString <= ucLast))
         {
-            pucData = (sCon.pFont->pucData +
-                       sCon.pFont->pusOffset[*pcString++ - ' ']);
+            pucData = (pucGlyphs + pusOffset[*pcString - ucFirst]);
         }
         else
         {
-            pucData = (sCon.pFont->pucData +
-                       sCon.pFont->pusOffset[ABSENT_CHAR_REPLACEMENT - ' ']);
-            pcString++;
+            pucData = (pucGlyphs + pusOffset[ucAbsent - ucFirst]);
         }
+        pcString++;
 
         //
         // See if the entire character is to the left of the clipping region.
@@ -253,7 +340,8 @@ GrStringDraw(const tContext *pContext, const char *pcString, long lLength,
             //
             // See if the font is uncompressed.
             //
-            if(sCon.pFont->ucFormat == FONT_FMT_UNCOMPRESSED)
+            if((sCon.pFont->ucFormat & ~FONT_EX_MARKER) ==
+                FONT_FMT_UNCOMPRESSED)
             {
                 //
                 // Count the number of off pixels from this position in the
@@ -739,17 +827,17 @@ GrStringTableSet(const void *pvTable)
 unsigned long
 GrStringLanguageSet(unsigned short usLangID)
 {
-    int iLang;
+    long lLang;
 
     //
     // Search for the requested language.
     //
-    for(iLang = 0; iLang < g_usNumLanguages; iLang++)
+    for(lLang = 0; lLang < g_usNumLanguages; lLang++)
     {
         //
         // Once found, break out and save the new language.
         //
-        if(g_pusLanguageTable[iLang] == usLangID)
+        if(g_pusLanguageTable[lLang] == usLangID)
         {
             break;
         }
@@ -759,9 +847,9 @@ GrStringLanguageSet(unsigned short usLangID)
     // Only accept the language if it was found, otherwise continue using
     // previous language.
     //
-    if(iLang != g_usNumLanguages)
+    if(lLang != g_usNumLanguages)
     {
-        g_usLanguage = iLang;
+        g_usLanguage = lLang;
         return(1);
     }
 
@@ -786,45 +874,45 @@ GrStringLanguageSet(unsigned short usLangID)
 //
 //*****************************************************************************
 unsigned long
-GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
+GrStringGet(long lIndex, char *pcData, unsigned long ulSize)
 {
     unsigned long ulLen, ulOffset, ulSubCode[16];
-    int iPos, iIdx, iBit, iSkip, iBuf;
+    long lPos, lIdx, lBit, lSkip, lBuf;
     unsigned char *pucBufferOut;
     const unsigned char *pucString;
 
-    ASSERT(iIndex < g_usNumStrings);
+    ASSERT(lIndex < g_usNumStrings);
     ASSERT(pcData != 0);
 
     //
     // Initialize the output buffer state.
     //
-    iPos = 0;
+    lPos = 0;
     pucBufferOut = 0;
 
     //
     // if built up from another string, we need to process that
     // this could nest multiple layers, so we follow in
     //
-    ulSubCode[iPos] = g_pulStringTable[(g_usLanguage * g_usNumStrings) +
-                                       iIndex];
+    ulSubCode[lPos] = g_pulStringTable[(g_usLanguage * g_usNumStrings) +
+                                       lIndex];
 
-    if(SC_GET_LEN(ulSubCode[iPos]))
+    if(SC_GET_LEN(ulSubCode[lPos]))
     {
         //
         // recurse down
         //
-        while(iPos < 16)
+        while(lPos < 16)
         {
             //
             // Copy over the partial (if any) from a previous string.
             //
-            iIdx = SC_GET_INDEX(ulSubCode[iPos++]);
+            lIdx = SC_GET_INDEX(ulSubCode[lPos++]);
 
-            ulSubCode[iPos] = g_pulStringTable[(g_usLanguage *
-                                                g_usNumStrings) + iIdx];
+            ulSubCode[lPos] = g_pulStringTable[(g_usLanguage *
+                                                g_usNumStrings) + lIdx];
 
-            if(!SC_GET_LEN(ulSubCode[iPos]))
+            if(!SC_GET_LEN(ulSubCode[lPos]))
             {
                 //
                 // not linked, just string
@@ -837,24 +925,24 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
     //
     // Now work backwards out.
     //
-    iIdx = 0;
+    lIdx = 0;
 
     //
     // Build up the string in pieces.
     //
-    while(iPos >= 0)
+    while(lPos >= 0)
     {
         //
         // Get the offset in string table.
         //
-        ulOffset = SC_GET_OFF(ulSubCode[iPos]);
+        ulOffset = SC_GET_OFF(ulSubCode[lPos]);
 
         if(ulOffset == SC_IS_NULL)
         {
             //
             // An empty string.
             //
-            pcData[iIdx] = 0;
+            pcData[lIdx] = 0;
         }
         else if(ulOffset & SC_FLAG_COMPRESSED)
         {
@@ -867,13 +955,13 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
             //
             // Initialize the bit variables.
             //
-            iBit = 0;
-            iSkip = 0;
+            lBit = 0;
+            lSkip = 0;
 
             //
             // Make a pointer to the current buffer out location.
             //
-            pucBufferOut = (unsigned char *)pcData + iIdx;
+            pucBufferOut = (unsigned char *)pcData + lIdx;
 
             //
             // If the out buffer is beyond the maximum size then just break
@@ -887,36 +975,36 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
             //
             // Now build up real string by decompressing bits.
             //
-            if(!SC_GET_LEN(ulSubCode[iPos]) && SC_GET_INDEX(ulSubCode[iPos]))
+            if(!SC_GET_LEN(ulSubCode[lPos]) && SC_GET_INDEX(ulSubCode[lPos]))
             {
-                iSkip = SC_GET_INDEX(ulSubCode[iPos]);
+                lSkip = SC_GET_INDEX(ulSubCode[lPos]);
 
-                if(iPos)
+                if(lPos)
                 {
-                    ulLen = SC_GET_LEN(ulSubCode[iPos-1]);
+                    ulLen = SC_GET_LEN(ulSubCode[lPos - 1]);
                 }
                 else
                 {
-                    ulLen = (iSkip & 0x3f);
+                    ulLen = (lSkip & 0x3f);
                 }
 
-                iSkip >>= 6;
-                iIdx += ulLen;
-                ulLen += iSkip;
+                lSkip >>= 6;
+                lIdx += ulLen;
+                ulLen += lSkip;
             }
-            else if(iPos)
+            else if(lPos)
             {
                 //
                 // Get the length of the partial string.
                 //
-                ulLen = SC_GET_LEN(ulSubCode[iPos-1]) - iIdx;
-                iIdx += ulLen;
+                ulLen = SC_GET_LEN(ulSubCode[lPos - 1]) - lIdx;
+                lIdx += ulLen;
             }
             else if(!SC_GET_LEN(ulSubCode[0]) && SC_GET_INDEX(ulSubCode[0]))
             {
                 ulLen = SC_GET_INDEX(ulSubCode[0]);
-                iSkip = ulLen >> 6;
-                ulLen = (ulLen & 0x3f) + iSkip;
+                lSkip = ulLen >> 6;
+                ulLen = (ulLen & 0x3f) + lSkip;
             }
             else
             {
@@ -931,14 +1019,14 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
                 //
                 // Packed 6 bits for each char
                 //
-                *pucBufferOut = (*pucString >> iBit) & 0x3f;
+                *pucBufferOut = (*pucString >> lBit) & 0x3f;
 
-                if(iBit >= 2)
+                if(lBit >= 2)
                 {
-                    *pucBufferOut |= (*++pucString << (8-iBit)) & 0x3f;
+                    *pucBufferOut |= (*++pucString << (8 - lBit)) & 0x3f;
                 }
 
-                iBit = (iBit + 6) & 0x7;
+                lBit = (lBit + 6) & 0x7;
 
                 if(!*pucBufferOut)
                 {
@@ -948,9 +1036,9 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
                     break;
                 }
 
-                if(iSkip)
+                if(lSkip)
                 {
-                    iSkip--;
+                    lSkip--;
                     continue;
                 }
 
@@ -992,42 +1080,42 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
                 }
             }
         }
-        else if(iPos)
+        else if(lPos)
         {
             //
             // Part of another string
             //
-            ulLen = SC_GET_LEN(ulSubCode[iPos - 1]) - iIdx;
+            ulLen = SC_GET_LEN(ulSubCode[lPos - 1]) - lIdx;
 
             //
             // Prevent this copy from going beyond the end of the buffer
             // provided.
             //
-            if((iIdx + ulLen) > ulSize)
+            if((lIdx + ulLen) > ulSize)
             {
-                ulLen = ulSize - iIdx;
+                ulLen = ulSize - lIdx;
             }
 
             //
             // Copy this portion of the string to the output buffer.
             //
-            for(iBuf = 0; iBuf < ulLen; iBuf++)
+            for(lBuf = 0; lBuf < ulLen; lBuf++)
             {
-                pcData[iIdx + iBuf] = g_pucStringData[ulOffset + iBuf];
+                pcData[lIdx + lBuf] = g_pucStringData[ulOffset + lBuf];
             }
 
-            iIdx += ulLen;
+            lIdx += ulLen;
         }
         else if(SC_GET_INDEX(ulSubCode[0]) && !SC_GET_LEN(ulSubCode[0]))
         {
             //
             // Copy this portion of the string to the output buffer.
             //
-            for(iBuf = 0; iBuf < SC_GET_INDEX(ulSubCode[0]); iBuf++)
+            for(lBuf = 0; lBuf < SC_GET_INDEX(ulSubCode[0]); lBuf++)
             {
-                if((iIdx + iBuf) < ulSize)
+                if((lIdx + lBuf) < ulSize)
                 {
-                    pcData[iIdx + iBuf] = g_pucStringData[ulOffset + iBuf];
+                    pcData[lIdx + lBuf] = g_pucStringData[ulOffset + lBuf];
                 }
                 else
                 {
@@ -1040,23 +1128,23 @@ GrStringGet(int iIndex, char *pcData, unsigned long ulSize)
             //
             // The last piece is the string ending
             //
-            for(iBuf = 0; iBuf < (ulSize - iIdx); iBuf++)
+            for(lBuf = 0; lBuf < (ulSize - lIdx); lBuf++)
             {
                 //
                 // Copy the string to the output buffer.
                 //
-                pcData[iIdx + iBuf] = g_pucStringData[ulOffset + iBuf];
+                pcData[lIdx + lBuf] = g_pucStringData[ulOffset + lBuf];
 
                 //
                 // If a null is hit then terminate the copy.
                 //
-                if(pcData[iIdx + iBuf] == 0)
+                if(pcData[lIdx + lBuf] == 0)
                 {
                     break;
                 }
             }
         }
-        iPos--;
+        lPos--;
     }
 
     //

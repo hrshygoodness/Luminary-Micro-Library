@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the USB host keyboard example.
 #
-# Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -49,7 +49,6 @@ VPATH+=../../../utils
 IPATH=..
 IPATH+=../../..
 
-#
 # The default rule, which causes the USB host keyboard example to be built.
 #
 all: ${COMPILER}
@@ -65,7 +64,7 @@ clean:
 # The rule to create the target directory.
 #
 ${COMPILER}:
-	@mkdir ${COMPILER}
+	@mkdir -p ${COMPILER}
 
 #
 # Rules for building the USB host keyboard example.
@@ -81,6 +80,7 @@ ${COMPILER}/usb_host_keyboard.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/usb_host_keyboard.axf: usb_host_keyboard.ld
 SCATTERgcc_usb_host_keyboard=usb_host_keyboard.ld
 ENTRY_usb_host_keyboard=ResetISR
+CFLAGSgcc=-DTARGET_IS_TEMPEST_RB1
 
 #
 # Include the automatically generated dependency files.

@@ -2,7 +2,7 @@
 //
 // hw_adc.h - Macros used when accessing the ADC hardware.
 //
-// Copyright (c) 2005-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -339,6 +339,19 @@
 // The following are defines for the bit fields in the ADC_O_CTL register.
 //
 //*****************************************************************************
+#define ADC_CTL_RES             0x00000010  // Sample Resolution
+#define ADC_CTL_VREF_M          0x00000003  // Voltage Reference Select
+#define ADC_CTL_VREF_INTERNAL   0x00000000  // The internal reference as the
+                                            // voltage reference
+#define ADC_CTL_VREF_EXT_3V     0x00000001  // A 3.0 V external VREFA input is
+                                            // the voltage reference. The ADC
+                                            // conversion range is 0.0 V to the
+                                            // external reference value
+#define ADC_CTL_VREF_EXT_1V     0x00000003  // A 1.0 V external VREFA input is
+                                            // the voltage reference. The ADC
+                                            // conversion range is 0.0 V to
+                                            // three times the external
+                                            // reference value
 #define ADC_CTL_VREF            0x00000001  // Voltage Reference Select
 
 //*****************************************************************************
@@ -406,7 +419,7 @@
 // The following are defines for the bit fields in the ADC_O_SSFIFO0 register.
 //
 //*****************************************************************************
-#define ADC_SSFIFO0_DATA_M      0x000003FF  // Conversion Result Data
+#define ADC_SSFIFO0_DATA_M      0x00000FFF  // Conversion Result Data
 #define ADC_SSFIFO0_DATA_S      0
 
 //*****************************************************************************
@@ -513,7 +526,7 @@
 // The following are defines for the bit fields in the ADC_O_SSFIFO1 register.
 //
 //*****************************************************************************
-#define ADC_SSFIFO1_DATA_M      0x000003FF  // Conversion Result Data
+#define ADC_SSFIFO1_DATA_M      0x00000FFF  // Conversion Result Data
 #define ADC_SSFIFO1_DATA_S      0
 
 //*****************************************************************************
@@ -600,7 +613,7 @@
 // The following are defines for the bit fields in the ADC_O_SSFIFO2 register.
 //
 //*****************************************************************************
-#define ADC_SSFIFO2_DATA_M      0x000003FF  // Conversion Result Data
+#define ADC_SSFIFO2_DATA_M      0x00000FFF  // Conversion Result Data
 #define ADC_SSFIFO2_DATA_S      0
 
 //*****************************************************************************
@@ -669,7 +682,7 @@
 // The following are defines for the bit fields in the ADC_O_SSFIFO3 register.
 //
 //*****************************************************************************
-#define ADC_SSFIFO3_DATA_M      0x000003FF  // Conversion Result Data
+#define ADC_SSFIFO3_DATA_M      0x00000FFF  // Conversion Result Data
 #define ADC_SSFIFO3_DATA_S      0
 
 //*****************************************************************************
@@ -942,8 +955,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP0 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP0_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP0_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP0_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP0_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP0_COMP1_S      16
 #define ADC_DCCMP0_COMP0_S      0
 
@@ -952,8 +965,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP1 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP1_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP1_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP1_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP1_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP1_COMP1_S      16
 #define ADC_DCCMP1_COMP0_S      0
 
@@ -962,8 +975,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP2 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP2_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP2_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP2_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP2_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP2_COMP1_S      16
 #define ADC_DCCMP2_COMP0_S      0
 
@@ -972,8 +985,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP3 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP3_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP3_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP3_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP3_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP3_COMP1_S      16
 #define ADC_DCCMP3_COMP0_S      0
 
@@ -982,8 +995,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP4 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP4_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP4_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP4_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP4_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP4_COMP1_S      16
 #define ADC_DCCMP4_COMP0_S      0
 
@@ -992,8 +1005,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP5 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP5_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP5_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP5_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP5_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP5_COMP1_S      16
 #define ADC_DCCMP5_COMP0_S      0
 
@@ -1002,8 +1015,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP6 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP6_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP6_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP6_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP6_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP6_COMP1_S      16
 #define ADC_DCCMP6_COMP0_S      0
 
@@ -1012,8 +1025,8 @@
 // The following are defines for the bit fields in the ADC_O_DCCMP7 register.
 //
 //*****************************************************************************
-#define ADC_DCCMP7_COMP1_M      0x03FF0000  // Compare 1
-#define ADC_DCCMP7_COMP0_M      0x000003FF  // Compare 0
+#define ADC_DCCMP7_COMP1_M      0x0FFF0000  // Compare 1
+#define ADC_DCCMP7_COMP0_M      0x00000FFF  // Compare 0
 #define ADC_DCCMP7_COMP1_S      16
 #define ADC_DCCMP7_COMP0_S      0
 

@@ -1,7 +1,7 @@
 Quickstart Checkout Application
 
 This widget-based application exercises many of the peripherals found on
-the dk-lm3s9b96 development kit board.  It offers the following features:
+the development kit board.  It offers the following features:
 
 - USB mouse support.  The application will show the state of up to
   three mouse buttons and a cursor position when a USB mouse is connected
@@ -26,6 +26,11 @@ the dk-lm3s9b96 development kit board.  It offers the following features:
   ``exflash''.
   When shipped, the serial flash on the board contains file ramfs_data.bin
   which contains a web photo gallery.
+  The TFTP server also allows access to files on an installed SDCard.  To
+  access the SDCard file system, add "sdcard/" before the filename to GET
+  or PUT.  This support does not allow creation of new directories but files
+  may be read or written anywhere in the existing directory structure of the
+  SDCard.
 - Web server.  The lwIP TCP/IP stack is used to implement a web server
   which can serve files from an internal file system, a FAT file system
   on an installed microSD card or USB flash drive, or a file system image
@@ -59,7 +64,7 @@ the dk-lm3s9b96 development kit board.  It offers the following features:
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -75,4 +80,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.

@@ -2,7 +2,7 @@
 //
 // usb_dev_audio.c - Routines to handle the audio device.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
+#include "driverlib/rom.h"
 #include "grlib/grlib.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
@@ -38,26 +39,6 @@
 #include "drivers/sound.h"
 #include "usb_structs.h"
 #include "usb_dev_caudiohid.h"
-
-extern tContext g_sContext;
-extern tUSBDCompositeDevice g_sCompDevice;
-
-//****************************************************************************
-//
-// This macro is used to convert the 16 bit signed 8.8 fixed point number to
-// a number that ranges from 0 - 100.
-//
-//****************************************************************************
-#define CONVERT_TO_PERCENT(dbVolume)                                         \
-    ((dbVolume - (short)VOLUME_MAX + (short)VOLUME_MIN) * 100) /             \
-    ((short)VOLUME_MAX - (short)VOLUME_MIN) + 100;
-
-//****************************************************************************
-//
-// The current volume setting.
-//
-//****************************************************************************
-short g_sVolume;
 
 //****************************************************************************
 //
@@ -96,6 +77,37 @@ struct
     // Saves the play state for e
     volatile unsigned long ulFlags;
 } g_sBuffer;
+
+//****************************************************************************
+//
+// This macro is used to convert the 16 bit signed 8.8 fixed point number to
+// a number that ranges from 0 - 100.
+//
+//****************************************************************************
+#define CONVERT_TO_PERCENT(dbVolume)                                         \
+    ((dbVolume - (short)VOLUME_MAX + (short)VOLUME_MIN) * 100) /             \
+    ((short)VOLUME_MAX - (short)VOLUME_MIN) + 100;
+
+//****************************************************************************
+//
+// The current volume setting.
+//
+//****************************************************************************
+short g_sVolume;
+
+//*****************************************************************************
+//
+// The instance data for the composite device.
+//
+//*****************************************************************************
+extern tUSBDCompositeDevice g_sCompDevice;
+
+//*****************************************************************************
+//
+// Graphics context used to show text on the color STN display.
+//
+//*****************************************************************************
+extern tContext g_sContext;
 
 //****************************************************************************
 //
@@ -167,6 +179,10 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
         case USBD_AUDIO_EVENT_IDLE:
         case USBD_AUDIO_EVENT_ACTIVE:
         {
+            //
+            // Now connected.
+            //
+            HWREGBITW(&g_ulFlags, FLAG_CONNECTED) = 1;
             break;
         }
 
@@ -224,6 +240,16 @@ AudioMessageHandler(void *pvCBData, unsigned long ulEvent,
             break;
         }
 
+        //
+        // Handle the disconnect state.
+        //
+        case USB_EVENT_DISCONNECTED:
+        {
+            //
+            // No longer connected.
+            //
+            HWREGBITW(&g_ulFlags, FLAG_CONNECTED) = 0;
+        }
         default:
         {
             break;
@@ -284,8 +310,7 @@ SoundBufferCallback(void *pvBuffer, unsigned long ulEvent)
 //
 //****************************************************************************
 void
-USBBufferCallback(void *pvBuffer, unsigned long ulParam,
-                  unsigned long ulEvent)
+USBBufferCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
 {
     //
     // Increment the fill pointer.
@@ -539,7 +564,7 @@ AudioInit(void)
     // Must disable I2S interrupts during this time to prevent state
     // problems.
     //
-    IntEnable(INT_I2S0);
+    ROM_IntEnable(INT_I2S0);
 }
 
 //****************************************************************************
@@ -590,3 +615,4 @@ AudioMain(void)
         HWREGBITW(&g_ulFlags, FLAG_MUTE_UPDATE) = 0;
     }
 }
+

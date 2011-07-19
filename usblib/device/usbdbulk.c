@@ -2,7 +2,7 @@
 //
 // usbdbulk.c - USB bulk device class driver.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,15 +18,15 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/sysctl.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
@@ -350,12 +350,12 @@ ProcessDataFromHost(const tUSBDBulkDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(USB0_BASE, psInst->ucOUTEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
+    MAP_USBDevEndpointStatusClear(USB0_BASE, psInst->ucOUTEndpoint, ulEPStatus);
 
     //
     // Has a packet been received?
@@ -373,7 +373,8 @@ ProcessDataFromHost(const tUSBDBulkDevice *psDevice, unsigned long ulStatus)
         //
         // How big is the packet we've just been sent?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint);
 
         //
         // The receive channel is not blocked so let the caller know
@@ -400,10 +401,10 @@ ProcessDataFromHost(const tUSBDBulkDevice *psDevice, unsigned long ulStatus)
                                     (ulEPStatus & USB_RX_ERROR_FLAGS),
                                     (void *)0);
         }
-        return (false);
+        return(false);
     }
 
-    return (true);
+    return(true);
 }
 
 //*****************************************************************************
@@ -437,13 +438,13 @@ ProcessDataToHost(const tUSBDBulkDevice *psDevice, unsigned long ulStatus)
     //
     // Get the endpoint status to see why we were called.
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucINEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase, psInst->ucINEndpoint);
 
     //
     // Clear the status bits.
     //
-    USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucINEndpoint,
-                              ulEPStatus);
+    MAP_USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucINEndpoint,
+                                  ulEPStatus);
 
     //
     // Our last transmission completed.  Clear our state back to idle and
@@ -459,7 +460,7 @@ ProcessDataToHost(const tUSBDBulkDevice *psDevice, unsigned long ulStatus)
     psDevice->pfnTxCallback(psDevice->pvTxCBData, USB_EVENT_TX_COMPLETE,
                             ulSize, (void *)0);
 
-    return (true);
+    return(true);
 }
 
 //*****************************************************************************
@@ -747,7 +748,8 @@ BulkTickHandler(void *pvInstance, unsigned long ulTimemS)
         //
         // Yes - how big is the waiting packet?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint);
 
         //
         // Tell the client that there is a packet waiting for it.
@@ -1014,7 +1016,7 @@ USBDBulkSetRxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback pointer.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -1056,7 +1058,7 @@ USBDBulkSetTxCBData(void *pvInstance, void *pvCBData)
     //
     // Return the previous callback pointer value.
     //
-    return (pvOldValue);
+    return(pvOldValue);
 }
 
 //*****************************************************************************
@@ -1100,7 +1102,7 @@ USBDBulkPacketWrite(void *pvInstance, unsigned char *pcData,
                     unsigned long ulLength, tBoolean bLast)
 {
     tBulkInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -1119,19 +1121,19 @@ USBDBulkPacketWrite(void *pvInstance, unsigned char *pcData,
         // Either the packet was too big or we are in the middle of sending
         // another packet.  Return 0 to indicate that we can't send this data.
         //
-        return (0);
+        return(0);
     }
 
     //
     // Copy the data into the USB endpoint FIFO.
     //
-    iRetcode = USBEndpointDataPut(psInst->ulUSBBase, psInst->ucINEndpoint,
-                                  pcData, ulLength);
+    lRetcode = MAP_USBEndpointDataPut(psInst->ulUSBBase, psInst->ucINEndpoint,
+                                      pcData, ulLength);
 
     //
     // Did we copy the data successfully?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // Remember how many bytes we sent.
@@ -1148,27 +1150,28 @@ USBDBulkPacketWrite(void *pvInstance, unsigned char *pcData,
             // can expect for this packet.
             //
             psInst->eBulkTxState = BULK_STATE_WAIT_DATA;
-            iRetcode = USBEndpointDataSend(psInst->ulUSBBase,
-                                           psInst->ucINEndpoint, USB_TRANS_IN);
+            lRetcode = MAP_USBEndpointDataSend(psInst->ulUSBBase,
+                                               psInst->ucINEndpoint,
+                                               USB_TRANS_IN);
         }
     }
 
     //
     // Did an error occur while trying to send the data?
     //
-    if(iRetcode != -1)
+    if(lRetcode != -1)
     {
         //
         // No - tell the caller we sent all the bytes provided.
         //
-        return (ulLength);
+        return(ulLength);
     }
     else
     {
         //
         // Yes - tell the caller we couldn't send the data.
         //
-        return (0);
+        return(0);
     }
 }
 
@@ -1202,7 +1205,7 @@ USBDBulkPacketRead(void *pvInstance, unsigned char *pcData,
 {
     unsigned long ulEPStatus, ulCount, ulPkt;
     tBulkInstance *psInst;
-    int iRetcode;
+    long lRetcode;
 
     ASSERT(pvInstance);
 
@@ -1214,21 +1217,24 @@ USBDBulkPacketRead(void *pvInstance, unsigned char *pcData,
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucOUTEndpoint);
 
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
         //
         // How many bytes are available for us to receive?
         //
-        ulPkt = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulPkt = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                         psInst->ucOUTEndpoint);
 
         //
         // Get as much data as we can.
         //
         ulCount = ulLength;
-        iRetcode = USBEndpointDataGet(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                      pcData, &ulCount);
+        lRetcode = MAP_USBEndpointDataGet(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint,
+                                          pcData, &ulCount);
 
         //
         // Did we read the last of the packet data?
@@ -1239,15 +1245,16 @@ USBDBulkPacketRead(void *pvInstance, unsigned char *pcData,
             // Clear the endpoint status so that we know no packet is
             // waiting.
             //
-            USBDevEndpointStatusClear(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                      ulEPStatus);
+            MAP_USBDevEndpointStatusClear(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint,
+                                          ulEPStatus);
 
             //
             // Acknowledge the data, thus freeing the host to send the
             // next packet.
             //
-            USBDevEndpointDataAck(psInst->ulUSBBase, psInst->ucOUTEndpoint,
-                                  true);
+            MAP_USBDevEndpointDataAck(psInst->ulUSBBase, psInst->ucOUTEndpoint,
+                                      true);
 
             //
             // Clear the flag we set to indicate that a packet read is
@@ -1260,9 +1267,9 @@ USBDBulkPacketRead(void *pvInstance, unsigned char *pcData,
         //
         // If all went well, tell the caller how many bytes they got.
         //
-        if(iRetcode != -1)
+        if(lRetcode != -1)
         {
-            return (ulCount);
+            return(ulCount);
         }
     }
 
@@ -1270,7 +1277,7 @@ USBDBulkPacketRead(void *pvInstance, unsigned char *pcData,
     // No packet was available or an error occurred while reading so tell
     // the caller no bytes were returned.
     //
-    return (0);
+    return(0);
 }
 
 //*****************************************************************************
@@ -1308,7 +1315,7 @@ USBDBulkTxPacketAvailable(void *pvInstance)
         //
         // We are not ready to receive a new packet so return 0.
         //
-        return (0);
+        return(0);
     }
     else
     {
@@ -1316,7 +1323,7 @@ USBDBulkTxPacketAvailable(void *pvInstance)
         // We can receive a packet so return the max packet size for the
         // relevant endpoint.
         //
-        return (DATA_IN_EP_MAX_SIZE);
+        return(DATA_IN_EP_MAX_SIZE);
     }
 }
 
@@ -1353,23 +1360,25 @@ USBDBulkRxPacketAvailable(void *pvInstance)
     //
     // Does the relevant endpoint FIFO have a packet waiting for us?
     //
-    ulEPStatus = USBEndpointStatus(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+    ulEPStatus = MAP_USBEndpointStatus(psInst->ulUSBBase,
+                                       psInst->ucOUTEndpoint);
 
     if(ulEPStatus & USB_DEV_RX_PKT_RDY)
     {
         //
         // Yes - a packet is waiting.  How big is it?
         //
-        ulSize = USBEndpointDataAvail(psInst->ulUSBBase, psInst->ucOUTEndpoint);
+        ulSize = MAP_USBEndpointDataAvail(psInst->ulUSBBase,
+                                          psInst->ucOUTEndpoint);
 
-        return (ulSize);
+        return(ulSize);
     }
     else
     {
         //
         // There is no packet waiting to be received.
         //
-        return (0);
+        return(0);
     }
 }
 

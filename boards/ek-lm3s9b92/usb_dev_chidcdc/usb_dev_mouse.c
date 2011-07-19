@@ -2,7 +2,7 @@
 //
 // usb_dev_mouse.c - Routines for handling the mouse.
 //
-// Copyright (c) 2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
 //
 //****************************************************************************
 
@@ -86,18 +86,6 @@ volatile enum
     MOUSE_STATE_SENDING
 }
 g_eMouseState = MOUSE_STATE_UNCONFIGURED;
-
-//****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, unsigned long ulLine)
-{
-}
-#endif
 
 //****************************************************************************
 //

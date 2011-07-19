@@ -2,7 +2,7 @@
 //
 // usbhandler.c - General USB handling routines.
 //
-// Copyright (c) 2007-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,12 +18,14 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris USB Library.
+// This is part of revision 7611 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
+#include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
@@ -64,7 +66,7 @@ USB0DeviceIntHandler(void)
     //
     // Get the controller interrupt status.
     //
-    ulStatus = USBIntStatusControl(USB0_BASE);
+    ulStatus = MAP_USBIntStatusControl(USB0_BASE);
 
     //
     // Call the internal handler.

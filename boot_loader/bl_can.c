@@ -2,7 +2,7 @@
 //
 // bl_can.c - Functions to transfer data via the CAN port.
 //
-// Copyright (c) 2008-2010 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6594 of the Stellaris Firmware Development Package.
+// This is part of revision 7611 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1460,8 +1460,9 @@ ConfigureCAN(void)
     // Disable the PLL bypass so that the part is clocked from the PLL, and set
     // sysdiv to 16.  This yields a system clock of 12.5MHz.
     //
-    HWREG(SYSCTL_RCC) = ((HWREG(SYSCTL_RCC) & ~(SYSCTL_RCC_BYPASS)) |
-                         SYSCTL_RCC_SYSDIV_8 | SYSCTL_RCC_USESYSDIV);
+    HWREG(SYSCTL_RCC) = ((HWREG(SYSCTL_RCC) &
+                          ~(SYSCTL_RCC_BYPASS | SYSCTL_RCC_SYSDIV_M)) |
+                         SYSCTL_RCC_SYSDIV_16 | SYSCTL_RCC_USESYSDIV);
 #else
     //
     // Set the crystal frequency and switch to the main oscillator.
