@@ -1,0 +1,138 @@
+#******************************************************************************
+#
+# toolsdefs - Generic rules for building utilities.
+#
+# Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+# Software License Agreement
+# 
+# Texas Instruments (TI) is supplying this software for use solely and
+# exclusively on TI's microcontroller products. The software is owned by
+# TI and/or its suppliers, and is protected under applicable copyright
+# laws. You may not combine this software with "viral" open-source
+# software in order to form a larger program.
+# 
+# THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+# NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+# NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+# CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+# DAMAGES, FOR ANY REASON WHATSOEVER.
+# 
+# This is part of revision 6594 of the Stellaris Firmware Development Package.
+#
+#******************************************************************************
+
+#
+# The compiler to use to compile and link the application.
+#
+CC:=gcc
+CXX:=g++
+LD:=gcc
+
+#
+# Set CFLAGS and LDFLAGS based on the operating system.
+#
+CFLAGS:=-MD
+os:=${shell uname -s}
+ifneq ($(findstring CYGWIN, ${os}), )
+CFLAGS:=${CFLAGS} -mno-cygwin
+LDFLAGS:=${LDFLAGS} -mno-cygwin
+endif
+
+#
+# Tell the compiler to include debugging information if the DEBUG environment
+# variable is set.  Otherwise, tell the linker to strip the executable
+# (removing all unnecessary source information).
+#
+ifdef DEBUG
+CFLAGS:=${CFLAGS} -g -D DEBUG
+else
+LDFLAGS:=${LDFLAGS} -s
+endif
+
+#
+# Set the executable extension based on the operating system.
+#
+ifeq ($(findstring Linux, ${os}), )
+EXT:=.exe
+else
+EXT:=
+endif
+
+#
+# The default rule, which causes the utility to be built.
+#
+all:: ${APP}${EXT}
+
+#
+# A rule to link the application.
+#
+${APP}${EXT}: ${OBJS}
+ifeq ($(findstring Linux, ${os}), )
+${APP}${EXT}: ${RES}
+endif
+	@LIBS="${patsubst %,-l%,${subst :, ,${LIBS}}}";      \
+	 if [ 'x${VERBOSE}' = x ];                           \
+	 then                                                \
+	     echo "  LD    ${@}";                            \
+	 else                                                \
+	     echo ${LD} ${LDFLAGS} -o ${@} ${^} $${LIBS};    \
+	 fi;                                                 \
+	 ${LD} ${LDFLAGS} -o ${@} ${^} $${LIBS} || exit $$?; \
+	 mkdir -p ../bin;                                    \
+	 cp ${@} ../bin
+
+#
+# A rule to compile C source files.
+#
+%.o: %.c
+	@if [ 'x${VERBOSE}' = x ];         \
+	 then                              \
+	     echo "  CC    ${<}";          \
+	 else                              \
+	     echo ${CC} ${CFLAGS} -c ${<}; \
+	 fi;                               \
+	 ${CC} ${CFLAGS} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# A rule to compile C++ source files.
+#
+%.o: %.cxx
+	@if [ 'x${VERBOSE}' = x ];          \
+	 then                               \
+	     echo "  C++   ${<}";           \
+	 else                               \
+	     echo ${CXX} ${CFLAGS} -c ${<}; \
+	 fi;                                \
+	 ${CXX} ${CFLAGS} -c ${<}
+ifneq ($(findstring CYGWIN, ${os}), )
+	@sed -i -r 's/ ([A-Za-z]):/ \/cygdrive\/\1/g' ${@:.o=.d}
+endif
+
+#
+# A rule to build Windows resources (for a Windows build).
+#
+%.res: %.rc
+	@if [ 'x${VERBOSE}' = x ];                      \
+	 then                                           \
+	     echo "  RC    ${@:.res=.rc}";              \
+	 else                                           \
+	     echo "windres -O coff ${@:.res=.rc} ${@}"; \
+	 fi;                                            \
+	 windres -O coff ${@:.res=.rc} ${@}
+
+#
+# The rule to clean out all the build products.
+#
+clean::
+	@rm -rf ${APP}${EXT} ${wildcard *.o} ${wildcard *.d} ${wildcard *~}
+
+#
+# Include the automatically generated dependency files.
+#
+ifneq (${MAKECMDGOALS}, clean)
+-include ${wildcard *.d} __dummy__
+endif

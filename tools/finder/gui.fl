@@ -1,0 +1,175 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0109 
+header_name {.h} 
+code_name {.cxx}
+comment {//*****************************************************************************
+//
+// gui.? - FLTK GUI for the board locator.
+//
+// Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+// Software License Agreement
+// 
+// Texas Instruments (TI) is supplying this software for use solely and
+// exclusively on TI's microcontroller products. The software is owned by
+// TI and/or its suppliers, and is protected under applicable copyright
+// laws. You may not combine this software with "viral" open-source
+// software in order to form a larger program.
+// 
+// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+// DAMAGES, FOR ANY REASON WHATSOEVER.
+// 
+// This is part of revision 6594 of the Stellaris Firmware Development Package.
+//
+//*****************************************************************************
+} {selected in_source in_header
+} 
+
+decl {\#include <stdio.h>} {global
+} 
+
+decl {\#include <FL/x.H>} {global
+} 
+
+decl {\#include <FL/Fl_Output.H>} {global
+} 
+
+declblock {\#ifndef __WIN32} {open after {\#endif}
+} {
+  decl {\#include <X11/xpm.h>} {global
+  }
+  decl {\#include "finder.xpm"} {global
+  }
+} 
+
+decl {extern unsigned long g_ulRefresh;} {global
+} 
+
+Function {AddWindowIcon(Fl_Window *pWindow)} {open private return_type void
+} {
+  code {\#ifdef __WIN32
+pWindow->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
+\#else
+Pixmap p, m;
+
+fl_open_display();
+
+XpmCreatePixmapFromData(fl_display, DefaultRootWindow(fl_display), (char **)finder_xpm, &p, &m, NULL);
+
+pWindow->icon((char *)p);
+\#endif} {}
+} 
+
+Function {CreateAppWindow(void)} {open
+} {
+  Fl_Window g_pWindow {
+    label {Stellaris(R) Board Finder} open
+    xywh {392 380 640 480} type Single
+    code0 {AddWindowIcon(g_pWindow);} visible
+  } {
+    Fl_Box {} {
+      label {Available Stellaris Boards}
+      xywh {0 0 640 27} labelfont 1 labelsize 18
+    }
+    Fl_Box {} {
+      xywh {0 27 640 3} box FLAT_BOX color 0
+    }
+    Fl_Box {} {
+      label {IP Address}
+      xywh {0 30 120 19} box BORDER_BOX labelfont 1
+    }
+    Fl_Box {} {
+      label {MAC Address}
+      xywh {120 30 130 19} box BORDER_BOX labelfont 1
+    }
+    Fl_Box {} {
+      label {Client IP}
+      xywh {250 30 120 19} box BORDER_BOX labelfont 1
+    }
+    Fl_Box {} {
+      label Application
+      xywh {370 30 270 19} box BORDER_BOX labelfont 1
+    }
+    Fl_Box {} {
+      xywh {0 49 640 1} box FLAT_BOX color 0
+    }
+    Fl_Scroll g_pScroll {open
+      xywh {0 50 640 380}
+      code0 {o->type(Fl_Scroll::VERTICAL_ALWAYS);}
+    } {
+      Fl_Output {} {
+        xywh {0 50 640 380} box FLAT_BOX deactivate
+      }
+    }
+    Fl_Box {} {
+      xywh {0 430 640 1} box FLAT_BOX color 0
+    }
+    Fl_Button {} {
+      label Refresh
+      callback {g_ulRefresh = 1;}
+      xywh {147 440 100 30} shortcut 0xffc2
+    }
+    Fl_Button {} {
+      label Exit
+      callback {g_pWindow->hide();}
+      xywh {393 440 100 30} shortcut 0x40071
+    }
+  }
+} 
+
+Function {RemoveBoards(void)} {open return_type void
+} {
+  code {g_pScroll->clear();
+g_pScroll->begin();
+Fl_Output *o = new Fl_Output(0, 50, 640, 380);
+o->box(FL_FLAT_BOX);
+o->deactivate();
+g_pScroll->end();} {}
+} 
+
+Function {AddBoard(unsigned long ulIdx, unsigned long ulIP, unsigned char *pucMAC, unsigned long ulClientIP, char *pcAppTitle)} {open return_type void
+} {
+  code {char pcBuf[32];
+
+ulIdx = (ulIdx * 20) + 50;
+
+Fl_Output *pOutput;
+
+g_pScroll->begin();
+
+snprintf(pcBuf, sizeof(pcBuf), "%ld.%ld.%ld.%ld", ulIP & 0xff,
+         (ulIP >> 8) & 0xff, (ulIP >> 16) & 0xff, (ulIP >> 24) & 0xff);
+pOutput = new Fl_Output(0, ulIdx, 120, 20);
+pOutput->value(pcBuf);
+pOutput->box(FL_FLAT_BOX);
+pOutput->deactivate();
+
+snprintf(pcBuf, sizeof(pcBuf), "%02x:%02x:%02x:%02x:%02x:%02x", pucMAC[0],
+         pucMAC[1], pucMAC[2], pucMAC[3], pucMAC[4], pucMAC[5]);
+pOutput = new Fl_Output(120, ulIdx, 130, 20);
+pOutput->value(pcBuf);
+pOutput->box(FL_FLAT_BOX);
+pOutput->deactivate();
+
+snprintf(pcBuf, sizeof(pcBuf), "%ld.%ld.%ld.%ld", ulClientIP & 0xff,
+         (ulClientIP >> 8) & 0xff, (ulClientIP >> 16) & 0xff,
+         (ulClientIP >> 24) & 0xff);
+pOutput = new Fl_Output(250, ulIdx, 120, 20);
+pOutput->value(pcBuf);
+pOutput->box(FL_FLAT_BOX);
+pOutput->deactivate();
+
+pOutput = new Fl_Output(370, ulIdx, 270, 20);
+pOutput->value(pcAppTitle);
+pOutput->box(FL_FLAT_BOX);
+pOutput->deactivate();
+
+g_pScroll->end();
+
+g_pScroll->position(0, 0);
+
+g_pScroll->redraw();} {}
+} 

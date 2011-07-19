@@ -1,0 +1,20 @@
+; lmdfu.def : Declares the module parameters for the DLL.
+
+LIBRARY      "lmdfu"
+
+EXPORTS
+    LMDFUInit                   @1
+    LMDFUDeviceOpen             @2
+    LMDFUDeviceClose            @3
+    LMDFUDeviceStringGet        @4
+    LMDFUDeviceASCIIStringGet   @5
+    LMDFUParamsGet              @6
+    LMDFUDownload               @7
+    LMDFUDownloadBin            @8
+    LMDFUErase                  @9
+    LMDFUUpload                 @10
+    LMDFUIsValidImage           @11
+    LMDFUStatusGet              @12
+    LMDFUErrorStringGet         @13
+    LMDFUBlankCheck             @14
+    LMDFUModeSwitch             @15

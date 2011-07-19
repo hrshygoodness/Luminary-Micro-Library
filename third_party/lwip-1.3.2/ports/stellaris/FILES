@@ -1,0 +1,6 @@
+include/    - Include files for Stellaris ports.
+netif/      - Network interface drivers for Stellaris devices.
+perf.c      - Stellaris performance monitor driver file (not used).
+sys_arch.c  - Stellaris architecture support file.
+
+See also the FILES file in each subdirectory.
