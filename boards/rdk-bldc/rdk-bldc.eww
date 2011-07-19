@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\basic-bldc\basic-bldc.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\boot_eth\boot_eth.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\qs-bldc\qs-bldc.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>basic-bldc</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>boot_eth</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>qs-bldc</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>

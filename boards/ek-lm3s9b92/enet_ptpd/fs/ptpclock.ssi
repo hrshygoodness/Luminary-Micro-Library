@@ -1,0 +1,29 @@
+<!-- Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1">
+<link href="./styles.css" rel="stylesheet" media="screen">
+<meta http-equiv="refresh" content="1">
+<title>About PTP (IEEE-1588) on Stellaris</title>
+</head>
+<body>
+<h1>About PTPd (IEEE-1588) on Stellaris</h1>
+<p>
+Texas Instruments has implemented the Open Source PTPd software on its Stellaris
+family of microcontrollers.  This implementation uses the lwIP TCP/IP stack,
+and does not require an RTOS.
+</p>
+<p>
+Details on the Open Source PTP Protocol Software can be found at
+<a href="http://ptpd.sourceforge.net">ptpd.sourceforge.net</a>.
+</p>
+<p>
+Details on the Open Source lwIP TCP/IP stack can be found at
+<a href="http://www.sics.se/~adam/lwip/">www.sics.se/~adam/lwip/</a>.
+<p>
+The current IEEE 1588 Time (GMT) is:  Www Mmm Dd, Yyyy  Hh:Mm:Ss
+<p>
+To return to the main page, click <a href="./index.htm">here</a>.
+</body>
+</html>
+

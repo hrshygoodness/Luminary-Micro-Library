@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Stellaris Photo Gallery</title>
+<!-- FlashObject embed by Geoff Stearns geoff@choppingblock.com http://choppingblock.com/ -->
+<script type="text/javascript" src="flashobject.js"></script>
+
+<script type="text/javascript">
+
+    window.onload = function() {
+        if ((window.document.getElementById) && (window.document.getElementById('gallery').focus)) {
+            window.document.getElementById('gallery').focus();
+        }
+    }
+
+</script>
+
+<style type="text/css">
+    /* hide from ie5 mac \*/
+    html {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #flashcontent {
+        height: 100%;
+    }
+    /* end hide */
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff;
+    }
+
+</style>
+
+</head>
+<body>
+
+<div style="display:none">
+    <div>%FLASH%</div>
+
+    <div>Stellaris Photo Gallery</div>
+    <div>Technical wizards AND artists</div>
+    <div>2/6/2009</div>
+    <div></div>
+    <div>support_lmi@ti.com</div>
+
+    <div>#000000</div>
+    <div>#000000</div>
+    <div>#FFFFFF</div>
+    <div>#AEAEAE</div>
+    <div>#DEDEDE</div>
+    <div>#79AADA</div>
+
+    <div>.jpg</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+<div id="flashcontent">
+    <script type="text/javascript">
+        // <![CDATA[
+
+        var myFlashObject = new FlashObject("gallery.swf", "gallery", "100%", "100%", 6, "#ffffff");
+        myFlashObject.addParam("scale", "noscale");
+        myFlashObject.addVariable("request", getQueryParamValue("image"));
+        myFlashObject.addVariable("photosXmlFile", "photos.xml");
+        myFlashObject.addVariable("configXmlFile", "galleryconfig.xml");
+        myFlashObject.write();
+
+        // ]]>
+    </script>
+
+    <noscript>
+    You must enable Javascript to view this content.
+    </noscript>
+</div>
+
+</body>
+</html>

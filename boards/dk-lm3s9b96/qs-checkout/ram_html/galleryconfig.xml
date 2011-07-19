@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<settings>
+
+    <!-- value (in pixels) for distance between gallery and left edge-->
+    <var symboltype="number" name="pinX" value="100" />
+
+    <!-- TOP PAD -->
+    <!-- height (in pixels) of the top pad -->
+    <var symboltype="number" name="defaultY" value="50" />
+    <!-- height (in pixels) of the top pad when image info is displayed -->
+    <var symboltype="number" name="infoY" value="30" />
+    <!-- width and height (in pixels) of padding around gallery title and nav -->
+    <var symboltype="number" name="paddingXY" value="6" />
+    <!-- height (in pixels) of the gap between the top pad and title -->
+    <var symboltype="number" name="spacingY" value="1" />
+
+    <!-- IMAGE DISPLAY -->
+    <!-- width and height (in pixels) of padding around main image -->
+    <var symboltype="number" name="imagePaddingXY" value="6" />
+    <!-- height (in pixels) of the gap between the main image pad and others -->
+    <var symboltype="number" name="imageSpacingY" value="1" />
+    <!-- width and height (in pixels) of border around main image -->
+    <var symboltype="number" name="imageBorderWidth" value="2" />
+    <!--color (in hex) of the main image border-->
+    <var symboltype="string" name="imageBorderColor" value="FFFFFF" />
+    <!--color (in hex) of the main image preloader-->
+    <var symboltype="string" name="imagePreloadColor" value="000000" />
+    <!--color (in hex) of the main image preloader-->
+    <var symboltype="string" name="imageBackgroundColor" value="000000" />
+
+    <!--THUMBNAIL NAV -->
+    <!-- width and height (in pixels) of padding around individual thumbnails -->
+    <var symboltype="number" name="navPaddingXY" value="4" />
+    <!-- width (in pixels) of the gap between individual thumbnail pads -->
+    <var symboltype="number" name="navSpacingX" value="1" />
+    <!-- width and height (in pixels) of border around individual thumbnails -->
+    <var symboltype="number" name="navBorderWidth" value="2" />
+    <!-- set all thumbnail pads to be the same width -->
+    <var symboltype="boolean" name="squareThumbPads" value="false" />
+    <!-- height (in pixels) of the gap between the thumbnails and the scroll -->
+    <var symboltype="number" name="navSpacingY" value="1" />
+    <!-- width and height (in pixels) of border around entire nav -->
+    <var symboltype="number" name="navOutlineWidth" value="1" />
+    <!-- show the image numbers before the filename/title by default -->
+    <var symboltype="boolean" name="showNavNumbers" value="false" />
+
+    <!--CONTROLS -->
+    <!-- open the controller menu by default -->
+    <var symboltype="boolean" name="showController" value="true" />
+    <!-- display info toggle button -->
+    <var symboltype="boolean" name="showHelpButton" value="true" />
+    <!-- display thumbnail toggle button-->
+    <var symboltype="boolean" name="showNavButton" value="true" />
+    <!-- hold time between each image -->
+    <var symboltype="number" name="showTime" value="4" />
+    <!--controller Scale (in percentage)-->
+    <var symboltype="number" name="controlScale" value="100" />
+
+    <!-- AUDIO -->
+    <!-- play sound on load -->
+    <var symboltype="boolean" name="playSound" value="true" />
+    <!-- loop amount for audio (if playsound is true, it will play once) -->
+    <var symboltype="number" name="soundLoop" value="3" />
+    <!--path to desired audio file-->
+    <var symboltype="string" name="mp3file" value="useraudio.mp3" />
+
+    <!-- EMBED FONT -->
+    <var symboltype="boolean" name="embedFont" value="true" />
+
+</settings>

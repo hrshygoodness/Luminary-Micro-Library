@@ -1,0 +1,133 @@
+### uVision2 Project, (C) Keil Software
+### Do not modify !
+
+Target (i2s_speex_enc), 0x0004 // Tools: 'ARM-ADS'
+
+Group (Source)
+Group (Libraries)
+Group (Documentation)
+
+File 1,1,<..\..\..\third_party\bget\bget.c><bget.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\bits.c><bits.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\cb_search.c><cb_search.c> 0x0
+File 1,1,<..\..\..\utils\cmdline.c><cmdline.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_10_16_table.c><exc_10_16_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_10_32_table.c><exc_10_32_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_20_32_table.c><exc_20_32_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_5_256_table.c><exc_5_256_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_5_64_table.c><exc_5_64_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\exc_8_128_table.c><exc_8_128_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\filters.c><filters.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\gain_table.c><gain_table.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\gain_table_lbr.c><gain_table_lbr.c> 0x0
+File 1,1,<.\i2s_speex_enc.c><i2s_speex_enc.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\lpc.c><lpc.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\lsp.c><lsp.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\lsp_tables_nb.c><lsp_tables_nb.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\ltp.c><ltp.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\modes.c><modes.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\nb_celp.c><nb_celp.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\quant_lsp.c><quant_lsp.c> 0x0
+File 1,1,<..\drivers\set_pinout.c><set_pinout.c> 0x0
+File 1,1,<..\drivers\sound.c><sound.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\speex.c><speex.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\speex_callbacks.c><speex_callbacks.c> 0x0
+File 1,1,<..\..\..\utils\speexlib.c><speexlib.c> 0x0
+File 1,2,<.\startup_rvmdk.S><startup_rvmdk.S> 0x0
+File 1,1,<..\drivers\tlv320aic23b.c><tlv320aic23b.c> 0x0
+File 1,1,<..\..\..\utils\uartstdio.c><uartstdio.c> 0x0
+File 1,1,<..\..\..\utils\ustdlib.c><ustdlib.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\vbr.c><vbr.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\vq.c><vq.c> 0x0
+File 1,1,<..\..\..\third_party\speex-1.2rc1\libspeex\window.c><window.c> 0x0
+File 2,4,<..\..\..\driverlib\rvmdk\driverlib.lib><driverlib.lib> 0x0
+File 3,5,<.\readme.txt><readme.txt> 0x0
+
+Options 1,0,0  // Target 'i2s_speex_enc'
+ Device (LM3S9B96)
+ Vendor (Luminary Micro)
+ Cpu (IRAM(0x20000000-0x20017fff) IROM(0-0x3ffff) CLOCK(80000000) CPUTYPE("Cortex-M3"))
+ FlashUt ()
+ StupF ("STARTUP\Luminary\Startup.s" ("Luminary Startup Code"))
+ FlashDR (UL2CM3(-UU0101L5E -O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FCFFFC -FN1 -FF0LM3S_256 -FS00 -FL040000))
+ DevID (4079)
+ Rgf (LM3Sxxx.H)
+ Mem ()
+ C ()
+ A ()
+ RL ()
+ OH ()
+ DBC_IFX ()
+ DBC_CMS ()
+ DBC_AMS ()
+ DBC_LMS ()
+ UseEnv=0
+ EnvBin ()
+ EnvInc ()
+ EnvLib ()
+ EnvReg (ÿLuminary\)
+ OrgReg (ÿLuminary\)
+ TgStat=0
+ OutDir (.\rvmdk\)
+ OutName (i2s_speex_enc)
+ GenApp=1
+ GenLib=0
+ GenHex=0
+ Debug=1
+ Browse=1
+ LstDir (.\rvmdk\)
+ HexSel=1
+ MG32K=0
+ TGMORE=0
+ RunUsr 0 1 <fromelf --bin --output .\rvmdk\i2s_speex_enc.bin .\rvmdk\i2s_speex_enc.axf>
+ RunUsr 1 0 <>
+ BrunUsr 0 0 <>
+ BrunUsr 1 0 <>
+ CrunUsr 0 0 <>
+ CrunUsr 1 0 <>
+ SVCSID <>
+ GLFLAGS=1790
+ ADSFLGA { 240,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ACPUTYP ("Cortex-M3")
+ ADSTFLGA { 0,12,0,18,99,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSOCM { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSIRAM { 0,0,0,0,32,0,128,0,0 }
+ OCMADSIROM { 1,0,0,0,0,0,120,1,0 }
+ OCMADSXRAM { 0,0,0,0,0,0,0,0,0 }
+ OCR_RVCT { 1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,32,0,128,1,0,0,0,0,0,0,0,0,0,0 }
+ RV_STAVEC ()
+ ADSCCFLG { 12,2,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSCMISC ()
+ ADSCDEFN (rvmdk PART_LM3S9B96 TARGET_IS_TEMPEST_RB1 HAVE_CONFIG_H CONFIG_STELLARIS)
+ ADSCUDEF ()
+ ADSCINCD (.;..;..\..\..;..\..\..\third_party\speex-1.2rc1\include;..\..\..\third_party\speex-1.2rc1\libspeex;..\..\..\third_party\speex-1.2rc1\stellaris;..\..\..\third_party;)
+ ADSASFLG { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSAMISC ()
+ ADSADEFN ()
+ ADSAUDEF ()
+ ADSAINCD ()
+ PropFld { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ IncBld=1
+ AlwaysBuild=0
+ GenAsm=0
+ AsmAsm=0
+ PublicsOnly=0
+ StopCode=3
+ CustArgs ()
+ LibMods ()
+ ADSLDFG { 16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSLDTA (0x00000000)
+ ADSLDDA (0x20000000)
+ ADSLDSC (i2s_speex_enc.sct)
+ ADSLDIB ()
+ ADSLDIC ()
+ ADSLDMC (--entry Reset_Handler)
+ ADSLDIF ()
+ ADSLDDW ()
+  OPTDL (SARMCM3.DLL)()(DLM.DLL)(-pLM3S9B96)(SARMCM3.DLL)()(TLM.DLL)(-pLM3S9B96)
+  OPTDBG 48126,3,()()()()()()()()()() (BIN\lmidk-agdi.dll)()()()
+ FLASH1 { 1,0,0,0,1,0,0,0,3,16,0,0,0,0,0,0,0,0,0,0 }
+ FLASH2 (BIN\lmidk-agdi.dll)
+ FLASH3 ("" ())
+ FLASH4 ()
+EndOpt

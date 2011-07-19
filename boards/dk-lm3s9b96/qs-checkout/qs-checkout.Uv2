@@ -1,0 +1,158 @@
+### uVision2 Project, (C) Keil Software
+### Do not modify !
+
+Target (qs-checkout), 0x0004 // Tools: 'ARM-ADS'
+
+Group (Source)
+Group (Libraries)
+Group (Documentation)
+
+File 1,1,<.\audioplay.c><audioplay.c> 0x0
+File 1,1,<..\..\..\third_party\bget\bget.c><bget.c> 0x0
+File 1,1,<..\..\..\utils\cmdline.c><cmdline.c> 0x0
+File 1,1,<..\..\..\third_party\fatfs\port\dual-disk-driver.c><dual-disk-driver.c> 0x0
+File 1,1,<..\drivers\extflash.c><extflash.c> 0x0
+File 1,1,<..\drivers\extram.c><extram.c> 0x0
+File 1,1,<..\..\..\third_party\fatfs\src\ff.c><ff.c> 0x0
+File 1,1,<.\file.c><file.c> 0x0
+File 1,1,<..\..\..\utils\fswrapper.c><fswrapper.c> 0x0
+File 1,1,<.\grlib_demo.c><grlib_demo.c> 0x0
+File 1,1,<.\gui_widgets.c><gui_widgets.c> 0x0
+File 1,1,<..\..\..\third_party\lwip-1.3.2\apps\httpserver_raw\httpd.c><httpd.c> 0x0
+File 1,1,<.\images.c><images.c> 0x0
+File 1,1,<.\imageview.c><imageview.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jcomapi.c><jcomapi.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdapimin.c><jdapimin.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdapistd.c><jdapistd.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdcoefct.c><jdcoefct.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdcolor.c><jdcolor.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jddctmgr.c><jddctmgr.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdhuff.c><jdhuff.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdinput.c><jdinput.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdmainct.c><jdmainct.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdmarker.c><jdmarker.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdmaster.c><jdmaster.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdmerge.c><jdmerge.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdphuff.c><jdphuff.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdpostct.c><jdpostct.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jdsample.c><jdsample.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jerrorlmi.c><jerrorlmi.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jidctfst.c><jidctfst.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jidctint.c><jidctint.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jidctred.c><jidctred.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jmemlmi.c><jmemlmi.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jmemmgr.c><jmemmgr.c> 0x0
+File 1,1,<..\drivers\jpgwidget.c><jpgwidget.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jquant1.c><jquant1.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jramdatasrc.c><jramdatasrc.c> 0x0
+File 1,1,<..\..\..\third_party\jpeg\jutils.c><jutils.c> 0x0
+File 1,1,<..\drivers\kitronix320x240x16_ssd2119_8bit.c><kitronix320x240x16_ssd2119_8bit.c> 0x0
+File 1,1,<..\..\..\utils\locator.c><locator.c> 0x0
+File 1,1,<..\..\..\utils\lwiplib.c><lwiplib.c> 0x0
+File 1,1,<.\qs-checkout.c><qs-checkout.c> 0x0
+File 1,1,<..\drivers\set_pinout.c><set_pinout.c> 0x0
+File 1,1,<..\drivers\sound.c><sound.c> 0x0
+File 1,1,<..\drivers\ssiflash.c><ssiflash.c> 0x0
+File 1,2,<.\startup_rvmdk.S><startup_rvmdk.S> 0x0
+File 1,1,<..\..\..\utils\tftp.c><tftp.c> 0x0
+File 1,1,<.\tftp_qs.c><tftp_qs.c> 0x0
+File 1,1,<..\drivers\thumbwheel.c><thumbwheel.c> 0x0
+File 1,1,<..\drivers\tlv320aic23b.c><tlv320aic23b.c> 0x0
+File 1,1,<..\drivers\touch.c><touch.c> 0x0
+File 1,1,<..\..\..\utils\uartstdio.c><uartstdio.c> 0x0
+File 1,1,<.\usb_funcs.c><usb_funcs.c> 0x0
+File 1,1,<.\usb_mouse_structs.c><usb_mouse_structs.c> 0x0
+File 1,1,<..\..\..\utils\ustdlib.c><ustdlib.c> 0x0
+File 2,4,<..\..\..\driverlib\rvmdk\driverlib.lib><driverlib.lib> 0x0
+File 2,4,<..\..\..\grlib\rvmdk\grlib.lib><grlib.lib> 0x0
+File 2,4,<..\..\..\usblib\rvmdk\usblib.lib><usblib.lib> 0x0
+File 3,5,<.\readme.txt><readme.txt> 0x0
+
+Options 1,0,0  // Target 'qs-checkout'
+ Device (LM3S9B96)
+ Vendor (Luminary Micro)
+ Cpu (IRAM(0x20000000-0x20017fff) IROM(0-0x3ffff) CLOCK(80000000) CPUTYPE("Cortex-M3"))
+ FlashUt ()
+ StupF ("STARTUP\Luminary\Startup.s" ("Luminary Startup Code"))
+ FlashDR (UL2CM3(-UU0101L5E -O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FCFFFC -FN1 -FF0LM3S_256 -FS00 -FL040000))
+ DevID (4079)
+ Rgf (LM3Sxxx.H)
+ Mem ()
+ C ()
+ A ()
+ RL ()
+ OH ()
+ DBC_IFX ()
+ DBC_CMS ()
+ DBC_AMS ()
+ DBC_LMS ()
+ UseEnv=0
+ EnvBin ()
+ EnvInc ()
+ EnvLib ()
+ EnvReg (ÿLuminary\)
+ OrgReg (ÿLuminary\)
+ TgStat=0
+ OutDir (.\rvmdk\)
+ OutName (qs-checkout)
+ GenApp=1
+ GenLib=0
+ GenHex=0
+ Debug=1
+ Browse=1
+ LstDir (.\rvmdk\)
+ HexSel=1
+ MG32K=0
+ TGMORE=0
+ RunUsr 0 1 <fromelf --bin --output .\rvmdk\qs-checkout.bin .\rvmdk\qs-checkout.axf>
+ RunUsr 1 0 <>
+ BrunUsr 0 0 <>
+ BrunUsr 1 0 <>
+ CrunUsr 0 0 <>
+ CrunUsr 1 0 <>
+ SVCSID <>
+ GLFLAGS=1790
+ ADSFLGA { 240,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ACPUTYP ("Cortex-M3")
+ ADSTFLGA { 0,12,0,18,99,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSOCM { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSIRAM { 0,0,0,0,32,0,128,0,0 }
+ OCMADSIROM { 1,0,0,0,0,0,120,1,0 }
+ OCMADSXRAM { 0,0,0,0,0,0,0,0,0 }
+ OCR_RVCT { 1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,32,0,128,1,0,0,0,0,0,0,0,0,0,0 }
+ RV_STAVEC ()
+ ADSCCFLG { 12,2,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSCMISC ()
+ ADSCDEFN (rvmdk PART_LM3S9B96 UART_BUFFERED DISK0_DK_LM3S9B96 DISK1_USB_MSC INCLUDE_BGET_STATS)
+ ADSCUDEF ()
+ ADSCINCD (.;..;..\..\..;..\..\..\third_party\lwip-1.3.2\apps;..\..\..\third_party\bget;..\..\..\third_party\lwip-1.3.2\ports\stellaris\include;..\..\..\third_party\lwip-1.3.2\src\include;..\..\..\third_party\lwip-1.3.2\src\include\ipv4;..\..\..\third_party\jpeg;..\..\..\third_party;)
+ ADSASFLG { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSAMISC ()
+ ADSADEFN ()
+ ADSAUDEF ()
+ ADSAINCD ()
+ PropFld { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ IncBld=1
+ AlwaysBuild=0
+ GenAsm=0
+ AsmAsm=0
+ PublicsOnly=0
+ StopCode=3
+ CustArgs ()
+ LibMods ()
+ ADSLDFG { 16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSLDTA (0x00000000)
+ ADSLDDA (0x20000000)
+ ADSLDSC (qs-checkout.sct)
+ ADSLDIB ()
+ ADSLDIC ()
+ ADSLDMC (--entry Reset_Handler)
+ ADSLDIF ()
+ ADSLDDW ()
+  OPTDL (SARMCM3.DLL)()(DLM.DLL)(-pLM3S9B96)(SARMCM3.DLL)()(TLM.DLL)(-pLM3S9B96)
+  OPTDBG 48126,3,()()()()()()()()()() (BIN\lmidk-agdi.dll)()()()
+ FLASH1 { 1,0,0,0,1,0,0,0,3,16,0,0,0,0,0,0,0,0,0,0 }
+ FLASH2 (BIN\lmidk-agdi.dll)
+ FLASH3 ("" ())
+ FLASH4 ()
+EndOpt

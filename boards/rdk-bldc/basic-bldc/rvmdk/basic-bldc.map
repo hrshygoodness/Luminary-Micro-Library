@@ -1,0 +1,1396 @@
+ARM Linker, 4.1 [Build 644] [Evaluation]
+
+==============================================================================
+
+Section Cross References
+
+    adc_ctrl.o(i.ADC0IntHandler) refers to ui.o(i.UIGetTicks) for UIGetTicks
+    adc_ctrl.o(i.ADC0IntHandler) refers to adc_ctrl.o(.data) for .data
+    adc_ctrl.o(i.ADC0IntIdle) refers to adc_ctrl.o(.bss) for .bss
+    adc_ctrl.o(i.ADC0IntIdle) refers to adc_ctrl.o(.data) for .data
+    adc_ctrl.o(i.ADC0IntTrap) refers to main.o(i.MainIsReverse) for MainIsReverse
+    adc_ctrl.o(i.ADC0IntTrap) refers to adc.o(i.ADCSequenceStepConfigure) for ADCSequenceStepConfigure
+    adc_ctrl.o(i.ADC0IntTrap) refers to main.o(i.MainIsRunning) for MainIsRunning
+    adc_ctrl.o(i.ADC0IntTrap) refers to main.o(i.MainIsStartup) for MainIsStartup
+    adc_ctrl.o(i.ADC0IntTrap) refers to adc_ctrl.o(.data) for .data
+    adc_ctrl.o(i.ADC0IntTrap) refers to adc_ctrl.o(.bss) for .bss
+    adc_ctrl.o(i.ADC0IntTrap) refers to pwm_ctrl.o(.data) for g_ulTrapDutyCycle
+    adc_ctrl.o(i.ADCConfigure) refers to interrupt.o(i.IntDisable) for IntDisable
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCIntDisable) for ADCIntDisable
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCSequenceDisable) for ADCSequenceDisable
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCSequenceConfigure) for ADCSequenceConfigure
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCSequenceStepConfigure) for ADCSequenceStepConfigure
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCSequenceEnable) for ADCSequenceEnable
+    adc_ctrl.o(i.ADCConfigure) refers to adc.o(i.ADCIntEnable) for ADCIntEnable
+    adc_ctrl.o(i.ADCConfigure) refers to interrupt.o(i.IntEnable) for IntEnable
+    adc_ctrl.o(i.ADCConfigure) refers to adc_ctrl.o(i.ADC0IntTrap) for ADC0IntTrap
+    adc_ctrl.o(i.ADCConfigure) refers to adc_ctrl.o(.data) for .data
+    adc_ctrl.o(i.ADCInit) refers to sysctl.o(i.SysCtlADCSpeedSet) for SysCtlADCSpeedSet
+    adc_ctrl.o(i.ADCInit) refers to adc_ctrl.o(i.ADCConfigure) for ADCConfigure
+    adc_ctrl.o(i.ADCInit) refers to adc.o(i.ADCSequenceConfigure) for ADCSequenceConfigure
+    adc_ctrl.o(i.ADCInit) refers to adc.o(i.ADCSequenceStepConfigure) for ADCSequenceStepConfigure
+    adc_ctrl.o(i.ADCInit) refers to adc.o(i.ADCSequenceEnable) for ADCSequenceEnable
+    adc_ctrl.o(i.ADCInit) refers to adc.o(i.ADCProcessorTrigger) for ADCProcessorTrigger
+    adc_ctrl.o(i.ADCReadAnalog) refers to adc.o(i.ADCProcessorTrigger) for ADCProcessorTrigger
+    adc_ctrl.o(i.ADCTickHandler) refers to ui.o(i.UIGetTicks) for UIGetTicks
+    adc_ctrl.o(i.ADCTickHandler) refers to adc_ctrl.o(.data) for .data
+    adc_ctrl.o(.data) refers to adc_ctrl.o(i.ADC0IntIdle) for ADC0IntIdle
+    brake.o(i.BrakeInit) refers to gpio.o(i.GPIOPinTypeGPIOOutputOD) for GPIOPinTypeGPIOOutputOD
+    brake.o(i.BrakeInit) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    brake.o(i.BrakeInit) refers to brake.o(.data) for .data
+    brake.o(i.BrakeTick) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    brake.o(i.BrakeTick) refers to adc_ctrl.o(.data) for g_ulBusVoltage
+    brake.o(i.BrakeTick) refers to brake.o(.data) for .data
+    hall_ctrl.o(i.GPIOBIntHandler) refers to ui.o(i.UIGetTicks) for UIGetTicks
+    hall_ctrl.o(i.GPIOBIntHandler) refers to gpio.o(i.GPIOPinIntClear) for GPIOPinIntClear
+    hall_ctrl.o(i.GPIOBIntHandler) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
+    hall_ctrl.o(i.GPIOBIntHandler) refers to trapmod.o(i.TrapModulate) for TrapModulate
+    hall_ctrl.o(i.GPIOBIntHandler) refers to hall_ctrl.o(.data) for .data
+    hall_ctrl.o(i.HallConfigure) refers to gpio.o(i.GPIOPinIntClear) for GPIOPinIntClear
+    hall_ctrl.o(i.HallConfigure) refers to gpio.o(i.GPIOPinIntEnable) for GPIOPinIntEnable
+    hall_ctrl.o(i.HallConfigure) refers to interrupt.o(i.IntEnable) for IntEnable
+    hall_ctrl.o(i.HallInit) refers to gpio.o(i.GPIOPinTypeGPIOInput) for GPIOPinTypeGPIOInput
+    hall_ctrl.o(i.HallInit) refers to gpio.o(i.GPIOIntTypeSet) for GPIOIntTypeSet
+    hall_ctrl.o(i.HallTickHandler) refers to ui.o(i.UIGetTicks) for UIGetTicks
+    hall_ctrl.o(i.HallTickHandler) refers to hall_ctrl.o(.data) for .data
+    main.o(i.FaultISR) refers to interrupt.o(i.IntMasterDisable) for IntMasterDisable
+    main.o(i.FaultISR) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.FaultISR) refers to ui.o(i.UIFaultLEDBlink) for UIFaultLEDBlink
+    main.o(i.IntDefaultHandler) refers to interrupt.o(i.IntMasterDisable) for IntMasterDisable
+    main.o(i.IntDefaultHandler) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.IntDefaultHandler) refers to ui.o(i.UIFaultLEDBlink) for UIFaultLEDBlink
+    main.o(i.MainCheckFaults) refers to main.o(i.MainEmergencyStop) for MainEmergencyStop
+    main.o(i.MainCheckFaults) refers to main.o(i.MainSetFault) for MainSetFault
+    main.o(i.MainCheckFaults) refers to main.o(.data) for .data
+    main.o(i.MainCheckFaults) refers to adc_ctrl.o(.data) for g_ucAmbientTemp
+    main.o(i.MainClearFaults) refers to ui.o(i.UIFaultLEDBlink) for UIFaultLEDBlink
+    main.o(i.MainClearFaults) refers to main.o(.data) for .data
+    main.o(i.MainEmergencyStop) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainEmergencyStop) refers to ui.o(i.UIRunLEDBlink) for UIRunLEDBlink
+    main.o(i.MainEmergencyStop) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.MainEmergencyStop) refers to pwm_ctrl.o(i.PWMSetDutyCycle) for PWMSetDutyCycle
+    main.o(i.MainEmergencyStop) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainEmergencyStop) refers to main.o(.data) for .data
+    main.o(i.MainIsFaulted) refers to main.o(.data) for .data
+    main.o(i.MainIsReverse) refers to main.o(.data) for .data
+    main.o(i.MainIsRunning) refers to main.o(.data) for .data
+    main.o(i.MainIsStartup) refers to main.o(.data) for .data
+    main.o(i.MainMillisecondTick) refers to brake.o(i.BrakeTick) for BrakeTick
+    main.o(i.MainMillisecondTick) refers to main.o(i.MainCheckFaults) for MainCheckFaults
+    main.o(i.MainMillisecondTick) refers to main.o(i.MainPrechargeHandler) for MainPrechargeHandler
+    main.o(i.MainMillisecondTick) refers to main.o(i.MainStartupHandler) for MainStartupHandler
+    main.o(i.MainMillisecondTick) refers to main.o(i.MainSpeedHandler) for MainSpeedHandler
+    main.o(i.MainMillisecondTick) refers to main.o(i.MainSpeedController) for MainSpeedController
+    main.o(i.MainMillisecondTick) refers to pwm_ctrl.o(i.PWMSetDutyCycle) for PWMSetDutyCycle
+    main.o(i.MainMillisecondTick) refers to main.o(.data) for .data
+    main.o(i.MainMillisecondTick) refers to hall_ctrl.o(.data) for g_ulHallRotorSpeed
+    main.o(i.MainMillisecondTick) refers to pwm_ctrl.o(.data) for g_ulPWMFrequency
+    main.o(i.MainPowerController) refers to main.o(.emb_text) for MainLongMul
+    main.o(i.MainPowerController) refers to adc_ctrl.o(.data) for g_ulMotorPower
+    main.o(i.MainPowerController) refers to main.o(.data) for .data
+    main.o(i.MainPrechargeHandler) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    main.o(i.MainPrechargeHandler) refers to pwm_ctrl.o(i.PWMSetDutyCycle) for PWMSetDutyCycle
+    main.o(i.MainPrechargeHandler) refers to hall_ctrl.o(i.GPIOBIntHandler) for GPIOBIntHandler
+    main.o(i.MainPrechargeHandler) refers to main.o(.data) for .data
+    main.o(i.MainRun) refers to main.o(i.MainIsFaulted) for MainIsFaulted
+    main.o(i.MainRun) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainRun) refers to ui.o(i.UIRunLEDBlink) for UIRunLEDBlink
+    main.o(i.MainRun) refers to pwm_ctrl.o(i.PWMOutputPrecharge) for PWMOutputPrecharge
+    main.o(i.MainRun) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainRun) refers to main.o(.data) for .data
+    main.o(i.MainRun) refers to adc_ctrl.o(.data) for g_ulPhaseBEMFVoltage
+    main.o(i.MainSetDirection) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainSetDirection) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainSetDirection) refers to main.o(.data) for .data
+    main.o(i.MainSetFault) refers to ui.o(i.UIFaultLEDBlink) for UIFaultLEDBlink
+    main.o(i.MainSetFault) refers to main.o(.data) for .data
+    main.o(i.MainSetPWMFrequency) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainSetPWMFrequency) refers to pwm_ctrl.o(i.PWMSetFrequency) for PWMSetFrequency
+    main.o(i.MainSetPWMFrequency) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainSetPWMFrequency) refers to main.o(.data) for .data
+    main.o(i.MainSetPWMFrequency) refers to pwm_ctrl.o(.data) for g_ulPWMFrequency
+    main.o(i.MainSetPower) refers to main.o(.data) for .data
+    main.o(i.MainSetSpeed) refers to main.o(.data) for .data
+    main.o(i.MainSpeedController) refers to main.o(.emb_text) for MainLongMul
+    main.o(i.MainSpeedController) refers to main.o(.data) for .data
+    main.o(i.MainSpeedHandler) refers to ui.o(i.UIRunLEDBlink) for UIRunLEDBlink
+    main.o(i.MainSpeedHandler) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.MainSpeedHandler) refers to main.o(.data) for .data
+    main.o(i.MainSpeedHandler) refers to adc_ctrl.o(.data) for g_sMotorCurrent
+    main.o(i.MainStartupHandler) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    main.o(i.MainStartupHandler) refers to pwm_ctrl.o(i.PWMSetDutyCycle) for PWMSetDutyCycle
+    main.o(i.MainStartupHandler) refers to trapmod.o(i.TrapModulate) for TrapModulate
+    main.o(i.MainStartupHandler) refers to main.o(i.Timer0AIntHandler) for Timer0AIntHandler
+    main.o(i.MainStartupHandler) refers to main.o(i.MainEmergencyStop) for MainEmergencyStop
+    main.o(i.MainStartupHandler) refers to main.o(i.MainSetFault) for MainSetFault
+    main.o(i.MainStartupHandler) refers to main.o(.data) for .data
+    main.o(i.MainStartupHandler) refers to adc_ctrl.o(.data) for g_ulBusVoltage
+    main.o(i.MainStartupHandler) refers to pwm_ctrl.o(.data) for g_ucDecayMode
+    main.o(i.MainStop) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainStop) refers to ui.o(i.UIRunLEDBlink) for UIRunLEDBlink
+    main.o(i.MainStop) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.MainStop) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainStop) refers to main.o(.data) for .data
+    main.o(i.MainUpdateFAdjI) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainUpdateFAdjI) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainUpdateFAdjI) refers to main.o(.data) for .data
+    main.o(i.MainUpdatePAdjI) refers to interrupt.o(i.IntDisable) for IntDisable
+    main.o(i.MainUpdatePAdjI) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.MainUpdatePAdjI) refers to main.o(.data) for .data
+    main.o(i.MainWaveformTick) refers to pwm_ctrl.o(i.PWMGetPeriodCount) for PWMGetPeriodCount
+    main.o(i.MainWaveformTick) refers to pwm_ctrl.o(i.PWMReducePeriodCount) for PWMReducePeriodCount
+    main.o(i.MainWaveformTick) refers to pwm_ctrl.o(i.PWMSetDutyCycle) for PWMSetDutyCycle
+    main.o(i.MainWaveformTick) refers to main.o(.data) for .data
+    main.o(i.NmiSR) refers to interrupt.o(i.IntMasterDisable) for IntMasterDisable
+    main.o(i.NmiSR) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.NmiSR) refers to ui.o(i.UIFaultLEDBlink) for UIFaultLEDBlink
+    main.o(i.Timer0AIntHandler) refers to timer.o(i.TimerIntClear) for TimerIntClear
+    main.o(i.WatchdogIntHandler) refers to watchdog.o(i.WatchdogIntClear) for WatchdogIntClear
+    main.o(i.WatchdogIntHandler) refers to main.o(i.MainSetFault) for MainSetFault
+    main.o(i.WatchdogIntHandler) refers to pwm_ctrl.o(i.PWMOutputOff) for PWMOutputOff
+    main.o(i.WatchdogIntHandler) refers to main.o(.data) for .data
+    main.o(i.main) refers to sysctl.o(i.SysCtlLDOSet) for SysCtlLDOSet
+    main.o(i.main) refers to sysctl.o(i.SysCtlClockSet) for SysCtlClockSet
+    main.o(i.main) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.main) refers to sysctl.o(i.SysCtlPeripheralSleepEnable) for SysCtlPeripheralSleepEnable
+    main.o(i.main) refers to sysctl.o(i.SysCtlPeripheralClockGating) for SysCtlPeripheralClockGating
+    main.o(i.main) refers to interrupt.o(i.IntPrioritySet) for IntPrioritySet
+    main.o(i.main) refers to brake.o(i.BrakeInit) for BrakeInit
+    main.o(i.main) refers to pwm_ctrl.o(i.PWMInit) for PWMInit
+    main.o(i.main) refers to adc_ctrl.o(i.ADCInit) for ADCInit
+    main.o(i.main) refers to speed_sense.o(i.SpeedSenseInit) for SpeedSenseInit
+    main.o(i.main) refers to hall_ctrl.o(i.HallInit) for HallInit
+    main.o(i.main) refers to ui.o(i.UIInit) for UIInit
+    main.o(i.main) refers to main.o(i.MainClearFaults) for MainClearFaults
+    main.o(i.main) refers to ui.o(i.UIRunLEDBlink) for UIRunLEDBlink
+    main.o(i.main) refers to interrupt.o(i.IntEnable) for IntEnable
+    main.o(i.main) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    main.o(i.main) refers to watchdog.o(i.WatchdogResetEnable) for WatchdogResetEnable
+    main.o(i.main) refers to watchdog.o(i.WatchdogEnable) for WatchdogEnable
+    main.o(i.main) refers to timer.o(i.TimerConfigure) for TimerConfigure
+    main.o(i.main) refers to timer.o(i.TimerIntEnable) for TimerIntEnable
+    main.o(i.main) refers to sysctl.o(i.SysCtlSleep) for SysCtlSleep
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm.o(i.PWMGenIntClear) for PWMGenIntClear
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm.o(i.PWMGenPeriodSet) for PWMGenPeriodSet
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm_ctrl.o(i.PWMUpdateDutyCycle) for PWMUpdateDutyCycle
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm_ctrl.o(i.PWMReducePeriodCount) for PWMReducePeriodCount
+    pwm_ctrl.o(i.PWM0IntHandler) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMClearDeadBand) refers to pwm.o(i.PWMDeadBandDisable) for PWMDeadBandDisable
+    pwm_ctrl.o(i.PWMClearDeadBand) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMGetPeriodCount) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMInit) refers to gpio.o(i.GPIOPinTypePWM) for GPIOPinTypePWM
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMGenConfigure) for PWMGenConfigure
+    pwm_ctrl.o(i.PWMInit) refers to pwm_ctrl.o(i.PWMClearDeadBand) for PWMClearDeadBand
+    pwm_ctrl.o(i.PWMInit) refers to pwm_ctrl.o(i.PWMSetFrequency) for PWMSetFrequency
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMGenPeriodSet) for PWMGenPeriodSet
+    pwm_ctrl.o(i.PWMInit) refers to pwm_ctrl.o(i.PWMUpdateDutyCycle) for PWMUpdateDutyCycle
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMGenEnable) for PWMGenEnable
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMSyncTimeBase) for PWMSyncTimeBase
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMGenIntClear) for PWMGenIntClear
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMGenIntTrigEnable) for PWMGenIntTrigEnable
+    pwm_ctrl.o(i.PWMInit) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMOutputFault) for PWMOutputFault
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWMInit) refers to pwm.o(i.PWMOutputInvert) for PWMOutputInvert
+    pwm_ctrl.o(i.PWMInit) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMOutputOff) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWMOutputOff) refers to pwm.o(i.PWMGenPeriodSet) for PWMGenPeriodSet
+    pwm_ctrl.o(i.PWMOutputOff) refers to pwm_ctrl.o(i.PWMClearDeadBand) for PWMClearDeadBand
+    pwm_ctrl.o(i.PWMOutputOff) refers to pwm_ctrl.o(i.PWMUpdateDutyCycle) for PWMUpdateDutyCycle
+    pwm_ctrl.o(i.PWMOutputOff) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMOutputOn) refers to main.o(i.MainIsFaulted) for MainIsFaulted
+    pwm_ctrl.o(i.PWMOutputOn) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    pwm_ctrl.o(i.PWMOutputOn) refers to pwm_ctrl.o(i.PWMSetDeadBand) for PWMSetDeadBand
+    pwm_ctrl.o(i.PWMOutputOn) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to main.o(i.MainIsFaulted) for MainIsFaulted
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm_ctrl.o(i.PWMClearDeadBand) for PWMClearDeadBand
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm.o(i.PWMGenPeriodSet) for PWMGenPeriodSet
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm.o(i.PWMPulseWidthSet) for PWMPulseWidthSet
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm.o(i.PWMSyncUpdate) for PWMSyncUpdate
+    pwm_ctrl.o(i.PWMOutputPrecharge) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMOutputTrapezoid) refers to main.o(i.MainIsFaulted) for MainIsFaulted
+    pwm_ctrl.o(i.PWMOutputTrapezoid) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm_ctrl.o(i.PWMOutputTrapezoid) refers to watchdog.o(i.WatchdogReloadSet) for WatchdogReloadSet
+    pwm_ctrl.o(i.PWMOutputTrapezoid) refers to pwm.o(i.PWMOutputState) for PWMOutputState
+    pwm_ctrl.o(i.PWMOutputTrapezoid) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm_ctrl.o(i.PWMReducePeriodCount) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm_ctrl.o(i.PWMReducePeriodCount) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm_ctrl.o(i.PWMReducePeriodCount) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMSetDeadBand) refers to pwm.o(i.PWMDeadBandEnable) for PWMDeadBandEnable
+    pwm_ctrl.o(i.PWMSetDeadBand) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMSetDutyCycle) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm_ctrl.o(i.PWMSetDutyCycle) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm_ctrl.o(i.PWMSetDutyCycle) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMSetFrequency) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm_ctrl.o(i.PWMSetFrequency) refers to main.o(i.MainIsRunning) for MainIsRunning
+    pwm_ctrl.o(i.PWMSetFrequency) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm_ctrl.o(i.PWMSetFrequency) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMSetMinPulseWidth) refers to pwm_ctrl.o(.data) for .data
+    pwm_ctrl.o(i.PWMUpdateDutyCycle) refers to pwm.o(i.PWMPulseWidthSet) for PWMPulseWidthSet
+    pwm_ctrl.o(i.PWMUpdateDutyCycle) refers to pwm.o(i.PWMSyncUpdate) for PWMSyncUpdate
+    pwm_ctrl.o(i.PWMUpdateDutyCycle) refers to pwm_ctrl.o(.data) for .data
+    sine.o(i.sine) refers to sine.o(.constdata) for .constdata
+    sinemod.o(i.SineModulate) refers to sine.o(i.sine) for sine
+    speed_sense.o(i.GPIOCIntHandler) refers to gpio.o(i.GPIOPinIntClear) for GPIOPinIntClear
+    speed_sense.o(i.GPIOCIntHandler) refers to speed_sense.o(i.SpeedNewValue) for SpeedNewValue
+    speed_sense.o(i.GPIOCIntHandler) refers to interrupt.o(i.IntDisable) for IntDisable
+    speed_sense.o(i.GPIOCIntHandler) refers to speed_sense.o(.data) for .data
+    speed_sense.o(i.QEIIntHandler) refers to qei.o(i.QEIIntClear) for QEIIntClear
+    speed_sense.o(i.QEIIntHandler) refers to qei.o(i.QEIVelocityGet) for QEIVelocityGet
+    speed_sense.o(i.QEIIntHandler) refers to speed_sense.o(i.SpeedNewValue) for SpeedNewValue
+    speed_sense.o(i.QEIIntHandler) refers to interrupt.o(i.IntEnable) for IntEnable
+    speed_sense.o(i.QEIIntHandler) refers to speed_sense.o(.data) for .data
+    speed_sense.o(i.SpeedNewValue) refers to speed_sense.o(.data) for .data
+    speed_sense.o(i.SpeedSenseInit) refers to gpio.o(i.GPIOPinTypeQEI) for GPIOPinTypeQEI
+    speed_sense.o(i.SpeedSenseInit) refers to gpio.o(i.GPIOIntTypeSet) for GPIOIntTypeSet
+    speed_sense.o(i.SpeedSenseInit) refers to gpio.o(i.GPIOPinIntEnable) for GPIOPinIntEnable
+    speed_sense.o(i.SpeedSenseInit) refers to interrupt.o(i.IntEnable) for IntEnable
+    speed_sense.o(i.SpeedSenseInit) refers to qei.o(i.QEIConfigure) for QEIConfigure
+    speed_sense.o(i.SpeedSenseInit) refers to qei.o(i.QEIVelocityConfigure) for QEIVelocityConfigure
+    speed_sense.o(i.SpeedSenseInit) refers to qei.o(i.QEIEnable) for QEIEnable
+    speed_sense.o(i.SpeedSenseInit) refers to qei.o(i.QEIVelocityEnable) for QEIVelocityEnable
+    speed_sense.o(i.SpeedSenseInit) refers to qei.o(i.QEIIntEnable) for QEIIntEnable
+    startup_rvmdk.o(RESET) refers to startup_rvmdk.o(STACK) for StackMem
+    startup_rvmdk.o(RESET) refers to main.o(i.NmiSR) for NmiSR
+    startup_rvmdk.o(RESET) refers to main.o(i.FaultISR) for FaultISR
+    startup_rvmdk.o(RESET) refers to main.o(i.IntDefaultHandler) for IntDefaultHandler
+    startup_rvmdk.o(RESET) refers to ui.o(i.SysTickIntHandler) for SysTickIntHandler
+    startup_rvmdk.o(RESET) refers to hall_ctrl.o(i.GPIOBIntHandler) for GPIOBIntHandler
+    startup_rvmdk.o(RESET) refers to speed_sense.o(i.GPIOCIntHandler) for GPIOCIntHandler
+    startup_rvmdk.o(RESET) refers to pwm_ctrl.o(i.PWM0IntHandler) for PWM0IntHandler
+    startup_rvmdk.o(RESET) refers to main.o(i.MainWaveformTick) for MainWaveformTick
+    startup_rvmdk.o(RESET) refers to main.o(i.MainMillisecondTick) for MainMillisecondTick
+    startup_rvmdk.o(RESET) refers to speed_sense.o(i.QEIIntHandler) for QEIIntHandler
+    startup_rvmdk.o(RESET) refers to adc_ctrl.o(i.ADC0IntHandler) for ADC0IntHandler
+    startup_rvmdk.o(RESET) refers to main.o(i.WatchdogIntHandler) for WatchdogIntHandler
+    startup_rvmdk.o(RESET) refers to main.o(i.Timer0AIntHandler) for Timer0AIntHandler
+    startup_rvmdk.o(RESET) refers to ui.o(i.Timer1AIntHandler) for Timer1AIntHandler
+    startup_rvmdk.o(RESET) refers to entry.o(.ARM.Collect$$$$00000000) for __main
+    trapmod.o(i.TrapModulate) refers to main.o(i.MainIsRunning) for MainIsRunning
+    trapmod.o(i.TrapModulate) refers to main.o(i.MainIsReverse) for MainIsReverse
+    trapmod.o(i.TrapModulate) refers to pwm_ctrl.o(i.PWMOutputTrapezoid) for PWMOutputTrapezoid
+    trapmod.o(i.TrapModulate) refers to trapmod.o(.constdata) for .constdata
+    ui.o(i.SysTickIntHandler) refers to hall_ctrl.o(i.HallTickHandler) for HallTickHandler
+    ui.o(i.SysTickIntHandler) refers to adc_ctrl.o(i.ADCTickHandler) for ADCTickHandler
+    ui.o(i.SysTickIntHandler) refers to adc_ctrl.o(i.ADCReadAnalog) for ADCReadAnalog
+    ui.o(i.SysTickIntHandler) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
+    ui.o(i.SysTickIntHandler) refers to ui_onboard.o(i.UIOnboardSwitchDebouncer) for UIOnboardSwitchDebouncer
+    ui.o(i.SysTickIntHandler) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    ui.o(i.SysTickIntHandler) refers to ui.o(.data) for .data
+    ui.o(i.SysTickIntHandler) refers to ui.o(.constdata) for .constdata
+    ui.o(i.Timer1AIntHandler) refers to timer.o(i.TimerIntClear) for TimerIntClear
+    ui.o(i.Timer1AIntHandler) refers to ui.o(.data) for .data
+    ui.o(i.UIButtonPress) refers to main.o(i.MainIsRunning) for MainIsRunning
+    ui.o(i.UIButtonPress) refers to main.o(i.MainStop) for MainStop
+    ui.o(i.UIButtonPress) refers to main.o(i.MainRun) for MainRun
+    ui.o(i.UIFaultLEDBlink) refers to ui.o(i.UILEDBlink) for UILEDBlink
+    ui.o(i.UIGetTicks) refers to timer.o(i.TimerValueGet) for TimerValueGet
+    ui.o(i.UIGetTicks) refers to ui.o(.data) for .data
+    ui.o(i.UIInit) refers to gpio.o(i.GPIOPinTypeGPIOInput) for GPIOPinTypeGPIOInput
+    ui.o(i.UIInit) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    ui.o(i.UIInit) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
+    ui.o(i.UIInit) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    ui.o(i.UIInit) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
+    ui.o(i.UIInit) refers to ui_onboard.o(i.UIOnboardInit) for UIOnboardInit
+    ui.o(i.UIInit) refers to systick.o(i.SysTickPeriodSet) for SysTickPeriodSet
+    ui.o(i.UIInit) refers to systick.o(i.SysTickIntEnable) for SysTickIntEnable
+    ui.o(i.UIInit) refers to systick.o(i.SysTickEnable) for SysTickEnable
+    ui.o(i.UIInit) refers to timer.o(i.TimerConfigure) for TimerConfigure
+    ui.o(i.UIInit) refers to timer.o(i.TimerLoadSet) for TimerLoadSet
+    ui.o(i.UIInit) refers to timer.o(i.TimerIntEnable) for TimerIntEnable
+    ui.o(i.UIInit) refers to interrupt.o(i.IntEnable) for IntEnable
+    ui.o(i.UIInit) refers to timer.o(i.TimerEnable) for TimerEnable
+    ui.o(i.UIInit) refers to hall_ctrl.o(i.HallConfigure) for HallConfigure
+    ui.o(i.UIInit) refers to adc_ctrl.o(i.ADCConfigure) for ADCConfigure
+    ui.o(i.UIInit) refers to main.o(i.MainSetPWMFrequency) for MainSetPWMFrequency
+    ui.o(i.UIInit) refers to pwm_ctrl.o(i.PWMSetDeadBand) for PWMSetDeadBand
+    ui.o(i.UIInit) refers to pwm_ctrl.o(i.PWMSetMinPulseWidth) for PWMSetMinPulseWidth
+    ui.o(i.UIInit) refers to main.o(i.MainUpdateFAdjI) for MainUpdateFAdjI
+    ui.o(i.UIInit) refers to main.o(i.MainUpdatePAdjI) for MainUpdatePAdjI
+    ui.o(i.UIInit) refers to main.o(i.MainSetSpeed) for MainSetSpeed
+    ui.o(i.UIInit) refers to main.o(i.MainSetPower) for MainSetPower
+    ui.o(i.UIInit) refers to main.o(i.MainClearFaults) for MainClearFaults
+    ui.o(i.UIInit) refers to ui.o(.data) for .data
+    ui.o(i.UILEDBlink) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    ui.o(i.UILEDBlink) refers to ui.o(.data) for .data
+    ui.o(i.UILEDBlink) refers to ui.o(.constdata) for .constdata
+    ui.o(i.UIRunLEDBlink) refers to ui.o(i.UILEDBlink) for UILEDBlink
+    ui.o(.constdata) refers to ui.o(i.UIButtonPress) for UIButtonPress
+    ui.o(.constdata) refers to ui.o(i.UIButtonHold) for UIButtonHold
+    ui_onboard.o(i.UIOnboardInit) refers to ui_onboard.o(.data) for .data
+    ui_onboard.o(i.UIOnboardPotentiometerFilter) refers to ui_onboard.o(.data) for .data
+    ui_onboard.o(i.UIOnboardSwitchDebouncer) refers to ui_onboard.o(.data) for .data
+    ui_onboard.o(i.UIOnboardSwitchDebouncer) refers to ui.o(.data) for g_pulUIHoldCount
+    ui_onboard.o(i.UIOnboardSwitchDebouncer) refers to ui.o(.constdata) for g_sUISwitches
+    ui_onboard.o(i.UIOnboardSwitchDebouncer) refers to ui.o(.constdata) for g_ulUINumButtons
+    adc.o(i.ADCIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    adc.o(i.ADCIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    adc.o(i.ADCIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    adc.o(i.ADCIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    adc.o(i.ADCSoftwareOversampleConfigure) refers to adc.o(.data) for .data
+    adc.o(i.ADCSoftwareOversampleDataGet) refers to adc.o(.data) for .data
+    adc.o(i.ADCSoftwareOversampleStepConfigure) refers to adc.o(.data) for .data
+    gpio.o(i.GPIOPinConfigure) refers to gpio.o(.constdata) for .constdata
+    gpio.o(i.GPIOPinTypeADC) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeADC) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeCAN) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeCAN) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeComparator) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeComparator) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeEPI) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeEPI) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeEthernetLED) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeEthernetLED) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeGPIOInput) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeGPIOInput) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeGPIOOutput) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeGPIOOutput) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeGPIOOutputOD) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeGPIOOutputOD) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeI2C) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeI2C) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeI2S) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeI2S) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypePWM) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypePWM) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeQEI) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeQEI) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeSSI) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeSSI) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeTimer) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeTimer) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeUART) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeUART) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeUSBAnalog) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeUSBAnalog) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPinTypeUSBDigital) refers to gpio.o(i.GPIODirModeSet) for GPIODirModeSet
+    gpio.o(i.GPIOPinTypeUSBDigital) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    gpio.o(i.GPIOPortIntRegister) refers to gpio.o(i.GPIOGetIntNumber) for GPIOGetIntNumber
+    gpio.o(i.GPIOPortIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    gpio.o(i.GPIOPortIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    gpio.o(i.GPIOPortIntUnregister) refers to gpio.o(i.GPIOGetIntNumber) for GPIOGetIntNumber
+    gpio.o(i.GPIOPortIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    gpio.o(i.GPIOPortIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    interrupt.o(i.IntMasterDisable) refers to cpu.o(.emb_text) for CPUcpsid
+    interrupt.o(i.IntMasterEnable) refers to cpu.o(.emb_text) for CPUcpsie
+    interrupt.o(i.IntPriorityGet) refers to interrupt.o(.constdata) for .constdata
+    interrupt.o(i.IntPriorityGroupingGet) refers to interrupt.o(.constdata) for .constdata
+    interrupt.o(i.IntPriorityGroupingSet) refers to interrupt.o(.constdata) for .constdata
+    interrupt.o(i.IntPriorityMaskGet) refers to cpu.o(.emb_text) for CPUbasepriGet
+    interrupt.o(i.IntPriorityMaskSet) refers to cpu.o(.emb_text) for CPUbasepriSet
+    interrupt.o(i.IntPrioritySet) refers to interrupt.o(.constdata) for .constdata
+    interrupt.o(i.IntRegister) refers to interrupt.o(vtable) for vtable
+    interrupt.o(i.IntUnregister) refers to interrupt.o(i.IntDefaultHandler) for IntDefaultHandler
+    interrupt.o(i.IntUnregister) refers to interrupt.o(vtable) for vtable
+    pwm.o(i.PWMFaultIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    pwm.o(i.PWMFaultIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm.o(i.PWMFaultIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm.o(i.PWMFaultIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    pwm.o(i.PWMGenIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    pwm.o(i.PWMGenIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    pwm.o(i.PWMGenIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    pwm.o(i.PWMGenIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    qei.o(i.QEIIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    qei.o(i.QEIIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    qei.o(i.QEIIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    qei.o(i.QEIIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    sysctl.o(i.SysCtlClockGet) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlClockSet) refers to sysctl.o(.emb_text) for SysCtlDelay
+    sysctl.o(i.SysCtlDeepSleep) refers to cpu.o(.emb_text) for CPUwfi
+    sysctl.o(i.SysCtlI2SMClkSet) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    sysctl.o(i.SysCtlIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    sysctl.o(i.SysCtlIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    sysctl.o(i.SysCtlIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    sysctl.o(i.SysCtlPeripheralDeepSleepDisable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralDeepSleepEnable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralDisable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralEnable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralPresent) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralReset) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralSleepDisable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlPeripheralSleepEnable) refers to sysctl.o(.constdata) for .constdata
+    sysctl.o(i.SysCtlSleep) refers to cpu.o(.emb_text) for CPUwfi
+    systick.o(i.SysTickIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    systick.o(i.SysTickIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    timer.o(i.TimerIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    timer.o(i.TimerIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    timer.o(i.TimerIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    timer.o(i.TimerIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    timer.o(i.TimerQuiesce) refers to interrupt.o(i.IntDisable) for IntDisable
+    timer.o(i.TimerQuiesce) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    watchdog.o(i.WatchdogIntRegister) refers to interrupt.o(i.IntRegister) for IntRegister
+    watchdog.o(i.WatchdogIntRegister) refers to interrupt.o(i.IntEnable) for IntEnable
+    watchdog.o(i.WatchdogIntUnregister) refers to interrupt.o(i.IntDisable) for IntDisable
+    watchdog.o(i.WatchdogIntUnregister) refers to interrupt.o(i.IntUnregister) for IntUnregister
+    entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry7.o(.ARM.Collect$$$$00000007) for _main_init
+    entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry5.o(.ARM.Collect$$$$00000004) for _main_scatterload
+    entry.o(.ARM.Collect$$$$00000000) refers (Special) to entry2.o(.ARM.Collect$$$$00000001) for _main_stk
+    entry2.o(.ARM.Collect$$$$00000001) refers to entry2.o(.ARM.Collect$$$$00002712) for __lit__00000000
+    entry2.o(.ARM.Collect$$$$00002712) refers to startup_rvmdk.o(STACK) for __initial_sp
+    entry2.o(__vectab_stack_and_reset_area) refers to startup_rvmdk.o(STACK) for __initial_sp
+    entry2.o(__vectab_stack_and_reset_area) refers to entry.o(.ARM.Collect$$$$00000000) for __main
+    entry5.o(.ARM.Collect$$$$00000004) refers to init.o(.text) for __scatterload
+    entry7.o(.ARM.Collect$$$$00000007) refers to main.o(i.main) for main
+    init.o(.text) refers to entry5.o(.ARM.Collect$$$$00000004) for __main_after_scatterload
+
+
+==============================================================================
+
+Removing Unused input sections from the image.
+
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (6 bytes).
+    Removing adc_ctrl.o(.data), (6 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (2 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing adc_ctrl.o(.data), (6 bytes).
+    Removing adc_ctrl.o(.data), (6 bytes).
+    Removing adc_ctrl.o(.data), (6 bytes).
+    Removing adc_ctrl.o(.data), (4 bytes).
+    Removing main.o(i.MainPowerController), (88 bytes).
+    Removing main.o(i.MainSetDirection), (92 bytes).
+    Removing pwm_ctrl.o(i.PWMOutputOn), (48 bytes).
+    Removing sine.o(i.sine), (40 bytes).
+    Removing sine.o(.constdata), (258 bytes).
+    Removing sinemod.o(i.SineModulate), (90 bytes).
+    Removing startup_rvmdk.o(HEAP), (0 bytes).
+    Removing startup_rvmdk.o(.text), (0 bytes).
+    Removing trapmod.o(.constdata), (32 bytes).
+    Removing ui.o(.data), (4 bytes).
+    Removing ui_onboard.o(i.UIOnboardPotentiometerFilter), (120 bytes).
+    Removing adc.o(i.ADCComparatorConfigure), (10 bytes).
+    Removing adc.o(i.ADCComparatorIntClear), (4 bytes).
+    Removing adc.o(i.ADCComparatorIntDisable), (18 bytes).
+    Removing adc.o(i.ADCComparatorIntEnable), (16 bytes).
+    Removing adc.o(i.ADCComparatorIntStatus), (4 bytes).
+    Removing adc.o(i.ADCComparatorRegionSet), (14 bytes).
+    Removing adc.o(i.ADCComparatorReset), (40 bytes).
+    Removing adc.o(i.ADCHardwareOversampleConfigure), (14 bytes).
+    Removing adc.o(i.ADCIntClear), (10 bytes).
+    Removing adc.o(i.ADCIntRegister), (38 bytes).
+    Removing adc.o(i.ADCIntStatus), (52 bytes).
+    Removing adc.o(i.ADCIntUnregister), (36 bytes).
+    Removing adc.o(i.ADCPhaseDelayGet), (4 bytes).
+    Removing adc.o(i.ADCPhaseDelaySet), (4 bytes).
+    Removing adc.o(i.ADCReferenceGet), (8 bytes).
+    Removing adc.o(i.ADCReferenceSet), (12 bytes).
+    Removing adc.o(i.ADCSequenceDataGet), (36 bytes).
+    Removing adc.o(i.ADCSequenceOverflow), (12 bytes).
+    Removing adc.o(i.ADCSequenceOverflowClear), (10 bytes).
+    Removing adc.o(i.ADCSequenceUnderflow), (12 bytes).
+    Removing adc.o(i.ADCSequenceUnderflowClear), (10 bytes).
+    Removing adc.o(i.ADCSoftwareOversampleConfigure), (24 bytes).
+    Removing adc.o(i.ADCSoftwareOversampleDataGet), (72 bytes).
+    Removing adc.o(i.ADCSoftwareOversampleStepConfigure), (112 bytes).
+    Removing adc.o(.data), (3 bytes).
+    Removing gpio.o(i.GPIODirModeGet), (34 bytes).
+    Removing gpio.o(i.GPIOGetIntNumber), (156 bytes).
+    Removing gpio.o(i.GPIOIntTypeGet), (48 bytes).
+    Removing gpio.o(i.GPIOPadConfigGet), (140 bytes).
+    Removing gpio.o(i.GPIOPinConfigure), (72 bytes).
+    Removing gpio.o(i.GPIOPinIntDisable), (14 bytes).
+    Removing gpio.o(i.GPIOPinIntStatus), (14 bytes).
+    Removing gpio.o(i.GPIOPinTypeADC), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeCAN), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeComparator), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeEPI), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeEthernetLED), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeI2C), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeI2S), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeSSI), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeTimer), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeUART), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeUSBAnalog), (28 bytes).
+    Removing gpio.o(i.GPIOPinTypeUSBDigital), (28 bytes).
+    Removing gpio.o(i.GPIOPortIntRegister), (26 bytes).
+    Removing gpio.o(i.GPIOPortIntUnregister), (22 bytes).
+    Removing gpio.o(.constdata), (72 bytes).
+    Removing interrupt.o(i.IntDefaultHandler), (2 bytes).
+    Removing interrupt.o(i.IntMasterEnable), (10 bytes).
+    Removing interrupt.o(i.IntPendClear), (72 bytes).
+    Removing interrupt.o(i.IntPendSet), (90 bytes).
+    Removing interrupt.o(i.IntPriorityGet), (28 bytes).
+    Removing interrupt.o(i.IntPriorityGroupingGet), (40 bytes).
+    Removing interrupt.o(i.IntPriorityGroupingSet), (28 bytes).
+    Removing interrupt.o(i.IntPriorityMaskGet), (4 bytes).
+    Removing interrupt.o(i.IntPriorityMaskSet), (4 bytes).
+    Removing interrupt.o(i.IntRegister), (56 bytes).
+    Removing interrupt.o(i.IntUnregister), (20 bytes).
+    Removing interrupt.o(vtable), (284 bytes).
+    Removing pwm.o(i.PWMFaultIntClear), (8 bytes).
+    Removing pwm.o(i.PWMFaultIntClearExt), (4 bytes).
+    Removing pwm.o(i.PWMFaultIntRegister), (18 bytes).
+    Removing pwm.o(i.PWMFaultIntUnregister), (18 bytes).
+    Removing pwm.o(i.PWMGenDisable), (10 bytes).
+    Removing pwm.o(i.PWMGenFaultClear), (18 bytes).
+    Removing pwm.o(i.PWMGenFaultConfigure), (18 bytes).
+    Removing pwm.o(i.PWMGenFaultStatus), (18 bytes).
+    Removing pwm.o(i.PWMGenFaultTriggerGet), (12 bytes).
+    Removing pwm.o(i.PWMGenFaultTriggerSet), (12 bytes).
+    Removing pwm.o(i.PWMGenIntRegister), (34 bytes).
+    Removing pwm.o(i.PWMGenIntStatus), (12 bytes).
+    Removing pwm.o(i.PWMGenIntTrigDisable), (10 bytes).
+    Removing pwm.o(i.PWMGenIntUnregister), (32 bytes).
+    Removing pwm.o(i.PWMGenPeriodGet), (18 bytes).
+    Removing pwm.o(i.PWMIntDisable), (10 bytes).
+    Removing pwm.o(i.PWMIntEnable), (8 bytes).
+    Removing pwm.o(i.PWMIntStatus), (10 bytes).
+    Removing pwm.o(i.PWMOutputFaultLevel), (16 bytes).
+    Removing pwm.o(i.PWMPulseWidthGet), (32 bytes).
+    Removing qei.o(i.QEIDirectionGet), (16 bytes).
+    Removing qei.o(i.QEIDisable), (10 bytes).
+    Removing qei.o(i.QEIErrorGet), (8 bytes).
+    Removing qei.o(i.QEIIntDisable), (10 bytes).
+    Removing qei.o(i.QEIIntRegister), (32 bytes).
+    Removing qei.o(i.QEIIntStatus), (10 bytes).
+    Removing qei.o(i.QEIIntUnregister), (32 bytes).
+    Removing qei.o(i.QEIPositionGet), (4 bytes).
+    Removing qei.o(i.QEIPositionSet), (4 bytes).
+    Removing qei.o(i.QEIVelocityDisable), (10 bytes).
+    Removing sysctl.o(i.SysCtlADCSpeedGet), (16 bytes).
+    Removing sysctl.o(i.SysCtlBrownOutConfigSet), (16 bytes).
+    Removing sysctl.o(i.SysCtlClkVerificationClear), (20 bytes).
+    Removing sysctl.o(i.SysCtlClockGet), (484 bytes).
+    Removing sysctl.o(i.SysCtlDeepSleep), (32 bytes).
+    Removing sysctl.o(i.SysCtlFlashSizeGet), (20 bytes).
+    Removing sysctl.o(i.SysCtlGPIOAHBDisable), (20 bytes).
+    Removing sysctl.o(i.SysCtlGPIOAHBEnable), (16 bytes).
+    Removing sysctl.o(i.SysCtlI2SMClkSet), (216 bytes).
+    Removing sysctl.o(i.SysCtlIOSCVerificationSet), (24 bytes).
+    Removing sysctl.o(i.SysCtlIntClear), (12 bytes).
+    Removing sysctl.o(i.SysCtlIntDisable), (16 bytes).
+    Removing sysctl.o(i.SysCtlIntEnable), (16 bytes).
+    Removing sysctl.o(i.SysCtlIntRegister), (20 bytes).
+    Removing sysctl.o(i.SysCtlIntStatus), (16 bytes).
+    Removing sysctl.o(i.SysCtlIntUnregister), (18 bytes).
+    Removing sysctl.o(i.SysCtlLDOConfigSet), (12 bytes).
+    Removing sysctl.o(i.SysCtlLDOGet), (12 bytes).
+    Removing sysctl.o(i.SysCtlMOSCVerificationSet), (24 bytes).
+    Removing sysctl.o(i.SysCtlPLLVerificationSet), (24 bytes).
+    Removing sysctl.o(i.SysCtlPWMClockGet), (24 bytes).
+    Removing sysctl.o(i.SysCtlPWMClockSet), (20 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralDeepSleepDisable), (32 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralDeepSleepEnable), (32 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralDisable), (32 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralPresent), (64 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralReset), (56 bytes).
+    Removing sysctl.o(i.SysCtlPeripheralSleepDisable), (32 bytes).
+    Removing sysctl.o(i.SysCtlPinPresent), (16 bytes).
+    Removing sysctl.o(i.SysCtlReset), (16 bytes).
+    Removing sysctl.o(i.SysCtlResetCauseClear), (16 bytes).
+    Removing sysctl.o(i.SysCtlResetCauseGet), (12 bytes).
+    Removing sysctl.o(i.SysCtlSRAMSizeGet), (20 bytes).
+    Removing sysctl.o(i.SysCtlUSBPLLDisable), (16 bytes).
+    Removing sysctl.o(i.SysCtlUSBPLLEnable), (16 bytes).
+    Removing systick.o(i.SysTickDisable), (14 bytes).
+    Removing systick.o(i.SysTickIntDisable), (14 bytes).
+    Removing systick.o(i.SysTickIntRegister), (24 bytes).
+    Removing systick.o(i.SysTickIntUnregister), (18 bytes).
+    Removing systick.o(i.SysTickPeriodGet), (10 bytes).
+    Removing systick.o(i.SysTickValueGet), (8 bytes).
+    Removing timer.o(i.TimerControlEvent), (24 bytes).
+    Removing timer.o(i.TimerControlLevel), (22 bytes).
+    Removing timer.o(i.TimerControlStall), (22 bytes).
+    Removing timer.o(i.TimerControlTrigger), (22 bytes).
+    Removing timer.o(i.TimerControlWaitOnTrigger), (48 bytes).
+    Removing timer.o(i.TimerDisable), (16 bytes).
+    Removing timer.o(i.TimerIntDisable), (10 bytes).
+    Removing timer.o(i.TimerIntRegister), (94 bytes).
+    Removing timer.o(i.TimerIntStatus), (10 bytes).
+    Removing timer.o(i.TimerIntUnregister), (88 bytes).
+    Removing timer.o(i.TimerLoadGet), (10 bytes).
+    Removing timer.o(i.TimerMatchGet), (10 bytes).
+    Removing timer.o(i.TimerMatchSet), (18 bytes).
+    Removing timer.o(i.TimerPrescaleGet), (10 bytes).
+    Removing timer.o(i.TimerPrescaleMatchGet), (10 bytes).
+    Removing timer.o(i.TimerPrescaleMatchSet), (18 bytes).
+    Removing timer.o(i.TimerPrescaleSet), (18 bytes).
+    Removing timer.o(i.TimerQuiesce), (126 bytes).
+    Removing timer.o(i.TimerRTCDisable), (10 bytes).
+    Removing timer.o(i.TimerRTCEnable), (10 bytes).
+    Removing watchdog.o(i.WatchdogIntEnable), (10 bytes).
+    Removing watchdog.o(i.WatchdogIntRegister), (18 bytes).
+    Removing watchdog.o(i.WatchdogIntStatus), (10 bytes).
+    Removing watchdog.o(i.WatchdogIntUnregister), (18 bytes).
+    Removing watchdog.o(i.WatchdogLock), (8 bytes).
+    Removing watchdog.o(i.WatchdogLockState), (12 bytes).
+    Removing watchdog.o(i.WatchdogReloadGet), (4 bytes).
+    Removing watchdog.o(i.WatchdogResetDisable), (10 bytes).
+    Removing watchdog.o(i.WatchdogRunning), (8 bytes).
+    Removing watchdog.o(i.WatchdogStallDisable), (14 bytes).
+    Removing watchdog.o(i.WatchdogStallEnable), (14 bytes).
+    Removing watchdog.o(i.WatchdogUnlock), (12 bytes).
+    Removing watchdog.o(i.WatchdogValueGet), (4 bytes).
+
+187 unused section(s) (total 5697 bytes) removed from the image.
+
+==============================================================================
+
+Image Symbol Table
+
+    Local Symbols
+
+    Symbol Name                              Value     Ov Type        Size  Object(Section)
+
+    RESET                                    0x00000000   Section      244  startup_rvmdk.o(RESET)
+    ../../../cmprslib/zerorunl.c             0x00000000   Number         0  __dczerorl.o ABSOLUTE
+    ../../microlib/init/entry.s              0x00000000   Number         0  entry7.o ABSOLUTE
+    ../../microlib/init/entry.s              0x00000000   Number         0  entry2.o ABSOLUTE
+    ../../microlib/init/entry.s              0x00000000   Number         0  entry.o ABSOLUTE
+    ../../microlib/init/entry.s              0x00000000   Number         0  entry5.o ABSOLUTE
+    ..\..\..\utils\sine.c                    0x00000000   Number         0  sine.o ABSOLUTE
+    adc.c                                    0x00000000   Number         0  adc.o ABSOLUTE
+    adc_ctrl.c                               0x00000000   Number         0  adc_ctrl.o ABSOLUTE
+    brake.c                                  0x00000000   Number         0  brake.o ABSOLUTE
+    cpu.c                                    0x00000000   Number         0  cpu.o ABSOLUTE
+    cpu.c                                    0x00000000   Number         0  cpu.o ABSOLUTE
+    dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
+    gpio.c                                   0x00000000   Number         0  gpio.o ABSOLUTE
+    hall_ctrl.c                              0x00000000   Number         0  hall_ctrl.o ABSOLUTE
+    handlers.s                               0x00000000   Number         0  handlers.o ABSOLUTE
+    init.s                                   0x00000000   Number         0  init.o ABSOLUTE
+    interrupt.c                              0x00000000   Number         0  interrupt.o ABSOLUTE
+    main.c                                   0x00000000   Number         0  main.o ABSOLUTE
+    main.c                                   0x00000000   Number         0  main.o ABSOLUTE
+    pwm.c                                    0x00000000   Number         0  pwm.o ABSOLUTE
+    pwm_ctrl.c                               0x00000000   Number         0  pwm_ctrl.o ABSOLUTE
+    qei.c                                    0x00000000   Number         0  qei.o ABSOLUTE
+    sinemod.c                                0x00000000   Number         0  sinemod.o ABSOLUTE
+    speed_sense.c                            0x00000000   Number         0  speed_sense.o ABSOLUTE
+    startup_rvmdk.S                          0x00000000   Number         0  startup_rvmdk.o ABSOLUTE
+    sysctl.c                                 0x00000000   Number         0  sysctl.o ABSOLUTE
+    sysctl.c                                 0x00000000   Number         0  sysctl.o ABSOLUTE
+    systick.c                                0x00000000   Number         0  systick.o ABSOLUTE
+    timer.c                                  0x00000000   Number         0  timer.o ABSOLUTE
+    trapmod.c                                0x00000000   Number         0  trapmod.o ABSOLUTE
+    ui.c                                     0x00000000   Number         0  ui.o ABSOLUTE
+    ui_onboard.c                             0x00000000   Number         0  ui_onboard.o ABSOLUTE
+    watchdog.c                               0x00000000   Number         0  watchdog.o ABSOLUTE
+    .ARM.Collect$$$$00000000                 0x000000f4   Section        0  entry.o(.ARM.Collect$$$$00000000)
+    .ARM.Collect$$$$00000001                 0x000000f4   Section        4  entry2.o(.ARM.Collect$$$$00000001)
+    .ARM.Collect$$$$00000004                 0x000000f8   Section        4  entry5.o(.ARM.Collect$$$$00000004)
+    .ARM.Collect$$$$00000007                 0x000000fc   Section        8  entry7.o(.ARM.Collect$$$$00000007)
+    .ARM.Collect$$$$00002712                 0x00000104   Section        4  entry2.o(.ARM.Collect$$$$00002712)
+    __lit__00000000                          0x00000104   Data           4  entry2.o(.ARM.Collect$$$$00002712)
+    .emb_text                                0x00000108   Section       12  main.o(.emb_text)
+    .emb_text                                0x00000114   Section        6  sysctl.o(.emb_text)
+    .emb_text                                0x0000011c   Section       38  cpu.o(.emb_text)
+    .text                                    0x00000144   Section       36  init.o(.text)
+    .text                                    0x00000168   Section        0  __dczerorl.o(.text)
+    i.ADC0IntHandler                         0x000001a4   Section        0  adc_ctrl.o(i.ADC0IntHandler)
+    i.ADC0IntIdle                            0x000001c4   Section        0  adc_ctrl.o(i.ADC0IntIdle)
+    ADC0IntIdle                              0x000001c5   Thumb Code   134  adc_ctrl.o(i.ADC0IntIdle)
+    i.ADC0IntTrap                            0x00000258   Section        0  adc_ctrl.o(i.ADC0IntTrap)
+    ADC0IntTrap                              0x00000259   Thumb Code   840  adc_ctrl.o(i.ADC0IntTrap)
+    i.ADCConfigure                           0x000005d0   Section        0  adc_ctrl.o(i.ADCConfigure)
+    i.ADCInit                                0x00000664   Section        0  adc_ctrl.o(i.ADCInit)
+    i.ADCIntDisable                          0x000006a4   Section        0  adc.o(i.ADCIntDisable)
+    i.ADCIntEnable                           0x000006b4   Section        0  adc.o(i.ADCIntEnable)
+    i.ADCProcessorTrigger                    0x000006c4   Section        0  adc.o(i.ADCProcessorTrigger)
+    i.ADCReadAnalog                          0x000006e0   Section        0  adc_ctrl.o(i.ADCReadAnalog)
+    i.ADCSequenceConfigure                   0x00000704   Section        0  adc.o(i.ADCSequenceConfigure)
+    i.ADCSequenceDisable                     0x00000736   Section        0  adc.o(i.ADCSequenceDisable)
+    i.ADCSequenceEnable                      0x00000746   Section        0  adc.o(i.ADCSequenceEnable)
+    i.ADCSequenceStepConfigure               0x00000754   Section        0  adc.o(i.ADCSequenceStepConfigure)
+    i.ADCTickHandler                         0x000007c4   Section        0  adc_ctrl.o(i.ADCTickHandler)
+    i.BrakeInit                              0x00000834   Section        0  brake.o(i.BrakeInit)
+    i.BrakeTick                              0x0000085c   Section        0  brake.o(i.BrakeTick)
+    i.FaultISR                               0x00000908   Section        0  main.o(i.FaultISR)
+    i.GPIOBIntHandler                        0x0000091c   Section        0  hall_ctrl.o(i.GPIOBIntHandler)
+    i.GPIOCIntHandler                        0x000009b8   Section        0  speed_sense.o(i.GPIOCIntHandler)
+    i.GPIODirModeSet                         0x00000a3c   Section        0  gpio.o(i.GPIODirModeSet)
+    i.GPIOIntTypeSet                         0x00000a64   Section        0  gpio.o(i.GPIOIntTypeSet)
+    i.GPIOPadConfigSet                       0x00000a9e   Section        0  gpio.o(i.GPIOPadConfigSet)
+    i.GPIOPinIntClear                        0x00000b4e   Section        0  gpio.o(i.GPIOPinIntClear)
+    i.GPIOPinIntEnable                       0x00000b54   Section        0  gpio.o(i.GPIOPinIntEnable)
+    i.GPIOPinRead                            0x00000b60   Section        0  gpio.o(i.GPIOPinRead)
+    i.GPIOPinTypeGPIOInput                   0x00000b66   Section        0  gpio.o(i.GPIOPinTypeGPIOInput)
+    i.GPIOPinTypeGPIOOutput                  0x00000b82   Section        0  gpio.o(i.GPIOPinTypeGPIOOutput)
+    i.GPIOPinTypeGPIOOutputOD                0x00000b9e   Section        0  gpio.o(i.GPIOPinTypeGPIOOutputOD)
+    i.GPIOPinTypePWM                         0x00000bba   Section        0  gpio.o(i.GPIOPinTypePWM)
+    i.GPIOPinTypeQEI                         0x00000bd6   Section        0  gpio.o(i.GPIOPinTypeQEI)
+    i.GPIOPinWrite                           0x00000bf2   Section        0  gpio.o(i.GPIOPinWrite)
+    i.HallConfigure                          0x00000bf8   Section        0  hall_ctrl.o(i.HallConfigure)
+    i.HallInit                               0x00000c1c   Section        0  hall_ctrl.o(i.HallInit)
+    i.HallTickHandler                        0x00000c3c   Section        0  hall_ctrl.o(i.HallTickHandler)
+    i.IntDefaultHandler                      0x00000c88   Section        0  main.o(i.IntDefaultHandler)
+    i.IntDisable                             0x00000c9a   Section        0  interrupt.o(i.IntDisable)
+    i.IntEnable                              0x00000d02   Section        0  interrupt.o(i.IntEnable)
+    i.IntMasterDisable                       0x00000d6a   Section        0  interrupt.o(i.IntMasterDisable)
+    i.IntPrioritySet                         0x00000d74   Section        0  interrupt.o(i.IntPrioritySet)
+    i.MainCheckFaults                        0x00000d9c   Section        0  main.o(i.MainCheckFaults)
+    MainCheckFaults                          0x00000d9d   Thumb Code   140  main.o(i.MainCheckFaults)
+    i.MainClearFaults                        0x00000e38   Section        0  main.o(i.MainClearFaults)
+    i.MainEmergencyStop                      0x00000e48   Section        0  main.o(i.MainEmergencyStop)
+    i.MainIsFaulted                          0x00000eac   Section        0  main.o(i.MainIsFaulted)
+    i.MainIsReverse                          0x00000ebc   Section        0  main.o(i.MainIsReverse)
+    i.MainIsRunning                          0x00000ed0   Section        0  main.o(i.MainIsRunning)
+    i.MainIsStartup                          0x00000ee0   Section        0  main.o(i.MainIsStartup)
+    i.MainMillisecondTick                    0x00000ef4   Section        0  main.o(i.MainMillisecondTick)
+    i.MainPrechargeHandler                   0x00000f74   Section        0  main.o(i.MainPrechargeHandler)
+    MainPrechargeHandler                     0x00000f75   Thumb Code    64  main.o(i.MainPrechargeHandler)
+    i.MainRun                                0x00000fbc   Section        0  main.o(i.MainRun)
+    i.MainSetFault                           0x00001030   Section        0  main.o(i.MainSetFault)
+    i.MainSetPWMFrequency                    0x00001044   Section        0  main.o(i.MainSetPWMFrequency)
+    i.MainSetPower                           0x00001088   Section        0  main.o(i.MainSetPower)
+    i.MainSetSpeed                           0x00001094   Section        0  main.o(i.MainSetSpeed)
+    i.MainSpeedController                    0x000010a4   Section        0  main.o(i.MainSpeedController)
+    i.MainSpeedHandler                       0x000010f4   Section        0  main.o(i.MainSpeedHandler)
+    MainSpeedHandler                         0x000010f5   Thumb Code   342  main.o(i.MainSpeedHandler)
+    i.MainStartupHandler                     0x00001264   Section        0  main.o(i.MainStartupHandler)
+    MainStartupHandler                       0x00001265   Thumb Code   426  main.o(i.MainStartupHandler)
+    i.MainStop                               0x00001434   Section        0  main.o(i.MainStop)
+    i.MainUpdateFAdjI                        0x0000148c   Section        0  main.o(i.MainUpdateFAdjI)
+    i.MainUpdatePAdjI                        0x000014c4   Section        0  main.o(i.MainUpdatePAdjI)
+    i.MainWaveformTick                       0x000014fc   Section        0  main.o(i.MainWaveformTick)
+    i.NmiSR                                  0x00001554   Section        0  main.o(i.NmiSR)
+    i.PWM0IntHandler                         0x00001568   Section        0  pwm_ctrl.o(i.PWM0IntHandler)
+    i.PWMClearDeadBand                       0x00001634   Section        0  pwm_ctrl.o(i.PWMClearDeadBand)
+    i.PWMDeadBandDisable                     0x00001660   Section        0  pwm.o(i.PWMDeadBandDisable)
+    i.PWMDeadBandEnable                      0x0000166c   Section        0  pwm.o(i.PWMDeadBandEnable)
+    i.PWMGenConfigure                        0x0000167c   Section        0  pwm.o(i.PWMGenConfigure)
+    i.PWMGenEnable                           0x000016a2   Section        0  pwm.o(i.PWMGenEnable)
+    i.PWMGenIntClear                         0x000016ac   Section        0  pwm.o(i.PWMGenIntClear)
+    i.PWMGenIntTrigEnable                    0x000016b2   Section        0  pwm.o(i.PWMGenIntTrigEnable)
+    i.PWMGenPeriodSet                        0x000016bc   Section        0  pwm.o(i.PWMGenPeriodSet)
+    i.PWMGetPeriodCount                      0x000016d0   Section        0  pwm_ctrl.o(i.PWMGetPeriodCount)
+    i.PWMInit                                0x000016dc   Section        0  pwm_ctrl.o(i.PWMInit)
+    i.PWMOutputFault                         0x000017e4   Section        0  pwm.o(i.PWMOutputFault)
+    i.PWMOutputInvert                        0x000017f4   Section        0  pwm.o(i.PWMOutputInvert)
+    i.PWMOutputOff                           0x00001804   Section        0  pwm_ctrl.o(i.PWMOutputOff)
+    i.PWMOutputPrecharge                     0x00001854   Section        0  pwm_ctrl.o(i.PWMOutputPrecharge)
+    i.PWMOutputState                         0x00001940   Section        0  pwm.o(i.PWMOutputState)
+    i.PWMOutputTrapezoid                     0x00001950   Section        0  pwm_ctrl.o(i.PWMOutputTrapezoid)
+    i.PWMPulseWidthSet                       0x000019a4   Section        0  pwm.o(i.PWMPulseWidthSet)
+    i.PWMReducePeriodCount                   0x000019c4   Section        0  pwm_ctrl.o(i.PWMReducePeriodCount)
+    i.PWMSetDeadBand                         0x000019e4   Section        0  pwm_ctrl.o(i.PWMSetDeadBand)
+    i.PWMSetDutyCycle                        0x00001a1c   Section        0  pwm_ctrl.o(i.PWMSetDutyCycle)
+    i.PWMSetFrequency                        0x00001a5c   Section        0  pwm_ctrl.o(i.PWMSetFrequency)
+    i.PWMSetMinPulseWidth                    0x00001aa0   Section        0  pwm_ctrl.o(i.PWMSetMinPulseWidth)
+    i.PWMSyncTimeBase                        0x00001aac   Section        0  pwm.o(i.PWMSyncTimeBase)
+    i.PWMSyncUpdate                          0x00001ab0   Section        0  pwm.o(i.PWMSyncUpdate)
+    i.PWMUpdateDutyCycle                     0x00001ab4   Section        0  pwm_ctrl.o(i.PWMUpdateDutyCycle)
+    PWMUpdateDutyCycle                       0x00001ab5   Thumb Code   240  pwm_ctrl.o(i.PWMUpdateDutyCycle)
+    i.QEIConfigure                           0x00001bac   Section        0  qei.o(i.QEIConfigure)
+    i.QEIEnable                              0x00001bba   Section        0  qei.o(i.QEIEnable)
+    i.QEIIntClear                            0x00001bc4   Section        0  qei.o(i.QEIIntClear)
+    i.QEIIntEnable                           0x00001bc8   Section        0  qei.o(i.QEIIntEnable)
+    i.QEIIntHandler                          0x00001bd0   Section        0  speed_sense.o(i.QEIIntHandler)
+    i.QEIVelocityConfigure                   0x00001c74   Section        0  qei.o(i.QEIVelocityConfigure)
+    i.QEIVelocityEnable                      0x00001c84   Section        0  qei.o(i.QEIVelocityEnable)
+    i.QEIVelocityGet                         0x00001c8e   Section        0  qei.o(i.QEIVelocityGet)
+    i.SpeedNewValue                          0x00001c94   Section        0  speed_sense.o(i.SpeedNewValue)
+    SpeedNewValue                            0x00001c95   Thumb Code    38  speed_sense.o(i.SpeedNewValue)
+    i.SpeedSenseInit                         0x00001cc0   Section        0  speed_sense.o(i.SpeedSenseInit)
+    i.SysCtlADCSpeedSet                      0x00001d38   Section        0  sysctl.o(i.SysCtlADCSpeedSet)
+    i.SysCtlClockSet                         0x00001d58   Section        0  sysctl.o(i.SysCtlClockSet)
+    i.SysCtlLDOSet                           0x00001e90   Section        0  sysctl.o(i.SysCtlLDOSet)
+    i.SysCtlPeripheralClockGating            0x00001e9c   Section        0  sysctl.o(i.SysCtlPeripheralClockGating)
+    i.SysCtlPeripheralEnable                 0x00001eb4   Section        0  sysctl.o(i.SysCtlPeripheralEnable)
+    i.SysCtlPeripheralSleepEnable            0x00001ed4   Section        0  sysctl.o(i.SysCtlPeripheralSleepEnable)
+    i.SysCtlSleep                            0x00001ef4   Section        0  sysctl.o(i.SysCtlSleep)
+    i.SysTickEnable                          0x00001ef8   Section        0  systick.o(i.SysTickEnable)
+    i.SysTickIntEnable                       0x00001f06   Section        0  systick.o(i.SysTickIntEnable)
+    i.SysTickIntHandler                      0x00001f14   Section        0  ui.o(i.SysTickIntHandler)
+    i.SysTickPeriodSet                       0x00001fc0   Section        0  systick.o(i.SysTickPeriodSet)
+    i.Timer0AIntHandler                      0x00001fcc   Section        0  main.o(i.Timer0AIntHandler)
+    i.Timer1AIntHandler                      0x00001fd8   Section        0  ui.o(i.Timer1AIntHandler)
+    i.TimerConfigure                         0x00001ffc   Section        0  timer.o(i.TimerConfigure)
+    i.TimerEnable                            0x00002018   Section        0  timer.o(i.TimerEnable)
+    i.TimerIntClear                          0x00002026   Section        0  timer.o(i.TimerIntClear)
+    i.TimerIntEnable                         0x0000202a   Section        0  timer.o(i.TimerIntEnable)
+    i.TimerLoadSet                           0x00002032   Section        0  timer.o(i.TimerLoadSet)
+    i.TimerValueGet                          0x00002044   Section        0  timer.o(i.TimerValueGet)
+    i.TrapModulate                           0x00002050   Section        0  trapmod.o(i.TrapModulate)
+    i.UIButtonHold                           0x00002094   Section        0  ui.o(i.UIButtonHold)
+    UIButtonHold                             0x00002095   Thumb Code     2  ui.o(i.UIButtonHold)
+    i.UIButtonPress                          0x00002096   Section        0  ui.o(i.UIButtonPress)
+    i.UIFaultLEDBlink                        0x000020ae   Section        0  ui.o(i.UIFaultLEDBlink)
+    i.UIGetTicks                             0x000020b8   Section        0  ui.o(i.UIGetTicks)
+    i.UIInit                                 0x000020f0   Section        0  ui.o(i.UIInit)
+    i.UILEDBlink                             0x000021fc   Section        0  ui.o(i.UILEDBlink)
+    UILEDBlink                               0x000021fd   Thumb Code    62  ui.o(i.UILEDBlink)
+    i.UIOnboardInit                          0x00002244   Section        0  ui_onboard.o(i.UIOnboardInit)
+    i.UIOnboardSwitchDebouncer               0x00002260   Section        0  ui_onboard.o(i.UIOnboardSwitchDebouncer)
+    i.UIRunLEDBlink                          0x00002340   Section        0  ui.o(i.UIRunLEDBlink)
+    i.WatchdogEnable                         0x0000234a   Section        0  watchdog.o(i.WatchdogEnable)
+    i.WatchdogIntClear                       0x00002354   Section        0  watchdog.o(i.WatchdogIntClear)
+    i.WatchdogIntHandler                     0x0000235c   Section        0  main.o(i.WatchdogIntHandler)
+    i.WatchdogReloadSet                      0x00002384   Section        0  watchdog.o(i.WatchdogReloadSet)
+    i.WatchdogResetEnable                    0x00002388   Section        0  watchdog.o(i.WatchdogResetEnable)
+    i.__scatterload_copy                     0x00002392   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x000023a0   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x000023a2   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i.main                                   0x000023b0   Section        0  main.o(i.main)
+    .constdata                               0x00002560   Section       32  trapmod.o(.constdata)
+    g_ulHallToPhase120                       0x00002560   Data          32  trapmod.o(.constdata)
+    .constdata                               0x00002580   Section       12  ui.o(.constdata)
+    g_pucLEDPin                              0x00002580   Data           2  ui.o(.constdata)
+    g_pulLEDBase                             0x00002584   Data           8  ui.o(.constdata)
+    .constdata                               0x0000258c   Section       20  ui.o(.constdata)
+    .constdata                               0x000025a0   Section        4  ui.o(.constdata)
+    .constdata                               0x000025a4   Section      104  interrupt.o(.constdata)
+    g_pulPriority                            0x000025a4   Data          32  interrupt.o(.constdata)
+    g_pulRegs                                0x000025c4   Data          72  interrupt.o(.constdata)
+    .constdata                               0x0000260c   Section      156  sysctl.o(.constdata)
+    g_pulDCRegs                              0x0000260c   Data          16  sysctl.o(.constdata)
+    g_pulSRCRRegs                            0x0000261c   Data          12  sysctl.o(.constdata)
+    g_pulRCGCRegs                            0x00002628   Data          12  sysctl.o(.constdata)
+    g_pulSCGCRegs                            0x00002634   Data          12  sysctl.o(.constdata)
+    g_pulDCGCRegs                            0x00002640   Data          12  sysctl.o(.constdata)
+    g_pulXtals                               0x0000264c   Data          92  sysctl.o(.constdata)
+    .data                                    0x20000000   Section      108  adc_ctrl.o(.data)
+    g_ucPhaseCurrentIndex                    0x20000000   Data           1  adc_ctrl.o(.data)
+    g_ucPreviousPhaseCurrentIndex            0x20000001   Data           1  adc_ctrl.o(.data)
+    g_ucBEMFState                            0x20000002   Data           1  adc_ctrl.o(.data)
+    g_ucBEMFSkipCount                        0x20000003   Data           1  adc_ctrl.o(.data)
+    usPhaseCurrentMax                        0x20000006   Data           2  adc_ctrl.o(.data)
+    g_usBusVoltageCount                      0x20000008   Data           2  adc_ctrl.o(.data)
+    g_usAmbientTempCount                     0x2000000a   Data           2  adc_ctrl.o(.data)
+    g_pfnADC0Handler                         0x20000010   Data           4  adc_ctrl.o(.data)
+    g_ulADCFlags                             0x20000014   Data           4  adc_ctrl.o(.data)
+    g_ulBEMFSpeedPrevious                    0x20000018   Data           4  adc_ctrl.o(.data)
+    g_ulBEMFEdgePrevious                     0x2000001c   Data           4  adc_ctrl.o(.data)
+    g_ulLinearSpeedPrevious                  0x20000028   Data           4  adc_ctrl.o(.data)
+    g_ulPhaseBEMFCountMin                    0x20000030   Data           4  adc_ctrl.o(.data)
+    g_ulPhaseBEMFCountMax                    0x20000034   Data           4  adc_ctrl.o(.data)
+    ulLastPWMEnable                          0x20000038   Data           4  adc_ctrl.o(.data)
+    ulCount                                  0x2000003c   Data           4  adc_ctrl.o(.data)
+    g_ulADC0Time                             0x20000040   Data           4  adc_ctrl.o(.data)
+    g_ulBEMFPeriod                           0x20000050   Data           4  adc_ctrl.o(.data)
+    g_pusBEMFVoltageCount                    0x20000054   Data           6  adc_ctrl.o(.data)
+    ucNextHallValue                          0x20000060   Data          12  adc_ctrl.o(.data)
+    .data                                    0x2000006c   Section        8  brake.o(.data)
+    g_ulBrakeState                           0x2000006c   Data           4  brake.o(.data)
+    g_ulBrakeCount                           0x20000070   Data           4  brake.o(.data)
+    .data                                    0x20000074   Section       20  hall_ctrl.o(.data)
+    g_ulHallSpeedFlags                       0x20000074   Data           4  hall_ctrl.o(.data)
+    ulLastHall                               0x20000080   Data           4  hall_ctrl.o(.data)
+    g_ulHallSpeedPrevious                    0x20000084   Data           4  hall_ctrl.o(.data)
+    .data                                    0x20000088   Section      116  main.o(.data)
+    g_bForward                               0x20000089   Data           1  main.o(.data)
+    g_ucLocalDecayMode                       0x2000008a   Data           1  main.o(.data)
+    g_ucStartupHallIndex                     0x2000008b   Data           1  main.o(.data)
+    g_ulSpeed                                0x2000008c   Data           4  main.o(.data)
+    g_ulSpeedWhole                           0x20000090   Data           4  main.o(.data)
+    g_ulSpeedFract                           0x20000094   Data           4  main.o(.data)
+    g_ulPower                                0x20000098   Data           4  main.o(.data)
+    g_ulPowerWhole                           0x2000009c   Data           4  main.o(.data)
+    g_ulPowerFract                           0x200000a0   Data           4  main.o(.data)
+    g_ulDutyCycle                            0x200000a4   Data           4  main.o(.data)
+    g_ulAngleDelta                           0x200000ac   Data           4  main.o(.data)
+    g_ulStateCount                           0x200000b0   Data           4  main.o(.data)
+    g_ulState                                0x200000b4   Data           4  main.o(.data)
+    g_ulHallPrevious                         0x200000bc   Data           4  main.o(.data)
+    g_ulStallDetectCount                     0x200000c0   Data           4  main.o(.data)
+    g_ulSineTarget                           0x200000c4   Data           4  main.o(.data)
+    g_ulTargetSpeed                          0x200000c8   Data           4  main.o(.data)
+    g_ulTargetPower                          0x200000cc   Data           4  main.o(.data)
+    g_ulAccelRate                            0x200000d4   Data           4  main.o(.data)
+    g_ulDecelRate                            0x200000d8   Data           4  main.o(.data)
+    g_lSpeedIntegrator                       0x200000dc   Data           4  main.o(.data)
+    g_lSpeedIntegratorMax                    0x200000e0   Data           4  main.o(.data)
+    g_lPowerIntegrator                       0x200000e4   Data           4  main.o(.data)
+    g_lPowerIntegratorMax                    0x200000e8   Data           4  main.o(.data)
+    g_ulStartupState                         0x200000ec   Data           4  main.o(.data)
+    g_ulStartupPeriod                        0x200000f0   Data           4  main.o(.data)
+    g_ulStartupDutyCycle                     0x200000f4   Data           4  main.o(.data)
+    g_ulStartupDutyCycleRamp                 0x200000f8   Data           4  main.o(.data)
+    .data                                    0x200000fc   Section       48  pwm_ctrl.o(.data)
+    g_ulPWMFlags                             0x20000100   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMClock                             0x20000108   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMDutyCycleA                        0x20000114   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMDutyCycleB                        0x20000118   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMDutyCycleC                        0x2000011c   Data           4  pwm_ctrl.o(.data)
+    g_ulMinPulseWidth                        0x20000120   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMPeriodCount                       0x20000124   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMMillisecondCount                  0x20000128   Data           4  pwm_ctrl.o(.data)
+    .data                                    0x2000012c   Section       16  speed_sense.o(.data)
+    g_ulSpeedFlags                           0x2000012c   Data           4  speed_sense.o(.data)
+    g_ulSpeedTime                            0x20000134   Data           4  speed_sense.o(.data)
+    g_ulSpeedPrevious                        0x20000138   Data           4  speed_sense.o(.data)
+    .data                                    0x2000013c   Section       24  ui.o(.data)
+    g_usAnalogInputVoltage                   0x2000013c   Data           2  ui.o(.data)
+    g_pusBlinkRate                           0x2000013e   Data           4  ui.o(.data)
+    g_ulBlinkCount                           0x20000144   Data           4  ui.o(.data)
+    g_ulUITickCount                          0x2000014c   Data           4  ui.o(.data)
+    g_pusBlinkPeriod                         0x20000150   Data           4  ui.o(.data)
+    .data                                    0x20000154   Section        4  ui.o(.data)
+    .data                                    0x20000158   Section       36  ui_onboard.o(.data)
+    g_ulUIOnboardSwitches                    0x20000158   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardClockA                      0x2000015c   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardClockB                      0x20000160   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardPotValue                    0x20000164   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardFilteredPotValue            0x20000168   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardPotMin                      0x2000016c   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardPotMax                      0x20000170   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardPotSum                      0x20000174   Data           4  ui_onboard.o(.data)
+    g_ulUIOnboardPotCount                    0x20000178   Data           4  ui_onboard.o(.data)
+    .bss                                     0x2000017c   Section       16  adc_ctrl.o(.bss)
+    g_pusADC0DataRaw                         0x2000017c   Data          16  adc_ctrl.o(.bss)
+    STACK                                    0x20000190   Section     4096  startup_rvmdk.o(STACK)
+    StackMem                                 0x20000190   Data           0  startup_rvmdk.o(STACK)
+
+    Global Symbols
+
+    Symbol Name                              Value     Ov Type        Size  Object(Section)
+
+    BuildAttributes$$THM_ISAv4$P$D$K$B$S$PE$A:L22UL41UL21$X:L11$S22US41US21$IEEE1$IW$USESV6$~STKCKD$USESV7$~SHL$OTIME$EBA8$MICROLIB$REQ8$PRES8$EABIv2 0x00000000   Number         0  anon$$obj.o ABSOLUTE
+    __ARM_use_no_argv                        0x00000000   Number         0  main.o ABSOLUTE
+    __Vectors                                0x00000000   Data           0  startup_rvmdk.o(RESET)
+    Reset_Handler                            0x000000f1   Thumb Code     0  startup_rvmdk.o(RESET)
+    __main                                   0x000000f5   Thumb Code     0  entry.o(.ARM.Collect$$$$00000000)
+    _main_stk                                0x000000f5   Thumb Code     0  entry2.o(.ARM.Collect$$$$00000001)
+    _main_scatterload                        0x000000f9   Thumb Code     0  entry5.o(.ARM.Collect$$$$00000004)
+    __main_after_scatterload                 0x000000fd   Thumb Code     0  entry5.o(.ARM.Collect$$$$00000004)
+    _main_init                               0x000000fd   Thumb Code     0  entry7.o(.ARM.Collect$$$$00000007)
+    MainLongMul                              0x00000109   Thumb Code    12  main.o(.emb_text)
+    SysCtlDelay                              0x00000115   Thumb Code     6  sysctl.o(.emb_text)
+    CPUcpsid                                 0x0000011d   Thumb Code     8  cpu.o(.emb_text)
+    CPUprimask                               0x00000125   Thumb Code     6  cpu.o(.emb_text)
+    CPUcpsie                                 0x0000012b   Thumb Code     8  cpu.o(.emb_text)
+    CPUwfi                                   0x00000133   Thumb Code     4  cpu.o(.emb_text)
+    CPUbasepriSet                            0x00000137   Thumb Code     6  cpu.o(.emb_text)
+    CPUbasepriGet                            0x0000013d   Thumb Code     6  cpu.o(.emb_text)
+    __scatterload                            0x00000145   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x00000145   Thumb Code     0  init.o(.text)
+    __decompress                             0x00000169   Thumb Code     0  __dczerorl.o(.text)
+    __decompress0                            0x00000169   Thumb Code    58  __dczerorl.o(.text)
+    ADC0IntHandler                           0x000001a5   Thumb Code    24  adc_ctrl.o(i.ADC0IntHandler)
+    ADCConfigure                             0x000005d1   Thumb Code   136  adc_ctrl.o(i.ADCConfigure)
+    ADCInit                                  0x00000665   Thumb Code    60  adc_ctrl.o(i.ADCInit)
+    ADCIntDisable                            0x000006a5   Thumb Code    16  adc.o(i.ADCIntDisable)
+    ADCIntEnable                             0x000006b5   Thumb Code    16  adc.o(i.ADCIntEnable)
+    ADCProcessorTrigger                      0x000006c5   Thumb Code    26  adc.o(i.ADCProcessorTrigger)
+    ADCReadAnalog                            0x000006e1   Thumb Code    32  adc_ctrl.o(i.ADCReadAnalog)
+    ADCSequenceConfigure                     0x00000705   Thumb Code    50  adc.o(i.ADCSequenceConfigure)
+    ADCSequenceDisable                       0x00000737   Thumb Code    16  adc.o(i.ADCSequenceDisable)
+    ADCSequenceEnable                        0x00000747   Thumb Code    14  adc.o(i.ADCSequenceEnable)
+    ADCSequenceStepConfigure                 0x00000755   Thumb Code   110  adc.o(i.ADCSequenceStepConfigure)
+    ADCTickHandler                           0x000007c5   Thumb Code    98  adc_ctrl.o(i.ADCTickHandler)
+    BrakeInit                                0x00000835   Thumb Code    32  brake.o(i.BrakeInit)
+    BrakeTick                                0x0000085d   Thumb Code   160  brake.o(i.BrakeTick)
+    FaultISR                                 0x00000909   Thumb Code    18  main.o(i.FaultISR)
+    GPIOBIntHandler                          0x0000091d   Thumb Code   138  hall_ctrl.o(i.GPIOBIntHandler)
+    GPIOCIntHandler                          0x000009b9   Thumb Code   110  speed_sense.o(i.GPIOCIntHandler)
+    GPIODirModeSet                           0x00000a3d   Thumb Code    40  gpio.o(i.GPIODirModeSet)
+    GPIOIntTypeSet                           0x00000a65   Thumb Code    58  gpio.o(i.GPIOIntTypeSet)
+    GPIOPadConfigSet                         0x00000a9f   Thumb Code   176  gpio.o(i.GPIOPadConfigSet)
+    GPIOPinIntClear                          0x00000b4f   Thumb Code     6  gpio.o(i.GPIOPinIntClear)
+    GPIOPinIntEnable                         0x00000b55   Thumb Code    12  gpio.o(i.GPIOPinIntEnable)
+    GPIOPinRead                              0x00000b61   Thumb Code     6  gpio.o(i.GPIOPinRead)
+    GPIOPinTypeGPIOInput                     0x00000b67   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOInput)
+    GPIOPinTypeGPIOOutput                    0x00000b83   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOOutput)
+    GPIOPinTypeGPIOOutputOD                  0x00000b9f   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOOutputOD)
+    GPIOPinTypePWM                           0x00000bbb   Thumb Code    28  gpio.o(i.GPIOPinTypePWM)
+    GPIOPinTypeQEI                           0x00000bd7   Thumb Code    28  gpio.o(i.GPIOPinTypeQEI)
+    GPIOPinWrite                             0x00000bf3   Thumb Code     6  gpio.o(i.GPIOPinWrite)
+    HallConfigure                            0x00000bf9   Thumb Code    30  hall_ctrl.o(i.HallConfigure)
+    HallInit                                 0x00000c1d   Thumb Code    26  hall_ctrl.o(i.HallInit)
+    HallTickHandler                          0x00000c3d   Thumb Code    64  hall_ctrl.o(i.HallTickHandler)
+    IntDefaultHandler                        0x00000c89   Thumb Code    18  main.o(i.IntDefaultHandler)
+    IntDisable                               0x00000c9b   Thumb Code   104  interrupt.o(i.IntDisable)
+    IntEnable                                0x00000d03   Thumb Code   104  interrupt.o(i.IntEnable)
+    IntMasterDisable                         0x00000d6b   Thumb Code    10  interrupt.o(i.IntMasterDisable)
+    IntPrioritySet                           0x00000d75   Thumb Code    36  interrupt.o(i.IntPrioritySet)
+    MainClearFaults                          0x00000e39   Thumb Code    12  main.o(i.MainClearFaults)
+    MainEmergencyStop                        0x00000e49   Thumb Code    92  main.o(i.MainEmergencyStop)
+    MainIsFaulted                            0x00000ead   Thumb Code    12  main.o(i.MainIsFaulted)
+    MainIsReverse                            0x00000ebd   Thumb Code    16  main.o(i.MainIsReverse)
+    MainIsRunning                            0x00000ed1   Thumb Code    12  main.o(i.MainIsRunning)
+    MainIsStartup                            0x00000ee1   Thumb Code    14  main.o(i.MainIsStartup)
+    MainMillisecondTick                      0x00000ef5   Thumb Code   116  main.o(i.MainMillisecondTick)
+    MainRun                                  0x00000fbd   Thumb Code   104  main.o(i.MainRun)
+    MainSetFault                             0x00001031   Thumb Code    16  main.o(i.MainSetFault)
+    MainSetPWMFrequency                      0x00001045   Thumb Code    58  main.o(i.MainSetPWMFrequency)
+    MainSetPower                             0x00001089   Thumb Code     8  main.o(i.MainSetPower)
+    MainSetSpeed                             0x00001095   Thumb Code    10  main.o(i.MainSetSpeed)
+    MainSpeedController                      0x000010a5   Thumb Code    76  main.o(i.MainSpeedController)
+    MainStop                                 0x00001435   Thumb Code    80  main.o(i.MainStop)
+    MainUpdateFAdjI                          0x0000148d   Thumb Code    50  main.o(i.MainUpdateFAdjI)
+    MainUpdatePAdjI                          0x000014c5   Thumb Code    50  main.o(i.MainUpdatePAdjI)
+    MainWaveformTick                         0x000014fd   Thumb Code    82  main.o(i.MainWaveformTick)
+    NmiSR                                    0x00001555   Thumb Code    18  main.o(i.NmiSR)
+    PWM0IntHandler                           0x00001569   Thumb Code   188  pwm_ctrl.o(i.PWM0IntHandler)
+    PWMClearDeadBand                         0x00001635   Thumb Code    36  pwm_ctrl.o(i.PWMClearDeadBand)
+    PWMDeadBandDisable                       0x00001661   Thumb Code    12  pwm.o(i.PWMDeadBandDisable)
+    PWMDeadBandEnable                        0x0000166d   Thumb Code    16  pwm.o(i.PWMDeadBandEnable)
+    PWMGenConfigure                          0x0000167d   Thumb Code    38  pwm.o(i.PWMGenConfigure)
+    PWMGenEnable                             0x000016a3   Thumb Code    10  pwm.o(i.PWMGenEnable)
+    PWMGenIntClear                           0x000016ad   Thumb Code     6  pwm.o(i.PWMGenIntClear)
+    PWMGenIntTrigEnable                      0x000016b3   Thumb Code    10  pwm.o(i.PWMGenIntTrigEnable)
+    PWMGenPeriodSet                          0x000016bd   Thumb Code    18  pwm.o(i.PWMGenPeriodSet)
+    PWMGetPeriodCount                        0x000016d1   Thumb Code     6  pwm_ctrl.o(i.PWMGetPeriodCount)
+    PWMInit                                  0x000016dd   Thumb Code   242  pwm_ctrl.o(i.PWMInit)
+    PWMOutputFault                           0x000017e5   Thumb Code    16  pwm.o(i.PWMOutputFault)
+    PWMOutputInvert                          0x000017f5   Thumb Code    16  pwm.o(i.PWMOutputInvert)
+    PWMOutputOff                             0x00001805   Thumb Code    72  pwm_ctrl.o(i.PWMOutputOff)
+    PWMOutputPrecharge                       0x00001855   Thumb Code   218  pwm_ctrl.o(i.PWMOutputPrecharge)
+    PWMOutputState                           0x00001941   Thumb Code    16  pwm.o(i.PWMOutputState)
+    PWMOutputTrapezoid                       0x00001951   Thumb Code    74  pwm_ctrl.o(i.PWMOutputTrapezoid)
+    PWMPulseWidthSet                         0x000019a5   Thumb Code    32  pwm.o(i.PWMPulseWidthSet)
+    PWMReducePeriodCount                     0x000019c5   Thumb Code    28  pwm_ctrl.o(i.PWMReducePeriodCount)
+    PWMSetDeadBand                           0x000019e5   Thumb Code    48  pwm_ctrl.o(i.PWMSetDeadBand)
+    PWMSetDutyCycle                          0x00001a1d   Thumb Code    56  pwm_ctrl.o(i.PWMSetDutyCycle)
+    PWMSetFrequency                          0x00001a5d   Thumb Code    64  pwm_ctrl.o(i.PWMSetFrequency)
+    PWMSetMinPulseWidth                      0x00001aa1   Thumb Code     8  pwm_ctrl.o(i.PWMSetMinPulseWidth)
+    PWMSyncTimeBase                          0x00001aad   Thumb Code     4  pwm.o(i.PWMSyncTimeBase)
+    PWMSyncUpdate                            0x00001ab1   Thumb Code     4  pwm.o(i.PWMSyncUpdate)
+    QEIConfigure                             0x00001bad   Thumb Code    14  qei.o(i.QEIConfigure)
+    QEIEnable                                0x00001bbb   Thumb Code    10  qei.o(i.QEIEnable)
+    QEIIntClear                              0x00001bc5   Thumb Code     4  qei.o(i.QEIIntClear)
+    QEIIntEnable                             0x00001bc9   Thumb Code     8  qei.o(i.QEIIntEnable)
+    QEIIntHandler                            0x00001bd1   Thumb Code   148  speed_sense.o(i.QEIIntHandler)
+    QEIVelocityConfigure                     0x00001c75   Thumb Code    16  qei.o(i.QEIVelocityConfigure)
+    QEIVelocityEnable                        0x00001c85   Thumb Code    10  qei.o(i.QEIVelocityEnable)
+    QEIVelocityGet                           0x00001c8f   Thumb Code     4  qei.o(i.QEIVelocityGet)
+    SpeedSenseInit                           0x00001cc1   Thumb Code   104  speed_sense.o(i.SpeedSenseInit)
+    SysCtlADCSpeedSet                        0x00001d39   Thumb Code    28  sysctl.o(i.SysCtlADCSpeedSet)
+    SysCtlClockSet                           0x00001d59   Thumb Code   288  sysctl.o(i.SysCtlClockSet)
+    SysCtlLDOSet                             0x00001e91   Thumb Code     6  sysctl.o(i.SysCtlLDOSet)
+    SysCtlPeripheralClockGating              0x00001e9d   Thumb Code    20  sysctl.o(i.SysCtlPeripheralClockGating)
+    SysCtlPeripheralEnable                   0x00001eb5   Thumb Code    26  sysctl.o(i.SysCtlPeripheralEnable)
+    SysCtlPeripheralSleepEnable              0x00001ed5   Thumb Code    26  sysctl.o(i.SysCtlPeripheralSleepEnable)
+    SysCtlSleep                              0x00001ef5   Thumb Code     4  sysctl.o(i.SysCtlSleep)
+    SysTickEnable                            0x00001ef9   Thumb Code    14  systick.o(i.SysTickEnable)
+    SysTickIntEnable                         0x00001f07   Thumb Code    14  systick.o(i.SysTickIntEnable)
+    SysTickIntHandler                        0x00001f15   Thumb Code   154  ui.o(i.SysTickIntHandler)
+    SysTickPeriodSet                         0x00001fc1   Thumb Code    10  systick.o(i.SysTickPeriodSet)
+    Timer0AIntHandler                        0x00001fcd   Thumb Code     8  main.o(i.Timer0AIntHandler)
+    Timer1AIntHandler                        0x00001fd9   Thumb Code    22  ui.o(i.Timer1AIntHandler)
+    TimerConfigure                           0x00001ffd   Thumb Code    28  timer.o(i.TimerConfigure)
+    TimerEnable                              0x00002019   Thumb Code    14  timer.o(i.TimerEnable)
+    TimerIntClear                            0x00002027   Thumb Code     4  timer.o(i.TimerIntClear)
+    TimerIntEnable                           0x0000202b   Thumb Code     8  timer.o(i.TimerIntEnable)
+    TimerLoadSet                             0x00002033   Thumb Code    18  timer.o(i.TimerLoadSet)
+    TimerValueGet                            0x00002045   Thumb Code    10  timer.o(i.TimerValueGet)
+    TrapModulate                             0x00002051   Thumb Code    64  trapmod.o(i.TrapModulate)
+    UIButtonPress                            0x00002097   Thumb Code    24  ui.o(i.UIButtonPress)
+    UIFaultLEDBlink                          0x000020af   Thumb Code    10  ui.o(i.UIFaultLEDBlink)
+    UIGetTicks                               0x000020b9   Thumb Code    42  ui.o(i.UIGetTicks)
+    UIInit                                   0x000020f1   Thumb Code   238  ui.o(i.UIInit)
+    UIOnboardInit                            0x00002245   Thumb Code    24  ui_onboard.o(i.UIOnboardInit)
+    UIOnboardSwitchDebouncer                 0x00002261   Thumb Code   208  ui_onboard.o(i.UIOnboardSwitchDebouncer)
+    UIRunLEDBlink                            0x00002341   Thumb Code    10  ui.o(i.UIRunLEDBlink)
+    WatchdogEnable                           0x0000234b   Thumb Code    10  watchdog.o(i.WatchdogEnable)
+    WatchdogIntClear                         0x00002355   Thumb Code     6  watchdog.o(i.WatchdogIntClear)
+    WatchdogIntHandler                       0x0000235d   Thumb Code    34  main.o(i.WatchdogIntHandler)
+    WatchdogReloadSet                        0x00002385   Thumb Code     4  watchdog.o(i.WatchdogReloadSet)
+    WatchdogResetEnable                      0x00002389   Thumb Code    10  watchdog.o(i.WatchdogResetEnable)
+    __scatterload_copy                       0x00002393   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x000023a1   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x000023a3   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    main                                     0x000023b1   Thumb Code   402  main.o(i.main)
+    g_sUISwitches                            0x0000258c   Data          20  ui.o(.constdata)
+    g_ulUINumButtons                         0x000025a0   Data           4  ui.o(.constdata)
+    Region$$Table$$Base                      0x000026a8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000026c8   Number         0  anon$$obj.o(Region$$Table)
+    g_ucAmbientTemp                          0x20000004   Data           1  adc_ctrl.o(.data)
+    g_sMotorCurrent                          0x2000000c   Data           2  adc_ctrl.o(.data)
+    g_ulBEMFRotorSpeed                       0x20000020   Data           4  adc_ctrl.o(.data)
+    g_ulBEMFNextHall                         0x20000024   Data           4  adc_ctrl.o(.data)
+    g_ulLinearRotorSpeed                     0x2000002c   Data           4  adc_ctrl.o(.data)
+    g_ulMotorPower                           0x20000044   Data           4  adc_ctrl.o(.data)
+    g_ulBusVoltage                           0x20000048   Data           4  adc_ctrl.o(.data)
+    g_ulPhaseBEMFVoltage                     0x2000004c   Data           4  adc_ctrl.o(.data)
+    g_psPhaseCurrent                         0x2000005a   Data           6  adc_ctrl.o(.data)
+    g_ulHallRotorSpeed                       0x20000078   Data           4  hall_ctrl.o(.data)
+    g_ulHallValue                            0x2000007c   Data           4  hall_ctrl.o(.data)
+    g_ucMotorStatus                          0x20000088   Data           1  main.o(.data)
+    g_ulAngle                                0x200000a8   Data           4  main.o(.data)
+    g_ulMeasuredSpeed                        0x200000b8   Data           4  main.o(.data)
+    g_ulFaultFlags                           0x200000d0   Data           4  main.o(.data)
+    g_ucDecayMode                            0x200000fc   Data           1  pwm_ctrl.o(.data)
+    g_ulTrapDutyCycle                        0x20000104   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMWidth                             0x2000010c   Data           4  pwm_ctrl.o(.data)
+    g_ulPWMFrequency                         0x20000110   Data           4  pwm_ctrl.o(.data)
+    g_ulRotorSpeed                           0x20000130   Data           4  speed_sense.o(.data)
+    g_ulConfigSwitch                         0x20000148   Data           4  ui.o(.data)
+    g_pulUIHoldCount                         0x20000154   Data           4  ui.o(.data)
+    __initial_sp                             0x20001190   Data           0  startup_rvmdk.o(STACK)
+
+
+
+==============================================================================
+
+Memory Map of the image
+
+  Image Entry point : 0x000000f1
+
+  Load Region LR_IROM (Base: 0x00000000, Size: 0x00002844, Max: 0x00040000, ABSOLUTE, COMPRESSED[0x000026f0])
+
+    Execution Region ER_IROM (Base: 0x00000000, Size: 0x000026c8, Max: 0x00040000, ABSOLUTE)
+
+    Base Addr    Size         Type   Attr      Idx    E Section Name        Object
+
+    0x00000000   0x000000f4   Code   RO          556  * RESET               startup_rvmdk.o
+    0x000000f4   0x00000000   Code   RO         2159  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x000000f4   0x00000004   Code   RO         2162    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x000000f8   0x00000004   Code   RO         2165    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x000000fc   0x00000008   Code   RO         2166    .ARM.Collect$$$$00000007  mc_w.l(entry7.o)
+    0x00000104   0x00000004   Code   RO         2163    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x00000108   0x0000000c   Code   RO          182    .emb_text           main.o
+    0x00000114   0x00000006   Code   RO         1536    .emb_text           driverlib.lib(sysctl.o)
+    0x0000011a   0x00000002   PAD
+    0x0000011c   0x00000026   Code   RO         2149    .emb_text           driverlib.lib(cpu.o)
+    0x00000142   0x00000002   PAD
+    0x00000144   0x00000024   Code   RO         2167    .text               mc_w.l(init.o)
+    0x00000168   0x0000003a   Code   RO         2177    .text               mc_w.l(__dczerorl.o)
+    0x000001a2   0x00000002   PAD
+    0x000001a4   0x00000020   Code   RO            1    i.ADC0IntHandler    adc_ctrl.o
+    0x000001c4   0x00000094   Code   RO            2    i.ADC0IntIdle       adc_ctrl.o
+    0x00000258   0x00000378   Code   RO            3    i.ADC0IntTrap       adc_ctrl.o
+    0x000005d0   0x00000094   Code   RO            4    i.ADCConfigure      adc_ctrl.o
+    0x00000664   0x00000040   Code   RO            5    i.ADCInit           adc_ctrl.o
+    0x000006a4   0x00000010   Code   RO          688    i.ADCIntDisable     driverlib.lib(adc.o)
+    0x000006b4   0x00000010   Code   RO          689    i.ADCIntEnable      driverlib.lib(adc.o)
+    0x000006c4   0x0000001a   Code   RO          695    i.ADCProcessorTrigger  driverlib.lib(adc.o)
+    0x000006de   0x00000002   PAD
+    0x000006e0   0x00000024   Code   RO            6    i.ADCReadAnalog     adc_ctrl.o
+    0x00000704   0x00000032   Code   RO          698    i.ADCSequenceConfigure  driverlib.lib(adc.o)
+    0x00000736   0x00000010   Code   RO          700    i.ADCSequenceDisable  driverlib.lib(adc.o)
+    0x00000746   0x0000000e   Code   RO          701    i.ADCSequenceEnable  driverlib.lib(adc.o)
+    0x00000754   0x0000006e   Code   RO          704    i.ADCSequenceStepConfigure  driverlib.lib(adc.o)
+    0x000007c2   0x00000002   PAD
+    0x000007c4   0x00000070   Code   RO            7    i.ADCTickHandler    adc_ctrl.o
+    0x00000834   0x00000028   Code   RO          116    i.BrakeInit         brake.o
+    0x0000085c   0x000000ac   Code   RO          117    i.BrakeTick         brake.o
+    0x00000908   0x00000012   Code   RO          183    i.FaultISR          main.o
+    0x0000091a   0x00000002   PAD
+    0x0000091c   0x0000009c   Code   RO          146    i.GPIOBIntHandler   hall_ctrl.o
+    0x000009b8   0x00000084   Code   RO          513    i.GPIOCIntHandler   speed_sense.o
+    0x00000a3c   0x00000028   Code   RO          895    i.GPIODirModeSet    driverlib.lib(gpio.o)
+    0x00000a64   0x0000003a   Code   RO          898    i.GPIOIntTypeSet    driverlib.lib(gpio.o)
+    0x00000a9e   0x000000b0   Code   RO          900    i.GPIOPadConfigSet  driverlib.lib(gpio.o)
+    0x00000b4e   0x00000006   Code   RO          902    i.GPIOPinIntClear   driverlib.lib(gpio.o)
+    0x00000b54   0x0000000c   Code   RO          904    i.GPIOPinIntEnable  driverlib.lib(gpio.o)
+    0x00000b60   0x00000006   Code   RO          906    i.GPIOPinRead       driverlib.lib(gpio.o)
+    0x00000b66   0x0000001c   Code   RO          912    i.GPIOPinTypeGPIOInput  driverlib.lib(gpio.o)
+    0x00000b82   0x0000001c   Code   RO          913    i.GPIOPinTypeGPIOOutput  driverlib.lib(gpio.o)
+    0x00000b9e   0x0000001c   Code   RO          914    i.GPIOPinTypeGPIOOutputOD  driverlib.lib(gpio.o)
+    0x00000bba   0x0000001c   Code   RO          917    i.GPIOPinTypePWM    driverlib.lib(gpio.o)
+    0x00000bd6   0x0000001c   Code   RO          918    i.GPIOPinTypeQEI    driverlib.lib(gpio.o)
+    0x00000bf2   0x00000006   Code   RO          924    i.GPIOPinWrite      driverlib.lib(gpio.o)
+    0x00000bf8   0x00000024   Code   RO          147    i.HallConfigure     hall_ctrl.o
+    0x00000c1c   0x00000020   Code   RO          148    i.HallInit          hall_ctrl.o
+    0x00000c3c   0x0000004c   Code   RO          149    i.HallTickHandler   hall_ctrl.o
+    0x00000c88   0x00000012   Code   RO          184    i.IntDefaultHandler  main.o
+    0x00000c9a   0x00000068   Code   RO         1109    i.IntDisable        driverlib.lib(interrupt.o)
+    0x00000d02   0x00000068   Code   RO         1110    i.IntEnable         driverlib.lib(interrupt.o)
+    0x00000d6a   0x0000000a   Code   RO         1111    i.IntMasterDisable  driverlib.lib(interrupt.o)
+    0x00000d74   0x00000028   Code   RO         1120    i.IntPrioritySet    driverlib.lib(interrupt.o)
+    0x00000d9c   0x0000009c   Code   RO          185    i.MainCheckFaults   main.o
+    0x00000e38   0x00000010   Code   RO          186    i.MainClearFaults   main.o
+    0x00000e48   0x00000064   Code   RO          187    i.MainEmergencyStop  main.o
+    0x00000eac   0x00000010   Code   RO          188    i.MainIsFaulted     main.o
+    0x00000ebc   0x00000014   Code   RO          189    i.MainIsReverse     main.o
+    0x00000ed0   0x00000010   Code   RO          190    i.MainIsRunning     main.o
+    0x00000ee0   0x00000014   Code   RO          191    i.MainIsStartup     main.o
+    0x00000ef4   0x00000080   Code   RO          192    i.MainMillisecondTick  main.o
+    0x00000f74   0x00000048   Code   RO          194    i.MainPrechargeHandler  main.o
+    0x00000fbc   0x00000074   Code   RO          195    i.MainRun           main.o
+    0x00001030   0x00000014   Code   RO          197    i.MainSetFault      main.o
+    0x00001044   0x00000044   Code   RO          198    i.MainSetPWMFrequency  main.o
+    0x00001088   0x0000000c   Code   RO          199    i.MainSetPower      main.o
+    0x00001094   0x00000010   Code   RO          200    i.MainSetSpeed      main.o
+    0x000010a4   0x00000050   Code   RO          201    i.MainSpeedController  main.o
+    0x000010f4   0x00000170   Code   RO          202    i.MainSpeedHandler  main.o
+    0x00001264   0x000001d0   Code   RO          203    i.MainStartupHandler  main.o
+    0x00001434   0x00000058   Code   RO          204    i.MainStop          main.o
+    0x0000148c   0x00000038   Code   RO          205    i.MainUpdateFAdjI   main.o
+    0x000014c4   0x00000038   Code   RO          206    i.MainUpdatePAdjI   main.o
+    0x000014fc   0x00000058   Code   RO          207    i.MainWaveformTick  main.o
+    0x00001554   0x00000012   Code   RO          208    i.NmiSR             main.o
+    0x00001566   0x00000002   PAD
+    0x00001568   0x000000cc   Code   RO          386    i.PWM0IntHandler    pwm_ctrl.o
+    0x00001634   0x0000002c   Code   RO          387    i.PWMClearDeadBand  pwm_ctrl.o
+    0x00001660   0x0000000c   Code   RO         1212    i.PWMDeadBandDisable  driverlib.lib(pwm.o)
+    0x0000166c   0x00000010   Code   RO         1213    i.PWMDeadBandEnable  driverlib.lib(pwm.o)
+    0x0000167c   0x00000026   Code   RO         1218    i.PWMGenConfigure   driverlib.lib(pwm.o)
+    0x000016a2   0x0000000a   Code   RO         1220    i.PWMGenEnable      driverlib.lib(pwm.o)
+    0x000016ac   0x00000006   Code   RO         1226    i.PWMGenIntClear    driverlib.lib(pwm.o)
+    0x000016b2   0x0000000a   Code   RO         1230    i.PWMGenIntTrigEnable  driverlib.lib(pwm.o)
+    0x000016bc   0x00000012   Code   RO         1233    i.PWMGenPeriodSet   driverlib.lib(pwm.o)
+    0x000016ce   0x00000002   PAD
+    0x000016d0   0x0000000c   Code   RO          388    i.PWMGetPeriodCount  pwm_ctrl.o
+    0x000016dc   0x00000108   Code   RO          389    i.PWMInit           pwm_ctrl.o
+    0x000017e4   0x00000010   Code   RO         1237    i.PWMOutputFault    driverlib.lib(pwm.o)
+    0x000017f4   0x00000010   Code   RO         1239    i.PWMOutputInvert   driverlib.lib(pwm.o)
+    0x00001804   0x00000050   Code   RO          390    i.PWMOutputOff      pwm_ctrl.o
+    0x00001854   0x000000ec   Code   RO          392    i.PWMOutputPrecharge  pwm_ctrl.o
+    0x00001940   0x00000010   Code   RO         1240    i.PWMOutputState    driverlib.lib(pwm.o)
+    0x00001950   0x00000054   Code   RO          393    i.PWMOutputTrapezoid  pwm_ctrl.o
+    0x000019a4   0x00000020   Code   RO         1242    i.PWMPulseWidthSet  driverlib.lib(pwm.o)
+    0x000019c4   0x00000020   Code   RO          394    i.PWMReducePeriodCount  pwm_ctrl.o
+    0x000019e4   0x00000038   Code   RO          395    i.PWMSetDeadBand    pwm_ctrl.o
+    0x00001a1c   0x00000040   Code   RO          396    i.PWMSetDutyCycle   pwm_ctrl.o
+    0x00001a5c   0x00000044   Code   RO          397    i.PWMSetFrequency   pwm_ctrl.o
+    0x00001aa0   0x0000000c   Code   RO          398    i.PWMSetMinPulseWidth  pwm_ctrl.o
+    0x00001aac   0x00000004   Code   RO         1243    i.PWMSyncTimeBase   driverlib.lib(pwm.o)
+    0x00001ab0   0x00000004   Code   RO         1244    i.PWMSyncUpdate     driverlib.lib(pwm.o)
+    0x00001ab4   0x000000f8   Code   RO          399    i.PWMUpdateDutyCycle  pwm_ctrl.o
+    0x00001bac   0x0000000e   Code   RO         1422    i.QEIConfigure      driverlib.lib(qei.o)
+    0x00001bba   0x0000000a   Code   RO         1425    i.QEIEnable         driverlib.lib(qei.o)
+    0x00001bc4   0x00000004   Code   RO         1427    i.QEIIntClear       driverlib.lib(qei.o)
+    0x00001bc8   0x00000008   Code   RO         1429    i.QEIIntEnable      driverlib.lib(qei.o)
+    0x00001bd0   0x000000a4   Code   RO          514    i.QEIIntHandler     speed_sense.o
+    0x00001c74   0x00000010   Code   RO         1435    i.QEIVelocityConfigure  driverlib.lib(qei.o)
+    0x00001c84   0x0000000a   Code   RO         1437    i.QEIVelocityEnable  driverlib.lib(qei.o)
+    0x00001c8e   0x00000004   Code   RO         1438    i.QEIVelocityGet    driverlib.lib(qei.o)
+    0x00001c92   0x00000002   PAD
+    0x00001c94   0x0000002c   Code   RO          515    i.SpeedNewValue     speed_sense.o
+    0x00001cc0   0x00000078   Code   RO          516    i.SpeedSenseInit    speed_sense.o
+    0x00001d38   0x00000020   Code   RO         1538    i.SysCtlADCSpeedSet  driverlib.lib(sysctl.o)
+    0x00001d58   0x00000138   Code   RO         1542    i.SysCtlClockSet    driverlib.lib(sysctl.o)
+    0x00001e90   0x0000000c   Code   RO         1557    i.SysCtlLDOSet      driverlib.lib(sysctl.o)
+    0x00001e9c   0x00000018   Code   RO         1562    i.SysCtlPeripheralClockGating  driverlib.lib(sysctl.o)
+    0x00001eb4   0x00000020   Code   RO         1566    i.SysCtlPeripheralEnable  driverlib.lib(sysctl.o)
+    0x00001ed4   0x00000020   Code   RO         1570    i.SysCtlPeripheralSleepEnable  driverlib.lib(sysctl.o)
+    0x00001ef4   0x00000004   Code   RO         1576    i.SysCtlSleep       driverlib.lib(sysctl.o)
+    0x00001ef8   0x0000000e   Code   RO         1805    i.SysTickEnable     driverlib.lib(systick.o)
+    0x00001f06   0x0000000e   Code   RO         1807    i.SysTickIntEnable  driverlib.lib(systick.o)
+    0x00001f14   0x000000ac   Code   RO          577    i.SysTickIntHandler  ui.o
+    0x00001fc0   0x0000000a   Code   RO         1811    i.SysTickPeriodSet  driverlib.lib(systick.o)
+    0x00001fca   0x00000002   PAD
+    0x00001fcc   0x0000000c   Code   RO          209    i.Timer0AIntHandler  main.o
+    0x00001fd8   0x00000024   Code   RO          578    i.Timer1AIntHandler  ui.o
+    0x00001ffc   0x0000001c   Code   RO         1867    i.TimerConfigure    driverlib.lib(timer.o)
+    0x00002018   0x0000000e   Code   RO         1874    i.TimerEnable       driverlib.lib(timer.o)
+    0x00002026   0x00000004   Code   RO         1875    i.TimerIntClear     driverlib.lib(timer.o)
+    0x0000202a   0x00000008   Code   RO         1877    i.TimerIntEnable    driverlib.lib(timer.o)
+    0x00002032   0x00000012   Code   RO         1882    i.TimerLoadSet      driverlib.lib(timer.o)
+    0x00002044   0x0000000a   Code   RO         1892    i.TimerValueGet     driverlib.lib(timer.o)
+    0x0000204e   0x00000002   PAD
+    0x00002050   0x00000044   Code   RO          562    i.TrapModulate      trapmod.o
+    0x00002094   0x00000002   Code   RO          579    i.UIButtonHold      ui.o
+    0x00002096   0x00000018   Code   RO          580    i.UIButtonPress     ui.o
+    0x000020ae   0x0000000a   Code   RO          581    i.UIFaultLEDBlink   ui.o
+    0x000020b8   0x00000038   Code   RO          582    i.UIGetTicks        ui.o
+    0x000020f0   0x0000010c   Code   RO          583    i.UIInit            ui.o
+    0x000021fc   0x00000048   Code   RO          584    i.UILEDBlink        ui.o
+    0x00002244   0x0000001c   Code   RO          649    i.UIOnboardInit     ui_onboard.o
+    0x00002260   0x000000e0   Code   RO          651    i.UIOnboardSwitchDebouncer  ui_onboard.o
+    0x00002340   0x0000000a   Code   RO          585    i.UIRunLEDBlink     ui.o
+    0x0000234a   0x0000000a   Code   RO         2035    i.WatchdogEnable    driverlib.lib(watchdog.o)
+    0x00002354   0x00000006   Code   RO         2036    i.WatchdogIntClear  driverlib.lib(watchdog.o)
+    0x0000235a   0x00000002   PAD
+    0x0000235c   0x00000028   Code   RO          210    i.WatchdogIntHandler  main.o
+    0x00002384   0x00000004   Code   RO         2044    i.WatchdogReloadSet  driverlib.lib(watchdog.o)
+    0x00002388   0x0000000a   Code   RO         2046    i.WatchdogResetEnable  driverlib.lib(watchdog.o)
+    0x00002392   0x0000000e   Code   RO         2171    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x000023a0   0x00000002   Code   RO         2172    i.__scatterload_null  mc_w.l(handlers.o)
+    0x000023a2   0x0000000e   Code   RO         2173    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x000023b0   0x000001b0   Code   RO          211    i.main              main.o
+    0x00002560   0x00000020   Data   RO          563    .constdata          trapmod.o
+    0x00002580   0x0000000c   Data   RO          586    .constdata          ui.o
+    0x0000258c   0x00000014   Data   RO          587    .constdata          ui.o
+    0x000025a0   0x00000004   Data   RO          588    .constdata          ui.o
+    0x000025a4   0x00000068   Data   RO         1123    .constdata          driverlib.lib(interrupt.o)
+    0x0000260c   0x0000009c   Data   RO         1579    .constdata          driverlib.lib(sysctl.o)
+    0x000026a8   0x00000020   Data   RO         2169    Region$$Table       anon$$obj.o
+
+
+    Execution Region RW_IRAM (Base: 0x20000000, Size: 0x00001190, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00000028])
+
+    Base Addr    Size         Type   Attr      Idx    E Section Name        Object
+
+    0x20000000   0x0000006c   Data   RW            9    .data               adc_ctrl.o
+    0x2000006c   0x00000008   Data   RW          118    .data               brake.o
+    0x20000074   0x00000014   Data   RW          150    .data               hall_ctrl.o
+    0x20000088   0x00000074   Data   RW          212    .data               main.o
+    0x200000fc   0x00000030   Data   RW          400    .data               pwm_ctrl.o
+    0x2000012c   0x00000010   Data   RW          517    .data               speed_sense.o
+    0x2000013c   0x00000018   Data   RW          589    .data               ui.o
+    0x20000154   0x00000004   Data   RW          591    .data               ui.o
+    0x20000158   0x00000024   Data   RW          652    .data               ui_onboard.o
+    0x2000017c   0x00000010   Zero   RW            8    .bss                adc_ctrl.o
+    0x2000018c   0x00000004   PAD
+    0x20000190   0x00001000   Zero   RW          554    STACK               startup_rvmdk.o
+
+
+==============================================================================
+
+Image component sizes
+
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
+
+      1428        116          0        108         16      11176   adc_ctrl.o
+       212         20          0          8          0       1080   brake.o
+       300         42          0         20          0       2678   hall_ctrl.o
+      2526        242          0        116          0      15727   main.o
+      1404        124          0         48          0       7315   pwm_ctrl.o
+       460         60          0         16          0       2308   speed_sense.o
+       244        240          0          0       4096        184   startup_rvmdk.o
+        68          4         32          0          0       1175   trapmod.o
+       650         86         36         28          0       6016   ui.o
+       252         20          0         36          0       1555   ui_onboard.o
+
+    ----------------------------------------------------------------------
+      7548        954        100        380       4116      49214   Object Totals
+         0          0         32          0          0          0   (incl. Generated)
+         4          0          0          0          4          3   (incl. Padding)
+
+    ----------------------------------------------------------------------
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Member Name
+
+       248          0          0          0          0       6348   adc.o
+        38          0          0          0          0        356   cpu.o
+       444          0          0          0          0       6990   gpio.o
+       258          4        104          0          0       2705   interrupt.o
+       198          0          0          0          0       6384   pwm.o
+        66          0          0          0          0       3132   qei.o
+       454         50        156          0          0       4647   sysctl.o
+        38          0          0          0          0       1170   systick.o
+        82          0          0          0          0       2807   timer.o
+        30          0          0          0          0       1738   watchdog.o
+        58          0          0          0          0          0   __dczerorl.o
+         0          0          0          0          0          0   entry.o
+         8          4          0          0          0          0   entry2.o
+         4          0          0          0          0          0   entry5.o
+         8          4          0          0          0          0   entry7.o
+        30          0          0          0          0          0   handlers.o
+        36          8          0          0          0         68   init.o
+
+    ----------------------------------------------------------------------
+      2020         70        260          0          0      36345   Library Totals
+        20          0          0          0          0          0   (incl. Padding)
+
+    ----------------------------------------------------------------------
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
+
+      1856         54        260          0          0      36277   driverlib.lib
+       144         16          0          0          0         68   mc_w.l
+
+    ----------------------------------------------------------------------
+      2020         70        260          0          0      36345   Library Totals
+
+    ----------------------------------------------------------------------
+
+==============================================================================
+
+
+      Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
+
+      9568       1024        360        380       4116      79180   Grand Totals
+      9568       1024        360         40       4116      79180   ELF Image Totals (compressed)
+      9568       1024        360         40          0          0   ROM Totals
+
+==============================================================================
+
+    Total RO  Size (Code + RO Data)                 9928 (   9.70kB)
+    Total RW  Size (RW Data + ZI Data)              4496 (   4.39kB)
+    Total ROM Size (Code + RO Data + RW Data)       9968 (   9.73kB)
+
+==============================================================================
+

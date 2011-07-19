@@ -1,0 +1,88 @@
+<!--
+Configuration file for Sourcery G++ workspace dk-lm3s9b96
+
+Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 6594 of the DK-LM3S9B96 Firmware Package.
+-->
+
+<workspace>
+  <project description="../../inc/inc.sgxx" />
+  <project description="../../boot_loader/boot_loader.sgxx" />
+  <project description="../../third_party/third_party.sgxx" />
+  <project description="../../utils/utils.sgxx" />
+  <project description="../../driverlib/driverlib.sgxx" />
+  <project description="../../grlib/grlib.sgxx" />
+  <project description="../../IQmath/IQmath.sgxx" />
+  <project description="../../usblib/usblib.sgxx" />
+  <project description="aes_expanded_key/aes_expanded_key.sgxx" />
+  <project description="aes_set_key/aes_set_key.sgxx" />
+  <project description="bitband/bitband.sgxx" />
+  <project description="blinky/blinky.sgxx" />
+  <project description="boot_demo1/boot_demo1.sgxx" />
+  <project description="boot_demo2/boot_demo2.sgxx" />
+  <project description="boot_demo_eth/boot_demo_eth.sgxx" />
+  <project description="boot_demo_usb/boot_demo_usb.sgxx" />
+  <project description="boot_eth_ext/boot_eth_ext.sgxx" />
+  <project description="boot_eth/boot_eth.sgxx" />
+  <project description="boot_serial/boot_serial.sgxx" />
+  <project description="boot_usb/boot_usb.sgxx" />
+  <project description="calibrate/calibrate.sgxx" />
+  <project description="dbeeprom/dbeeprom.sgxx" />
+  <project description="enet_io/enet_io.sgxx" />
+  <project description="enet_lwip/enet_lwip.sgxx" />
+  <project description="enet_ptpd/enet_ptpd.sgxx" />
+  <project description="enet_uip/enet_uip.sgxx" />
+  <project description="ext_demo_1/ext_demo_1.sgxx" />
+  <project description="ext_demo_2/ext_demo_2.sgxx" />
+  <project description="gpio_jtag/gpio_jtag.sgxx" />
+  <project description="grlib_demo/grlib_demo.sgxx" />
+  <project description="hello/hello.sgxx" />
+  <project description="hello_widget/hello_widget.sgxx" />
+  <project description="i2s_demo/i2s_demo.sgxx" />
+  <project description="i2s_filter/i2s_filter.sgxx" />
+  <project description="i2s_speex_enc/i2s_speex_enc.sgxx" />
+  <project description="IQmath_demo/IQmath_demo.sgxx" />
+  <project description="interrupts/interrupts.sgxx" />
+  <project description="lang_demo/lang_demo.sgxx" />
+  <project description="mpu_fault/mpu_fault.sgxx" />
+  <project description="otg_detect/otg_detect.sgxx" />
+  <project description="qs-checkout/qs-checkout.sgxx" />
+  <project description="safertos_demo/safertos_demo.sgxx" />
+  <project description="scribble/scribble.sgxx" />
+  <project description="sd_card/sd_card.sgxx" />
+  <project description="showjpeg/showjpeg.sgxx" />
+  <project description="softuart_echo/softuart_echo.sgxx" />
+  <project description="timers/timers.sgxx" />
+  <project description="uart_echo/uart_echo.sgxx" />
+  <project description="udma_demo/udma_demo.sgxx" />
+  <project description="usb_dev_audio/usb_dev_audio.sgxx" />
+  <project description="usb_dev_bulk/usb_dev_bulk.sgxx" />
+  <project description="usb_dev_caudiohid/usb_dev_caudiohid.sgxx" />
+  <project description="usb_dev_keyboard/usb_dev_keyboard.sgxx" />
+  <project description="usb_dev_msc/usb_dev_msc.sgxx" />
+  <project description="usb_dev_mouse/usb_dev_mouse.sgxx" />
+  <project description="usb_dev_serial/usb_dev_serial.sgxx" />
+  <project description="usb_host_audio/usb_host_audio.sgxx" />
+  <project description="usb_host_audioin/usb_host_audioin.sgxx" />
+  <project description="usb_host_keyboard/usb_host_keyboard.sgxx" />
+  <project description="usb_host_msc/usb_host_msc.sgxx" />
+  <project description="usb_stick_demo/usb_stick_demo.sgxx" />
+  <project description="usb_stick_update/usb_stick_update.sgxx" />
+  <project description="videocap/videocap.sgxx" />
+  <project description="watchdog/watchdog.sgxx" />
+</workspace>

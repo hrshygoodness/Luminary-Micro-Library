@@ -1,0 +1,9 @@
+.\rvmdk\cpu_usage.o: ..\..\..\utils\cpu_usage.c
+.\rvmdk\cpu_usage.o: ..\..\..\inc/hw_memmap.h
+.\rvmdk\cpu_usage.o: ..\..\..\inc/hw_types.h
+.\rvmdk\cpu_usage.o: ..\..\..\driverlib/debug.h
+.\rvmdk\cpu_usage.o: ..\..\..\driverlib/rom.h
+.\rvmdk\cpu_usage.o: ..\..\..\driverlib/rom_map.h
+.\rvmdk\cpu_usage.o: ..\..\..\driverlib/sysctl.h
+.\rvmdk\cpu_usage.o: ..\..\..\driverlib/timer.h
+.\rvmdk\cpu_usage.o: ..\..\..\utils/cpu_usage.h

@@ -1,0 +1,65 @@
+;
+;   Stellaris USB CDC (serial) driver installation file.
+;
+;   Copyright (C) 2010 Texas Instruments, Inc.
+;
+
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%MFGNAME%
+LayoutFile=layout.inf
+DriverVer=03/26/2007,6.0.2600.1
+
+[SourceDisksNames]
+1=%DISKNAME%,,,
+
+[SourceDisksFiles]
+%12%\usbser.sys=1
+
+[Manufacturer]
+%MFGNAME%=VirComDevice,NT,NTamd64
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[VirComDevice.NT]
+;
+; This entry is for the composite hid/serial device usb_dev_chidcdc.  Notice 
+; that the value is MI_01 because the serial device is on interface 1.
+;
+%DESCRIPTION%=DriverInstall,USB\Vid_1CBE&Pid_0009&MI_01
+
+[VirComDevice.NTamd64]
+;
+; This entry is for the composite hid/serial device usb_dev_chidcdc.  Notice 
+; that the value is MI_01 because the serial device is on interface 1.
+;
+%DESCRIPTION%=DriverInstall,USB\Vid_1CBE&Pid_0009&MI_01
+
+[DriverInstall.NT]
+Include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection
+AddReg=DriverInstall.NT.AddReg
+
+[DriverInstall.NT.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[DriverInstall.NT.Services]
+AddService=usbser, 0x00000002, DriverServiceInst
+
+[DriverServiceInst]
+DisplayName=%SERVICE%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys
+
+[Strings]
+MFGNAME       = "Texas Instruments, Inc."
+DISKNAME      = "Stellaris Composite Serial Device"
+DESCRIPTION   = "Stellaris USB Serial Command Port"
+SERVICE       = "Stellaris USB CDC serial port"

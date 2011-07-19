@@ -1,0 +1,112 @@
+### uVision2 Project, (C) Keil Software
+### Do not modify !
+
+Target (boot_serial), 0x0004 // Tools: 'ARM-ADS'
+
+Group (Source)
+Group (Documentation)
+
+File 1,1,<..\..\..\boot_loader\bl_autobaud.c><bl_autobaud.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_can.c><bl_can.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_check.c><bl_check.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_decrypt.c><bl_decrypt.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_enet.c><bl_enet.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_flash.c><bl_flash.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_i2c.c><bl_i2c.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_main.c><bl_main.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_packet.c><bl_packet.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_ssi.c><bl_ssi.c> 0x0
+File 1,2,<..\..\..\boot_loader\bl_startup_rvmdk.S><bl_startup_rvmdk.S> 0x0
+File 1,1,<..\..\..\boot_loader\bl_uart.c><bl_uart.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_usb.c><bl_usb.c> 0x0
+File 1,1,<..\..\..\boot_loader\bl_usbfuncs.c><bl_usbfuncs.c> 0x0
+File 2,5,<..\..\..\boot_loader\readme.txt><readme.txt> 0x0
+
+Options 1,0,0  // Target 'boot_serial'
+ Device (LM3S9B96)
+ Vendor (Luminary Micro)
+ Cpu (IRAM(0x20000000-0x20017fff) IROM(0-0x3ffff) CLOCK(80000000) CPUTYPE("Cortex-M3"))
+ FlashUt ()
+ StupF ("STARTUP\Luminary\Startup.s" ("Luminary Startup Code"))
+ FlashDR (UL2CM3(-UU0101L5E -O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FCFFFC -FN1 -FF0LM3S_256 -FS00 -FL040000))
+ DevID (4079)
+ Rgf (LM3Sxxx.H)
+ Mem ()
+ C ()
+ A ()
+ RL ()
+ OH ()
+ DBC_IFX ()
+ DBC_CMS ()
+ DBC_AMS ()
+ DBC_LMS ()
+ UseEnv=0
+ EnvBin ()
+ EnvInc ()
+ EnvLib ()
+ EnvReg (ÿLuminary\)
+ OrgReg (ÿLuminary\)
+ TgStat=0
+ OutDir (.\rvmdk\)
+ OutName (boot_serial)
+ GenApp=1
+ GenLib=0
+ GenHex=0
+ Debug=1
+ Browse=1
+ LstDir (.\rvmdk\)
+ HexSel=1
+ MG32K=0
+ TGMORE=0
+ RunUsr 0 1 <fromelf --bin --output .\rvmdk\boot_serial.bin .\rvmdk\boot_serial.axf>
+ RunUsr 1 0 <>
+ BrunUsr 0 1 <armcc --device DLM -I . -E -o bl_config.inc ..\..\..\boot_loader\bl_config.c>
+ BrunUsr 1 0 <>
+ CrunUsr 0 0 <>
+ CrunUsr 1 0 <>
+ SVCSID <>
+ GLFLAGS=1790
+ ADSFLGA { 240,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ACPUTYP ("Cortex-M3")
+ ADSTFLGA { 0,12,0,18,99,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSOCM { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ OCMADSIRAM { 0,0,0,0,32,0,128,0,0 }
+ OCMADSIROM { 1,0,0,0,0,0,120,1,0 }
+ OCMADSXRAM { 0,0,0,0,0,0,0,0,0 }
+ OCR_RVCT { 1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,32,0,128,1,0,0,0,0,0,0,0,0,0,0 }
+ RV_STAVEC ()
+ ADSCCFLG { 12,2,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSCMISC ()
+ ADSCDEFN (rvmdk PART_LM3S9B96 TARGET_IS_TEMPEST_RB1)
+ ADSCUDEF ()
+ ADSCINCD (.;..\..\..;..\..\..\boot_loader;)
+ ADSASFLG { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSAMISC ()
+ ADSADEFN ()
+ ADSAUDEF ()
+ ADSAINCD ()
+ PropFld { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ IncBld=1
+ AlwaysBuild=0
+ GenAsm=0
+ AsmAsm=0
+ PublicsOnly=0
+ StopCode=3
+ CustArgs ()
+ LibMods ()
+ ADSLDFG { 16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ ADSLDTA (0x00000000)
+ ADSLDDA (0x20000000)
+ ADSLDSC (..\..\..\boot_loader\bl_link.sct)
+ ADSLDIB ()
+ ADSLDIC ()
+ ADSLDMC (--entry Reset_Handler)
+ ADSLDIF ()
+ ADSLDDW ()
+  OPTDL (SARMCM3.DLL)()(DLM.DLL)(-pLM3S9B96)(SARMCM3.DLL)()(TLM.DLL)(-pLM3S9B96)
+  OPTDBG 48126,3,()()()()()()()()()() (BIN\lmidk-agdi.dll)()()()
+ FLASH1 { 1,0,0,0,1,0,0,0,3,16,0,0,0,0,0,0,0,0,0,0 }
+ FLASH2 (BIN\lmidk-agdi.dll)
+ FLASH3 ("" ())
+ FLASH4 ()
+EndOpt

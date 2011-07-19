@@ -1,0 +1,4 @@
+--cpu Cortex-M3 ".\rvmdk\adc_ctrl.o" ".\rvmdk\brake.o" ".\rvmdk\hall_ctrl.o" ".\rvmdk\main.o" ".\rvmdk\pwm_ctrl.o" ".\rvmdk\sine.o" ".\rvmdk\sinemod.o" ".\rvmdk\speed_sense.o" ".\rvmdk\startup_rvmdk.o" ".\rvmdk\trapmod.o" ".\rvmdk\ui.o" ".\rvmdk\ui_onboard.o" "..\..\..\driverlib\rvmdk\driverlib.lib" --library_type=microlib --strict --scatter "basic-bldc.sct" 
+--entry Reset_Handler --autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\rvmdk\basic-bldc.map" -o ".\rvmdk\basic-bldc.axf"

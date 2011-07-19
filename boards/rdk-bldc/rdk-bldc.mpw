@@ -1,0 +1,6 @@
+[WORKSPACE]
+  MPW_NAME=rdk-bldc
+  Project="..\..\driverlib\driverlib.Uv2",A
+  Project="basic-bldc\basic-bldc.Uv2"
+  Project="boot_eth\boot_eth.Uv2"
+  Project="qs-bldc\qs-bldc.Uv2"

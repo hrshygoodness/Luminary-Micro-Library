@@ -1,0 +1,10 @@
+.\rvmdk\ui_can.o: ui_can.c
+.\rvmdk\ui_can.o: ..\..\..\inc/hw_ints.h
+.\rvmdk\ui_can.o: ..\..\..\inc/hw_memmap.h
+.\rvmdk\ui_can.o: ..\..\..\inc/hw_types.h
+.\rvmdk\ui_can.o: ..\..\..\driverlib/can.h
+.\rvmdk\ui_can.o: ..\..\..\driverlib/gpio.h
+.\rvmdk\ui_can.o: ..\..\..\driverlib/interrupt.h
+.\rvmdk\ui_can.o: ..\..\..\driverlib/sysctl.h
+.\rvmdk\ui_can.o: ui_common.h
+.\rvmdk\ui_can.o: ui_can.h

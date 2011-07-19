@@ -1,0 +1,5 @@
+[WORKSPACE]
+  MPW_NAME=rdk-acim
+  Project="..\..\driverlib\driverlib.Uv2",A
+  Project="boot_serial\boot_serial.Uv2"
+  Project="qs-acim\qs-acim.Uv2"

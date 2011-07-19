@@ -1,0 +1,7 @@
+Dependencies for Project 'usb_stick_update', Target 'usb_stick_update': (DO NOT MODIFY !)
+F (simple_fs.c)(0x4D686EBD)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\simple_fs.o" --omf_browse ".\rvmdk\simple_fs.crf" --depend ".\rvmdk\simple_fs.d")
+F (.\startup_rvmdk.S)(0x4D686EBD)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (usb_stick_update.c)(0x4D686EBD)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\usb_stick_update.o" --omf_browse ".\rvmdk\usb_stick_update.crf" --depend ".\rvmdk\usb_stick_update.d")
+F (..\..\..\driverlib\rvmdk\driverlib.lib)(0x4D686EBE)()
+F (..\..\..\usblib\rvmdk\usblib.lib)(0x4D686EC4)()
+F (.\readme.txt)(0x4D686EBD)()

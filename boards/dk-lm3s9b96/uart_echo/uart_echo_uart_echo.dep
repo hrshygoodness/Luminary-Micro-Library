@@ -1,0 +1,8 @@
+Dependencies for Project 'uart_echo', Target 'uart_echo': (DO NOT MODIFY !)
+F (..\drivers\kitronix320x240x16_ssd2119_8bit.c)(0x4D686EB2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\kitronix320x240x16_ssd2119_8bit.o" --omf_browse ".\rvmdk\kitronix320x240x16_ssd2119_8bit.crf" --depend ".\rvmdk\kitronix320x240x16_ssd2119_8bit.d")
+F (..\drivers\set_pinout.c)(0x4D686EB2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\set_pinout.o" --omf_browse ".\rvmdk\set_pinout.crf" --depend ".\rvmdk\set_pinout.d")
+F (.\startup_rvmdk.S)(0x4D686EBA)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (.\uart_echo.c)(0x4D686EBA)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\uart_echo.o" --omf_browse ".\rvmdk\uart_echo.crf" --depend ".\rvmdk\uart_echo.d")
+F (..\..\..\driverlib\rvmdk\driverlib.lib)(0x4D686EBE)()
+F (..\..\..\grlib\rvmdk\grlib.lib)(0x4D686EBF)()
+F (.\readme.txt)(0x4D686EBA)()

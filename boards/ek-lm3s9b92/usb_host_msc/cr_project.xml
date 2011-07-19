@@ -1,0 +1,116 @@
+<!--
+Configuration file for Code Red project usb_host_msc
+
+Copyright (c) 2009-2010 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 6075 of the EK-LM3S9B92 Firmware Package.
+-->
+
+<project chip="LM3S9B92"
+         postBuild="arm-none-eabi-objcopy -O binary ${BuildArtifactFileName} ${BuildArtifactFileBaseName}.bin"
+         type="LMI Basic C project"
+         vendor="LMI">
+  <import src=".">
+    <exclude>{(Makefile|ccs|codered|ewarm|gcc|rvmdk|sourcerygxx)}</exclude>
+    <exclude>{startup_(ewarm|gcc|rvmdk|sourcerygxx|ccs).(c|S)}</exclude>
+    <exclude>{.*\.(ewd|ewp|eww|icf|Opt|sct|sgxx|Uv2|uvopt|uvproj|xml|ld|cmd)}</exclude>
+  </import>
+  <import src="../../..">
+    <copy>utils/cmdline.c</copy>
+    <copy>utils/uartstdio.c</copy>
+    <copy>third_party/fatfs/src/ff.c</copy>
+    <copy>third_party/fatfs/port/fat_usbmsc.c</copy>
+  </import>
+  <import src=".">
+    <copy>usb_host_msc_codered.ld</copy>
+  </import>
+  <requires>
+    <value>inc</value>
+    <value>driverlib</value>
+    <value>usblib</value>
+    <value>third_party</value>
+    <value>utils</value>
+  </requires>
+  <setting id="assembler.def">
+    <value>codered</value>
+  </setting>
+  <setting id="compiler.def"
+           buildType="Debug"
+           mode="replace">
+    <value>DEBUG</value>
+  </setting>
+  <setting id="compiler.def"
+           buildType="Release"
+           mode="replace">
+    <value>NDEBUG</value>
+  </setting>
+  <setting id="compiler.def">
+    <value>__CODE_RED</value>
+    <value>codered</value>
+    <value>PART_LM3S9B92</value>
+    <value>TARGET_IS_TEMPEST_RB1</value>
+  </setting>
+  <setting id="compiler.opt"
+           buildType="Debug">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.opt"
+           buildType="Release">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.flags"
+           buildType="Debug">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.flags"
+           buildType="Release">
+    <value>-Os</value>
+  </setting>
+  <setting id="linker.script">
+    <value>../usb_host_msc_codered.ld</value>
+  </setting>
+  <setting id="linker.libs">
+    <value>usb</value>
+    <value>driver</value>
+    <value>c</value>
+    <value>gcc</value>
+  </setting>
+  <setting id="linker.paths"
+           buildType="Debug">
+    <value>${workspace_loc:/driverlib/Debug}</value>
+    <value>${workspace_loc:/usblib/Debug}</value>
+  </setting>
+  <setting id="linker.paths"
+           buildType="Release">
+    <value>${workspace_loc:/driverlib/Release}</value>
+    <value>${workspace_loc:/usblib/Release}</value>
+  </setting>
+  <setting id="compiler.inc">
+    <value>${workspace_loc:/}</value>
+    <value>..</value>
+    <value>${workspace_loc:/third_party}</value>
+    <value>${workspace_loc:/third_party/fatfs/port}</value>
+    <value>${workspace_loc:/third_party/fatfs/src}</value>
+  </setting>
+  <setting id="assembler.inc">
+    <value>${workspace_loc:/}</value>
+    <value>..</value>
+    <value>${workspace_loc:/third_party}</value>
+    <value>${workspace_loc:/third_party/fatfs/port}</value>
+    <value>${workspace_loc:/third_party/fatfs/src}</value>
+  </setting>
+</project>

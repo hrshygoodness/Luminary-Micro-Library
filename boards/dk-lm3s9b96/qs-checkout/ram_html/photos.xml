@@ -1,0 +1,271 @@
+<gallery
+base = ""
+background = "#000000"
+banner = "#000000"
+text = "#FFFFFF"
+link = "#AEAEAE"
+alink = "#79AADA"
+vlink = "#DEDEDE"
+date = "2/6/2009">
+    <sitename>Stellaris Photo Gallery</sitename>
+    <photographer>Technical wizards AND artists</photographer>
+    <contactinfo></contactinfo>
+    <email>support_lmi@ti.com</email>
+    <security><![CDATA[]]> </security>
+
+<banner font = "Arial" fontsize = "3" color =  "#000000"> </banner>
+<thumbnail base ="thumbnails/" font = "Arial" fontsize = "4" color = "#000000" border = "0" rows = "3" col = "5"> </thumbnail>
+<large base ="images/" font = "Arial" fontsize = "3" color = "#000000" border = "0"> </large>
+<images id = "images">
+
+<image
+path = "1-6965.jpg"
+width = "520"
+height = "520"
+thumbpath = "1-6965.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "2-austin.jpg"
+width = "520"
+height = "520"
+thumbpath = "2-austin.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "3-bdc.jpg"
+width = "520"
+height = "520"
+thumbpath = "3-bdc.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "4-jaguar.jpg"
+width = "520"
+height = "520"
+thumbpath = "4-jaguar.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "5-fountn.jpg"
+width = "520"
+height = "520"
+thumbpath = "5-fountn.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "6-8962.jpg"
+width = "520"
+height = "520"
+thumbpath = "6-8962.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "7-capitol.jpg"
+width = "520"
+height = "520"
+thumbpath = "7-capitol.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "8-1968.jpg"
+width = "520"
+height = "520"
+thumbpath = "8-1968.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "9-lighth.jpg"
+width = "520"
+height = "520"
+thumbpath = "9-lighth.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "10-idm.jpg"
+width = "520"
+height = "520"
+thumbpath = "10-idm.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "11-btrfly.jpg"
+width = "520"
+height = "520"
+thumbpath = "11-btrfly.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "12-idml35.jpg"
+width = "520"
+height = "520"
+thumbpath = "12-idml35.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "13-811.jpg"
+width = "520"
+height = "520"
+thumbpath = "13-811.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "14-firew.jpg"
+width = "520"
+height = "520"
+thumbpath = "14-firew.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "15-2965.jpg"
+width = "520"
+height = "520"
+thumbpath = "15-2965.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "16-360br.jpg"
+width = "520"
+height = "520"
+thumbpath = "16-360br.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "17-3748.jpg"
+width = "520"
+height = "520"
+thumbpath = "17-3748.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "18-boots.jpg"
+width = "520"
+height = "520"
+thumbpath = "18-boots.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "19-acim.jpg"
+width = "520"
+height = "520"
+thumbpath = "19-acim.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "20-beach.jpg"
+width = "520"
+height = "520"
+thumbpath = "20-beach.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "21-bldc.jpg"
+width = "520"
+height = "520"
+thumbpath = "21-bldc.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "22-rnbow.jpg"
+width = "520"
+height = "520"
+thumbpath = "22-rnbow.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "23-s2e.jpg"
+width = "520"
+height = "520"
+thumbpath = "23-s2e.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "24-hpool.jpg"
+width = "520"
+height = "520"
+thumbpath = "24-hpool.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+
+<image
+path = "25-stepr.jpg"
+width = "520"
+height = "520"
+thumbpath = "25-stepr.jpg"
+thumbwidth = "75"
+thumbheight = "75">
+</image>
+
+</images>
+</gallery>

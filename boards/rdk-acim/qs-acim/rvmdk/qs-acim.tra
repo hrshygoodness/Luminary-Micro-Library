@@ -1,0 +1,35 @@
+*** Creating Trace Output File '.\rvmdk\qs-acim.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '".\rvmdk\adc_ctrl.o"'
+### List of Objects: adding '".\rvmdk\brake.o"'
+### List of Objects: adding '".\rvmdk\cpu_usage.o"'
+### List of Objects: adding '".\rvmdk\flash_pb.o"'
+### List of Objects: adding '".\rvmdk\inrush.o"'
+### List of Objects: adding '".\rvmdk\main.o"'
+### List of Objects: adding '".\rvmdk\pwm_ctrl.o"'
+### List of Objects: adding '".\rvmdk\sine.o"'
+### List of Objects: adding '".\rvmdk\sinemod.o"'
+### List of Objects: adding '".\rvmdk\speed_sense.o"'
+### List of Objects: adding '".\rvmdk\startup_rvmdk.o"'
+### List of Objects: adding '".\rvmdk\svm.o"'
+### List of Objects: adding '".\rvmdk\ui.o"'
+### List of Objects: adding '".\rvmdk\ui_onboard.o"'
+### List of Objects: adding '".\rvmdk\ui_serial.o"'
+### List of Objects: adding '".\rvmdk\vf.o"'
+### List of Objects: adding '"..\..\..\driverlib\rvmdk\driverlib.lib"'
+### ADS-LD Command completed:
+--cpu Cortex-M3 ".\rvmdk\adc_ctrl.o" ".\rvmdk\brake.o" ".\rvmdk\cpu_usage.o" ".\rvmdk\flash_pb.o" ".\rvmdk\inrush.o" ".\rvmdk\main.o" ".\rvmdk\pwm_ctrl.o" ".\rvmdk\sine.o" ".\rvmdk\sinemod.o" ".\rvmdk\speed_sense.o" ".\rvmdk\startup_rvmdk.o" ".\rvmdk\svm.o" ".\rvmdk\ui.o" ".\rvmdk\ui_onboard.o" ".\rvmdk\ui_serial.o" ".\rvmdk\vf.o" "..\..\..\driverlib\rvmdk\driverlib.lib" --library_type=microlib --strict --scatter "qs-acim.sct" 
+--entry Reset_Handler --autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\rvmdk\qs-acim.map" -o ".\rvmdk\qs-acim.axf"### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: '.\rvmdk\qs-acim.axf'
+### ADS-LD Command File: '.\rvmdk\qs-acim.lnp'
+### Checking for dirty Components...
+### Creating CmdFile '.\rvmdk\qs-acim.lnp', Handle=0x000007E8
+### Writing '.lnp' file
+### ADS-LD Command file '.\rvmdk\qs-acim.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.

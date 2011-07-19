@@ -1,0 +1,6 @@
+Dependencies for Project 'timers', Target 'timers': (DO NOT MODIFY !)
+F (.\startup_rvmdk.S)(0x4C2D7630)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (.\timers.c)(0x4C2D7630)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\timers.o" --omf_browse ".\rvmdk\timers.crf" --depend ".\rvmdk\timers.d")
+F (..\..\..\utils\uartstdio.c)(0x4D6860B4)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\uartstdio.o" --omf_browse ".\rvmdk\uartstdio.crf" --depend ".\rvmdk\uartstdio.d")
+F (..\..\..\driverlib\rvmdk\driverlib.lib)(0x4D6860AE)()
+F (.\readme.txt)(0x4C2D7630)()

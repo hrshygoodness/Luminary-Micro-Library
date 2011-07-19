@@ -1,0 +1,8 @@
+Dependencies for Project 'i2s_filter', Target 'i2s_filter': (DO NOT MODIFY !)
+F (.\i2s_filter.c)(0x4D686EB6)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\i2s_filter.o" --omf_browse ".\rvmdk\i2s_filter.crf" --depend ".\rvmdk\i2s_filter.d")
+F (..\drivers\set_pinout.c)(0x4D686EB2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\set_pinout.o" --omf_browse ".\rvmdk\set_pinout.crf" --depend ".\rvmdk\set_pinout.d")
+F (..\drivers\sound.c)(0x4D686EB2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\sound.o" --omf_browse ".\rvmdk\sound.crf" --depend ".\rvmdk\sound.d")
+F (.\startup_rvmdk.S)(0x4D686EB6)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (..\drivers\tlv320aic23b.c)(0x4D686EB2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I.. -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\tlv320aic23b.o" --omf_browse ".\rvmdk\tlv320aic23b.crf" --depend ".\rvmdk\tlv320aic23b.d")
+F (..\..\..\driverlib\rvmdk\driverlib.lib)(0x4D686EBE)()
+F (.\readme.txt)(0x4D686EB6)()
