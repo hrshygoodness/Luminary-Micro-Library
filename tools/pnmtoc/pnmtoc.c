@@ -2,7 +2,7 @@
 //
 // pnmtoc.c - Program to convert a NetPBM image to a C array.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -807,7 +807,7 @@ Usage(char *pucProgram)
 int
 main(int argc, char *argv[])
 {
-    unsigned long ulLength, ulWidth, ulHeight, ulMax, ulCount, ulMono;
+    unsigned long ulLength, ulWidth, ulHeight, ulMax, ulCount, ulMono, ulBitmap;
     unsigned char *pucData;
     int iOpt, iCompress;
     FILE *pFile;
@@ -926,10 +926,11 @@ main(int argc, char *argv[])
     // Parse the file header to extract the width and height of the image, and
     // to verify that the image file is a format that is recognized.
     //
-    if((pucData[0] != 'P') || ((pucData[1] != '6') && (pucData[1] != '5')))
+    if((pucData[0] != 'P') || ((pucData[1] != '4') && (pucData[1] != '6') &&
+       (pucData[1] != '5')))
     {
-        fprintf(stderr, "%s: '%s' is not a PNM file.\n", basename(argv[0]),
-                argv[1]);
+        fprintf(stderr, "%s: '%s' is not a supported PNM file.\n",
+                basename(argv[0]), argv[1]);
         return(1);
     }
 
@@ -939,7 +940,12 @@ main(int argc, char *argv[])
     ulMono = (pucData[1] == '5') ? 1 : 0;
 
     //
-    // Loop through the three values to be read from the header.
+    // Are we dealing with a (1bpp) bitmap?
+    //
+    ulBitmap = (pucData[1] == '4') ? 1 : 0;
+
+    //
+    // Loop through the values to be read from the header.
     //
     for(ulCount = 0, ulMax = 2; ulCount < 3; )
     {
@@ -992,9 +998,23 @@ main(int argc, char *argv[])
                         basename(argv[0]), argv[1]);
                 return(1);
             }
+
+            //
+            // We've finished reading the header if this is a bitmap so force
+            // the loop to exit.
+            //
+            if(ulBitmap)
+            {
+                ulCount = 2;
+            }
         }
         else
         {
+            //
+            // Read the maximum number of colors.  We ignore this value but
+            // need to skip past it.  Note that, if this is a bitmap, we will
+            // never get here.
+            //
             if(sscanf(pucData + ulMax, "%lu", &ulCount) != 1)
             {
                 fprintf(stderr, "%s: '%s' has an invalid maximum value.\n",
@@ -1033,45 +1053,96 @@ main(int argc, char *argv[])
     }
 
     //
-    // Extract the color palette from the image.
+    // Is this a bitmap?
     //
-    GetNumColors(pucData + ulMax, ulWidth, ulHeight, ulMono);
+    if(!ulBitmap)
+    {
+        //
+        // No - get the number of distinct colors in the image.
+        //
+        GetNumColors(pucData + ulMax, ulWidth, ulHeight, ulMono);
 
-    //
-    // Determine how many colors are in the image.
-    //
-    if(g_ulNumColors <= 2)
-    {
         //
-        // There are 1 or 2 colors in the image, so encode it with 1 bit per
-        // pixel.
+        // Determine how many colors are in the image.
         //
-        ulLength = Encode1BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
-    }
-    else if(g_ulNumColors <= 16)
-    {
-        //
-        // There are 3 through 16 colors in the image, so encode it with 4 bits
-        // per pixel.
-        //
-        ulLength = Encode4BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
-    }
-    else if(g_ulNumColors <= 256)
-    {
-        //
-        // There are 17 through 256 colors in the image, so encode it with 8
-        // bits per pixel.
-        //
-        ulLength = Encode8BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
+        if(g_ulNumColors <= 2)
+        {
+            //
+            // There are 1 or 2 colors in the image, so encode it with 1 bit
+            // per pixel.
+            //
+            ulLength = Encode1BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
+        }
+        else if(g_ulNumColors <= 16)
+        {
+            //
+            // There are 3 through 16 colors in the image, so encode it with
+            // 4 bits per pixel.
+            //
+            ulLength = Encode4BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
+        }
+        else if(g_ulNumColors <= 256)
+        {
+            //
+            // There are 17 through 256 colors in the image, so encode it with
+            // 8 bits per pixel.
+            //
+            ulLength = Encode8BPP(pucData + ulMax, ulWidth, ulHeight, ulMono);
+        }
+        else
+        {
+            //
+            // There are more than 256 colors in the image, which is not
+            // supported.
+            //
+            fprintf(stderr, "%s: Image contains too many colors!\n",
+                    basename(argv[0]));
+            return(1);
+        }
     }
     else
     {
         //
-        // There are more than 256 colors in the image, which is not supported.
+        // This is a bitmap so the palette consists of black and white only.
         //
-        fprintf(stderr, "%s: Image contains too many colors!\n",
-                basename(argv[0]));
-        return(1);
+        g_ulNumColors = 2;
+
+        //
+        // Set up the palette needed for the data. PBM format defines 1 as a
+        // black pixel and 0 as a white one but we need to invert this to
+        // match the StellarisWare graphics library format.
+        //
+        g_pulColors[1] = 0x00FFFFFF;
+        g_pulColors[0] = 0x00000000;
+
+        //
+        // The data as read from the file is fine so we don't need to do any
+        // reformatting now that the palette is set up.  Just set up the length
+        // of the bitmap data remembering that each line is padded to a whole
+        // byte.  First check that the data we read is actually the correct
+        // length.
+        //
+        if((ulLength - ulMax) < (((ulWidth + 7) / 8) * ulHeight))
+        {
+            fprintf(stderr, "%s: Image data truncated. Size %d bytes "
+                    "but dimensions are %d x %d.\n", (ulLength - ulMax),
+                    ulWidth, ulHeight);
+            return(1);
+        }
+
+        //
+        // Set the length to the expected value.
+        //
+        ulLength = ((ulWidth + 7) / 8) * ulHeight;
+
+        //
+        // Invert the image data to make 1 bits foreground (white) and 0
+        // bits background (black).
+        //
+        for(ulCount = 0; ulCount < ulLength; ulCount++)
+        {
+            *(pucData + ulMax + ulCount) = ~(*(pucData + ulMax + ulCount));
+        }
     }
 
     //

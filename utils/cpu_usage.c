@@ -2,7 +2,7 @@
 //
 // cpu_usage.c - Routines to determine the CPU utilization.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -181,7 +181,7 @@ CPUUsageInit(unsigned long ulClockRate, unsigned long ulRate,
     //
     // Configure the third timer for 32-bit periodic operation.
     //
-    MAP_TimerConfigure(g_pulCPUUsageTimerBase[ulTimer], TIMER_CFG_32_BIT_PER);
+    MAP_TimerConfigure(g_pulCPUUsageTimerBase[ulTimer], TIMER_CFG_PERIODIC);
 
     //
     // Set the load value for the third timer to the maximum value.

@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the AES normal key example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -50,6 +55,7 @@ IPATH=.
 IPATH+=..
 IPATH+=../../..
 
+#
 # The default rule, which causes the AES normal key example to be built.
 #
 all: ${COMPILER}
@@ -75,8 +81,8 @@ ${COMPILER}/aes_set_key.axf: ${COMPILER}/aes_set_key.o
 ${COMPILER}/aes_set_key.axf: ${COMPILER}/kitronix320x240x16_ssd2119_8bit.o
 ${COMPILER}/aes_set_key.axf: ${COMPILER}/set_pinout.o
 ${COMPILER}/aes_set_key.axf: ${COMPILER}/startup_${COMPILER}.o
-${COMPILER}/aes_set_key.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/aes_set_key.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/aes_set_key.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/aes_set_key.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/aes_set_key.axf: aes_set_key.ld
 SCATTERgcc_aes_set_key=aes_set_key.ld
 ENTRY_aes_set_key=ResetISR

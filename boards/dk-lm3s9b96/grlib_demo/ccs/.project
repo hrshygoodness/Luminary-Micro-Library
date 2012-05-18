@@ -3,8 +3,8 @@
 	<name>grlib_demo</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib</project>
-		<project>grlib</project>
+		<project>driverlib-cm3</project>
+		<project>grlib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

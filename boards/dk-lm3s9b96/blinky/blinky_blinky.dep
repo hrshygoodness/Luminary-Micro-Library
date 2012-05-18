@@ -1,4 +1,4 @@
 Dependencies for Project 'blinky', Target 'blinky': (DO NOT MODIFY !)
-F (.\blinky.c)(0x4D686EB0)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\blinky.o" --omf_browse ".\rvmdk\blinky.crf" --depend ".\rvmdk\blinky.d")
-F (.\startup_rvmdk.S)(0x4D686EB0)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
-F (.\readme.txt)(0x4D686EB0)()
+F (.\blinky.c)(0x4E252CC2)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B96 -o ".\rvmdk\blinky.o" --omf_browse ".\rvmdk\blinky.crf" --depend ".\rvmdk\blinky.d")
+F (.\startup_rvmdk.S)(0x4E252CC2)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\CMSIS\Include" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (.\readme.txt)(0x4E252CC2)()

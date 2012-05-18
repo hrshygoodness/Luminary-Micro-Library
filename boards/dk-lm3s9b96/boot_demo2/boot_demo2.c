@@ -2,7 +2,7 @@
 //
 // boot_demo2.c - Second boot loader example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -125,7 +125,7 @@ void OnButtonPress(tWidget *pWidget);
 Canvas(g_sIPAddr, &g_sBackground, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 220, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCm20, g_pcIPAddr, 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCm20, g_pcIPAddr, 0, 0);
 
 //*****************************************************************************
 //
@@ -136,7 +136,7 @@ Canvas(g_sIPAddr, &g_sBackground, 0, 0,
 Canvas(g_sMACAddr, &g_sBackground, &g_sIPAddr, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 200, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCm20, g_pcMACAddr, 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCm20, g_pcMACAddr, 0, 0);
 
 //*****************************************************************************
 //
@@ -148,7 +148,7 @@ RectangularButton(g_sPushBtn, &g_sBackground, &g_sMACAddr, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrDarkBlue, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCmss22b, "Update Now", 0, 0, 0, 0, OnButtonPress);
+                   g_pFontCmss22b, "Update Now", 0, 0, 0, 0, OnButtonPress);
 
 //*****************************************************************************
 //
@@ -167,7 +167,7 @@ Canvas(g_sBackground, WIDGET_ROOT, 0, &g_sPushBtn,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "boot-demo2", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "boot-demo2", 0, 0);
 
 //*****************************************************************************
 //

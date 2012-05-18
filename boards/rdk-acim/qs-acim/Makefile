@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the A/C induction motor application.
 #
-# Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 6852 of the RDK-ACIM Firmware Package.
+# This is part of revision 8555 of the RDK-ACIM Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S818
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -63,7 +68,7 @@ clean:
 # The rule to create the target directory.
 #
 ${COMPILER}:
-	@mkdir ${COMPILER}
+	@mkdir -p ${COMPILER}
 
 #
 # Rules for building the A/C induction motor application.
@@ -84,7 +89,7 @@ ${COMPILER}/qs-acim.axf: ${COMPILER}/ui.o
 ${COMPILER}/qs-acim.axf: ${COMPILER}/ui_onboard.o
 ${COMPILER}/qs-acim.axf: ${COMPILER}/ui_serial.o
 ${COMPILER}/qs-acim.axf: ${COMPILER}/vf.o
-${COMPILER}/qs-acim.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/qs-acim.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/qs-acim.axf: qs-acim.ld
 SCATTERgcc_qs-acim=qs-acim.ld
 ENTRY_qs-acim=ResetISR

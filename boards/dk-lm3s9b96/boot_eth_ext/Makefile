@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the Ethernet Boot Loader targeting external flash.
 #
-# Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -52,6 +57,7 @@ IPATH+=..
 IPATH+=../../..
 IPATH+=../../../boot_loader
 
+#
 # The default rule, which causes the Ethernet Boot Loader targeting external flash to be built.
 #
 all: ${COMPILER}
@@ -92,8 +98,8 @@ ${COMPILER}/boot_eth_ext.axf: ${COMPILER}/kitronix320x240x16_ssd2119_8bit.o
 ${COMPILER}/boot_eth_ext.axf: ${COMPILER}/set_pinout.o
 ${COMPILER}/boot_eth_ext.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/boot_eth_ext.axf: ${COMPILER}/ustdlib.o
-${COMPILER}/boot_eth_ext.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/boot_eth_ext.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/boot_eth_ext.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/boot_eth_ext.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/boot_eth_ext.axf: ../../../boot_loader/bl_link.ld
 SCATTERgcc_boot_eth_ext=../../../boot_loader/bl_link.ld
 ENTRY_boot_eth_ext=ResetISR

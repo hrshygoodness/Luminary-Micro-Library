@@ -2,7 +2,7 @@
 //
 // usb_host_keyboard.c - main application code for the host keyboard example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,13 +18,14 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "usblib/usblib.h"
@@ -331,7 +332,35 @@ USBHCDEvents(void *pvData)
         //
         case USB_EVENT_CONNECTED:
         {
-            UARTprintf("Unknown Device Connected\n");
+            //
+            // See if this is a HID Keyboard.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_KEYB))
+            {
+                //
+                // Indicate that the keyboard has been detected.
+                //
+                UARTprintf("\nKeyboard Connected\n");
+
+                //
+                // Proceed to the STATE_KEYBOARD_INIT state so that the main
+                // loop can finish initialized the mouse since
+                // USBHKeyboardInit() cannot be called from within a callback.
+                //
+                g_eUSBState = STATE_KEYBOARD_INIT;
+            }
+
+            break;
+        }
+        //
+        // Unsupported device detected.
+        //
+        case USB_EVENT_UNKNOWN_CONNECTED:
+        {
+            UARTprintf("Unsupported Device Class (0x%02x) Connected.\n",
+                       pEventInfo->ulInstance);
 
             //
             // An unknown device was detected.
@@ -340,22 +369,27 @@ USBHCDEvents(void *pvData)
 
             break;
         }
-
         //
-        // Keyboard has been unplugged.
+        // Device has been unplugged.
         //
         case USB_EVENT_DISCONNECTED:
         {
-            UARTprintf("Unknown Device Disconnected\n");
+            //
+            // Indicate that the device has been disconnected.
+            //
+            UARTprintf("\nDevice Disconnected\n");
 
             //
-            // Unknown device has been removed.
+            // Change the state so that the main loop knows that the device
+            // is no longer present.
             //
             g_eUSBState = STATE_NO_DEVICE;
 
             break;
         }
-
+        //
+        // Power Fault has occurred.
+        //
         case USB_EVENT_POWER_FAULT:
         {
             UARTprintf("Power Fault\n");
@@ -400,50 +434,6 @@ KeyboardCallback(void *pvCBData, unsigned long ulEvent,
     switch(ulEvent)
     {
         //
-        // New keyboard detected.
-        //
-        case USB_EVENT_CONNECTED:
-        {
-            //
-            // Indicate that the keyboard has been detected.
-            //
-            UARTprintf("\nKeyboard Connected\n");
-
-            //
-            // Proceed to the STATE_KEYBOARD_INIT state so that the main loop
-            // can finish initialized the mouse since USBHKeyboardInit() cannot
-            // be called from within a callback.
-            //
-            g_eUSBState = STATE_KEYBOARD_INIT;
-
-            break;
-        }
-
-        //
-        // Keyboard has been unplugged.
-        //
-        case USB_EVENT_DISCONNECTED:
-        {
-            //
-            // Indicate that the keyboard has been disconnected.
-            //
-            UARTprintf("\nKeyboard Disconnected\n");
-
-            //
-            // Change the state so that the main loop knows that the keyboard
-            // is no longer present.
-            //
-            g_eUSBState = STATE_NO_DEVICE;
-
-            //
-            // Reset the modifiers state.
-            //
-            g_ulModifiers = 0;
-
-            break;
-        }
-
-        //
         // New Key press detected.
         //
         case USBH_EVENT_HID_KB_PRESS:
@@ -463,6 +453,32 @@ KeyboardCallback(void *pvCBData, unsigned long ulEvent,
                 // Toggle the current Caps Lock state.
                 //
                 g_ulModifiers ^= HID_KEYB_CAPS_LOCK;
+            }
+            else if(ulMsgParam == HID_KEYB_USAGE_SCROLLOCK)
+            {
+                //
+                // The main loop needs to update the keyboard's Scroll Lock
+                // state.
+                //
+                g_eUSBState = STATE_KEYBOARD_UPDATE;
+
+                //
+                // Toggle the current Scroll Lock state.
+                //
+                g_ulModifiers ^= HID_KEYB_SCROLL_LOCK;
+            }
+            else if(ulMsgParam == HID_KEYB_USAGE_NUMLOCK)
+            {
+                //
+                // The main loop needs to update the keyboard's Scroll Lock
+                // state.
+                //
+                g_eUSBState = STATE_KEYBOARD_UPDATE;
+
+                //
+                // Toggle the current Num Lock state.
+                //
+                g_ulModifiers ^= HID_KEYB_NUM_LOCK;
             }
             else if(ulMsgParam == HID_KEYB_USAGE_BACKSPACE)
             {
@@ -626,6 +642,8 @@ main(void)
                 // Proceed to the keyboard connected state.
                 //
                 g_eUSBState = STATE_KEYBOARD_CONNECTED;
+
+                USBHKeyboardModifierSet(g_ulKeyboardInstance, g_ulModifiers);
 
                 break;
             }

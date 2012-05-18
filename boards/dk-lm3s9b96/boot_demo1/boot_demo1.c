@@ -2,7 +2,7 @@
 //
 // boot_demo1.c - First boot loader example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -329,14 +329,14 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "boot-demo1", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 11, 0);
 
     //
     // Indicate what is happening.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+    GrContextFontSet(&g_sContext, g_pFontCmss22b);
     GrStringDrawCentered(&g_sContext, "The boot loader is now running", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 100, 0);
     GrStringDrawCentered(&g_sContext, "and awaiting an update.", -1,

@@ -2,7 +2,7 @@
 //
 // usb_dev_serial.c - Routines for handling the USB CDC serial device.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //****************************************************************************
 
@@ -180,12 +180,26 @@ SerialHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue,
         //
         case USB_EVENT_CONNECTED:
         {
-
             //
             // Flush our buffers.
             //
             USBBufferFlush(&g_sTxBuffer);
             USBBufferFlush(&g_sRxBuffer);
+
+            //
+            // Turn on the user LED.
+            //
+            LEDOn();
+
+            break;
+        }
+
+        case USB_EVENT_DISCONNECTED:
+        {
+            //
+            // Turn off the user LED.
+            //
+            LEDOff();
 
             break;
         }

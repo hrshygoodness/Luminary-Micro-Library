@@ -2,7 +2,7 @@
 //
 // usb-ids.h - Definitions of VIDs and PIDs used by Stellaris USB examples.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -48,6 +48,7 @@
 #define USB_PID_COMP_AUDIO_HID  0x0008
 #define USB_PID_COMP_HID_SER    0x0009
 #define USB_PID_COMP_HID_DFU    0x000A
+#define USB_PID_DATA_LOGGER     0x000B
 #define USB_PID_DFU             0x00FF
 
 #ifndef DEPRECATED

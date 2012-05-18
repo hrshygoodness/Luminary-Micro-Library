@@ -343,7 +343,7 @@
             <uThumb>0</uThumb>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>rvmdk PART_LM3S9B96</Define>
+              <Define>rvmdk PART_LM3S9B96 TARGET_IS_TEMPEST_RB1</Define>
               <Undefine></Undefine>
               <IncludePath>..;..\..\..;..\..\..\third_party;</IncludePath>
             </VariousControls>

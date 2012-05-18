@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>usb_boot_demo1</name>
+	<comment></comment>
+	<projects>
+		<project>driverlib-cm3</project>
+		<project>grlib-cm3</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>usb_boot_demo1.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_boot_demo1/usb_boot_demo1.c</locationURI>
+		</link>
+		<link>
+			<name>drivers/formike128x128x16.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s3748/drivers/formike128x128x16.c</locationURI>
+		</link>
+		<link>
+			<name>startup_ccs.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_boot_demo1/startup_ccs.c</locationURI>
+		</link>
+		<link>
+			<name>usb_boot_demo1_ccs.cmd</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_boot_demo1/usb_boot_demo1_ccs.cmd</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

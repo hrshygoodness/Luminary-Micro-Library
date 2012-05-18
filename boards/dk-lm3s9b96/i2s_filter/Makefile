@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the I2S Record and Playback Demo Application.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -48,6 +53,7 @@ VPATH=../drivers
 IPATH=..
 IPATH+=../../..
 
+#
 # The default rule, which causes the I2S Record and Playback Demo Application to be built.
 #
 all: ${COMPILER}
@@ -73,7 +79,7 @@ ${COMPILER}/i2s_filter.axf: ${COMPILER}/set_pinout.o
 ${COMPILER}/i2s_filter.axf: ${COMPILER}/sound.o
 ${COMPILER}/i2s_filter.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/i2s_filter.axf: ${COMPILER}/tlv320aic23b.o
-${COMPILER}/i2s_filter.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/i2s_filter.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/i2s_filter.axf: i2s_filter.ld
 SCATTERgcc_i2s_filter=i2s_filter.ld
 ENTRY_i2s_filter=ResetISR

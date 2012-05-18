@@ -1,0 +1,50 @@
+/* Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. */
+body {
+    margin: 10px;
+    padding: 0px;
+    font-family: Arial;
+    background-color: white;
+}
+h1 {
+    background-color: white;
+    font-family: Arial;
+    font-size: 24pt;
+    text-decoration: none;
+    font-weight: bold;
+    color: #7c7369;
+}
+h4 {
+    color: #7c7369;
+    font-family: Arial;
+    font-size: 12pt;
+    font-style: italic;
+}
+.grey {
+    background-color: #7c7369;
+    color: white;
+}
+.warning {
+    font-size: 12pt;
+    font-weight: bold;
+    font-style: italic;
+    color: red;
+}
+a {
+    font-style: italic;
+    font-weight: bold;
+    text-decoration: none;
+    color: #ff0000;
+}
+.gr {
+    background-color: #7c7369;
+    color: white;
+    text-align: right;
+}
+.gl {
+    background-color: #7c7369;
+    color: white;
+    text-align: left;
+}
+h2 {
+    text-align: left;
+}

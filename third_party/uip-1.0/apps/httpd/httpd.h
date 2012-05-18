@@ -53,6 +53,7 @@ struct httpd_state
 {
     u8_t state; 
     u16_t count;
+    u16_t bufcount;
 };
 
 #endif // __HTTPD_H__

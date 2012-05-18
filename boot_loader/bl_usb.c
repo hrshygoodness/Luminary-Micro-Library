@@ -2,7 +2,7 @@
 //
 // bl_usb.c - Functions to transfer data via the USB port.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -175,7 +175,7 @@ unsigned char g_ucLastCommand;
 //*****************************************************************************
 tDFUGetStatusResponse g_sDFUStatus =
 {
-    0, {5, 0, 0}, (unsigned char)STATE_IDLE, 0
+    0, { 5, 0, 0 }, (unsigned char)STATE_IDLE, 0
 };
 
 //*****************************************************************************
@@ -231,7 +231,6 @@ volatile unsigned short g_usDFUBufferUsed;
 //
 //*****************************************************************************
 volatile unsigned long g_ulCommandFlags;
-
 #define CMD_FLAG_ERASE          0
 #define CMD_FLAG_WRITE          1
 #define CMD_FLAG_RESET          2
@@ -313,8 +312,7 @@ tHandleRequests g_pfnRequestHandlers[] =
 //*****************************************************************************
 const unsigned char g_pManufacturerString[] =
 {
-
-    2 + (17 * 2),
+    (17 + 1) * 2,
     USB_DTYPE_STRING,
     'T', 0, 'e', 0, 'x', 0, 'a', 0, 's', 0, ' ', 0, 'I', 0, 'n', 0,
     's', 0, 't', 0, 'r', 0, 'u', 0, 'm', 0, 'e', 0, 'n', 0, 't', 0,
@@ -352,7 +350,7 @@ const unsigned char g_pSerialNumberString[] =
 // The descriptor string table.
 //
 //*****************************************************************************
-const unsigned char * const g_pStringDescriptors[] =
+const unsigned char *const g_pStringDescriptors[] =
 {
     g_pLangDescriptor,
     g_pManufacturerString,
@@ -534,101 +532,101 @@ SendDFUStatus(void)
 tBoolean
 SendUploadData(unsigned short usLength, tBoolean bAppendHeader)
 {
-   unsigned short usToSend;
-   unsigned long ulAvailable;
+    unsigned short usToSend;
+    unsigned long ulAvailable;
 
-   //
-   // Acknowledge the original request.
-   //
-   USBDevEndpoint0DataAck(false);
+    //
+    // Acknowledge the original request.
+    //
+    USBDevEndpoint0DataAck(false);
 
-   //
-   // How much data is available to be sent?
-   //
-   ulAvailable = g_sNextUpload.ulLength +
-                 (bAppendHeader ? sizeof(tDFUDownloadProgHeader) : 0);
+    //
+    // How much data is available to be sent?
+    //
+    ulAvailable = (g_sNextUpload.ulLength +
+                   (bAppendHeader ? sizeof(tDFUDownloadProgHeader) : 0));
 
-   //
-   // How much data can we send? This is the smallest of the maximum transfer
-   // size, the requested length or the available data.
-   //
-   usToSend = (usLength > DFU_TRANSFER_SIZE) ? DFU_TRANSFER_SIZE : usLength;
-   usToSend = ((unsigned long)usToSend > ulAvailable) ? ulAvailable : usToSend;
+    //
+    // How much data can we send? This is the smallest of the maximum transfer
+    // size, the requested length or the available data.
+    //
+    usToSend = (usLength > DFU_TRANSFER_SIZE) ? DFU_TRANSFER_SIZE : usLength;
+    usToSend = ((unsigned long)usToSend > ulAvailable) ? ulAvailable : usToSend;
 
-   //
-   // If we have been asked to send a header, we need to copy some of the
-   // data into a buffer and send from there.  If we don't do this, we run the
-   // risk of sending a short packet prematurely and ending the upload
-   // before it is complete.
-   //
-   if(bAppendHeader)
-   {
-       tDFUDownloadProgHeader *psHdr;
-       unsigned char *pcFrom;
-       unsigned char *pcTo;
-       unsigned long ulLoop;
+    //
+    // If we have been asked to send a header, we need to copy some of the
+    // data into a buffer and send from there.  If we don't do this, we run the
+    // risk of sending a short packet prematurely and ending the upload
+    // before it is complete.
+    //
+    if(bAppendHeader)
+    {
+        tDFUDownloadProgHeader *psHdr;
+        unsigned char *pcFrom;
+        unsigned char *pcTo;
+        unsigned long ulLoop;
 
-       //
-       // We are appending a header so write the header information into a
-       // buffer then copy the first chunk of data from its original position
-       // into the same buffer.
-       //
-       psHdr = (tDFUDownloadProgHeader *)g_pcDFUBuffer;
+        //
+        // We are appending a header so write the header information into a
+        // buffer then copy the first chunk of data from its original position
+        // into the same buffer.
+        //
+        psHdr = (tDFUDownloadProgHeader *)g_pcDFUBuffer;
 
-       //
-       // Build the header.
-       //
-       psHdr->ucCommand = DFU_CMD_PROG;
-       psHdr->ucReserved = 0;
-       psHdr->usStartAddr = ((unsigned long)(g_sNextUpload.pcStart) / 1024);
-       psHdr->ulLength = g_sNextUpload.ulLength;
+        //
+        // Build the header.
+        //
+        psHdr->ucCommand = DFU_CMD_PROG;
+        psHdr->ucReserved = 0;
+        psHdr->usStartAddr = ((unsigned long)(g_sNextUpload.pcStart) / 1024);
+        psHdr->ulLength = g_sNextUpload.ulLength;
 
-       //
-       // Copy the remainder of the first transfer's data from its original
-       // position.
-       //
-       pcFrom = g_sNextUpload.pcStart;
-       pcTo = (unsigned char *)(psHdr + 1);
+        //
+        // Copy the remainder of the first transfer's data from its original
+        // position.
+        //
+        pcFrom = g_sNextUpload.pcStart;
+        pcTo = (unsigned char *)(psHdr + 1);
+        for(ulLoop = (usToSend - sizeof(tDFUDownloadProgHeader)); ulLoop;
+            ulLoop--)
+        {
+            *pcTo++ = *pcFrom++;
+        }
 
-       for(ulLoop = (usToSend - sizeof(tDFUDownloadProgHeader)); ulLoop;
-           ulLoop--)
-       {
-         *pcTo++ = *pcFrom++;
-       }
+        //
+        // Send the data.
+        //
+        USBBLSendDataEP0((unsigned char *)psHdr, (unsigned long)usToSend);
 
-       //
-       // Send the data.
-       //
-       USBBLSendDataEP0((unsigned char *)psHdr, (unsigned long)usToSend);
-
-       //
-       // Update our upload pointer and length.
-       //
-       g_sNextUpload.pcStart += (usToSend - sizeof(tDFUDownloadProgHeader));
-       g_sNextUpload.ulLength -= (usToSend - sizeof(tDFUDownloadProgHeader));
-   }
-   else
-   {
-       //
-       // We are not sending a header so send the requested upload data back to
-       // the host directly from its original position.
-       //
-       USBBLSendDataEP0((unsigned char *)g_sNextUpload.pcStart,
+        //
+        // Update our upload pointer and length.
+        //
+        g_sNextUpload.pcStart += (usToSend - sizeof(tDFUDownloadProgHeader));
+        g_sNextUpload.ulLength -= (usToSend - sizeof(tDFUDownloadProgHeader));
+    }
+    else
+    {
+        //
+        // We are not sending a header so send the requested upload data back
+        // to the host directly from its original position.
+        //
+        USBBLSendDataEP0((unsigned char *)g_sNextUpload.pcStart,
                          (unsigned long)usToSend);
 
-       //
-       // Update our upload pointer and length.
-       //
-       g_sNextUpload.pcStart += usToSend;
-       g_sNextUpload.ulLength -= usToSend;
-   }
+        //
+        // Update our upload pointer and length.
+        //
+        g_sNextUpload.pcStart += usToSend;
+        g_sNextUpload.ulLength -= usToSend;
+    }
 
-   // We return true if we sent a full packet (containing the maximum transfer
-   // size bytes) or false to indicate that a short packet was sent or no more
-   // data remains.
-   //
-   return(((usToSend == DFU_TRANSFER_SIZE) && g_sNextUpload.ulLength) ?
-          true : false);
+    //
+    // We return true if we sent a full packet (containing the maximum transfer
+    // size bytes) or false to indicate that a short packet was sent or no more
+    // data remains.
+    //
+    return(((usToSend == DFU_TRANSFER_SIZE) && g_sNextUpload.ulLength) ?
+           true : false);
 }
 
 //*****************************************************************************
@@ -742,7 +740,8 @@ HandleRequests(tUSBRequest *pUSBRequest)
 // Handle all incoming DFU requests while in state STATE_IDLE.
 //
 //*****************************************************************************
-void HandleRequestIdle(tUSBRequest *pUSBRequest)
+void
+HandleRequestIdle(tUSBRequest *pUSBRequest)
 {
     switch(pUSBRequest->bRequest)
     {
@@ -818,7 +817,9 @@ void HandleRequestIdle(tUSBRequest *pUSBRequest)
         // there already.
         //
         case USBD_DFU_REQUEST_ABORT:
+        {
             break;
+        }
 
         //
         // All other requests are illegal in this state so signal the error
@@ -845,7 +846,8 @@ void HandleRequestIdle(tUSBRequest *pUSBRequest)
 // STATE_DNBUSY.
 //
 //*****************************************************************************
-void HandleRequestDnloadSync(tUSBRequest *pUSBRequest)
+void
+HandleRequestDnloadSync(tUSBRequest *pUSBRequest)
 {
     //
     // In this state, we have received a block of the download and are waiting
@@ -940,7 +942,8 @@ void HandleRequestDnloadSync(tUSBRequest *pUSBRequest)
 // Handle all incoming DFU requests while in state STATE_DNLOAD_IDLE.
 //
 //*****************************************************************************
-void HandleRequestDnloadIdle(tUSBRequest *pUSBRequest)
+void
+HandleRequestDnloadIdle(tUSBRequest *pUSBRequest)
 {
     switch(pUSBRequest->bRequest)
     {
@@ -1042,14 +1045,15 @@ void HandleRequestDnloadIdle(tUSBRequest *pUSBRequest)
     // If we drop out of the switch, we need to ACK the received request.
     //
     USBDevEndpoint0DataAck(false);
-
 }
+
 //*****************************************************************************
 //
 // Handle all incoming DFU requests while in state STATE_MANIFEST_SYNC.
 //
 //*****************************************************************************
-void HandleRequestManifestSync(tUSBRequest *pUSBRequest)
+void
+HandleRequestManifestSync(tUSBRequest *pUSBRequest)
 {
     //
     // In this state, we have received the last block of a download and are
@@ -1095,7 +1099,8 @@ void HandleRequestManifestSync(tUSBRequest *pUSBRequest)
 // Handle all incoming DFU requests while in state STATE_UPLOAD_IDLE.
 //
 //*****************************************************************************
-void HandleRequestUploadIdle(tUSBRequest *pUSBRequest)
+void
+HandleRequestUploadIdle(tUSBRequest *pUSBRequest)
 {
     //
     // In this state, we have already received the first upload request.  What
@@ -1173,7 +1178,6 @@ void HandleRequestUploadIdle(tUSBRequest *pUSBRequest)
             break;
         }
     }
-
 }
 
 //*****************************************************************************
@@ -1181,7 +1185,8 @@ void HandleRequestUploadIdle(tUSBRequest *pUSBRequest)
 // Handle all incoming DFU requests while in state STATE_ERROR.
 //
 //*****************************************************************************
-void HandleRequestError(tUSBRequest *pUSBRequest)
+void
+HandleRequestError(tUSBRequest *pUSBRequest)
 {
     //
     // In this state, we respond to state and status requests and also to
@@ -1615,7 +1620,6 @@ ProcessDFUDnloadCommand(tDFUDownloadHeader *pcCmd, unsigned long ulSize)
             break;
         }
 
-
         //
         // We are being asked to prepare to reset the board and, as a result,
         // run the main application image.
@@ -1716,8 +1720,8 @@ HandleReset(void)
     //
     // Are we currently in the middle of a download operation?
     //
-    if((g_eDFUState != STATE_DNLOAD_IDLE) && (g_eDFUState != STATE_DNLOAD_SYNC) &&
-       (g_eDFUState != STATE_IDLE))
+    if((g_eDFUState != STATE_DNLOAD_IDLE) &&
+       (g_eDFUState != STATE_DNLOAD_SYNC) && (g_eDFUState != STATE_IDLE))
     {
         //
         // No - tell the main thread that it should reboot the system assuming
@@ -1885,7 +1889,6 @@ UpdaterUSB(void)
             // Are we writing data at the start of a new flash block?  If so,
             // we need to erase the content of the block first.
             //
-
             if((ulStart & (FLASH_PAGE_SIZE - 1)) == 0)
             {
                 //

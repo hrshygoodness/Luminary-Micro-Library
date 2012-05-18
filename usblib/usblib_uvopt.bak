@@ -582,10 +582,10 @@
       <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
-          <Name>.\readme.txt</Name>
-          <ColumnNumber>0</ColumnNumber>
+          <Name>C:\StellarisWare\driverlib\readme.txt</Name>
+          <ColumnNumber>19</ColumnNumber>
           <TopLine>1</TopLine>
-          <CurrentLine>1</CurrentLine>
+          <CurrentLine>18</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

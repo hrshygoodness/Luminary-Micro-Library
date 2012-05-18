@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the hello_widget example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -50,6 +55,7 @@ IPATH=.
 IPATH+=..
 IPATH+=../../..
 
+#
 # The default rule, which causes the hello_widget example to be built.
 #
 all: ${COMPILER}
@@ -75,8 +81,8 @@ ${COMPILER}/hello_widget.axf: ${COMPILER}/kitronix320x240x16_ssd2119_8bit.o
 ${COMPILER}/hello_widget.axf: ${COMPILER}/set_pinout.o
 ${COMPILER}/hello_widget.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/hello_widget.axf: ${COMPILER}/touch.o
-${COMPILER}/hello_widget.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/hello_widget.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/hello_widget.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/hello_widget.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/hello_widget.axf: hello_widget.ld
 SCATTERgcc_hello_widget=hello_widget.ld
 ENTRY_hello_widget=ResetISR

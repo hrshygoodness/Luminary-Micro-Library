@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html><head><link rel="stylesheet" type="text/css" href="luminary.css"><meta name="GENERATOR" content="Microsoft® HTML Help Workshop 4.1"><title>Building the LMScope Application</title></head>
+<body><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="build">
+	<param name="Keyword" value="compile">
+	<param name="Keyword" value="configuration">
+	<param name="Keyword" value="DDK">
+	<param name="Keyword" value="device driver">
+	<param name="Keyword" value="HTML Help Workshop">
+	<param name="Keyword" value="include">
+	<param name="Keyword" value="library">
+	<param name="Keyword" value="MFC">
+	<param name="Keyword" value="Microsoft">
+	<param name="Keyword" value="Microsoft Foundation Classes">
+	<param name="Keyword" value="project">
+	<param name="Keyword" value="VC2005">
+	<param name="Keyword" value="Vista">
+	<param name="Keyword" value="visual studio 2005">
+	<param name="Keyword" value="Windows Device Driver Kit">
+	<param name="Keyword" value="WindowsXP">
+	<param name="Keyword" value="WinUSB">
+</object>
+
+
+
+<h1>Building the LMScope application</h1><br>The LMScope Windows<sup>®</sup>
+application was created using Microsoft<sup>®</sup> Visual Studio<sup>®</sup> 2005. It is
+written in C++ and uses Microsoft Foundation Classes. The source code
+is provided and can be built using the lmscope.vcproj file which is
+included.<br><br>One additional component must be installed on your&nbsp;PC to allow the application to be built. Microsoft HTML
+Help Workshop 1.4 is used to generate the LMScope help file
+(lmscope.chm) from HTML topic files. This tool is available for free
+download from Microsoft at:<br><br><a href="http://msdn2.microsoft.com/en-us/library/ms669985.aspx">http://msdn2.microsoft.com/en-us/library/ms669985.aspx</a><br><br>Depending
+upon the version of VisualStudio you are using and the updates you have
+applied, you may also need to download and install the latest version
+of the Windows Platform SDK. At the time of writing, this was version
+6.1 which can be installed from:<br><br><a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=E6E1C3DF-A74F-4207-8586-711EBE331CDC&displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=E6E1C3DF-A74F-4207-8586-711EBE331CDC&amp;displaylang=en</a><br><br>LMScope
+communicates to the USB device via the LMUSBDLL library which is
+installed as part of the device driver for the oscilloscope device.
+This library acts as a thin wrapper over the WinUSB API which is used
+to manage and communicate with the device at the lower level. The main
+purpose of the library is to allow the LMScope and usb_bulk_examples to
+be modified and rebuilt on systems which do not have the Microsoft
+Windows Device Driver Kit installed (as required to allow access to the
+WinUSB library and header files).<br><h2>Building the LMUSBDLL.dll Library</h2>The
+LMUSBDLL.dll file is provided as part of the device driver installer
+for both the oscilloscope and bulk example devices. The Windows example
+package includes the source for the DLL to allow it to be modified if
+required.<br>LMUSBDLL
+uses the WinUSB interface to communicate with the Stellaris EK board. This interface is available
+on WindowsXP and Vista but the bindings for it are not available in
+Visual Studio 2005 and are not redistributable outside the Windows
+Device Driver Kit (DDK). To build the DLL, therefore,&nbsp;DDK version 6000
+must be installed on your PC in directory C:\WinDDK\6000. If you have
+the DDK installed elsewhere, you will have to change the "Additional
+Include Directories" under Project/Properties/ConfigurationProperties
+and "Additional Library Directories" under
+Project/Properties/ConfigurationProperties/Linker to substitute the
+appropriate paths for your system.<br><br>The Windows DDK is available for free download from Microsoft at:<br><br><a href="http://www.microsoft.com/whdc/devtools/ddk/default.mspx">http://www.microsoft.com/whdc/devtools/ddk/default.mspx</a>
+<p>
+</p><address>"Windows", "Microsoft" and "Visual Studio" are registered
+trademarks of Microsoft Corporation in the United States and other
+countries.</address>
+</body></html>

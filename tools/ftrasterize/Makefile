@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the font rasterization utility.
 #
-# Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the Stellaris Firmware Development Package.
+# This is part of revision 8555 of the Stellaris Firmware Development Package.
 #
 #******************************************************************************
 
@@ -126,6 +126,14 @@ fonts: ftrasterize${EXT} amsfonts
 	     ./ftrasterize -f cmss -s $${i} -i $${FONTS}/cmssi17.pfb;       \
 	     ./ftrasterize -f cmsc -s $${i} $${FONTS}/cmcsc10.pfb;          \
 	     ./ftrasterize -f cmtt -m -s $${i} $${FONTS}/cmtt10.pfb;        \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cm -s $${i} $${FONTS}/cmr17.pfb;         \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cm -s $${i} -b $${FONTS}/cmb10.pfb;      \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cm -s $${i} -i $${FONTS}/cmti12.pfb;     \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cmss -s $${i} $${FONTS}/cmss17.pfb;      \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cmss -s $${i} -b $${FONTS}/cmssbx10.pfb; \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cmss -s $${i} -i $${FONTS}/cmssi17.pfb;  \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cmsc -s $${i} $${FONTS}/cmcsc10.pfb;     \
+	     ./ftrasterize -p 0x20 -e 0x7e -r -y -f cmtt -m -s $${i} $${FONTS}/cmtt10.pfb;   \
 	 done
 
 #

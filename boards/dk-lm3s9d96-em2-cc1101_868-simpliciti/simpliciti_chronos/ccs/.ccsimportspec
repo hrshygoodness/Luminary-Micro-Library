@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="simpliciti_chronos.c"/>
+        <file name="simpliciti_chronos.h"/>
+        <file name="simpliciti_config.h"/>
+        <file name="widgets.c"/>
+        <file name="widgets.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

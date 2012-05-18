@@ -2,7 +2,7 @@
 //
 // usb_host_msc.c - USB mass storage host application.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -26,6 +26,7 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
@@ -91,6 +92,14 @@ unsigned long g_ulLastTick;
 //
 //*****************************************************************************
 #define CMD_BUF_SIZE    64
+
+//*****************************************************************************
+//
+// Defines the number of times to call to check if the attached device is
+// ready.
+//
+//*****************************************************************************
+#define USBMSC_DRIVE_RETRY      4
 
 //*****************************************************************************
 //
@@ -255,6 +264,11 @@ typedef enum
     STATE_UNKNOWN_DEVICE,
 
     //
+    // A mass storage device was connected but failed to ever report ready.
+    //
+    STATE_TIMEOUT_DEVICE,
+
+    //
     // A power fault has occurred.
     //
     STATE_POWER_FAULT
@@ -286,6 +300,13 @@ tDMAControlTable g_sDMAControlTable[6] __attribute__ ((aligned(1024)));
 //
 //*****************************************************************************
 tUSBMode g_eCurrentUSBMode;
+
+//*****************************************************************************
+//
+// The class of the unknown device.
+//
+//*****************************************************************************
+unsigned long g_ulUnknownClass;
 
 //*****************************************************************************
 //
@@ -1000,10 +1021,15 @@ USBHCDEvents(void *pvData)
     switch(pEventInfo->ulEvent)
     {
         //
-        // New keyboard detected.
+        // Unknown device detected.
         //
-        case USB_EVENT_CONNECTED:
+        case USB_EVENT_UNKNOWN_CONNECTED:
         {
+            //
+            // Save the unknown class.
+            //
+            g_ulUnknownClass = pEventInfo->ulInstance;
+
             //
             // An unknown device was detected.
             //
@@ -1054,6 +1080,7 @@ ReadLine(void)
     unsigned long ulIdx, ulPrompt;
     unsigned char ucChar;
     tState eStateCopy;
+    unsigned long ulDriveTimeout;
 
     //
     // Start reading at the beginning of the command buffer and print a prompt.
@@ -1061,6 +1088,11 @@ ReadLine(void)
     g_cCmdBuf[0] = '\0';
     ulIdx = 0;
     ulPrompt = 1;
+
+    //
+    // Initialize the drive timeout.
+    //
+    ulDriveTimeout = USBMSC_DRIVE_RETRY;
 
     //
     // Loop forever.  This loop will be explicitly broken out of when the line
@@ -1081,10 +1113,24 @@ ReadLine(void)
             if(USBHMSCDriveReady(g_ulMSCInstance) != 0)
             {
                 //
-                // Wait about 100ms before attempting to check if the
+                // Wait about 500ms before attempting to check if the
                 // device is ready again.
                 //
-                SysCtlDelay(SysCtlClockGet()/30);
+                SysCtlDelay(SysCtlClockGet()/(3*2));
+
+                //
+                // Decrement the retry count.
+                //
+                ulDriveTimeout--;
+
+                //
+                // If the timeout is hit then go to the
+                // STATE_TIMEOUT_DEVICE state.
+                //
+                if(ulDriveTimeout == 0)
+                {
+                    g_eState = STATE_TIMEOUT_DEVICE;
+                }
 
                 break;
             }
@@ -1163,8 +1209,24 @@ ReadLine(void)
                 //
                 case STATE_UNKNOWN_DEVICE:
                 {
-                    UARTprintf("\nUnknown device connected.\n");
+                    UARTprintf("Unknown Device Class (0x%02x) Connected.\n",
+                               g_ulUnknownClass);
                     ulPrompt = 1;
+                    break;
+                }
+
+                //
+                // The connected mass storage device is not reporting ready.
+                //
+                case STATE_TIMEOUT_DEVICE:
+                {
+                    //
+                    // If this is the first time in this state then print a
+                    // message.
+                    //
+                    UARTprintf("Device Timeout.\n");
+                    ulPrompt = 1;
+
                     break;
                 }
 

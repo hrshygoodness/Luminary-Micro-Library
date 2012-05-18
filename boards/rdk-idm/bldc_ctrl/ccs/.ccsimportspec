@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="bldc_ctrl.c"/>
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="lwipopts.h"/>
+        <file name="motor.c"/>
+        <file name="motor.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

@@ -2,7 +2,7 @@
 //
 // udma_demo.c - uDMA example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -715,13 +715,13 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "udma-demo", -1, ulCenterX, 11, 0);
 
     //
     // Show the clock frequency on the display.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss18b);
+    GrContextFontSet(&g_sContext, g_pFontCmss18b);
     usnprintf(cStrBuf, sizeof(cStrBuf), "Stellaris @ %u MHz",
               SysCtlClockGet() / 1000000);
     GrStringDrawCentered(&g_sContext, cStrBuf, -1, ulCenterX, 40, 0);

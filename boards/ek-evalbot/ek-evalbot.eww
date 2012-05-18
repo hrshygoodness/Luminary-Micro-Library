@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\chronos_drive\chronos_drive.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\motor_demo\motor_demo.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\qs-autonomous\qs-autonomous.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\simple_display\simple_display.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\sound_demo\sound_demo.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>chronos_drive</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>motor_demo</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>qs-autonomous</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>simple_display</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>sound_demo</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>

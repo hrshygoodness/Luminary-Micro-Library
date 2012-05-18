@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="cgifuncs.c"/>
+        <file name="cgifuncs.h"/>
+        <file name="io.c"/>
+        <file name="io.h"/>
+        <file name="enet_io.c"/>
+        <file name="io_fsdata.h"/>
+        <file name="lmi_fs.c"/>
+        <file name="lwipopts.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="fs">
+            <file name="404.htm"/>
+            <file name="block.htm"/>
+            <file name="family.htm"/>
+            <file name="favicon.ico"/>
+            <file name="index.htm"/>
+            <file name="io_cgi.ssi"/>
+            <file name="io_http.htm"/>
+            <file name="perror.htm"/>
+            <directory name="images">
+                <file name="awards08.jpg"/>
+                <file name="furyblck.gif"/>
+                <file name="chips.jpg"/>
+                <file name="ti_logo.gif"/>
+                <file name="no16bit.jpg"/>
+                <file name="no8bit.jpg"/>
+                <file name="noasm.jpg"/>
+                <file name="nopin.jpg"/>
+            </directory>
+        </directory>
+    </source>
+</importSpec>

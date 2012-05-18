@@ -1,0 +1,58 @@
+l;
+;   Stellaris USB CDC (serial) driver installation file.
+;
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%MFGNAME%
+LayoutFile=layout.inf
+DriverVer=01/28/2012,1.3.8555
+
+[Manufacturer]
+%MFGNAME%=DeviceList
+
+[DestinationDirs]
+DefaultDestDir=12
+
+[SourceDisksFiles]
+
+[SourceDisksNames]
+
+[DeviceList]
+%DESCRIPTION%=DriverInstall, USB\VID_1CBE&PID_0009&MI01
+
+;------------------------------------------------------------------------------
+;  Windows 2000/XP Sections
+;------------------------------------------------------------------------------
+
+[DriverInstall.nt]
+CopyFiles=DriverCopyFiles
+AddReg=DriverInstall.nt.AddReg
+
+[DriverCopyFiles]
+usbser.sys,,,0x20
+
+[DriverInstall.nt.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[DriverInstall.nt.Services]
+AddService=usbser, 0x00000002, DriverService
+
+[DriverService]
+DisplayName=%SERVICE%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys
+
+;------------------------------------------------------------------------------
+;  String Definitions
+;------------------------------------------------------------------------------
+
+[Strings]
+MFGNAME       = "Texas Instruments Incorporated"
+DESCRIPTION   = "Stellaris USB Serial Command Port"
+SERVICE       = "Stellaris USB CDC serial port"

@@ -2,7 +2,7 @@
 //
 // usbcdesc.c - Config descriptor parsing functions.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -78,7 +78,7 @@ NextConfigDescGet(const tConfigHeader *psConfig, unsigned long *pulSec,
     // Did we run off the end of the section?
     //
     if((unsigned char *)psDesc >= (psConfig->psSections[*pulSec]->pucData +
-                                           psConfig->psSections[*pulSec]->ucSize))
+                                   psConfig->psSections[*pulSec]->usSize))
     {
         //
         // Yes - move to the next section.
@@ -228,7 +228,7 @@ USBDCDConfigDescGetSize(const tConfigHeader *psConfig)
     //
     for(ulLoop = 0; ulLoop < psConfig->ucNumSections; ulLoop++)
     {
-        ulLen += psConfig->psSections[ulLoop]->ucSize;
+        ulLen += psConfig->psSections[ulLoop]->usSize;
     }
 
     return(ulLen);
@@ -283,7 +283,7 @@ USBDCDConfigDescGetNum(const tConfigHeader *psConfig, unsigned long ulType)
     {
         ulNumDescs += USBDescGetNum(
                 (tDescriptorHeader *)psConfig->psSections[ulSection]->pucData,
-                psConfig->psSections[ulSection]->ucSize,
+                psConfig->psSections[ulSection]->usSize,
                 ulType);
     }
 
@@ -346,7 +346,7 @@ USBDCDConfigDescGet(const tConfigHeader *psConfig, unsigned long ulType,
         //
         ulNumDescs = USBDescGetNum(
                 (tDescriptorHeader *)psConfig->psSections[ulSection]->pucData,
-                psConfig->psSections[ulSection]->ucSize,
+                psConfig->psSections[ulSection]->usSize,
                 ulType);
 
         //
@@ -366,7 +366,7 @@ USBDCDConfigDescGet(const tConfigHeader *psConfig, unsigned long ulType,
             //
             return(USBDescGet(
                  (tDescriptorHeader *)psConfig->psSections[ulSection]->pucData,
-                 psConfig->psSections[ulSection]->ucSize,
+                 psConfig->psSections[ulSection]->usSize,
                  ulType,
                  ulIndex - ulTotalDescs));
         }
@@ -550,16 +550,7 @@ USBDCDConfigGetInterface(const tConfigHeader *psConfig, unsigned long ulIndex,
 //! Return a pointer to the n-th endpoint descriptor found in the supplied
 //! interface descriptor.  If the \e ulIndex parameter is invalid (greater
 //! than or equal to the bNumEndpoints field of the interface descriptor) or
-//! the endpoint cannot be found within \e ucSize bytes of the interface
-//! descriptor pointer, the function will return NULL.
-//!
-//! Note that, although the USB 2.0 specification states that endpoint
-//! descriptors must follow the interface descriptor that they relate to, it
-//! also states that device specific descriptors should follow any standard
-//! descriptor that they relate to.  As a result, we cannot assume that each
-//! interface descriptor will be followed by nothing but an ordered list of
-//! its own endpoints and, hence, the function needs to be provided ucSize to
-//! limit the search range.
+//! the endpoint descriptor cannot be found, the function will return NULL.
 //!
 //! The search performed by this function traverses through the list of
 //! sections comprising the configuration descriptor.  Note that the similar

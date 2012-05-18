@@ -2,7 +2,7 @@
 //
 // main.c - AC induction motor drive main application.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-ACIM Firmware Package.
+// This is part of revision 8555 of the RDK-ACIM Firmware Package.
 //
 //*****************************************************************************
 
@@ -498,27 +498,24 @@ MainLongMul(long lX, long lY)
     bx      lr;
 }
 #endif
+//
+// For CCS implement this function in pure assembly.  This prevents the TI
+// compiler from doing funny things with the optimizer.
+//
 #if defined(ccs)
-static long
-MainLongMul(long lX, long lY)
-{
-    //
-    // The assembly code to efficiently perform the multiply (using the
-    // instruction to multiply two 32-bit values and return the full 64-bit
-    // result).
-    //
-    __asm("    smull   r0, r1, r0, r1\n"
+long MainLongMul(long lX, long lY);
+    __asm("    .sect \".text:MainLongMul\"\n"
+          "    .clink\n"
+          "    .thumbfunc MainLongMul\n"
+          "    .thumb\n"
+          "    .global MainLongMul\n"
+          "MainLongMul:\n"
+          "    smull   r0, r1, r0, r1\n"
           "    lsrs    r0, r0, #16\n"
           "    orr     r0, r0, r1, lsl #16\n"
           "    bx      lr\n");
-
-    //
-    // This return is never reached but is required to avoid a compiler
-    // warning.
-    //
-    return(lX * lY);
-}
 #endif
+
 
 //*****************************************************************************
 //
@@ -538,8 +535,8 @@ MainSetPWMFrequency(void)
     //
     // Disable the update interrupts temporarily.
     //
-    IntDisable(INT_PWM1);
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_1);
+    IntDisable(INT_PWM0_2);
 
     //
     // Set the new PWM frequency.
@@ -554,8 +551,8 @@ MainSetPWMFrequency(void)
     //
     // Re-enable the update interrupts.
     //
-    IntEnable(INT_PWM1);
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_1);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -614,7 +611,7 @@ MainSetDirection(tBoolean bForward)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor should be running in the forward direction.
@@ -697,7 +694,7 @@ MainSetDirection(tBoolean bForward)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -721,7 +718,7 @@ MainSetLoopMode(tBoolean bClosed)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor drive should be running in closed loop mode.
@@ -758,7 +755,7 @@ MainSetLoopMode(tBoolean bClosed)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -782,7 +779,7 @@ MainUpdateFAdjI(long lNewFAdjI)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the new I coefficient is zero.
@@ -825,7 +822,7 @@ MainUpdateFAdjI(long lNewFAdjI)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -1799,7 +1796,7 @@ MainRun(void)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor drive is presently stopped.
@@ -1877,7 +1874,7 @@ MainRun(void)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -1896,7 +1893,7 @@ MainStop(void)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor is running in the forward direction.
@@ -1942,7 +1939,7 @@ MainStop(void)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -1963,8 +1960,8 @@ MainEmergencyStop(void)
     //
     // Temporarily disable the update interrupts.
     //
-    IntDisable(INT_PWM1);
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_1);
+    IntDisable(INT_PWM0_2);
 
     //
     // Disable all the PWM outputs.
@@ -1995,8 +1992,8 @@ MainEmergencyStop(void)
     //
     // Re-enable the update interrupts.
     //
-    IntEnable(INT_PWM1);
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_1);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -2227,7 +2224,7 @@ main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
@@ -2240,7 +2237,7 @@ main(void)
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOB);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOC);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOD);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM);
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_QEI0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER1);
@@ -2257,9 +2254,9 @@ main(void)
     //
     IntPrioritySet(INT_GPIOB, 0x00);
     IntPrioritySet(INT_GPIOD, 0x00);
-    IntPrioritySet(INT_PWM0, 0x20);
-    IntPrioritySet(INT_PWM1, 0x40);
-    IntPrioritySet(INT_PWM2, 0x60);
+    IntPrioritySet(INT_PWM0_0, 0x20);
+    IntPrioritySet(INT_PWM0_1, 0x40);
+    IntPrioritySet(INT_PWM0_2, 0x60);
     IntPrioritySet(INT_ADC0SS0, 0x80);
     IntPrioritySet(INT_UART0, 0xa0);
     IntPrioritySet(FAULT_SYSTICK, 0xc0);

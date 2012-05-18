@@ -2,7 +2,7 @@
 //
 // calibrate.c - Calibration routine for the touch screen driver.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -127,7 +127,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "calibrate", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 11, 0);
 
@@ -136,7 +136,7 @@ main(void)
     // 20 point small-caps font.
     //
     GrContextForegroundSet(&g_sContext, ClrWhite);
-    GrContextFontSet(&g_sContext, &g_sFontCmsc20);
+    GrContextFontSet(&g_sContext, g_pFontCmsc20);
     GrStringDraw(&g_sContext, "Touch the box", -1, 0,
                  (GrContextDpyHeightGet(&g_sContext) / 2) - 10, 0);
 

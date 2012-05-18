@@ -2,7 +2,7 @@
 //
 // ustdlib.c - Simple standard library functions.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -930,6 +930,158 @@ ulocaltime(unsigned long ulTime, tTime *psTime)
 
 //*****************************************************************************
 //
+//! Compares two time structures and determines if one is greater than,
+//! less than, or equal to the other.
+//!
+//! \param pTime1 is the first time structure to compare.
+//! \param pTime2 is the second time structure to compare.
+//!
+//! This function compares two time structures and returns a signed number
+//! to indicate the result of the comparison.  If the time represented by
+//! \e pTime1 is greater than the time represented by \e pTime2 then a positive
+//! number is returned.  Likewise if \e pTime1 is less than \e pTime2 then a
+//! negative number is returned.  If the two times are equal then the function
+//! returns 0.
+//!
+//! \return Returns 0 if the two times are equal, +1 if \e pTime1 is greater
+//! than \e pTime2, and -1 if \e pTime1 is less than \e pTime2.
+//
+//*****************************************************************************
+static int
+ucmptime(tTime *pTime1, tTime *pTime2)
+{
+    //
+    // Compare each field in descending signficance to determine if
+    // greater than, less than, or equal.
+    //
+    if(pTime1->usYear > pTime2->usYear)
+    {
+        return(1);
+    }
+    else if(pTime1->usYear < pTime2->usYear)
+    {
+        return(-1);
+    }
+    else if(pTime1->ucMon > pTime2->ucMon)
+    {
+        return(1);
+    }
+    else if(pTime1->ucMon < pTime2->ucMon)
+    {
+        return(-1);
+    }
+    else if(pTime1->ucMday > pTime2->ucMday)
+    {
+        return(1);
+    }
+    else if(pTime1->ucMday < pTime2->ucMday)
+    {
+        return(-1);
+    }
+    else if(pTime1->ucHour > pTime2->ucHour)
+    {
+        return(1);
+    }
+    else if(pTime1->ucHour < pTime2->ucHour)
+    {
+        return(-1);
+    }
+    else if(pTime1->ucMin > pTime2->ucMin)
+    {
+        return(1);
+    }
+    else if(pTime1->ucMin < pTime2->ucMin)
+    {
+        return(-1);
+    }
+    else if(pTime1->ucSec > pTime2->ucSec)
+    {
+        return(1);
+    }
+    else if(pTime1->ucSec < pTime2->ucSec)
+    {
+        return(-1);
+    }
+    else
+    {
+        //
+        // Reaching this branch of the conditional means that all of the
+        // fields are equal, and thus the two times are equal.
+        //
+        return(0);
+    }
+}
+
+//*****************************************************************************
+//
+//! Converts calendar date and time to seconds.
+//!
+//! \param psTime is a pointer to the time structure that is filled in with the
+//! broken down date and time.
+//!
+//! This function converts the date and time represented by the \e psTime
+//! structure pointer to the number of seconds since midnight GMT on January 1,
+//! 1970 (traditional Unix epoch).
+//!
+//! \return Returns the calendar time and date as seconds.  If the conversion
+//! was not possible then the function returns (unsigned long)(-1).
+//
+//*****************************************************************************
+unsigned long
+umktime(tTime *psTime)
+{
+    tTime sTimeGuess;
+    unsigned long ulTimeGuess = 0x80000000;
+    unsigned long ulAdjust = 0x40000000;
+    int iSign;
+
+    //
+    // Seed the binary search with the first guess.
+    //
+    ulocaltime(ulTimeGuess, &sTimeGuess);
+    iSign = ucmptime(psTime, &sTimeGuess);
+
+    //
+    // While the time is not yet found, execute a binary search.
+    //
+    while(iSign && ulAdjust)
+    {
+        //
+        // Adjust the time guess up or down depending on the result of the
+        // last compare.
+        //
+        ulTimeGuess = (iSign > 0) ? (ulTimeGuess + ulAdjust) :
+                                    (ulTimeGuess - ulAdjust);
+        ulAdjust /= 2;
+
+        //
+        // Compare the new time guess against the time pointed at by the
+        // function parameters.
+        //
+        ulocaltime(ulTimeGuess, &sTimeGuess);
+        iSign = ucmptime(psTime, &sTimeGuess);
+    };
+
+    //
+    // If the above loop was exited with iSign == 0, that means that the
+    // time in seconds was found, so return that value to the caller.
+    //
+    if(iSign == 0)
+    {
+        return(ulTimeGuess);
+    }
+
+    //
+    // Otherwise the time could not be converted so return an error.
+    //
+    else
+    {
+        return((unsigned long)-1);
+    }
+}
+
+//*****************************************************************************
+//
 //! Converts a string into its numeric equivalent.
 //!
 //! \param pcStr is a pointer to the string containing the integer.
@@ -1197,7 +1349,7 @@ ustrstr(const char *pcHaystack, const char *pcNeedle)
         //
         // Check to see if the substring appears at this position.
         //
-        if(strncmp(pcNeedle, pcHaystack, ulLength) == 0)
+        if(ustrncmp(pcNeedle, pcHaystack, ulLength) == 0)
         {
             //
             // It does so return the pointer.
@@ -1310,6 +1462,92 @@ ustrcasecmp(const char *pcStr1, const char *pcStr2)
     // Just let ustrnicmp() handle this.
     //
     return(ustrnicmp(pcStr1, pcStr2, -1));
+}
+
+//*****************************************************************************
+//
+//! Compares two strings.
+//!
+//! \param pcStr1 points to the first string to be compared.
+//! \param pcStr2 points to the second string to be compared.
+//! \param iCount is the maximum number of characters to compare.
+//!
+//! This function is very similar to the C library <tt>strncmp()</tt> function.
+//! It compares at most \e iCount characters of two strings taking case into
+//! account.  The comparison ends if a terminating NULL character is found in
+//! either string before \e iCount characters are compared.  In this case, the
+//! shorter string is deemed the lesser.
+//!
+//! \return Returns 0 if the two strings are equal, -1 if \e pcStr1 is less
+//! than \e pcStr2 and 1 if \e pcStr1 is greater than \e pcStr2.
+//
+//*****************************************************************************
+int
+ustrncmp(const char *pcStr1, const char *pcStr2, int iCount)
+{
+    while(iCount)
+    {
+        //
+        // If we reached a NULL in both strings, they must be equal so
+        // we end the comparison and return 0
+        //
+        if(!*pcStr1 && !*pcStr2)
+        {
+            return(0);
+        }
+
+        //
+        // Compare the two characters and, if different, return the relevant
+        // return code.
+        //
+        if(*pcStr2 < *pcStr1)
+        {
+            return(1);
+        }
+        if(*pcStr1 < *pcStr2)
+        {
+            return(-1);
+        }
+
+        //
+        // Move on to the next character.
+        //
+        pcStr1++;
+        pcStr2++;
+        iCount--;
+    }
+
+    //
+    // If we fall out, the strings must be equal for at least the first iCount
+    // characters so return 0 to indicate this.
+    //
+    return(0);
+
+}
+
+//*****************************************************************************
+//
+//! Compares two strings.
+//!
+//! \param pcStr1 points to the first string to be compared.
+//! \param pcStr2 points to the second string to be compared.
+//!
+//! This function is very similar to the C library <tt>strcmp()</tt>
+//! function.  It compares two strings, taking case into account.  The
+//! comparison ends if a terminating NULL character is found in either string.
+//! In this case, the shorter string is deemed the lesser.
+//!
+//! \return Returns 0 if the two strings are equal, -1 if \e pcStr1 is less
+//! than \e pcStr2 and 1 if \e pcStr1 is greater than \e pcStr2.
+//
+//*****************************************************************************
+int
+ustrcmp(const char *pcStr1, const char *pcStr2)
+{
+    //
+    // Pass this on to ustrncmp.
+    //
+    return(ustrncmp(pcStr1, pcStr2, -1));
 }
 
 //*****************************************************************************

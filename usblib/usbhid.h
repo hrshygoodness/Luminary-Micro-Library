@@ -2,7 +2,7 @@
 //
 // usbhid.h - Definitions used by HID class devices and hosts.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -231,6 +231,8 @@ extern "C"
 #define HID_KEYB_USAGE_F10      0x43
 #define HID_KEYB_USAGE_F11      0x44
 #define HID_KEYB_USAGE_F12      0x45
+#define HID_KEYB_USAGE_SCROLLOCK   \
+                                0x47
 #define HID_KEYB_USAGE_RIGHT_ARROW \
                                 0x4F
 #define HID_KEYB_USAGE_LEFT_ARROW \
@@ -238,6 +240,7 @@ extern "C"
 #define HID_KEYB_USAGE_DOWN_ARROW \
                                 0x51
 #define HID_KEYB_USAGE_UP_ARROW 0x52
+#define HID_KEYB_USAGE_NUMLOCK  0x53
 #define HID_KEYB_USAGE_KEYPAD_SLASH \
                                 0x54
 #define HID_KEYB_USAGE_KEYPAD_STAR \

@@ -2,7 +2,7 @@
 //
 // usb_dev_mouse.c - Main routines for the enumeration example.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //****************************************************************************
 
@@ -238,12 +238,16 @@ main(void)
         USBDCDCCompositeInit(0, (tUSBDCDCDevice *)&g_sCDCDevice);
 
     //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
+
+    //
     // Pass the device information to the USB library and place the device
     // on the bus.
     //
     USBDCompositeInit(0, &g_sCompDevice, DESCRIPTOR_DATA_SIZE,
                       g_pucDescriptorData);
-
 
     //
     // Initialize the mouse and serial devices.

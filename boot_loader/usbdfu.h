@@ -2,7 +2,7 @@
 //
 // usbdfu.h - Definitions related to the USB Device Firmware Upgrade class.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -229,7 +229,7 @@ PACKED tDFUDownloadHeader;
 // which immediately follows the header. The start address of the data is
 // expressed as a 1KB block number so 0 would represent the bottom of flash
 // (which, incidentally, the USB boot loader will not let you program) and 0x10
-// would represent address 16KB or 16384 (0x4000).  The usLength field contains
+// would represent address 16KB or 16384 (0x4000).  The ulLength field contains
 // the total number of bytes of data in the following programming operation.
 // The DFU device will not look for any command header on following
 // USBD_DFU_REQUEST_DNLOAD requests until the operation is completed or

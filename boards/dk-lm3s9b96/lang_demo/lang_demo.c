@@ -3,7 +3,7 @@
 // lang_demo.c - Demonstration of the Stellaris Graphics Library's string
 //               table support.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -45,7 +45,6 @@
 #include "drivers/touch.h"
 #include "drivers/set_pinout.h"
 #include "images.h"
-#include "language.h"
 
 //*****************************************************************************
 //
@@ -64,7 +63,68 @@
 //! The second panel shows the available languages and allows them to be
 //! switched between English, German, Spanish and Italian.
 //!
+//! The string table and custom fonts used by this application can be found
+//! under /third_party/fonts/lang_demo.  The original strings that the
+//! application intends displaying are found in the language.csv file (encoded
+//! in UTF8 format to allow accented characters and Asian language ideographs
+//! to be included.  The mkstringtable tool is used to generate two versions
+//! of the string table, one which remains encoded in UTF8 format and the other
+//! which has been remapped to a custom codepage allowing the table to be
+//! reduced in size compared to the original UTF8 text.  The tool also produces
+//! character map files listing each character used in the string table.  These
+//! are then provided as input to the ftrasterize tool which generates two
+//! custom fonts for the application, one indexed using Unicode and a smaller
+//! one indexed using the custom codepage generated for this string table.
+//!
+//! The command line parameters required for mkstringtable and ftrasterize
+//! can be found in the makefile in third_party/fonts/lang_demo.
+//!
+//! By default, the application builds to use the custom codepage version of
+//! the string table and its matching custom font.  To build using the UTF8
+//! string table and Unicode-indexed custom font, ensure that the definition of
+//! \b USE_REMAPPED_STRINGS at the top of the lang_demo.c source file is
+//! commented out.
+//!
 //*****************************************************************************
+
+//*****************************************************************************
+//
+// Comment the following line to use a version of the string table and custom
+// font that does not use codepage remapping.  In this version, the font is
+// somewhat larger and character lookup will be slower but it has the advantage
+// that the strings you retrieve from the string table are encoded exactly
+// as they were in the original CSV file and are generally readable in your
+// debugger (since they use a standard codepage like ISO8859-1 or UTF8).
+//
+//*****************************************************************************
+#define USE_REMAPPED_STRINGS
+
+#ifdef USE_REMAPPED_STRINGS
+#include "langremap.h"
+extern const unsigned char g_pucCustomr14pt[];
+extern const unsigned char g_pucCustomr20pt[];
+
+#define SPACE_CHAR MAP8000_CHAR_000020
+#define FONT_20PT (const tFont *)g_pucCustomr20pt
+#define FONT_14PT (const tFont *)g_pucCustomr14pt
+#define STRING_TABLE g_pucTablelangremap
+#define GRLIB_INIT_STRUCT g_GrLibDefaultlangremap
+
+#else
+
+#include "language.h"
+
+extern const unsigned char g_pucCustom14pt[];
+extern const unsigned char g_pucCustom20pt[];
+
+#define SPACE_CHAR 0x20
+#define FONT_20PT (const tFont *)g_pucCustom20pt
+#define FONT_14PT (const tFont *)g_pucCustom14pt
+
+#define STRING_TABLE g_pucTablelanguage
+#define GRLIB_INIT_STRUCT g_GrLibDefaultlanguage
+
+#endif
 
 //*****************************************************************************
 //
@@ -113,13 +173,32 @@ char g_pcTitle[TITLE_MAX_SIZE];
 // This table holds the array of languages supported.
 //
 //*****************************************************************************
-const unsigned short g_eLanguageTable[4] =
+typedef struct
 {
-    GrLangEnUS,
-    GrLangDe,
-    GrLangEsSP,
-    GrLangIt,
+    unsigned short usLanguage;
+    tBoolean bBreakOnSpace;
+}
+tLanguageParams;
+
+const tLanguageParams g_pLanguageTable[] =
+{
+    { GrLangEnUS, true },
+    { GrLangDe, true },
+    { GrLangEsSP, true },
+    { GrLangIt, true },
+    { GrLangZhPRC, false },
+    { GrLangKo, true },
+    { GrLangJp, false }
 };
+
+#define NUM_LANGUAGES (sizeof(g_LanguageTable) / sizeof(tLanguageParams))
+
+//*****************************************************************************
+//
+// The index of the current language in the g_pLanguageTable array.
+//
+//*****************************************************************************
+unsigned long g_ulLangIdx;
 
 //*****************************************************************************
 //
@@ -178,8 +257,26 @@ extern tCanvasWidget g_psPanels[];
 //
 //*****************************************************************************
 Canvas(g_sIntroduction, g_psPanels, 0, 0, &g_sKitronix320x240x16_SSD2119, 0, 26,
-       320, 166, CANVAS_STYLE_APP_DRAWN, 0, 0, 0, 0, 0, 0, OnIntroPaint);
+       320, 164, CANVAS_STYLE_APP_DRAWN, 0, 0, 0, 0, 0, 0, OnIntroPaint);
 
+//*****************************************************************************
+//
+// Storage for language name strings.  Note that we could hardcode these into
+// the relevant widget initialization macros but since we may be using a
+// custom font and remapped codepage, keeping the strings in the string table
+// and loading them when the app starts is likely to create less confusion and
+// prevents the risk of seeing garbled output if you accidentally use ASCII or
+// ISO8859-1 text strings with the custom font.
+//
+//*****************************************************************************
+#define MAX_LANGUAGE_NAME_LEN 10
+char g_pcEnglish[MAX_LANGUAGE_NAME_LEN];
+char g_pcDeutsch[MAX_LANGUAGE_NAME_LEN];
+char g_pcEspanol[MAX_LANGUAGE_NAME_LEN];
+char g_pcItaliano[MAX_LANGUAGE_NAME_LEN];
+char g_pcChinese[MAX_LANGUAGE_NAME_LEN];
+char g_pcKorean[MAX_LANGUAGE_NAME_LEN];
+char g_pcJapanese[MAX_LANGUAGE_NAME_LEN];
 
 //*****************************************************************************
 //
@@ -192,31 +289,44 @@ tContainerWidget g_psRadioContainers[];
 tRadioButtonWidget g_psRadioButtons1[] =
 {
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 1, 0,
-                      &g_sKitronix320x240x16_SSD2119, 10, 50, 120, 45,
+                      &g_sKitronix320x240x16_SSD2119, 10, 54, 120, 25,
                       RB_STYLE_TEXT | RB_STYLE_SELECTED, 16, 0, ClrSilver,
-                      ClrSilver, &g_sFontCm20, "English", 0, OnRadioChange),
+                      ClrSilver, FONT_20PT, g_pcEnglish, 0, OnRadioChange),
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 2, 0,
-                      &g_sKitronix320x240x16_SSD2119, 10, 95, 120, 45,
-                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, &g_sFontCm20,
-                      "Deutsch", 0, OnRadioChange),
+                      &g_sKitronix320x240x16_SSD2119, 10, 82, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcDeutsch, 0, OnRadioChange),
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 3, 0,
-                      &g_sKitronix320x240x16_SSD2119, 180, 50, 120, 45,
-                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, &g_sFontCm20,
-                      "Espanol", 0, OnRadioChange),
+                      &g_sKitronix320x240x16_SSD2119, 180, 54, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcEspanol, 0, OnRadioChange),
+    RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 4, 0,
+                      &g_sKitronix320x240x16_SSD2119, 180, 82, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcItaliano, 0, OnRadioChange),
+    RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 5, 0,
+                      &g_sKitronix320x240x16_SSD2119, 10, 110, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcChinese, 0, OnRadioChange),
+    RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 6, 0,
+                      &g_sKitronix320x240x16_SSD2119, 180, 110, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcKorean, 0, OnRadioChange),
     RadioButtonStruct(g_psRadioContainers, 0, 0,
-                      &g_sKitronix320x240x16_SSD2119, 180, 95, 120, 45,
-                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, &g_sFontCm20,
-                      "Italiano", 0, OnRadioChange)
+                      &g_sKitronix320x240x16_SSD2119, 10, 138, 120, 25,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, FONT_20PT,
+                      g_pcJapanese, 0, OnRadioChange),
 };
+
 #define NUM_RADIO1_BUTTONS      (sizeof(g_psRadioButtons1) /   \
                                  sizeof(g_psRadioButtons1[0]))
 
 tContainerWidget g_psRadioContainers[] =
 {
     ContainerStruct(g_psPanels + 1, 0, g_psRadioButtons1,
-                    &g_sKitronix320x240x16_SSD2119, 5, 30, 310, 120,
+                    &g_sKitronix320x240x16_SSD2119, 5, 30, 310, 150,
                     CTR_STYLE_OUTLINE | CTR_STYLE_TEXT, 0, ClrGray, ClrSilver,
-                    &g_sFontCm20, g_pcLanguage),
+                    FONT_20PT, g_pcLanguage),
 };
 
 //*****************************************************************************
@@ -228,9 +338,9 @@ tContainerWidget g_psRadioContainers[] =
 tCanvasWidget g_psPanels[] =
 {
     CanvasStruct(0, 0, &g_sIntroduction, &g_sKitronix320x240x16_SSD2119, 0, 26,
-                 320, 166, CANVAS_STYLE_FILL, ClrBlack, 0, 0, 0, 0, 0, 0),
+                 320, 164, CANVAS_STYLE_FILL, ClrBlack, 0, 0, 0, 0, 0, 0),
     CanvasStruct(0, 0, g_psRadioContainers, &g_sKitronix320x240x16_SSD2119, 0,
-                 26, 320, 166, CANVAS_STYLE_FILL, ClrBlack, 0, 0, 0, 0, 0, 0),
+                 26, 320, 164, CANVAS_STYLE_FILL, ClrBlack, 0, 0, 0, 0, 0, 0),
 };
 
 //*****************************************************************************
@@ -245,16 +355,19 @@ tCanvasWidget g_psPanels[] =
 // The buttons and text across the bottom of the screen.
 //
 //*****************************************************************************
+char g_pcPlus[2];
+char g_pcMinus[2];
+
 RectangularButton(g_sPrevious, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 0, 190,
                   50, 50, PB_STYLE_FILL, ClrBlack, ClrBlack, 0, ClrSilver,
-                  &g_sFontCm20, "-", g_pucBlue50x50, g_pucBlue50x50Press, 0, 0,
+                  FONT_20PT, g_pcMinus, g_pucBlue50x50, g_pucBlue50x50Press, 0, 0,
                   OnPrevious);
 Canvas(g_sTitle, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 50, 190, 220, 50,
        CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_OPAQUE | CANVAS_STYLE_FILL, 0, 0,
-       ClrSilver, &g_sFontCm20, 0, 0, 0);
+       ClrSilver, FONT_20PT, 0, 0, 0);
 RectangularButton(g_sNext, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 270, 190,
                   50, 50, PB_STYLE_IMG | PB_STYLE_TEXT, ClrBlack, ClrBlack, 0,
-                  ClrSilver, &g_sFontCm20, "+", g_pucBlue50x50,
+                  ClrSilver, FONT_20PT, g_pcPlus, g_pucBlue50x50,
                   g_pucBlue50x50Press, 0, 0, OnNext);
 
 //*****************************************************************************
@@ -445,109 +558,133 @@ ChangeLanguage(unsigned short usLanguage)
 // \param lLineHeight is the height of a character in the currrent font.
 // \param lx is the x position to start printing this string.
 // \param ly is the y position to start printing this string.
+// \param bSplitOnSpace is true if strings in the current language must be
+// split only on space characters or false if they may be split between any
+// two characters.
 //
 // \return Returns the number of lines that were printed due to this string.
 //
 //*****************************************************************************
 unsigned long
-DrawStringWrapped(tContext *pContext, const char *pcString,
-                  long lLineHeight, long lx, long ly)
+DrawStringWrapped(tContext *pContext, char *pcString,
+                  long lLineHeight, long lx, long ly, tBoolean bSplitOnSpace)
 {
-    unsigned long ulWidth;
-    unsigned long ulLines;
-    int iRemaining, iIdx, iCurrent;
+    unsigned long ulWidth, ulCharWidth, ulStrWidth, ulChar;
+    unsigned long ulLines, ulSkip;
+    char *pcStart, *pcEnd;
+    char *pcLastSpace;
 
     ulLines = 0;
 
     //
-    // Get the number of characters that will fit across the screen.
+    // Get the number of pixels we have to fit the string into across the
+    // screen.
     //
     ulWidth = GrContextDpyWidthGet(pContext) - lx;
 
     //
-    // Get the number of characters in the string.
+    // Get a pointer to the terminating zero.
     //
-    iRemaining = 0;
-
-    while(pcString[iRemaining++] != 0)
+    pcEnd = pcString;
+    while(*pcEnd)
     {
-        if(iRemaining >= SCOMP_MAX_STRLEN)
-        {
-            break;
-        }
+        pcEnd++;
     }
 
-    while(iRemaining > 0)
+    //
+    // The first substring we draw will start at the beginning of the string.
+    //
+    pcStart = pcString;
+    pcLastSpace = pcString;
+    ulStrWidth = 0;
+
+    //
+    // Keep processing until we have no more characters to display.
+    //
+    do
     {
         //
-        // Reset the current search position.
+        // Get the next character in the string.
         //
-        iCurrent = 0;
+        ulChar = GrStringNextCharGet(pContext, pcString, (pcEnd - pcString),
+                                     &ulSkip);
 
-        for(iIdx = 0; iIdx < iRemaining; iIdx++)
+        //
+        // Did we reach the end of the string?
+        //
+        if(ulChar)
         {
             //
-            // Found a space.
+            // No - how wide is this character?
             //
-            if(pcString[iIdx] == ' ')
+            ulCharWidth = GrStringWidthGet(pContext, pcString, ulSkip);
+
+            //
+            // Have we run off the edge of the display?
+            //
+            if((ulStrWidth + ulCharWidth) > ulWidth)
             {
                 //
-                // See if the current string will fit if not then its time to
-                // print and move the pointer up.
+                // If we are splitting on spaces, rewind the string pointer to
+                // the byte after the last space.
                 //
-                if(GrStringWidthGet(pContext, pcString, iIdx) < ulWidth)
+                if(bSplitOnSpace)
                 {
-                    iCurrent = iIdx;
+                    pcString = pcLastSpace;
                 }
-                else
+
+                //
+                // Yes - draw the substring.
+                //
+                GrStringDraw(pContext, pcStart, (pcString - pcStart), lx, ly,
+                             0);
+
+                //
+                // Increment the line count and move the y position down by the
+                // current font's line height.
+                //
+                ulLines++;
+                ly += lLineHeight;
+                ulStrWidth = 0;
+
+                //
+                // The next string we draw will start at the current position.
+                //
+                pcStart = pcString;
+            }
+            else
+            {
+                //
+                // No - update the width and move on to the next character.
+                //
+                ulStrWidth += ulCharWidth;
+                pcString += ulSkip;
+
+                //
+                // If this is a space, remember where we are.
+                //
+                if(ulChar == SPACE_CHAR)
                 {
-                    break;
+                    pcLastSpace = pcString;
                 }
             }
         }
-
-        //
-        // Handle the case where there are no more remaining characters
-        if(iIdx >= iRemaining)
+        else
         {
             //
-            // See if the current string will fit if not then its time to
-            // print and move the pointer up.  Othewise use the previous
-            // position and iterate throught he string again.
+            // Do we have any remaining chunk of string to draw?
             //
-            if(GrStringWidthGet(pContext, pcString, iIdx) < ulWidth)
+            if(pcStart != pcString)
             {
-                iCurrent = iIdx;
+                //
+                // Yes - draw the last section of string.
+                //
+                GrStringDraw(pContext, pcStart, -1, lx, ly, 0);
+                ulLines++;
             }
         }
+    } while(ulChar);
 
-        //
-        // If the pointer never advanced then the word was very long and just
-        // needs to be printed by itself.  This will crop the word.
-        //
-        if(iCurrent == 0)
-        {
-            iCurrent = iIdx;
-        }
-
-        //
-        // Print the sub-string out to the screen at the current position.
-        //
-        GrStringDraw(pContext, pcString, iCurrent, lx, ly, 0);
-
-        //
-        // Increment the line count and move the y position down by the
-        // current font's line height.
-        //
-        ulLines++;
-        ly += lLineHeight;
-
-        //
-        // Skip the space if there was one.
-        //
-        iRemaining -= (iCurrent + 1);
-        pcString = &pcString[iCurrent + 1];
-    }
     return(ulLines);
 }
 
@@ -562,13 +699,13 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
     long lLineHeight, lOffset;
     unsigned long ulLines;
 
-    lLineHeight = GrFontHeightGet(&g_sFontCm16);
-    lOffset = 26;
+    lLineHeight = GrFontHeightGet(FONT_14PT);
+    lOffset = 32;
 
     //
     // Display the introduction text in the canvas.
     //
-    GrContextFontSet(pContext, &g_sFontCm16);
+    GrContextFontSet(pContext, FONT_14PT);
     GrContextForegroundSet(pContext, ClrSilver);
 
     //
@@ -576,7 +713,8 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
     //
     GrStringGet(STR_INTRO_1, g_pcBuffer, SCOMP_MAX_STRLEN);
     ulLines = DrawStringWrapped(pContext, g_pcBuffer, lLineHeight, 1,
-                                lOffset);
+                                lOffset,
+                                g_pLanguageTable[g_ulLangIdx].bBreakOnSpace );
     //
     // Move down by 1/4 of a line between paragraphs.
     //
@@ -587,7 +725,8 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
     //
     GrStringGet(STR_INTRO_2, g_pcBuffer, SCOMP_MAX_STRLEN);
     ulLines += DrawStringWrapped(pContext, g_pcBuffer, lLineHeight, 1,
-                                 lOffset + (ulLines * lLineHeight));
+                                 lOffset + (ulLines * lLineHeight),
+                                 g_pLanguageTable[g_ulLangIdx].bBreakOnSpace );
     //
     // Move down by 1/4 of a line between paragraphs.
     //
@@ -598,7 +737,8 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
     //
     GrStringGet(STR_INTRO_3, g_pcBuffer, SCOMP_MAX_STRLEN);
     DrawStringWrapped(pContext, g_pcBuffer, lLineHeight, 1, lOffset +
-        (ulLines * lLineHeight));
+        (ulLines * lLineHeight),
+        g_pLanguageTable[g_ulLangIdx].bBreakOnSpace );
 }
 
 //*****************************************************************************
@@ -609,14 +749,12 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
 void
 OnRadioChange(tWidget *pWidget, unsigned long bSelected)
 {
-    unsigned long ulIdx;
-
     //
     // Find the index of this radio button in the first group.
     //
-    for(ulIdx = 0; ulIdx < NUM_RADIO1_BUTTONS; ulIdx++)
+    for(g_ulLangIdx = 0; g_ulLangIdx < NUM_RADIO1_BUTTONS; g_ulLangIdx++)
     {
-        if(pWidget == (tWidget *)(g_psRadioButtons1 + ulIdx))
+        if(pWidget == (tWidget *)(g_psRadioButtons1 + g_ulLangIdx))
         {
             break;
         }
@@ -625,7 +763,7 @@ OnRadioChange(tWidget *pWidget, unsigned long bSelected)
     //
     // Change any dynamic language strings.
     //
-    ChangeLanguage(g_eLanguageTable[ulIdx]);
+    ChangeLanguage(g_pLanguageTable[g_ulLangIdx].usLanguage);
 
     //
     // Issue the initial paint request to the widgets.
@@ -666,9 +804,14 @@ main(void)
     Kitronix320x240x16_SSD2119Init();
 
     //
+    // Set graphics library text rendering defaults.
+    //
+    GrLibInit(&GRLIB_INIT_STRUCT);
+
+    //
     // Set the string table and the default language.
     //
-    GrStringTableSet(g_pucTablelanguage);
+    GrStringTableSet(STRING_TABLE);
 
     //
     // Set the default language.
@@ -697,10 +840,34 @@ main(void)
     GrRectDraw(&sContext, &sRect);
 
     //
+    // Load the static strings from the string table.  These strings are
+    // independent of the language in use but we store them in the string
+    // table nonetheless since (a) we may be using codepage remapping in
+    // which case it would be difficult to hardcode them into the app source
+    // anyway (ASCII or ISO8859-1 text would not render properly with the
+    // remapped custom font) and (b) even if we're not using codepage remapping,
+    // we may have generated a custom font from the string table output and
+    // we want to make sure that all glyphs required by the application are
+    // present in that font.  If we hardcode some text in the application
+    // source and don't put it in the string table, we run the risk of having
+    // characters missing in the font.
+    //
+    GrStringGet(STR_ENGLISH, g_pcEnglish, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_DEUTSCH, g_pcDeutsch, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_ESPANOL, g_pcEspanol, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_ITALIANO, g_pcItaliano, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_CHINESE, g_pcChinese, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_KOREAN, g_pcKorean, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_JAPANESE, g_pcJapanese, MAX_LANGUAGE_NAME_LEN);
+    GrStringGet(STR_PLUS, g_pcPlus, 2);
+    GrStringGet(STR_MINUS, g_pcMinus, 2);
+
+    //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&sContext, &g_sFontCm20);
-    GrStringDrawCentered(&sContext, "lang demo", -1,
+    GrStringGet(STR_APPNAME, g_pcBuffer, SCOMP_MAX_STRLEN);
+    GrContextFontSet(&sContext, FONT_20PT);
+    GrStringDrawCentered(&sContext, g_pcBuffer, -1,
                          GrContextDpyWidthGet(&sContext) / 2, 10, 0);
 
     //

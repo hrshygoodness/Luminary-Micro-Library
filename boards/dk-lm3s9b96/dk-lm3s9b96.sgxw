@@ -1,7 +1,7 @@
 <!--
 Configuration file for Sourcery G++ workspace dk-lm3s9b96
 
-Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,18 +17,18 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 -->
 
 <workspace>
   <project description="../../inc/inc.sgxx" />
   <project description="../../boot_loader/boot_loader.sgxx" />
+  <project description="../../IQmath/IQmath.sgxx" />
   <project description="../../third_party/third_party.sgxx" />
   <project description="../../utils/utils.sgxx" />
-  <project description="../../driverlib/driverlib.sgxx" />
-  <project description="../../grlib/grlib.sgxx" />
-  <project description="../../IQmath/IQmath.sgxx" />
-  <project description="../../usblib/usblib.sgxx" />
+  <project description="../../driverlib/driverlib-cm3.sgxx" />
+  <project description="../../grlib/grlib-cm3.sgxx" />
+  <project description="../../usblib/usblib-cm3.sgxx" />
   <project description="aes_expanded_key/aes_expanded_key.sgxx" />
   <project description="aes_set_key/aes_set_key.sgxx" />
   <project description="bitband/bitband.sgxx" />
@@ -49,6 +49,7 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
   <project description="enet_uip/enet_uip.sgxx" />
   <project description="ext_demo_1/ext_demo_1.sgxx" />
   <project description="ext_demo_2/ext_demo_2.sgxx" />
+  <project description="fontview/fontview.sgxx" />
   <project description="gpio_jtag/gpio_jtag.sgxx" />
   <project description="grlib_demo/grlib_demo.sgxx" />
   <project description="hello/hello.sgxx" />

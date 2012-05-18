@@ -2,7 +2,7 @@
 //
 // context.c - Routines for handling drawing contexts.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Graphics Library.
+// This is part of revision 8555 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -31,6 +31,61 @@
 //! @{
 //
 //*****************************************************************************
+
+#ifndef GRLIB_REMOVE_WIDE_FONT_SUPPORT
+//*****************************************************************************
+//
+// A pointer to the application-passed structure containing default values for
+// various text rendering properties.
+//
+//*****************************************************************************
+static tGrLibDefaults const *g_psGrLibDefaults;
+
+//
+// Default text mapping functions.  This table allows the use of 8 bit encoded
+// source text with either Unicode encoded wide fonts or legacy fonts
+// which are assumed to contain ISO8859-1 text (ASCII + western European).
+//
+const tCodePointMap g_psDefaultCodePointMapTable[] =
+{
+    {CODEPAGE_ISO8859_1, CODEPAGE_UNICODE, GrMapISO8859_1_Unicode},
+    {CODEPAGE_ISO8859_1, CODEPAGE_ISO8859_1, GrMapISO8859_1_Unicode}
+};
+
+#define NUM_DEFAULT_CODEPOINT_MAPS (sizeof(g_psDefaultCodePointMapTable) /    \
+                                    sizeof(tCodePointMap))
+
+//*****************************************************************************
+//
+//! Initializes graphics library default text rendering values.
+//!
+//! \param pDefaults points to a structure containing default values to use.
+//!
+//! This function allows an application to set global default values that the
+//! graphics library will use when initializing any graphics context.  These
+//! values set the source text codepage, the rendering function to use for
+//! strings and mapping functions used to allow extraction of the correct
+//! glyphs from fonts.
+//!
+//! If this function is not called by an application, the graphics library
+//! assumes that text strings are ISO8859-1 encoded and that the default string
+//! renderer is used.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+GrLibInit(const tGrLibDefaults *pDefaults)
+{
+    ASSERT(pDefaults);
+
+    //
+    // Remember the pointer to the defaults structure.
+    //
+    g_psGrLibDefaults = pDefaults;
+}
+
+#endif
 
 //*****************************************************************************
 //
@@ -82,6 +137,29 @@ GrContextInit(tContext *pContext, const tDisplay *pDisplay)
     pContext->ulForeground = 0;
     pContext->ulBackground = 0;
     pContext->pFont = 0;
+
+#ifndef GRLIB_REMOVE_WIDE_FONT_SUPPORT
+    //
+    // Set defaults for all text rendering options.
+    //
+    if(g_psGrLibDefaults)
+    {
+        pContext->pfnStringRenderer = g_psGrLibDefaults->pfnStringRenderer;
+        pContext->pCodePointMapTable = g_psGrLibDefaults->pCodePointMapTable;
+        pContext->usCodepage = g_psGrLibDefaults->usCodepage;
+        pContext->ucNumCodePointMaps = g_psGrLibDefaults->ucNumCodePointMaps;
+        pContext->ucReserved = g_psGrLibDefaults->ucReserved;
+    }
+    else
+    {
+        pContext->pfnStringRenderer = GrDefaultStringRenderer;
+        pContext->pCodePointMapTable = g_psDefaultCodePointMapTable;
+        pContext->usCodepage = CODEPAGE_ISO8859_1;
+        pContext->ucNumCodePointMaps = NUM_DEFAULT_CODEPOINT_MAPS;
+        pContext->ucReserved = 0;
+    }
+    pContext->ucCodePointMap = 0;
+#endif
 }
 
 //*****************************************************************************

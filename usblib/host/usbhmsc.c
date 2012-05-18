@@ -2,7 +2,7 @@
 //
 // usbhmsc.c - USB MSC host driver.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -189,7 +189,7 @@ USBHMSCOpen(tUSBHostDevice *pDevice)
                 //
                 g_USBHMSCDevice.ulBulkInPipe =
                     USBHCDPipeAllocSize(0, USBHCD_PIPE_BULK_IN_DMA,
-                                        pDevice->ulAddress,
+                                        pDevice,
                                         pEndpointDescriptor->wMaxPacketSize,
                                         0);
                 //
@@ -208,7 +208,7 @@ USBHMSCOpen(tUSBHostDevice *pDevice)
                 //
                 g_USBHMSCDevice.ulBulkOutPipe =
                     USBHCDPipeAllocSize(0, USBHCD_PIPE_BULK_OUT_DMA,
-                                        pDevice->ulAddress,
+                                        pDevice,
                                         pEndpointDescriptor->wMaxPacketSize,
                                         0);
                 //
@@ -298,7 +298,7 @@ USBHMSCClose(void *pvInstance)
 //! This function retrieves the maximum number of the logical units on a
 //! mass storage device.
 //!
-//! \param ulAddress is the device address on the USB bus.
+//! \param pDevice is the device instance pointer for this request.
 //! \param ulInterface is the interface number on the device specified by the
 //! \e ulAddress parameter.
 //! \param pucMaxLUN is the byte value returned from the device for the
@@ -313,7 +313,7 @@ USBHMSCClose(void *pvInstance)
 //
 //*****************************************************************************
 static void
-USBHMSCGetMaxLUN(unsigned long ulAddress, unsigned long ulInterface,
+USBHMSCGetMaxLUN(tUSBHostDevice *pDevice, unsigned long ulInterface,
                  unsigned char *pucMaxLUN)
 {
     tUSBRequest SetupPacket;
@@ -343,7 +343,7 @@ USBHMSCGetMaxLUN(unsigned long ulAddress, unsigned long ulInterface,
     //
     // Put the setup packet in the buffer and send the command.
     //
-    if(USBHCDControlTransfer(0, &SetupPacket, ulAddress, pucMaxLUN, 1,
+    if(USBHCDControlTransfer(0, &SetupPacket, pDevice, pucMaxLUN, 1,
                              MAX_PACKET_SIZE_EP0) != 1)
     {
         *pucMaxLUN = 0;
@@ -388,7 +388,7 @@ USBHMSCDriveReady(unsigned long ulInstance)
     //
     // Get the Maximum LUNs on this device.
     //
-    USBHMSCGetMaxLUN(g_USBHMSCDevice.pDevice->ulAddress,
+    USBHMSCGetMaxLUN(g_USBHMSCDevice.pDevice,
                      g_USBHMSCDevice.pDevice->ulInterface, &ucMaxLUN);
 
     //
@@ -436,6 +436,22 @@ USBHMSCDriveReady(unsigned long ulInstance)
         ulSize = SCSI_REQUEST_SENSE_SZ;
         USBHSCSIRequestSense(pMSCDevice->ulBulkInPipe,
                              pMSCDevice->ulBulkOutPipe, pBuffer, &ulSize);
+
+        //
+        // If the read capacity failed then check if the drive is ready.
+        //
+        if(USBHSCSITestUnitReady(pMSCDevice->ulBulkInPipe,
+                                 pMSCDevice->ulBulkOutPipe) != SCSI_CMD_STATUS_PASS)
+        {
+            //
+            // Get the current sense data from the device to see why it failed
+            // the Test Unit Ready command.
+            //
+            ulSize = SCSI_REQUEST_SENSE_SZ;
+            USBHSCSIRequestSense(pMSCDevice->ulBulkInPipe,
+                                 pMSCDevice->ulBulkOutPipe, pBuffer, &ulSize);
+        }
+
         return(-1);
     }
     else
@@ -468,6 +484,7 @@ USBHMSCDriveReady(unsigned long ulInstance)
         ulSize = SCSI_REQUEST_SENSE_SZ;
         USBHSCSIRequestSense(pMSCDevice->ulBulkInPipe,
                              pMSCDevice->ulBulkOutPipe, pBuffer, &ulSize);
+
         return(-1);
     }
 

@@ -2,7 +2,7 @@
 //
 // usbtick.c - Functions related to USB stack tick timer handling.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -41,8 +41,8 @@
 // every USB_SOF_TICK_DIVIDE milliseconds.
 //
 //*****************************************************************************
-tUSBTickHandler g_pfTickHandlers[USB_TICK_HANDLER_NUM];
-void *g_pvTickInstance[USB_TICK_HANDLER_NUM];
+tUSBTickHandler g_pfTickHandlers[MAX_USB_TICK_HANDLERS];
+void *g_pvTickInstance[MAX_USB_TICK_HANDLERS];
 
 //*****************************************************************************
 //
@@ -87,7 +87,7 @@ InternalUSBTickInit(void)
 
     if(!g_bUSBTimerInitialized)
     {
-        for(ulLoop = 0; ulLoop < USB_TICK_HANDLER_NUM; ulLoop++)
+        for(ulLoop = 0; ulLoop < MAX_USB_TICK_HANDLERS; ulLoop++)
         {
             g_pfTickHandlers[ulLoop] = (tUSBTickHandler)0;
             g_pvTickInstance[ulLoop] = 0;
@@ -99,12 +99,34 @@ InternalUSBTickInit(void)
 
 //*****************************************************************************
 //
+// This internal function resets the USB tick handler.
+//
+// This function should only be called from within the USB library.  It will
+// clear out the tick handler state and should be called to allow the tick
+// handlers to be initialized once USBDCDInit() function is called.
+//
+// \return None.
+//
+//*****************************************************************************
+void
+InternalUSBTickReset(void)
+{
+    //
+    // Reset the initialized flag so that the next time InternalUSBTickInit()
+    // is called.
+    //
+    g_bUSBTimerInitialized = 0;
+}
+
+//*****************************************************************************
+//
 // This internal function handles registering OTG, Host, or Device SOF timer
 // handler functions.
 //
-// \param ulHandler specifies which type of handler to register.
 // \param pfHandler specifies the handler to call for the given type of
 // handler.
+// \param pvInstance is the instance pointer that will be returned to the
+// function provided in the \e pfHandler function.
 //
 // This function should only be called inside the USB library and only as a
 // result to a call to reinitialize the stack in a new mode.  Currently the
@@ -112,25 +134,37 @@ InternalUSBTickInit(void)
 // TICK_HANDLER_OTG, TICK_HANDLER_HOST, or TICK_HANDLER_DEVICE.  Handlers
 // registered via this function are called in the context of the SOF interrupt.
 //
-// \return None.
+// \return A value of zero means that the tick handler was registered and any
+// other value indicates an error.
 //
 //*****************************************************************************
-void
-InternalUSBRegisterTickHandler(unsigned long ulHandler,
-                               tUSBTickHandler pfHandler,
+long
+InternalUSBRegisterTickHandler(tUSBTickHandler pfHandler,
                                void *pvInstance)
 {
-    ASSERT(ulHandler < USB_TICK_HANDLER_NUM);
+    long lIdx;
 
-    //
-    // Save the handler.
-    //
-    g_pfTickHandlers[ulHandler] = pfHandler;
+    for(lIdx = 0; lIdx < MAX_USB_TICK_HANDLERS; lIdx++)
+    {
+        if(g_pfTickHandlers[lIdx] == 0)
+        {
+            //
+            // Save the handler.
+            //
+            g_pfTickHandlers[lIdx] = pfHandler;
 
-    //
-    // Save the instance data.
-    //
-    g_pvTickInstance[ulHandler] = pvInstance;
+            //
+            // Save the instance data.
+            //
+            g_pvTickInstance[lIdx] = pvInstance;
+        }
+    }
+
+    if(lIdx == MAX_USB_TICK_HANDLERS)
+    {
+        return(-1);
+    }
+    return(0);
 }
 
 //*****************************************************************************
@@ -165,7 +199,7 @@ InternalUSBStartOfFrameTick(unsigned long ulTicksmS)
     //
     // Call any registered SOF tick handlers.
     //
-    for(lIdx = 0; lIdx < USB_TICK_HANDLER_NUM; lIdx++)
+    for(lIdx = 0; lIdx < MAX_USB_TICK_HANDLERS; lIdx++)
     {
         if(g_pfTickHandlers[lIdx])
         {

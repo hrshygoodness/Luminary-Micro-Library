@@ -2,7 +2,7 @@
 //
 // aes_iv.c - Example initialization vector setup for AES.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -50,36 +50,36 @@ const unsigned char g_ucApplicationUnique[8] =
 
 //*****************************************************************************
 //
-//! Generate an IV (initialization vector) for AES use.
-//!
-//! \param ucIV is where the generated initialization vector is stored.
-//! \param bNewTime determines if the SysTick timer is read or if the previous
-//! time value is used.
-//!
-//! This will generate a new unique IV for AES use. It may be set to
-//! inject the Systick (timer) time value each time or only once.
-//!
-//! \note  There are 4 easy methods to handle the Initialization Vector (IV)
-//! to be shared by two or more devices:
-//! 1. You build up one from one side and send to the other side using
-//!    no encryption or ECB encryption. The other side may validate
-//!    the IV (e.g. matches a CRC code or something). Then, the new
-//!    IV is sent in each encrypted message or in certain messages (such
-//!    as requests).
-//! 2. You send part of the IV to the other side and pre-agree to the
-//!    rest as an application unique value. Again, the follow on IVs are
-//!    normally sent in following messages.
-//! 3. Using time. After an initial message, a time base is agreed.
-//!    Then, each following IV represents the time since that base.
-//!    Either the next IV is sent in messages (and so validated by
-//!    being within a short time range) or the time is rounded up to
-//!    units such as seconds, so that the reciever can guess the IV
-//!    (current seconds count or previous seconds count).
-//! 4. A message counter is used so that each side knows what the
-//!    next IV will be (and replay attacks will fail). This only
-//!    works with reliable communications.
-//!
-//! \return None.
+// Generate an IV (initialization vector) for AES use.
+//
+// \param ucIV is where the generated initialization vector is stored.
+// \param bNewTime determines if the SysTick timer is read or if the previous
+// time value is used.
+//
+// This will generate a new unique IV for AES use. It may be set to
+// inject the Systick (timer) time value each time or only once.
+//
+// \note  There are 4 easy methods to handle the Initialization Vector (IV)
+// to be shared by two or more devices:
+// 1. You build up one from one side and send to the other side using
+//    no encryption or ECB encryption. The other side may validate
+//    the IV (e.g. matches a CRC code or something). Then, the new
+//    IV is sent in each encrypted message or in certain messages (such
+//    as requests).
+// 2. You send part of the IV to the other side and pre-agree to the
+//    rest as an application unique value. Again, the follow on IVs are
+//    normally sent in following messages.
+// 3. Using time. After an initial message, a time base is agreed.
+//    Then, each following IV represents the time since that base.
+//    Either the next IV is sent in messages (and so validated by
+//    being within a short time range) or the time is rounded up to
+//    units such as seconds, so that the reciever can guess the IV
+//    (current seconds count or previous seconds count).
+// 4. A message counter is used so that each side knows what the
+//    next IV will be (and replay attacks will fail). This only
+//    works with reliable communications.
+//
+// \return None.
 //
 //*****************************************************************************
 void

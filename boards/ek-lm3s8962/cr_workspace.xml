@@ -1,0 +1,57 @@
+<!--
+Configuration file for Code Red workspace ek-lm3s8962
+
+Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 8555 of the EK-LM3S8962 Firmware Package.
+-->
+
+<workspace>
+  <project description="../../inc/cr_project.xml" />
+  <project description="../../boot_loader/cr_project.xml" />
+  <project description="../../third_party/cr_project.xml" />
+  <project description="../../utils/cr_project.xml" />
+  <project description="../../driverlib/cr_driverlib-cm3.xml" />
+  <project description="aes_expanded_key/cr_project.xml" />
+  <project description="aes_set_key/cr_project.xml" />
+  <project description="bitband/cr_project.xml" />
+  <project description="blinky/cr_project.xml" />
+  <project description="boot_demo1/cr_project.xml" />
+  <project description="boot_demo2/cr_project.xml" />
+  <project description="boot_demo_eth/cr_project.xml" />
+  <project description="boot_eth/cr_project.xml" />
+  <project description="boot_serial/cr_project.xml" />
+  <project description="can_device_fifo/cr_project.xml" />
+  <project description="can_device_led/cr_project.xml" />
+  <project description="can_device_qs/cr_project.xml" />
+  <project description="can_fifo/cr_project.xml" />
+  <project description="enet_io/cr_project.xml" />
+  <project description="enet_lwip/cr_project.xml" />
+  <project description="enet_ptpd/cr_project.xml" />
+  <project description="enet_uip/cr_project.xml" />
+  <project description="gpio_jtag/cr_project.xml" />
+  <project description="graphics/cr_project.xml" />
+  <project description="hello/cr_project.xml" />
+  <project description="interrupts/cr_project.xml" />
+  <project description="mpu_fault/cr_project.xml" />
+  <project description="pwmgen/cr_project.xml" />
+  <project description="qs_ek-lm3s8962/cr_project.xml" />
+  <project description="sd_card/cr_project.xml" />
+  <project description="timers/cr_project.xml" />
+  <project description="uart_echo/cr_project.xml" />
+  <project description="watchdog/cr_project.xml" />
+</workspace>

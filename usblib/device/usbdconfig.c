@@ -2,7 +2,7 @@
 //
 // usbdconfig.c - High level USB device configuration function.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -28,6 +28,7 @@
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
+#include "usblib/device/usbdevicepriv.h"
 
 //*****************************************************************************
 //
@@ -53,7 +54,6 @@
 typedef struct
 {
     unsigned long ulSize[2];
-    unsigned long ulType[2];
 }
 tUSBEndpointInfo;
 
@@ -81,15 +81,10 @@ GetEndpointFIFOSize(unsigned long ulMaxPktSize, const tFIFOEntry *psFIFOParams,
     unsigned long ulFIFOSize;
 
     //
-    // A zero multiplier would not be a good thing.
-    //
-    ASSERT(psFIFOParams->cMultiplier);
-
-    //
     // What is the basic size required for a single buffered FIFO entry
     // containing the required number of packets?
     //
-    ulBytes = ulMaxPktSize * (unsigned long)psFIFOParams->cMultiplier;
+    ulBytes = ulMaxPktSize;
 
     //
     // Now we need to find the nearest supported size that accommodates the
@@ -137,6 +132,7 @@ GetEndpointFIFOSize(unsigned long ulMaxPktSize, const tFIFOEntry *psFIFOParams,
     // problem by returning 0 in the pBytesUsed
     //
     *pupBytesUsed = 0;
+
     return(USB_FIFO_SZ_8);
 }
 
@@ -194,13 +190,9 @@ GetEPDescriptorType(tEndpointDescriptor *psEndpoint, unsigned long *pulEPIndex,
 //! Configure the USB controller appropriately for the device whose config
 //! descriptor is passed.
 //!
-//! \param ulIndex is the zero-based index of the USB controller which is to
-//! be configured.
+//! \param psDevInst is a pointer to the device instance being configured.
 //! \param psConfig is a pointer to the configuration descriptor that the
 //! USB controller is to be set up to support.
-//! \param psFIFOConfig is a pointer to an array of NUM_USB_EP tFIFOConfig
-//! structures detailing how the FIFOs are to be set up for each endpoint
-//! used by the configuration.
 //!
 //! This function may be used to initialize a USB controller to operate as
 //! the device whose configuration descriptor is passed.  The function
@@ -213,14 +205,6 @@ GetEPDescriptorType(tEndpointDescriptor *psEndpoint, unsigned long *pulEPIndex,
 //! function, the USB controller is configured for correct operation of
 //! the default configuration of the device described by the descriptor passed.
 //!
-//! The \e psFIFOConfig parameter allows the caller to provide additional
-//! information on USB FIFO configuration that cannot be determined merely
-//! by parsing the configuration descriptor.  The descriptor provides
-//! information on the endpoints that are to be used and the maximum packet
-//! size for each but cannot determine whether, for example, double buffering
-//! is to be used or how many packets the application wants to be able to
-//! store in a given endpoint's FIFO.
-//!
 //! USBDCDConfig() is an optional call and applications may chose to make
 //! direct calls to SysCtlPeripheralEnable(), SysCtlUSBPLLEnable(),
 //! USBDevEndpointConfigSet() and USBFIFOConfigSet() instead of using this
@@ -232,8 +216,7 @@ GetEPDescriptorType(tEndpointDescriptor *psEndpoint, unsigned long *pulEPIndex,
 //
 //*****************************************************************************
 tBoolean
-USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
-                const tFIFOConfig *psFIFOConfig)
+USBDeviceConfig(tDeviceInstance *psDevInst, const tConfigHeader *psConfig)
 {
     unsigned long ulLoop;
     unsigned long ulCount;
@@ -247,18 +230,20 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
     unsigned long ulSection;
     tInterfaceDescriptor *psInterface;
     tEndpointDescriptor *psEndpoint;
+    tFIFOConfig const *psFIFOConfig;
     tUSBEndpointInfo psEPInfo[NUM_USB_EP - 1];
 
     //
-    // We only support 1 USB controller currently.
+    // A valid device instance is required.
     //
-    ASSERT(ulIndex == 0);
+    ASSERT(psDevInst != 0);
 
     //
     // Catch bad pointers in a debug build.
     //
     ASSERT(psConfig);
-    ASSERT(psFIFOConfig);
+
+    psFIFOConfig = psDevInst->psInfo->psFIFOConfig;
 
     //
     // Clear out our endpoint info.
@@ -266,9 +251,7 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
     for(ulLoop = 0; ulLoop < (NUM_USB_EP - 1); ulLoop++)
     {
         psEPInfo[ulLoop].ulSize[EP_INFO_IN] = 0;
-        psEPInfo[ulLoop].ulType[EP_INFO_IN] = 0;
         psEPInfo[ulLoop].ulSize[EP_INFO_OUT] = 0;
-        psEPInfo[ulLoop].ulType[EP_INFO_OUT] = 0;
     }
 
     //
@@ -402,7 +385,6 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
                         //
                         ulFlags |= (unsigned long)(
                                   psFIFOConfig->sIn[ulEpIndex - 1].usEPFlags);
-                        psEPInfo[ulEpIndex - 1].ulType[EP_INFO_IN] = ulFlags;
                     }
                     else
                     {
@@ -410,8 +392,7 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
                         // This is an OUT endpoint.
                         //
                         ulFlags |= (unsigned long)(
-                                  psFIFOConfig->sOut[ulEpIndex - 1].usEPFlags);
-                        psEPInfo[ulEpIndex - 1].ulType[EP_INFO_OUT] = ulFlags;
+                                psFIFOConfig->sOut[ulEpIndex - 1].usEPFlags);
                     }
 
                     //
@@ -511,8 +492,7 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
 //! Configure the affected USB endpoints appropriately for one alternate
 //! interface setting.
 //!
-//! \param ulIndex is the zero-based index of the USB controller which is to
-//! be configured.
+//! \param psDevInst is a pointer to the device instance being configured.
 //! \param psConfig is a pointer to the configuration descriptor that contains
 //! the interface whose alternate settings is to be configured.
 //! \param ucInterfaceNum is the number of the interface whose alternate
@@ -537,7 +517,7 @@ USBDeviceConfig(unsigned long ulIndex, const tConfigHeader *psConfig,
 //
 //*****************************************************************************
 tBoolean
-USBDeviceConfigAlternate(unsigned long ulIndex, const tConfigHeader *psConfig,
+USBDeviceConfigAlternate(tDeviceInstance *psDevInst, const tConfigHeader *psConfig,
                          unsigned char ucInterfaceNum,
                          unsigned char ucAlternateSetting)
 {
@@ -546,19 +526,20 @@ USBDeviceConfigAlternate(unsigned long ulIndex, const tConfigHeader *psConfig,
     unsigned long ulLoop;
     unsigned long ulCount;
     unsigned long ulMaxPkt;
-    unsigned long ulOldMaxPkt;
     unsigned long ulFlags;
-    unsigned long ulOldFlags;
     unsigned long ulSection;
     unsigned long ulEpIndex;
     tInterfaceDescriptor *psInterface;
     tEndpointDescriptor *psEndpoint;
+    tFIFOConfig const *psFIFOConfig;
 
     //
     // How many interfaces are included in the descriptor?
     //
     ulNumInterfaces = USBDCDConfigDescGetNum(psConfig,
                                              USB_DTYPE_INTERFACE);
+
+    psFIFOConfig = psDevInst->psInfo->psFIFOConfig;
 
     //
     // Find the interface descriptor for the supplied interface and alternate
@@ -625,21 +606,25 @@ USBDeviceConfigAlternate(unsigned long ulIndex, const tConfigHeader *psConfig,
                     }
 
                     //
-                    // Get the existing endpoint configuration and mask in the
-                    // new mode and direction bits, leaving everything else
-                    // unchanged.
+                    // Include any additional flags that the user wants.
                     //
-                    ulOldFlags = ulFlags;
-                    USBDevEndpointConfigGet(USB0_BASE,
-                                            INDEX_TO_USB_EP(ulEpIndex),
-                                            &ulOldMaxPkt,
-                                            &ulOldFlags);
-
-                    //
-                    // Mask in the previous DMA and auto-set bits.
-                    //
-                    ulFlags = (ulFlags & EP_FLAGS_MASK) |
-                              (ulOldFlags & ~EP_FLAGS_MASK);
+                    if((ulFlags & (USB_EP_DEV_IN | USB_EP_DEV_OUT)) ==
+                        USB_EP_DEV_IN)
+                    {
+                        //
+                        // This is an IN endpoint.
+                        //
+                        ulFlags |= (unsigned long)(
+                                psFIFOConfig->sIn[ulEpIndex - 1].usEPFlags);
+                    }
+                    else
+                    {
+                        //
+                        // This is an OUT endpoint.
+                        //
+                        ulFlags |= (unsigned long)(
+                                psFIFOConfig->sOut[ulEpIndex - 1].usEPFlags);
+                    }
 
                     //
                     // Set the endpoint configuration.

@@ -1,7 +1,7 @@
 <!--
 Configuration file for Sourcery G++ workspace ek-lm3s9b92
 
-Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 -->
 
 <workspace>
@@ -25,8 +25,8 @@ This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
   <project description="../../boot_loader/boot_loader.sgxx" />
   <project description="../../third_party/third_party.sgxx" />
   <project description="../../utils/utils.sgxx" />
-  <project description="../../driverlib/driverlib.sgxx" />
-  <project description="../../usblib/usblib.sgxx" />
+  <project description="../../driverlib/driverlib-cm3.sgxx" />
+  <project description="../../usblib/usblib-cm3.sgxx" />
   <project description="aes_expanded_key/aes_expanded_key.sgxx" />
   <project description="aes_set_key/aes_set_key.sgxx" />
   <project description="bitband/bitband.sgxx" />

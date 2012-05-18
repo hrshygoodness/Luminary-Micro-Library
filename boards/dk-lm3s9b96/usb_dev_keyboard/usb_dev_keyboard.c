@@ -2,7 +2,7 @@
 //
 // usb_dev_keyboard.c - Main routines for the keyboard example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -1200,7 +1200,7 @@ void DrawVirtualKeyboard(tBoolean bBorder)
     //
     // Select the font we use for the keycaps.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Loop through each row, drawing each to the display
@@ -2050,7 +2050,7 @@ main(void)
     // Put the application name in the middle of the banner.
     //
     lCenterX = GrContextDpyWidthGet(&g_sContext) / 2;
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-dev-keyboard", -1,
                     lCenterX, 10, 0);
 
@@ -2058,6 +2058,11 @@ main(void)
     // Enable the peripherals used by this example.
     //
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass our device information to the USB HID device class driver,
@@ -2104,11 +2109,11 @@ main(void)
         //
         // Tell the user what we are doing and provide some basic instructions.
         //
-        GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+        GrContextFontSet(&g_sContext, g_pFontCmss22b);
         GrContextForegroundSet(&g_sContext, ClrWhite);
         GrStringDrawCentered(&g_sContext, " Waiting for host... ", -1,
                         lCenterX, 40, true);
-        GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+        GrContextFontSet(&g_sContext, g_pFontFixed6x8);
         DEBUG_PRINT("Waiting for host connection...\n");
 
         //
@@ -2132,7 +2137,7 @@ main(void)
                 // Yes - the state changed so update the display.
                 //
                 bLastSuspend = g_bSuspended;
-                GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+                GrContextFontSet(&g_sContext, g_pFontCmss22b);
                 GrStringDrawCentered(&g_sContext,
                                      (bLastSuspend ? "   Bus suspended...   ":
                                                      " Waiting for host... "),
@@ -2157,7 +2162,7 @@ main(void)
         //
         // Update the status.
         //
-        GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+        GrContextFontSet(&g_sContext, g_pFontCmss22b);
         GrStringDrawCentered(&g_sContext, " Host connected... ", -1,
                         lCenterX, 40, true);
         DEBUG_PRINT("Host connected.\n");
@@ -2203,7 +2208,7 @@ main(void)
                 // Yes - the state changed so update the display.
                 //
                 bLastSuspend = g_bSuspended;
-                GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+                GrContextFontSet(&g_sContext, g_pFontCmss22b);
                 GrStringDrawCentered(&g_sContext,
                                      (bLastSuspend ? " Bus suspended...  ":
                                                      " Host connected... "),

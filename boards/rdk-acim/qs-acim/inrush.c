@@ -2,7 +2,7 @@
 //
 // inrush.c - In-rush current control routine.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-ACIM Firmware Package.
+// This is part of revision 8555 of the RDK-ACIM Firmware Package.
 //
 //*****************************************************************************
 
@@ -93,7 +93,7 @@ InRushDelay(void)
     // Configure the first timer to produce a 80% duty cycle PWM at 20 KHz,
     // resulting in 12 V at the in-rush control relay.
     //
-    TimerConfigure(TIMER0_BASE, (TIMER_CFG_16_BIT_PAIR | TIMER_CFG_A_PWM |
+    TimerConfigure(TIMER0_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PWM |
                                  TIMER_CFG_B_PERIODIC));
     ulCount = SYSTEM_CLOCK / 20000;
     TimerLoadSet(TIMER0_BASE, TIMER_A, ulCount);

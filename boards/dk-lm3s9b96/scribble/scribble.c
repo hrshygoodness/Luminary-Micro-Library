@@ -2,7 +2,7 @@
 //
 // scribble.c - A simple scribble pad to demonstrate the touch screen driver.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -356,7 +356,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "scribble", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 11, 0);
 
@@ -365,7 +365,7 @@ main(void)
     // point san-serif font.
     //
     GrContextForegroundSet(&g_sContext, ClrWhite);
-    GrContextFontSet(&g_sContext, &g_sFontCmss20);
+    GrContextFontSet(&g_sContext, g_pFontCmss20);
     GrStringDrawCentered(&g_sContext, "Touch the screen to draw", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 34, 0);
 

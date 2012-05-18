@@ -2,7 +2,7 @@
 //
 // usb_host_mouse.c - main application code for the host mouse example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -57,6 +57,13 @@ unsigned char g_pucBuffer[MOUSE_MEMORY_SIZE];
 
 //*****************************************************************************
 //
+// Declare the USB Events driver interface.
+//
+//*****************************************************************************
+DECLARE_EVENT_DRIVER(g_sUSBEventDriver, 0, 0, USBHCDEvents);
+
+//*****************************************************************************
+//
 // The global that holds all of the host drivers in use in the application.
 // In this case, only the Mouse class is loaded.
 //
@@ -64,6 +71,7 @@ unsigned char g_pucBuffer[MOUSE_MEMORY_SIZE];
 static tUSBHostClassDriver const * const g_ppHostClassDrivers[] =
 {
     &g_USBHIDClassDriver
+    ,&g_sUSBEventDriver
 };
 
 //*****************************************************************************
@@ -112,6 +120,16 @@ enum
     // Mouse is connected and waiting for events.
     //
     STATE_MOUSE_CONNECTED,
+
+    //
+    // An unsupported device has been attached.
+    //
+    STATE_UNKNOWN_DEVICE,
+
+    //
+    // A power fault has occurred.
+    //
+    STATE_POWER_FAULT
 }
 eUSBState;
 
@@ -362,7 +380,7 @@ UpdateStatus(char *pcString, unsigned long ulButtons, tBoolean bClrBackground)
     //
     // Write the current state to the left of the status area.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Update the status on the screen.
@@ -387,8 +405,141 @@ UpdateStatus(char *pcString, unsigned long ulButtons, tBoolean bClrBackground)
         //
         GrStringDraw(&g_sContext, "connected     ", -1, 4, sRect.sYMin + 4, 1);
     }
+    else if(eUSBState == STATE_UNKNOWN_DEVICE)
+    {
+        //
+        // Some other (unknown) device is connected.
+        //
+        GrStringDraw(&g_sContext, "unknown device", -1, 4, sRect.sYMin + 4, 1);
+    }
+    else if(eUSBState == STATE_POWER_FAULT)
+    {
+        //
+        // Power fault.
+        //
+        GrStringDraw(&g_sContext, "power fault   ", -1, 4, sRect.sYMin + 4, 1);
+    }
 
     UpdateButtons();
+}
+
+//*****************************************************************************
+//
+// This is the generic callback from host stack.
+//
+// \param pvData is actually a pointer to a tEventInfo structure.
+//
+// This function will be called to inform the application when a USB event has
+// occurred that is outside those related to the mouse device.  At this
+// point this is used to detect unsupported devices being inserted and removed.
+// It is also used to inform the application when a power fault has occurred.
+// This function is required when the g_USBGenericEventDriver is included in
+// the host controller driver array that is passed in to the
+// USBHCDRegisterDrivers() function.
+//
+// \return None.
+//
+//*****************************************************************************
+void
+USBHCDEvents(void *pvData)
+{
+    tEventInfo *pEventInfo;
+
+    //
+    // Cast this pointer to its actual type.
+    //
+    pEventInfo = (tEventInfo *)pvData;
+
+    switch(pEventInfo->ulEvent)
+    {
+        //
+        // New mouse detected.
+        //
+        case USB_EVENT_CONNECTED:
+        {
+            //
+            // See if this is a HID Mouse.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_MOUSE))
+            {
+                //
+                // Indicate that the mouse has been detected.
+                //
+                DEBUG_PRINT("Mouse Connected\n");
+
+                //
+                // Proceed to the STATE_MOUSE_INIT state so that the main loop
+                // can finish initialized the mouse since USBHMouseInit()
+                // cannot be called from within a callback.
+                //
+                eUSBState = STATE_MOUSE_INIT;
+            }
+
+            break;
+        }
+        //
+        // Unsupported detected.
+        //
+        case USB_EVENT_UNKNOWN_CONNECTED:
+        {
+            DEBUG_PRINT("Unsupported Device Connected\n");
+
+            //
+            // An unknown device was detected.
+            //
+            eUSBState = STATE_UNKNOWN_DEVICE;
+
+            UpdateStatus(0, 0, false);
+
+            break;
+        }
+        //
+        // Device has been unplugged.
+        //
+        case USB_EVENT_DISCONNECTED:
+        {
+            //
+            // Indicate that the mouse has been disconnected.
+            //
+            DEBUG_PRINT("Device Disconnected\n");
+
+            //
+            // Change the state so that the main loop knows that the mouse is
+            // no longer present.
+            //
+            eUSBState = STATE_NO_DEVICE;
+
+            //
+            // Reset the button state.
+            //
+            g_ulButtons = 0;
+
+            UpdateStatus(0, 0, false);
+
+            break;
+        }
+        //
+        // Power Fault occurred.
+        //
+        case USB_EVENT_POWER_FAULT:
+        {
+            DEBUG_PRINT("Power Fault\n");
+
+            //
+            // No power means no device is present.
+            //
+            eUSBState = STATE_POWER_FAULT;
+
+            UpdateStatus(0, 0, false);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 //*****************************************************************************
@@ -414,50 +565,6 @@ MouseCallback(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgParam,
 {
     switch(ulEvent)
     {
-        //
-        // New mouse detected.
-        //
-        case USB_EVENT_CONNECTED:
-        {
-            //
-            // Indicate that the mouse has been detected.
-            //
-            DEBUG_PRINT("Mouse Connected\n");
-
-            //
-            // Proceed to the STATE_MOUSE_INIT state so that the main loop can
-            // finish initialized the mouse since USBHMouseInit() cannot be
-            // called from within a callback.
-            //
-            eUSBState = STATE_MOUSE_INIT;
-
-            break;
-        }
-
-        //
-        // Mouse has been unplugged.
-        //
-        case USB_EVENT_DISCONNECTED:
-        {
-            //
-            // Indicate that the mouse has been disconnected.
-            //
-            DEBUG_PRINT("Mouse Disconnected\n");
-
-            //
-            // Change the state so that the main loop knows that the mouse is
-            // no longer present.
-            //
-            eUSBState = STATE_NO_DEVICE;
-
-            //
-            // Reset the button state.
-            //
-            g_ulButtons = 0;
-
-            break;
-        }
-
         //
         // Mouse button press detected.
         //
@@ -573,7 +680,6 @@ HostInit(void)
     //
     // Call the main loop for the Host controller driver.
     //
-    USBHCDMain();
     eUSBState = STATE_NO_DEVICE;
 }
 

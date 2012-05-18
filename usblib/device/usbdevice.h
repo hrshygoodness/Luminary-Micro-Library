@@ -2,7 +2,7 @@
 //
 // usbdevice.h - types and definitions used during USB enumeration.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -54,12 +54,94 @@ extern "C"
 //*****************************************************************************
 #define USB_MAX_INTERFACES_PER_DEVICE 8
 
+#include "./usbdevicepriv.h"
+
 //*****************************************************************************
 //
 // Close the Doxygen group.
 //! @}
 //
 //*****************************************************************************
+
+//*****************************************************************************
+//
+//! This structure is passed to the USB library on a call to USBDCDInit and
+//! provides the library with information about the device that the
+//! application is implementing.  It contains functions pointers for the
+//! various USB event handlers and pointers to each of the standard device
+//! descriptors.
+//
+//*****************************************************************************
+struct tDeviceInfo
+{
+    //
+    //! A pointer to a structure containing pointers to event handler functions
+    //! provided by the client to support the operation of this device.
+    //
+    tCustomHandlers sCallbacks;
+
+    //
+    //! A pointer to the device descriptor for this device.
+    //
+    const unsigned char *pDeviceDescriptor;
+
+    //
+    //! A pointer to an array of configuration descriptor pointers.  Each entry
+    //! in the array corresponds to one configuration that the device may be set
+    //! to use by the USB host.  The number of entries in the array must
+    //! match the bNumConfigurations value in the device descriptor
+    //! array, pDeviceDescriptor.
+    //
+    const tConfigHeader * const *ppConfigDescriptors;
+
+    //
+    //! A pointer to the string descriptor array for this device.  This array
+    //! must be arranged as follows:
+    //!
+    //!   - [0]   - Standard descriptor containing supported language codes.
+    //!   - [1]   - String 1 for the first language listed in descriptor 0.
+    //!   - [2]   - String 2 for the first language listed in descriptor 0.
+    //!   - ...
+    //!   - [n]   - String n for the first language listed in descriptor 0.
+    //!   - [n+1] - String 1 for the second language listed in descriptor 0.
+    //!   - ...
+    //!   - [2n]  - String n for the second language listed in descriptor 0.
+    //!   - [2n+1]- String 1 for the third language listed in descriptor 0.
+    //!   - ...
+    //!   - [3n]  - String n for the third language listed in descriptor 0.
+    //!
+    //! and so on.
+    //
+    const unsigned char * const *ppStringDescriptors;
+
+    //
+    //! The total number of descriptors provided in the ppStringDescriptors
+    //! array.
+    //
+    unsigned long ulNumStringDescriptors;
+
+    //
+    //! A structure defining how the USB controller FIFO is to be partitioned
+    //! between the various endpoints.  This member can be set to point to
+    //! g_sUSBDefaultFIFOConfig if the default FIFO configuration is acceptable
+    //! This configuration sets each endpoint FIFO to be single buffered and
+    //! sized to hold the maximum packet size for the endpoint.
+    //
+    const tFIFOConfig *psFIFOConfig;
+
+    //
+    //! This value will be passed back to all call back functions so that
+    //! they have access to individual instance data based on the this pointer.
+    //
+    void *pvInstance;
+
+    //
+    //! The generic device instance data for this device.  This will be set
+    //! by the call to DCDInit() which is usually made when the applicaiton
+    //! calls the class specific initialization function.
+    //
+    tDeviceInstance *psDevice;
+};
 
 //*****************************************************************************
 //

@@ -2,7 +2,7 @@
 //
 // usbmsc.h - Generic types and defines use by the mass storage class.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -365,7 +365,7 @@ PACKED tMSCCSW;
 #define SCSI_RS_KEY_ILGL_RQST   0x05  // Illegal request.
 #define SCSI_RS_KEY_UNIT_ATTN   0x06  // Unit changed or reset.
 #define SCSI_RS_KEY_DATA_PROT   0x07  // Write Protect error.
-#define SCSI_RS_KEY_BLANK_CHK   0x07  // Write once error, block not clear.
+#define SCSI_RS_KEY_BLANK_CHK   0x08  // Write once error, block not clear.
 #define SCSI_RS_KEY_ABORT       0x0b  // Last command was aborted.
 #define SCSI_RS_ILI             0x20  // Incorrect length indicator.
 #define SCSI_RS_EOM             0x40  // End of medium condition.

@@ -2,7 +2,7 @@
 //
 // usbhostenum.c - Device enumeration code for the USB host library.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -34,8 +34,16 @@
 #include "driverlib/udma.h"
 #include "driverlib/usb.h"
 #include "usblib/usblib.h"
-#include "usblib/usblibpriv.h"
 #include "usblib/host/usbhost.h"
+#include "usblib/host/usbhostpriv.h"
+#include "usblib/host/usbhhub.h"
+
+#ifdef INCLUDE_DEBUG_OUTPUT
+#include "utils/uartstdio.h"
+#define DEBUG_OUTPUT UARTprintf
+#else
+#define DEBUG_OUTPUT while(0)((int (*)(char *, ...))0)
+#endif
 
 //*****************************************************************************
 //
@@ -80,6 +88,8 @@ static void USBHCDClearFeature(unsigned long ulDevAddress,
 #define INT_EVENT_CONNECT       0x02
 #define INT_EVENT_DISCONNECT    0x04
 #define INT_EVENT_POWER_FAULT   0x08
+#define INT_EVENT_SOF           0x10
+#define INT_EVENT_ENUM          0x20
 
 volatile unsigned long g_ulUSBHIntEvents;
 
@@ -233,11 +243,11 @@ static volatile unsigned long g_ulCurrentTick = 0;
 
 //*****************************************************************************
 //
-// The current active driver.
+// The current active drivers.
 //
 //*****************************************************************************
-static long g_lUSBHActiveDriver = -1;
-static void *g_pvDriverInstance = 0;
+static long g_lUSBHActiveDriver[MAX_USB_DEVICES + 1];
+static void *g_pvDriverInstance[MAX_USB_DEVICES + 1];
 
 //*****************************************************************************
 //
@@ -250,7 +260,7 @@ typedef struct
     //
     // The current address for this pipe.
     //
-    unsigned long ulDevAddr;
+    tUSBHostDevice *psDevice;
 
     //
     // The current address for this pipe.
@@ -281,6 +291,16 @@ typedef struct
     // The current call back for this pipe.
     //
     tHCDPipeCallback pfnCallback;
+
+    //
+    // The pointer to which IN data must be copied.
+    //
+    unsigned char *pucReadPtr;
+
+    //
+    // The number of bytes of read data to copy.
+    //
+    unsigned long ulReadSize;
 
     //
     // The state of a given USB pipe.
@@ -337,6 +357,9 @@ typedef enum
 }
 tUSBHDeviceState;
 
+static void ProcessUSBDeviceStateMachine(tUSBHDeviceState eOldState,
+                                         unsigned long ulDevIndex);
+
 //*****************************************************************************
 //
 // This is a fixed number as it relates to the maximum number of USB pipes
@@ -367,6 +390,7 @@ tUSBHDeviceState;
 // USB pipes.
 //
 //*****************************************************************************
+#define EP_PIPE_TYPE_LOW_SPEED  0x02000000
 #define EP_PIPE_USE_UDMA        0x01000000
 #define EP_PIPE_TYPE_ISOC       0x00800000
 #define EP_PIPE_TYPE_INTR       0x00400000
@@ -407,14 +431,16 @@ typedef struct
     unsigned char ucDMAChannels[MAX_NUM_DMA_CHANNELS];
 
     //
-    // Each devices state.
+    // Each devices state.  We support a total of (MAX_USB_DEVICES + 1) devices
+    // to allow for the use if MAX_USB_DEVICES through a single hub (which is
+    // itself a device).
     //
-    tUSBHostDevice USBDevice[1];
+    tUSBHostDevice USBDevice[MAX_USB_DEVICES + 1];
 
     //
     // Holds the current state of the device.
     //
-    volatile tUSBHDeviceState eDeviceState[1];
+    volatile tUSBHDeviceState eDeviceState[MAX_USB_DEVICES + 1];
 
     //
     // Pointer to the memory pool for this controller.
@@ -425,6 +451,11 @@ typedef struct
     // The pool size for this controller.
     //
     unsigned long ulPoolSize;
+
+    //
+    // The number of endpoint pairs supported by the controller.
+    //
+    unsigned long ulNumEndpoints;
 
     //
     // The class drivers for this controller.
@@ -459,27 +490,49 @@ static tUSBHCD g_sUSBHCD;
 
 //*****************************************************************************
 //
+// Return the device index from a ulInstance value passed from an external
+// source.
+//
+//*****************************************************************************
+static unsigned char
+HCDInstanceToDevIndex(unsigned long ulInstance)
+{
+    unsigned long ulDevIndex;
+
+    //
+    // Get the device instance from the instance value.
+    //
+    ulDevIndex = (ulInstance & 0xff);
+
+    //
+    // If the above math went negative or is too large just return 0xff.
+    //
+    if(ulDevIndex > MAX_USB_DEVICES)
+    {
+        ulDevIndex = 0xff;
+    }
+
+    return(ulDevIndex);
+}
+
+//*****************************************************************************
+//
 // If there is an event driver this function will send out a generic connection
 // event USB_EVENT_CONNECTED indicating that an unknown connection event has
 // occurred.
 //
 //*****************************************************************************
 static void
-SendUnknownConnect(unsigned long ulClass, unsigned long ulInstance)
+SendUnknownConnect(unsigned long ulIndex, unsigned long ulClass)
 {
     if((g_sUSBHCD.lEventDriver != -1) &&
        (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
     {
         //
-        // Send the generic connected event.
+        // Send the unknown device connected event.
         //
-        g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_CONNECTED;
-
-        //
-        // Save the class for later incase and application needs it.
-        //
-        g_sUSBHCD.ulClass = ulClass;
-        g_sUSBHCD.EventInfo.ulInstance = ulInstance;
+        g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_UNKNOWN_CONNECTED;
+        g_sUSBHCD.EventInfo.ulInstance = ulClass;
 
         g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
            &g_sUSBHCD.EventInfo);
@@ -701,7 +754,7 @@ FIFOAlloc(tUSBHCDPipe *pUSBPipe, unsigned long ulSize)
 //! \param ulIndex specifies which USB controller to use.
 //! \param ulEndpointType is the type of endpoint that this pipe will be
 //! communicating with.
-//! \param ulDevAddr is the device address to use for this endpoint.
+//! \param psDevice is the device instance associated with this endpoint.
 //! \param ulSize is the size of the FIFO in bytes.
 //! \param pfnCallback is the function that will be called when events occur on
 //! this USB Pipe.
@@ -724,10 +777,11 @@ FIFOAlloc(tUSBHCDPipe *pUSBPipe, unsigned long ulSize)
 //*****************************************************************************
 unsigned long
 USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
-                    unsigned long ulDevAddr, unsigned long ulSize,
+                    tUSBHostDevice *psDevice, unsigned long ulSize,
                     tHCDPipeCallback pfnCallback)
 {
     long lIdx, lDMAIdx;
+    unsigned long ulHubAddr;
 
     ASSERT(ulIndex == 0);
 
@@ -744,7 +798,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
             //
             // A zero address indicates free.
             //
-            if(g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr == 0)
+            if(g_sUSBHCD.USBOUTPipes[lIdx].psDevice == 0)
             {
                 //
                 // Set up uDMA for the pipe.
@@ -849,7 +903,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // function.
                 //
                 g_sUSBHCD.USBOUTPipes[lIdx].ulType = ulEndpointType;
-                g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr = ulDevAddr;
+                g_sUSBHCD.USBOUTPipes[lIdx].psDevice = psDevice;
                 g_sUSBHCD.USBOUTPipes[lIdx].pfnCallback = pfnCallback;
 
                 //
@@ -883,7 +937,17 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // Set the function address for this endpoint.
                 //
                 MAP_USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
-                                   ulDevAddr, USB_EP_HOST_OUT);
+                                   psDevice->ulAddress, USB_EP_HOST_OUT);
+
+                //
+                // Set the hub and port address for the endpoint.
+                //
+                ulHubAddr = (psDevice->ucHub << 8) |
+                             psDevice->ucHubPort;
+                USBHostHubAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                  ulHubAddr, (USB_EP_HOST_OUT |
+                               (psDevice->bLowSpeed ?
+                                  USB_EP_SPEED_LOW : USB_EP_SPEED_FULL)));
 
                 break;
             }
@@ -896,7 +960,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
             //
             // A zero address indicates free.
             //
-            if(g_sUSBHCD.USBINPipes[lIdx].ulDevAddr == 0)
+            if(g_sUSBHCD.USBINPipes[lIdx].psDevice == 0)
             {
                 //
                 // Set up uDMA for the pipe.
@@ -1001,7 +1065,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // function.
                 //
                 g_sUSBHCD.USBINPipes[lIdx].ulType = ulEndpointType;
-                g_sUSBHCD.USBINPipes[lIdx].ulDevAddr = ulDevAddr;
+                g_sUSBHCD.USBINPipes[lIdx].psDevice = psDevice;
                 g_sUSBHCD.USBINPipes[lIdx].pfnCallback = pfnCallback;
 
                 //
@@ -1030,7 +1094,17 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
                 // Set the function address for this endpoint.
                 //
                 MAP_USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
-                                   ulDevAddr, USB_EP_HOST_IN);
+                                   psDevice->ulAddress, USB_EP_HOST_IN);
+
+                //
+                // Set the hub and port address for the endpoint.
+                //
+                ulHubAddr = (psDevice->ucHub << 8) |
+                             psDevice->ucHubPort;
+                USBHostHubAddrSet(USB0_BASE, INDEX_TO_USB_EP(lIdx + 1),
+                                  ulHubAddr, (USB_EP_HOST_IN |
+                                (psDevice->bLowSpeed ?
+                                  USB_EP_SPEED_LOW : USB_EP_SPEED_FULL)));
 
                 //
                 // Reset the state of the pipe to idle.
@@ -1063,7 +1137,7 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
 //! \param ulIndex specifies which USB controller to use.
 //! \param ulEndpointType is the type of endpoint that this pipe will be
 //! communicating with.
-//! \param ulDevAddr is the device address to use for this endpoint.
+//! \param psDevice is the device instance associated with this endpoint.
 //! \param pfnCallback is the function that will be called when events occur on
 //! this USB Pipe.
 //!
@@ -1083,12 +1157,12 @@ USBHCDPipeAllocSize(unsigned long ulIndex, unsigned long ulEndpointType,
 //*****************************************************************************
 unsigned long
 USBHCDPipeAlloc(unsigned long ulIndex, unsigned long ulEndpointType,
-                unsigned long ulDevAddr, tHCDPipeCallback pfnCallback)
+                tUSBHostDevice *psDevice, tHCDPipeCallback pfnCallback)
 {
     //
     // The old API allocated only 64 bytes to each endpoint.
     //
-    return(USBHCDPipeAllocSize(ulIndex, ulEndpointType, ulDevAddr, 64,
+    return(USBHCDPipeAllocSize(ulIndex, ulEndpointType, psDevice, 64,
                                pfnCallback));
 }
 
@@ -1170,6 +1244,12 @@ USBHCDPipeConfig(unsigned long ulPipe, unsigned long ulMaxPayload,
         g_sUSBHCD.USBOUTPipes[ulIndex].ulInterval = ulInterval;
         g_sUSBHCD.USBOUTPipes[ulIndex].ulNextEventTick =
             ulInterval + g_ulCurrentTick;
+
+        //
+        // Set the device speed.
+        //
+        ulFlags |= (g_sUSBHCD.USBOUTPipes[ulIndex].psDevice->bLowSpeed ?
+                                      USB_EP_SPEED_LOW : USB_EP_SPEED_FULL);
     }
     else
     {
@@ -1203,13 +1283,13 @@ USBHCDPipeConfig(unsigned long ulPipe, unsigned long ulMaxPayload,
         g_sUSBHCD.USBINPipes[ulIndex].ulInterval = ulInterval;
         g_sUSBHCD.USBINPipes[ulIndex].ulNextEventTick =
             ulInterval + g_ulCurrentTick;
-    }
 
-    //
-    // Full speed by default but low speed will be selected if the device is
-    // low speed.
-    //
-    ulFlags |= USB_EP_SPEED_FULL;
+        //
+        // Set the device speed.
+        //
+        ulFlags |= (g_sUSBHCD.USBINPipes[ulIndex].psDevice->bLowSpeed ?
+                                      USB_EP_SPEED_LOW : USB_EP_SPEED_FULL);
+    }
 
     //
     // Set up the appropriate flags if uDMA is used.
@@ -1277,6 +1357,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
     unsigned long ulRemainingBytes;
     unsigned long ulByteToSend;
     unsigned long ulPipeIdx;
+    unsigned long ulEPStatus;
 
     //
     // Determine which endpoint interface that this pipe is using.
@@ -1362,6 +1443,11 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
 
             //
+            // Disable the USB interrupt.
+            //
+            MAP_IntDisable(INT_USB0);
+
+            //
             // Set pending transmit DMA flag
             //
             g_ulDMAPending |= DMA_PEND_TRANSMIT_FLAG << ulPipeIdx;
@@ -1370,6 +1456,11 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             // Enable the uDMA channel to start the transfer
             //
             MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
+
+            //
+            // Enable the USB interrupt.
+            //
+            MAP_IntEnable(INT_USB0);
         }
 
         //
@@ -1377,6 +1468,37 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
         //
         while(g_sUSBHCD.USBOUTPipes[ulPipeIdx].eState == PIPE_WRITING)
         {
+            //
+            // Read the status of the endpoint connected to this pipe.
+            //
+            ulEPStatus = MAP_USBEndpointStatus(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulPipeIdx + 1));
+
+            //
+            // Check if the device stalled the request.
+            //
+            if(ulEPStatus & USB_HOST_OUT_STALL)
+            {
+                //
+                // If uDMA is being used, then disable the channel.
+                //
+                if(ulPipe & EP_PIPE_USE_UDMA)
+                {
+                    MAP_uDMAChannelDisable(UDMA_CHANNEL_USBEP1TX +
+                                           (ulPipeIdx * 2));
+                }
+            }
+
+            //
+            // If a disconnect event occurs the exit out of the loop.
+            //
+            if(g_ulUSBHIntEvents & INT_EVENT_DISCONNECT)
+            {
+                //
+                // Set the pipe state to error.
+                //
+                g_sUSBHCD.USBOUTPipes[ulPipeIdx].eState = PIPE_ERROR;
+            }
         }
 
         //
@@ -1400,17 +1522,22 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             ulSize = 0;
 
             //
-            // This is the actual endpoint number.
-            //
-            USBHCDClearFeature(1, ulPipe, USB_FEATURE_EP_HALT);
-
-            //
             // If uDMA is being used, then disable the channel.
             //
             if(ulPipe & EP_PIPE_USE_UDMA)
             {
+                //
+                // Disable the DMA channel.
+                //
                 MAP_uDMAChannelDisable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
             }
+
+            //
+            // This is the actual endpoint number.
+            //
+            USBHCDClearFeature(
+                g_sUSBHCD.USBOUTPipes[ulPipeIdx].psDevice->ulAddress,
+                ulPipe, USB_FEATURE_EP_HALT);
 
             //
             // If there was a stall, then no more data is coming so break out.
@@ -1425,6 +1552,15 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
         if(ulRemainingBytes < 64)
         {
             ulByteToSend = ulRemainingBytes;
+        }
+        else if(g_sUSBHCD.USBOUTPipes[ulPipeIdx].eState == PIPE_ERROR)
+        {
+            //
+            // An error occurred so stop this transaction and set the number
+            // of bytes to zero.
+            //
+            ulSize = 0;
+            break;
         }
     }
 
@@ -1449,7 +1585,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
 //! device.  In either case the amount of data will be limited to what will
 //! fit in the FIFO for a given endpoint.
 //!
-//! \return This function returns the number of bytes that sent in the case
+//! \return This function returns the number of bytes that were sent in the case
 //! of a transfer of data or it will return 0 for a request on a USB IN pipe.
 //
 //*****************************************************************************
@@ -1497,6 +1633,11 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_OUT);
 
             //
+            // Disable the USB interrupt.
+            //
+            MAP_IntDisable(INT_USB0);
+
+            //
             // Set pending transmit DMA flag
             //
             g_ulDMAPending |= DMA_PEND_TRANSMIT_FLAG << ulPipeIdx;
@@ -1505,6 +1646,11 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             // Enable the uDMA channel to start the transfer
             //
             MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1TX + (ulPipeIdx * 2));
+
+            //
+            // Enable the USB interrupt.
+            //
+            MAP_IntEnable(INT_USB0);
         }
         else
         {
@@ -1558,6 +1704,11 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
 
             //
+            // Disable the USB interrupt.
+            //
+            MAP_IntDisable(INT_USB0);
+
+            //
             // Set pending DMA flag
             //
             g_ulDMAPending |= DMA_PEND_RECEIVE_FLAG << ulPipeIdx;
@@ -1566,7 +1717,18 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             // Enable the uDMA channel to start the transfer
             //
             MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
+
+            //
+            // Enable the USB interrupt.
+            //
+            MAP_IntEnable(INT_USB0);
         }
+
+        //
+        // Remember details of the buffer into which the data will be read.
+        //
+        g_sUSBHCD.USBINPipes[ulPipeIdx].pucReadPtr = pucData;
+        g_sUSBHCD.USBINPipes[ulPipeIdx].ulReadSize = ulSize;
 
         //
         // Trigger a request for data from the device.
@@ -1631,6 +1793,43 @@ USBHCDPipeReadNonBlocking(unsigned long ulPipe, unsigned char *pucData,
 
 //*****************************************************************************
 //
+//! This function acknowledges data received via an interrupt IN pipe.
+//!
+//! \param ulPipe is the USB INT pipe whose last packet is to be acknowledged.
+//!
+//! This function is used to acknowledge reception of data on an interrupt IN
+//! pipe.  A transfer on an interrupt IN endpoint is scheduled via a call to
+//! USBHCDPipeSchedule() and the application is notified when data is received
+//! using a USB_EVENT_RX_AVAILABLE event.  In the handler for this event, the
+//! application must call USBHCDPipeDataAck() to have the USB controller ACK
+//! the data from the device and complete the transaction.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+USBHCDPipeDataAck(unsigned long ulPipe)
+{
+    unsigned long ulEndpoint;
+
+    //
+    // Determine which endpoint interface that this pipe is using.
+    //
+    ulEndpoint = INDEX_TO_USB_EP((EP_PIPE_IDX_M & ulPipe) + 1);
+
+    //
+    // Acknowledge that the data was read from the endpoint.
+    //
+    USBHostEndpointDataAck(USB0_BASE, ulEndpoint);
+
+    //
+    // Go Idle once this state has been reached.
+    //
+    g_sUSBHCD.USBINPipes[EP_PIPE_IDX_M & ulPipe].eState = PIPE_IDLE;
+}
+
+//*****************************************************************************
+//
 //! This function is used to read data from a USB HCD pipe.
 //!
 //! \param ulPipe is the USB pipe to read data from.
@@ -1656,6 +1855,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
     unsigned long ulRemainingBytes;
     unsigned long ulBytesRead;
     unsigned long ulPipeIdx;
+    unsigned long ulEPStatus;
 
     //
     // Get index used for looking up pipe data
@@ -1710,6 +1910,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             // Compute bytes to transfer and set up transfer
             //
             ulBytesRead = ulRemainingBytes > 64 ? 64 : ulRemainingBytes;
+
             MAP_uDMAChannelTransferSet(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2),
                                        UDMA_MODE_AUTO,
                                        (void *)USBFIFOAddrGet(USB0_BASE,
@@ -1722,6 +1923,11 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             MAP_USBEndpointDMAEnable(USB0_BASE, ulEndpoint, USB_EP_HOST_IN);
 
             //
+            // Disable the USB interrupt.
+            //
+            MAP_IntDisable(INT_USB0);
+
+            //
             // Set pending DMA flag
             //
             g_ulDMAPending |= DMA_PEND_RECEIVE_FLAG << ulPipeIdx;
@@ -1730,7 +1936,19 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             // Enable the uDMA channel to start the transfer
             //
             MAP_uDMAChannelEnable(UDMA_CHANNEL_USBEP1RX + (ulPipeIdx * 2));
+
+            //
+            // Enable the USB interrupt.
+            //
+            MAP_IntEnable(INT_USB0);
         }
+
+        //
+        // Set up for the next transaction.
+        //
+        g_sUSBHCD.USBINPipes[ulPipeIdx].pucReadPtr = pucData;
+        g_sUSBHCD.USBINPipes[ulPipeIdx].ulReadSize = (ulRemainingBytes < 64) ?
+                                                     ulRemainingBytes : 64;
 
         //
         // Trigger a request for data from the device.
@@ -1742,6 +1960,40 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
         //
         while(g_sUSBHCD.USBINPipes[ulPipeIdx].eState == PIPE_READING)
         {
+            //
+            // Read the status of the endpoint connected to this pipe.
+            //
+            ulEPStatus = MAP_USBEndpointStatus(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulPipeIdx + 1));
+
+            //
+            // Check if the device stalled the request.
+            //
+            if(ulEPStatus & USB_HOST_IN_STALL)
+            {
+                //
+                // If uDMA is being used, then disable the channel.
+                //
+                if(ulPipe & EP_PIPE_USE_UDMA)
+                {
+                    //
+                    // Disable the DMA channel.
+                    //
+                    MAP_uDMAChannelDisable(UDMA_CHANNEL_USBEP1RX +
+                                           (ulPipeIdx * 2));
+                }
+            }
+
+            //
+            // If a disconnect event occurs the exit out of the loop.
+            //
+            if(g_ulUSBHIntEvents & INT_EVENT_DISCONNECT)
+            {
+                //
+                // Set the pipe state to error.
+                //
+                g_sUSBHCD.USBINPipes[ulPipeIdx].eState = PIPE_ERROR;
+            }
         }
 
         //
@@ -1760,12 +2012,6 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
                 // Request all of the remaining bytes.
                 //
                 ulBytesRead = ulRemainingBytes;
-
-                //
-                // Read the data out of the USB endpoint interface.
-                //
-                MAP_USBEndpointDataGet(USB0_BASE, ulEndpoint, pucData,
-                                       &ulBytesRead);
 
                 //
                 // Acknowledge that the data was read from the endpoint.
@@ -1807,11 +2053,6 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             ulSize = 0;
 
             //
-            // This is the actual endpoint number.
-            //
-            USBHCDClearFeature(1, ulPipe, USB_FEATURE_EP_HALT);
-
-            //
             // If uDMA is being used, then disable the channel.
             //
             if(ulPipe & EP_PIPE_USE_UDMA)
@@ -1820,8 +2061,24 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             }
 
             //
+            // This is the actual endpoint number.
+            //
+            USBHCDClearFeature(
+                g_sUSBHCD.USBINPipes[ulPipeIdx].psDevice->ulAddress,
+                ulPipe, USB_FEATURE_EP_HALT);
+
+            //
             // If there was a stall, then no more data is coming so break out.
             //
+            break;
+        }
+        else if(g_sUSBHCD.USBINPipes[ulPipeIdx].eState == PIPE_ERROR)
+        {
+            //
+            // An error occurred so stop this transaction and set the number
+            // of bytes to zero.
+            //
+            ulSize = 0;
             break;
         }
     }
@@ -1851,32 +2108,52 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
 void
 USBHCDPipeFree(unsigned long ulPipe)
 {
-    long lDMAIdx;
+    unsigned long ulDMAIdx;
+    unsigned long ulIndex;
+
+    //
+    // Get the index number from the allocated pipe.
+    //
+    ulIndex = (ulPipe & EP_PIPE_IDX_M);
 
     if(ulPipe & EP_PIPE_TYPE_OUT)
     {
         //
         // Clear the address and type for this endpoint to free it up.
         //
-        g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ulDevAddr = 0;
+        g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].psDevice = 0;
         g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ulType = 0;
         g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].pfnCallback = 0;
 
         //
-        // Get the dma channel used by this pipe.
+        // Check if this pipe has allocated a DMA channel.
         //
-        lDMAIdx = g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
+        if(g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel !=
+           USBHCD_DMA_UNUSED)
+        {
+            //
+            // Get the DMA channel used by this pipe.
+            //
+            ulDMAIdx =
+                g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
 
-        //
-        // Mark the channel as free for use.
-        //
-        g_sUSBHCD.ucDMAChannels[lDMAIdx] = USBHCD_DMA_UNUSED;
+            //
+            // This is a debug check that will prevent accessing beyond the
+            // buffer allocated to the DMA channels.
+            //
+            ASSERT(ulDMAIdx < MAX_NUM_DMA_CHANNELS);
 
-        //
-        // Clear out the current channel in use by this pipe.
-        //
-        g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel =
-            USBHCD_DMA_UNUSED;
+            //
+            // Mark the channel as free for use.
+            //
+            g_sUSBHCD.ucDMAChannels[ulDMAIdx] = USBHCD_DMA_UNUSED;
+
+            //
+            // Clear out the current channel in use by this pipe.
+            //
+            g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel =
+                USBHCD_DMA_UNUSED;
+        }
 
         //
         // Free up the FIFO memory used by this endpoint.
@@ -1885,44 +2162,57 @@ USBHCDPipeFree(unsigned long ulPipe)
         {
             FIFOFree(&g_sUSBHCD.USBOUTPipes[ulPipe & EP_PIPE_IDX_M]);
         }
+
+        //
+        // Set the function address for this endpoint back to zero.
+        //
+        USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                       0, USB_EP_HOST_OUT);
+
+        //
+        // Set the hub and port address for the endpoint back to zero and the
+        // speed back to LOW.
+        //
+        USBHostHubAddrSet(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                          0, (USB_EP_HOST_OUT | USB_EP_SPEED_LOW));
     }
     else if(ulPipe & EP_PIPE_TYPE_IN)
     {
         //
         // Clear the address and type for this endpoint to free it up.
         //
-        g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ulDevAddr = 0;
+        g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].psDevice = 0;
         g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ulType = 0;
         g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].pfnCallback = 0;
 
         //
-        // Get the DMA channel used by this pipe.
+        // Check if this pipe has allocated a DMA channel.
         //
-        lDMAIdx = g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
-
-        //
-        // This is a debug check that will prevent accessing beyond the
-        // buffer allocated to the DMA channels.
-        //
-        ASSERT(lDMAIdx < MAX_NUM_DMA_CHANNELS);
-
-        //
-        // Make sure that the DMA index was actually valid because the value
-        // could be USBHCD_DMA_UNUSED.
-        //
-        if(lDMAIdx != USBHCD_DMA_UNUSED)
+        if(g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel !=
+           USBHCD_DMA_UNUSED)
         {
+            //
+            // Get the DMA channel used by this pipe.
+            //
+            ulDMAIdx = g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel;
+
+            //
+            // This is a debug check that will prevent accessing beyond the
+            // buffer allocated to the DMA channels.
+            //
+            ASSERT(ulDMAIdx < MAX_NUM_DMA_CHANNELS);
+
             //
             // Mark the channel as free for use.
             //
-            g_sUSBHCD.ucDMAChannels[lDMAIdx] = USBHCD_DMA_UNUSED;
-        }
+            g_sUSBHCD.ucDMAChannels[ulDMAIdx] = USBHCD_DMA_UNUSED;
 
-        //
-        // Clear out the current channel in use by this pipe.
-        //
-        g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel =
-            USBHCD_DMA_UNUSED;
+            //
+            // Clear out the current channel in use by this pipe.
+            //
+            g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M].ucDMAChannel =
+                USBHCD_DMA_UNUSED;
+        }
 
         //
         // Free up the FIFO memory used by this endpoint.
@@ -1931,6 +2221,24 @@ USBHCDPipeFree(unsigned long ulPipe)
         {
             FIFOFree(&g_sUSBHCD.USBINPipes[ulPipe & EP_PIPE_IDX_M]);
         }
+
+        //
+        // Set the function address for this endpoint back to zero.
+        //
+        USBHostAddrSet(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                       0, USB_EP_HOST_IN);
+
+        //
+        // Set the hub and port address for the endpoint back to zero and the
+        // speed back to LOW.
+        //
+        USBHostHubAddrSet(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1),
+                          0, (USB_EP_HOST_IN | USB_EP_SPEED_LOW));
+
+        //
+        // Clear any pending IN transactions.
+        //
+        USBHostRequestINClear(USB0_BASE, INDEX_TO_USB_EP(ulIndex + 1));
     }
 }
 
@@ -1960,6 +2268,11 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     ASSERT(ulIndex == 0);
 
     //
+    // Get the number of endpoints supported by this device.
+    //
+    g_sUSBHCD.ulNumEndpoints = USBNumEndpointsGet(USB0_BASE);
+
+    //
     // The first 64 Bytes are allocated to endpoint 0.
     //
     g_ulAlloc[0] = 1;
@@ -1975,10 +2288,10 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     //
     for(lIdx = 0; lIdx < MAX_NUM_PIPES; lIdx++)
     {
-        g_sUSBHCD.USBINPipes[lIdx].ulDevAddr = 0;
+        g_sUSBHCD.USBINPipes[lIdx].psDevice = 0;
         g_sUSBHCD.USBINPipes[lIdx].ulType = USBHCD_PIPE_UNUSED;
         g_sUSBHCD.USBINPipes[lIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
-        g_sUSBHCD.USBOUTPipes[lIdx].ulDevAddr = 0;
+        g_sUSBHCD.USBOUTPipes[lIdx].psDevice = 0;
         g_sUSBHCD.USBOUTPipes[lIdx].ulType = USBHCD_PIPE_UNUSED;
         g_sUSBHCD.USBOUTPipes[lIdx].ucDMAChannel = USBHCD_DMA_UNUSED;
     }
@@ -1992,26 +2305,38 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     }
 
     //
-    // Initialized the device structure.
+    // Initialized the device structures.
     //
-    g_sUSBHCD.eDeviceState[0] = HCD_IDLE;
-    g_sUSBHCD.USBDevice[0].pConfigDescriptor = 0;
+    for(lIdx = 0; lIdx <= MAX_USB_DEVICES; lIdx++)
+    {
+        //
+        // Clear the config descriptor and state.
+        //
+        g_sUSBHCD.eDeviceState[lIdx] = HCD_IDLE;
+        g_sUSBHCD.USBDevice[lIdx].pConfigDescriptor = 0;
+        g_sUSBHCD.USBDevice[lIdx].bConfigRead = false;
 
-    //
-    // Initialize the device descriptor.
-    //
-    g_sUSBHCD.USBDevice[0].DeviceDescriptor.bLength = 0;
-    g_sUSBHCD.USBDevice[0].DeviceDescriptor.bMaxPacketSize0 = 0;
+        //
+        // Initialize the device descriptor.
+        //
+        g_sUSBHCD.USBDevice[lIdx].DeviceDescriptor.bLength = 0;
+        g_sUSBHCD.USBDevice[lIdx].DeviceDescriptor.bMaxPacketSize0 = 0;
 
-    //
-    // Initialize the device address.
-    //
-    g_sUSBHCD.USBDevice[0].ulAddress = 0;
+        //
+        // Initialize the device address.
+        //
+        g_sUSBHCD.USBDevice[lIdx].ulAddress = 0;
 
-    //
-    // Set the current interface to 0.
-    //
-    g_sUSBHCD.USBDevice[0].ulInterface = 0;
+        //
+        // Set the current interface to 0.
+        //
+        g_sUSBHCD.USBDevice[lIdx].ulInterface = 0;
+
+        //
+        // Clear the active driver for the device.
+        //
+        g_lUSBHActiveDriver[lIdx] = -1;
+    }
 
     //
     // Allocate the memory needed for reading descriptors.
@@ -2033,7 +2358,7 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     // Only do hardware update if the stack is in Host mode, do not touch the
     // hardware for OTG mode operation.
     //
-    if(g_eUSBMode == USB_MODE_HOST)
+    if((g_eUSBMode == USB_MODE_HOST) || (g_eUSBMode == USB_MODE_FORCE_HOST))
     {
         //
         // Configure the End point 0.
@@ -2054,6 +2379,7 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
                                            USB_INTCTRL_RESUME |
                                            USB_INTCTRL_SUSPEND |
                                            USB_INTCTRL_VBUS_ERR |
+                                           USB_INTCTRL_MODE_DETECT |
                                            USB_INTCTRL_POWER_FAULT);
 
         MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
@@ -2221,11 +2547,13 @@ USBHCDPowerConfigSet(unsigned long ulIndex, unsigned long ulConfig)
         //
         if(g_ulPowerConfig & 1)
         {
-            g_ulPowerConfig |= USB_HOST_PWRFLT_EP_HIGH;
+            g_ulPowerConfig |= USB_HOST_PWRFLT_EP_LOW;
+            ulConfig |= USB_HOST_PWRFLT_EP_LOW;
         }
         else
         {
-            g_ulPowerConfig |= USB_HOST_PWRFLT_EP_LOW;
+            g_ulPowerConfig |= USB_HOST_PWRFLT_EP_HIGH;
+            ulConfig |= USB_HOST_PWRFLT_EP_HIGH;
         }
     }
 
@@ -2295,6 +2623,24 @@ USBHCDPowerAutomatic(unsigned long ulIndex)
 //! This call will start up the USB host controller and any connected device
 //! will immediately start the enumeration sequence.
 //!
+//! The USBStackModeSet() function can be called with USB_MODE_HOST in order to
+//! cause the USB library to force the USB operating mode to a host controller.
+//! This allows the application to used the USBVBUS and USBID pins as GPIOs on
+//! devices that support forcing OTG to operate as a host only controller.  By
+//! default the USB library will assume that the USBVBUS and USBID pins are
+//! configured as USB pins and not GPIOs.
+//!
+//! \note Forcing of the USB controller mode feature is not available on all
+//! Stellaris microcontrollers.  Consult the data sheet for the microcontroller
+//! that the application is using to determine if this feature is available.
+//!
+//! The memory pool passed to this function must be at least as large as a
+//! typical configuration descriptor for devices that are to be supported.  This
+//! value is application-dependent however it should never be less than 32
+//! bytes and, in most cases, should be at least 64 bytes.  If there is not
+//! sufficient memory to load a configuration descriptor from a device, the
+//! device will not be recognized by the USB library's host controller driver.
+//!
 //! \return None.
 //
 //*****************************************************************************
@@ -2316,10 +2662,11 @@ USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
     //
     // Should not call this if the stack is in device mode.
     //
-    ASSERT(g_eUSBMode != USB_MODE_DEVICE)
+    ASSERT(g_eUSBMode != USB_MODE_DEVICE);
+    ASSERT(g_eUSBMode != USB_MODE_FORCE_DEVICE);
 
     //
-    // If no mode is set then make the mode become host mode.
+    // If the mode was not set then default to USB_MODE_HOST.
     //
     if(g_eUSBMode == USB_MODE_NONE)
     {
@@ -2327,25 +2674,31 @@ USBHCDInit(unsigned long ulIndex, void *pvPool, unsigned long ulPoolSize)
     }
 
     //
-    // Only do hardware update if the stack is in Host mode, do not touch the
-    // hardware for OTG mode operation.
+    // Reset the USB controller.
     //
-    if(g_eUSBMode == USB_MODE_HOST)
+    MAP_SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
+
+    //
+    // Enable Clocking to the USB controller.
+    //
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
+
+    //
+    // Turn on USB Phy clock.
+    //
+    MAP_SysCtlUSBPLLEnable();
+
+    //
+    // If the application not requesting OTG mode then set the mode to forced
+    // host mode.  If the mode is actually USB_MODE_HOST, this will be switched
+    // off when ID pin detection is complete and the ID is no longer in use.
+    //
+    if(g_eUSBMode != USB_MODE_OTG)
     {
         //
-        // Reset the USB controller.
+        // Force Host mode on devices that support force host mode.
         //
-        MAP_SysCtlPeripheralReset(SYSCTL_PERIPH_USB0);
-
-        //
-        // Enable Clocking to the USB controller.
-        //
-        MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_USB0);
-
-        //
-        // Turn on USB Phy clock.
-        //
-        MAP_SysCtlUSBPLLEnable();
+        MAP_USBHostMode(USB0_BASE);
     }
 
     //
@@ -2472,6 +2825,7 @@ USBHCDTerm(unsigned long ulIndex)
     g_sUSBHCD.USBOUTPipes[2].ulType = USBHCD_PIPE_UNUSED;
     g_sUSBHCD.eDeviceState[0] = HCD_IDLE;
     g_sUSBHCD.USBDevice[0].pConfigDescriptor = 0;
+    g_sUSBHCD.USBDevice[0].bConfigRead = false;
     g_sUSBHCD.USBDevice[0].DeviceDescriptor.bLength = 0;
     g_sUSBHCD.USBDevice[0].DeviceDescriptor.bMaxPacketSize0 = 0;
     g_sUSBHCD.USBDevice[0].ulAddress = 0;
@@ -2631,7 +2985,7 @@ USBHCDGetConfigDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
     // Only ask for the configuration header first to see how big the
     // whole thing is.
     //
-    if(g_sUSBHCD.USBDevice[0].pConfigDescriptor == 0)
+    if(!pDevice->bConfigRead)
     {
         //
         // Only request the space available.
@@ -2639,16 +2993,10 @@ USBHCDGetConfigDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
         SetupPacket.wLength = sizeof(tConfigDescriptor);
 
         //
-        // Set the memory to use for the config descriptor and save the size.
-        //
-        g_sUSBHCD.USBDevice[0].pConfigDescriptor = g_sUSBHCD.pvPool;
-        g_sUSBHCD.USBDevice[0].ulConfigDescriptorSize = g_sUSBHCD.ulPoolSize;
-
-        //
         // Put the setup packet in the buffer.
         //
         ulBytes =
-            USBHCDControlTransfer(0, &SetupPacket, pDevice->ulAddress,
+            USBHCDControlTransfer(0, &SetupPacket, pDevice,
                                   (unsigned char *)pDevice->pConfigDescriptor,
                                   sizeof(tConfigDescriptor),
                                   pDevice->DeviceDescriptor.bMaxPacketSize0);
@@ -2664,7 +3012,7 @@ USBHCDGetConfigDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
         // Save the total size and request the full configuration descriptor.
         //
         SetupPacket.wLength =
-            g_sUSBHCD.USBDevice[0].pConfigDescriptor->wTotalLength;
+            pDevice->pConfigDescriptor->wTotalLength;
 
         //
         // Don't allow the buffer to be larger than was allocated.
@@ -2678,10 +3026,18 @@ USBHCDGetConfigDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
         // Put the setup packet in the buffer.
         //
         ulBytes =
-            USBHCDControlTransfer(0, &SetupPacket, pDevice->ulAddress,
+            USBHCDControlTransfer(0, &SetupPacket, pDevice,
                                   (unsigned char *)pDevice->pConfigDescriptor,
                                   SetupPacket.wLength,
                                   pDevice->DeviceDescriptor.bMaxPacketSize0);
+
+        //
+        // If we read the descriptor, remember the fact.
+        //
+        if(ulBytes)
+        {
+            pDevice->bConfigRead = true;
+        }
     }
 
     return(ulBytes);
@@ -2736,7 +3092,7 @@ USBHCDGetDeviceDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
     // All devices must have at least an 8 byte max packet size so just ask
     // for 8 bytes to start with.
     //
-    SetupPacket.wLength = 8;
+    SetupPacket.wLength = sizeof(tDeviceDescriptor);
 
     ulBytes = 0;
 
@@ -2749,10 +3105,10 @@ USBHCDGetDeviceDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
         // Put the setup packet in the buffer.
         //
         ulBytes =
-            USBHCDControlTransfer(ulIndex, &SetupPacket, pDevice->ulAddress,
+            USBHCDControlTransfer(ulIndex, &SetupPacket, pDevice,
                                   (unsigned char *)&(pDevice->DeviceDescriptor),
                                   sizeof(tDeviceDescriptor),
-                                  MAX_PACKET_SIZE_EP0);
+                                  8);
     }
 
     //
@@ -2764,7 +3120,7 @@ USBHCDGetDeviceDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
         SetupPacket.wLength = (unsigned short)sizeof(tDeviceDescriptor);
 
         ulBytes =
-            USBHCDControlTransfer(ulIndex, &SetupPacket, pDevice->ulAddress,
+            USBHCDControlTransfer(ulIndex, &SetupPacket, pDevice,
                                   (unsigned char *)&(pDevice->DeviceDescriptor),
                                   sizeof(tDeviceDescriptor),
                                   pDevice->DeviceDescriptor.bMaxPacketSize0);
@@ -2777,20 +3133,24 @@ USBHCDGetDeviceDescriptor(unsigned long ulIndex, tUSBHostDevice *pDevice)
 //
 //! This function is used to send the set address command to a device.
 //!
+//! \param ulDevIndex is the index of the device whose address is to be
+//! set.  This value must be 0 to indicate that the device is connected
+//! directly to the host controller.  Higher values indicate devices connected
+//!  via a hub.
 //! \param ulDevAddress is the new device address to use for a device.
 //!
 //! The USBHCDSetAddress() function is used to set the USB device address, once
-//! a device has been discovered on the bus.  This is typically issued
-//! following a USB reset which is triggered by a call the USBHCDReset().  The
-//! address passed into this function via the \e ulDevAddress parameter should
-//! be used for all further communications with the device once this function
+//! a device has been discovered on the bus.  This call is typically issued
+//! following a USB reset triggered by a call the USBHCDReset().  The
+//! address passed into this function via the \e ulDevAddress parameter is used
+//! for all further communications with the device after this function
 //! returns.
 //!
 //! \return None.
 //
 //*****************************************************************************
 void
-USBHCDSetAddress(unsigned long ulDevAddress)
+USBHCDSetAddress(unsigned long ulDevIndex, unsigned long ulDevAddress)
 {
     tUSBRequest SetupPacket;
 
@@ -2819,7 +3179,8 @@ USBHCDSetAddress(unsigned long ulDevAddress)
     //
     // Put the setup packet in the buffer.
     //
-    USBHCDControlTransfer(0, &SetupPacket, 0, 0, 0, MAX_PACKET_SIZE_EP0);
+    USBHCDControlTransfer(0, &SetupPacket, &g_sUSBHCD.USBDevice[ulDevIndex], 0,
+                          0, MAX_PACKET_SIZE_EP0);
 
     //
     // Must delay 2ms after setting the address.
@@ -2894,7 +3255,8 @@ USBHCDClearFeature(unsigned long ulDevAddress, unsigned long ulPipe,
     //
     // Put the setup packet in the buffer.
     //
-    USBHCDControlTransfer(0, &SetupPacket, ulDevAddress, 0, 0,
+    USBHCDControlTransfer(0, &SetupPacket,
+                          &g_sUSBHCD.USBDevice[ulDevAddress - 1], 0, 0,
                           MAX_PACKET_SIZE_EP0);
 
     //
@@ -2971,7 +3333,7 @@ USBHCDSetConfig(unsigned long ulIndex, unsigned long ulDevice,
     //
     // Put the setup packet in the buffer.
     //
-    USBHCDControlTransfer(0, &SetupPacket, pDevice->ulAddress, 0, 0,
+    USBHCDControlTransfer(0, &SetupPacket, pDevice, 0, 0,
                           MAX_PACKET_SIZE_EP0);
 }
 
@@ -3041,7 +3403,7 @@ USBHCDSetInterface(unsigned long ulIndex, unsigned long ulDevice,
     //
     // Put the setup packet in the buffer.
     //
-    USBHCDControlTransfer(0, &SetupPacket, pDevice->ulAddress, 0, 0,
+    USBHCDControlTransfer(0, &SetupPacket, pDevice, 0, 0,
                           MAX_PACKET_SIZE_EP0);
 }
 
@@ -3061,7 +3423,9 @@ USBHostCheckPipes(void)
 {
     long lIdx;
 
-    for(lIdx = 0; lIdx < 3; lIdx++)
+    g_ulCurrentTick++;
+
+    for(lIdx = 0; lIdx < g_sUSBHCD.ulNumEndpoints; lIdx++)
     {
         //
         // Skip unused pipes.
@@ -3124,12 +3488,22 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
     static unsigned long ulSOFDivide = 0;
     unsigned long ulEvent;
     unsigned long ulIdx;
+    unsigned long ulDevIndex;
+    long lClassDrvr;
+
+    //
+    // By default, assume we are dealing with the device directly connected
+    // to the host controller and that we need to notify its class driver of
+    // this interrupt.
+    //
+    g_sUSBHCD.USBDevice[0].bNotifyInt = true;
 
     if(ulStatus & USB_INTCTRL_SOF)
     {
-        g_ulCurrentTick++;
-
-        USBHostCheckPipes();
+        //
+        // Indicate that a start of frame has occurred.
+        //
+        g_ulUSBHIntEvents |= INT_EVENT_SOF;
     }
 
     //
@@ -3173,7 +3547,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
     //
     // Received a reset from the host.
     //
-    if(ulStatus & USB_INTCTRL_RESET)
+    if(ulStatus & USB_INTCTRL_BABBLE)
     {
     }
 
@@ -3219,6 +3593,22 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         // Power the USB bus.
         //
         MAP_USBHostPwrEnable(USB0_BASE);
+    }
+
+    //
+    // Handle the ID detection so that the ID pin can be used as a
+    // GPIO in USB_MODE_HOST.
+    //
+    if(ulStatus & USB_INTCTRL_MODE_DETECT)
+    {
+        //
+        // If in USB_MODE_HOST mode then switch back to OTG detection
+        // so that VBUS can be monitored but free up the ID pin.
+        //
+        if(g_eUSBMode == USB_MODE_HOST)
+        {
+            USBOTGMode(USB0_BASE);
+        }
     }
 
     //
@@ -3271,7 +3661,10 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
     //
     if(ulStatus & USB_INTEP_0)
     {
-        USBHCDEnumHandler();
+        //
+        // Indicate that a start of frame has occurred.
+        //
+        g_ulUSBHIntEvents |= INT_EVENT_ENUM;
     }
 
     //
@@ -3295,7 +3688,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
             if(g_sUSBHCD.USBINPipes[ulIdx].eState == PIPE_READING)
             {
                 //
-                // If the uDMA channel transfer is complete, send an ack.
+                // If the DMA channel transfer is complete, send an ack.
                 //
                 if(uDMAChannelModeGet(UDMA_CHANNEL_USBEP1RX + (ulIdx * 2))
                         == UDMA_MODE_STOP)
@@ -3319,6 +3712,12 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                         g_sUSBHCD.USBINPipes[ulIdx].pfnCallback(
                             IN_PIPE_HANDLE(ulIdx), ulEvent);
                     }
+
+                    //
+                    // Remember that we need to notify this device's class
+                    // driver that an interrupt occurred.
+                    //
+                    g_sUSBHCD.USBINPipes[ulIdx].psDevice->bNotifyInt = true;
                 }
             }
         }
@@ -3339,14 +3738,14 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 //
                 if(uDMAChannelModeGet(UDMA_CHANNEL_USBEP1TX + (ulIdx * 2))
                         == UDMA_MODE_STOP)
-                {
+                    {
                     MAP_USBEndpointDataSend(USB0_BASE,
                                             INDEX_TO_USB_EP(ulIdx + 1),
                                             USB_TRANS_OUT);
                     g_ulDMAPending &= ~(DMA_PEND_TRANSMIT_FLAG << ulIdx);
                 }
             }
-        }
+            }
 
         //
         // Check the next pipe, the first time through this will clear out
@@ -3387,6 +3786,25 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 //
                 ulEvent = USB_EVENT_STALL;
             }
+            else if(ulEPStatus & USB_HOST_OUT_ERROR)
+            {
+                //
+                // Clear the error condition on this endpoint pipe.
+                //
+                MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                               INDEX_TO_USB_EP(ulIdx + 1),
+                                               USB_HOST_OUT_ERROR);
+
+                //
+                // Save the Pipes error state.
+                //
+                g_sUSBHCD.USBOUTPipes[ulIdx].eState = PIPE_ERROR;
+
+                //
+                // Notify the pipe that had an error.
+                //
+                ulEvent = USB_EVENT_ERROR;
+            }
             else
             {
                 //
@@ -3401,6 +3819,13 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
             }
 
             //
+            // Clear the stall condition on this endpoint pipe.
+            //
+            MAP_USBHostEndpointStatusClear(USB0_BASE,
+                                           INDEX_TO_USB_EP(ulIdx + 1),
+                                           ulEPStatus);
+
+            //
             // Only call a handler if one is present.
             //
             if(g_sUSBHCD.USBOUTPipes[ulIdx].pfnCallback)
@@ -3408,6 +3833,12 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 g_sUSBHCD.USBOUTPipes[ulIdx].pfnCallback(OUT_PIPE_HANDLE(ulIdx),
                                                          ulEvent);
             }
+
+            //
+            // Remember that we need to notify this device's class
+            // driver that an interrupt occurred.
+            //
+            g_sUSBHCD.USBOUTPipes[ulIdx].psDevice->bNotifyInt = true;
         }
 
         //
@@ -3448,12 +3879,45 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 //
                 ulEvent = USB_EVENT_STALL;
             }
+            else if(ulEPStatus & USB_HOST_IN_ERROR)
+            {
+                //
+                // We can no longer communicate with this device for some
+                // reason.  It may have been disconnected from a hub, for
+                // example.  Merely clear the status and continue.
+                //
+                USBHostEndpointStatusClear(USB0_BASE,
+                                           INDEX_TO_USB_EP(ulIdx + 1),
+                                           USB_HOST_IN_ERROR);
+
+                //
+                // Save the STALLED state.
+                //
+                g_sUSBHCD.USBINPipes[ulIdx].eState = PIPE_ERROR;
+
+                //
+                // Notify the pipe that it was stalled.
+                //
+                ulEvent = USB_EVENT_ERROR;
+            }
             else
             {
                 //
                 // Data is available.
                 //
                 g_sUSBHCD.USBINPipes[ulIdx].eState = PIPE_DATA_READY;
+
+                //
+                // Read the data out of the USB endpoint interface into the
+                // buffer provided by the caller to USBHCDPipeRead() or
+                // USBHCDPipeSchedule() if a buffer was provided already.
+                //
+                if(g_sUSBHCD.USBINPipes[ulIdx].pucReadPtr)
+                {
+                    USBEndpointDataGet(USB0_BASE, INDEX_TO_USB_EP(ulIdx + 1),
+                                       g_sUSBHCD.USBINPipes[ulIdx].pucReadPtr,
+                                       &g_sUSBHCD.USBINPipes[ulIdx].ulReadSize);
+                }
 
                 //
                 // Notify the pipe that its last transaction was completed.
@@ -3469,17 +3933,39 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
                 g_sUSBHCD.USBINPipes[ulIdx].pfnCallback(IN_PIPE_HANDLE(ulIdx),
                                                         ulEvent);
             }
+
+            //
+            // Remember that we need to notify this device's class
+            // driver that an interrupt occurred.
+            //
+            g_sUSBHCD.USBINPipes[ulIdx].psDevice->bNotifyInt = true;
         }
     }
 
     //
-    // If there is an active driver and it has a call back then call it.
+    // Send back notifications to any class driver whose endpoint required
+    // service during the handler.
     //
-    if((g_lUSBHActiveDriver >= 0) &&
-       (g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->pfnIntHandler))
+    for(ulDevIndex = 0; ulDevIndex <= MAX_USB_DEVICES; ulDevIndex++)
     {
-        g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->
-            pfnIntHandler(g_pvDriverInstance);
+        //
+        // Which class driver does this device use?
+        //
+        lClassDrvr = g_lUSBHActiveDriver[ulDevIndex];
+
+        //
+        // If a class driver is in use, and one of its endpoints was serviced
+        // and the class driver has an interrupt callback...
+        //
+        if((lClassDrvr >= 0) && g_sUSBHCD.USBDevice[ulDevIndex].bNotifyInt &&
+           (g_sUSBHCD.pClassDrivers[lClassDrvr]->pfnIntHandler))
+        {
+            //
+            // ...call the class driver's interrupt notification callback.
+            //
+            g_sUSBHCD.pClassDrivers[lClassDrvr]->pfnIntHandler(
+                                               g_pvDriverInstance[ulDevIndex]);
+        }
     }
 }
 
@@ -3537,9 +4023,10 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
     //
     // Get the interface descriptor.
     //
-    pInterface = USBDescGetInterface(g_sUSBHCD.USBDevice[0].pConfigDescriptor,
-                                     g_sUSBHCD.USBDevice[0].ulInterface,
-                                     USB_DESC_ANY);
+    pInterface = USBDescGetInterface(
+                            g_sUSBHCD.USBDevice[ulDeviceNum].pConfigDescriptor,
+                            g_sUSBHCD.USBDevice[ulDeviceNum].ulInterface,
+                            USB_DESC_ANY);
 
     //
     // Read the interface class.
@@ -3560,14 +4047,15 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
             //
             // Call the open function for the class driver.
             //
-            g_pvDriverInstance = g_sUSBHCD.pClassDrivers[lDriver]->pfnOpen(
-                &g_sUSBHCD.USBDevice[0]);
+            g_pvDriverInstance[ulDeviceNum] =
+                    g_sUSBHCD.pClassDrivers[lDriver]->pfnOpen(
+                            &g_sUSBHCD.USBDevice[ulDeviceNum]);
 
             //
             // If the driver was successfully loaded then break out of the
             // loop.
             //
-            if(g_pvDriverInstance != 0)
+            if(g_pvDriverInstance[ulDeviceNum] != 0)
             {
                 break;
             }
@@ -3583,13 +4071,18 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
         //
         // Send an unknown connection event.
         //
-        SendUnknownConnect(ulClass, 1);
+        SendUnknownConnect(ulIndex, ulClass);
 
         //
         // Indicate that no driver was found.
         //
         lDriver = -1;
     }
+
+    //
+    // Send an unknown connection event.
+    //
+    InternalUSBHCDSendEvent(USB_EVENT_CONNECTED, ulIndex, ulDeviceNum);
 
     return(lDriver);
 }
@@ -3609,7 +4102,8 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
 //
 //*****************************************************************************
 void
-InternalUSBHCDSendEvent(unsigned long ulEvent)
+InternalUSBHCDSendEvent(unsigned long ulEvent, unsigned long ulIndex,
+                        unsigned long ulDevIndex)
 {
     //
     // Make sure that an event driver has been registered.
@@ -3621,6 +4115,11 @@ InternalUSBHCDSendEvent(unsigned long ulEvent)
         // Send an event to the application.
         //
         g_sUSBHCD.EventInfo.ulEvent = ulEvent;
+
+        //
+        // Save the class for later in case and application needs it.
+        //
+        g_sUSBHCD.EventInfo.ulInstance = (ulIndex << 16) | ulDevIndex;
 
         g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
            &g_sUSBHCD.EventInfo);
@@ -3642,69 +4141,75 @@ InternalUSBHCDSendEvent(unsigned long ulEvent)
 //
 //*****************************************************************************
 static void
-USBHCDDeviceDisconnected(unsigned long ulIndex)
+USBHCDDeviceDisconnected(unsigned long ulIndex, unsigned long ulDevIndex)
 {
     ASSERT(ulIndex == 0);
+    ASSERT(ulDevIndex <= MAX_USB_DEVICES);
 
-    if(g_sUSBHCD.USBDevice[0].pConfigDescriptor)
+    if((g_sUSBHCD.lEventDriver != -1) &&
+       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
+    {
+        //
+        // Send the generic disconnect event.
+        //
+        g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_DISCONNECTED;
+
+        //
+        // Sent the instance value to the application.
+        //
+        g_sUSBHCD.EventInfo.ulInstance = (ulIndex << 16) | ulDevIndex;
+
+        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
+           &g_sUSBHCD.EventInfo);
+
+        //
+        // Reset the class and the instance.
+        //
+        g_sUSBHCD.ulClass = USB_CLASS_EVENTS;
+        g_sUSBHCD.EventInfo.ulInstance = 0;
+    }
+
+    if(g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor)
     {
         //
         // Invalidate the configuration descriptor.
         //
-        g_sUSBHCD.USBDevice[0].pConfigDescriptor = 0;
+        g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor = 0;
+        g_sUSBHCD.USBDevice[ulDevIndex].bConfigRead = false;
+
     }
 
     //
     // Reset the max packet size so that this will be re-read from new devices.
     //
-    g_sUSBHCD.USBDevice[0].DeviceDescriptor.bMaxPacketSize0 = 0;
+    g_sUSBHCD.USBDevice[ulDevIndex].DeviceDescriptor.bMaxPacketSize0 = 0;
 
     //
     // No longer have a device descriptor.
     //
-    g_sUSBHCD.USBDevice[0].DeviceDescriptor.bLength = 0;
+    g_sUSBHCD.USBDevice[ulDevIndex].DeviceDescriptor.bLength = 0;
 
     //
     // No longer addressed.
     //
-    g_sUSBHCD.USBDevice[0].ulAddress = 0;
+    g_sUSBHCD.USBDevice[ulDevIndex].ulAddress = 0;
 
     //
     // If this was an active driver then close it out.
     //
-    if(g_lUSBHActiveDriver >= 0)
+    if(g_lUSBHActiveDriver[ulDevIndex] >= 0)
     {
         //
         // Call the driver Close entry point.
         //
-        g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver]->
-            pfnClose(&g_sUSBHCD.USBDevice[0]);
+        g_sUSBHCD.pClassDrivers[g_lUSBHActiveDriver[ulDevIndex]]->
+            pfnClose(g_pvDriverInstance[ulDevIndex]);
 
         //
         // No active driver now present.
         //
-        g_lUSBHActiveDriver = -1;
-        g_pvDriverInstance = 0;
-    }
-    else
-    {
-        if((g_sUSBHCD.lEventDriver != -1) &&
-           (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
-        {
-            //
-            // Send the generic disconnect event.
-            //
-            g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_DISCONNECTED;
-
-            g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
-               &g_sUSBHCD.EventInfo);
-
-            //
-            // Reset the class and the instance.
-            //
-            g_sUSBHCD.ulClass = USB_CLASS_EVENTS;
-            g_sUSBHCD.EventInfo.ulInstance = 0;
-        }
+        g_lUSBHActiveDriver[ulDevIndex] = -1;
+        g_pvDriverInstance[ulDevIndex] = 0;
     }
 
     //
@@ -3712,8 +4217,10 @@ USBHCDDeviceDisconnected(unsigned long ulIndex)
     // stack has completed handling the disconnect of the device before
     // removing power and returning to a state that can allow OTG
     // negotiations once again.
+    // We only do this if the disconnected device
+    // was attached directly to us (device index 0).
     //
-    if(g_eUSBMode == USB_MODE_OTG)
+    if((ulDevIndex == 0) && (g_eUSBMode == USB_MODE_OTG))
     {
         OTGDeviceDisconnect(0);
     }
@@ -3737,8 +4244,14 @@ USBHCDDeviceDisconnected(unsigned long ulIndex)
 void
 USBHCDMain(void)
 {
-    unsigned long ulIntState;
     tUSBHDeviceState eOldState;
+    unsigned long ulLoop;
+
+    //
+    // Call the hub driver to have it perform any necessary processing to
+    // handle downstream devices.
+    //
+    USBHHubMain();
 
     //
     // Save the old state to detect changes properly.
@@ -3751,10 +4264,9 @@ USBHCDMain(void)
     if(g_ulUSBHIntEvents)
     {
         //
-        // Perform this fixup with interrupts disabled to prevent race
-        // conditions related to g_ulUSBHIntEvents.
+        // Disable the USB interrupt.
         //
-        ulIntState = MAP_IntMasterDisable();
+        MAP_IntDisable(INT_USB0);
 
         if(g_ulUSBHIntEvents & INT_EVENT_POWER_FAULT)
         {
@@ -3791,6 +4303,8 @@ USBHCDMain(void)
             if(g_ulUSBHIntEvents & INT_EVENT_CONNECT)
             {
                 g_sUSBHCD.eDeviceState[0] = HCD_DEV_RESET;
+                g_sUSBHCD.USBDevice[0].ucHub = 0;
+                g_sUSBHCD.USBDevice[0].ucHubPort = 0;
             }
             else
             {
@@ -3802,6 +4316,14 @@ USBHCDMain(void)
                     g_sUSBHCD.eDeviceState[0] = HCD_DEV_DISCONNECTED;
                 }
             }
+
+            //
+            // Handle the start of frame event
+            //
+            if(g_ulUSBHIntEvents & INT_EVENT_SOF)
+            {
+                USBHostCheckPipes();
+            }
         }
 
         //
@@ -3810,15 +4332,40 @@ USBHCDMain(void)
         g_ulUSBHIntEvents = 0;
 
         //
-        // Turn interrupts back on if they were on when we were called.
+        // Enable the USB interrupt.
         //
-        if(!ulIntState)
-        {
-            MAP_IntMasterEnable();
-        }
+        MAP_IntEnable(INT_USB0);
     }
 
-    switch(g_sUSBHCD.eDeviceState[0])
+    //
+    // Process the state machine for each connected device.  Yes, the exit
+    // condition for this loop is correct since we support (MAX_USB_DEVICES+1)
+    // devices (the hub counts as one).
+    //
+    for(ulLoop = 0; ulLoop <= MAX_USB_DEVICES; ulLoop++)
+    {
+        //
+        // If this is not the first device (i.e. the one directly connected to
+        // the host controller) then set the old state to the current state
+        // since we won't have mucked with it in any of the previous code.
+        //
+        if(ulLoop != 0)
+        {
+            eOldState = g_sUSBHCD.eDeviceState[ulLoop];
+        }
+
+        //
+        // Process the state machine for this device.
+        //
+        ProcessUSBDeviceStateMachine(eOldState, ulLoop);
+    }
+}
+
+static void
+ProcessUSBDeviceStateMachine(tUSBHDeviceState eOldState,
+                             unsigned long ulDevIndex)
+{
+    switch(g_sUSBHCD.eDeviceState[ulDevIndex])
     {
         //
         // There was a power fault condition so shut down and wait for the
@@ -3848,7 +4395,7 @@ USBHCDMain(void)
                 //
                 // Handle device disconnect.
                 //
-                USBHCDDeviceDisconnected(0);
+                USBHCDDeviceDisconnected(0, ulDevIndex);
             }
 
             //
@@ -3873,15 +4420,34 @@ USBHCDMain(void)
         //
         case HCD_DEV_RESET:
         {
-            //
-            // Trigger a Reset.
-            //
-            USBHCDReset(0);
+            if(!ulDevIndex)
+            {
+                //
+                // Trigger a Reset.  This is only ever done for devices attached
+                // directly to the controller.
+                //
+                DEBUG_OUTPUT("USB reset.\n");
+                USBHCDReset(0);
+            }
 
             //
             // The state moves to connected but not configured.
             //
             g_sUSBHCD.eDeviceState[0] = HCD_DEV_CONNECTED;
+
+            //
+            // Set the memory to use for the config descriptor and save the
+            // size.
+            //
+            g_sUSBHCD.USBDevice[0].pConfigDescriptor = g_sUSBHCD.pvPool;
+            g_sUSBHCD.USBDevice[0].ulConfigDescriptorSize =
+                                                       g_sUSBHCD.ulPoolSize;
+
+            //
+            // Remember that we don't have a valid configuration descriptor
+            // yet.
+            //
+            g_sUSBHCD.USBDevice[0].bConfigRead = false;
 
             break;
         }
@@ -3895,45 +4461,67 @@ USBHCDMain(void)
             // First check if we have read the device descriptor at all
             // before proceeding.
             //
-            if(g_sUSBHCD.USBDevice[0].DeviceDescriptor.bLength == 0)
+            if(g_sUSBHCD.USBDevice[ulDevIndex].DeviceDescriptor.bLength == 0)
             {
                 //
                 // Initialize a request for the device descriptor.
                 //
-                if(USBHCDGetDeviceDescriptor(0, &g_sUSBHCD.USBDevice[0]) == 0)
+                DEBUG_OUTPUT("Connection %d - getting device descriptor\n",
+                             ulDevIndex);
+
+                if(USBHCDGetDeviceDescriptor(0,
+                        &g_sUSBHCD.USBDevice[ulDevIndex]) == 0)
                 {
                     //
                     // If the device descriptor cannot be read then the device
                     // will be treated as unknown.
                     //
-                    g_sUSBHCD.eDeviceState[0] = HCD_DEV_ERROR;
+                    g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_ERROR;
+
+                    DEBUG_OUTPUT("Connection %d - failed to get descriptor\n",
+                                 ulDevIndex);
 
                     //
                     // Send an unknown connection event.
                     //
                     SendUnknownConnect(0, 1);
+
+                    //
+                    // If the device is connected via a hub, tell the hub
+                    // driver that we experienced an error enumerating the
+                    // device.
+                    //
+                    if(g_sUSBHCD.USBDevice[ulDevIndex].ucHub)
+                    {
+                        USBHHubEnumerationError(
+                                g_sUSBHCD.USBDevice[ulDevIndex].ucHub,
+                                g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort);
+                    }
                 }
             }
             //
             // If we have the device descriptor then move on to setting
             // the address of the device.
             //
-            else if(g_sUSBHCD.USBDevice[0].ulAddress == 0)
+            else if(g_sUSBHCD.USBDevice[ulDevIndex].ulAddress == 0)
             {
+                DEBUG_OUTPUT("Connection %d - setting address %d\n",
+                             ulDevIndex, ulDevIndex + 1);
+
                 //
                 // Send the set address command.
                 //
-                USBHCDSetAddress(1);
+                USBHCDSetAddress(ulDevIndex, (ulDevIndex + 1));
 
                 //
                 // Save the address.
                 //
-                g_sUSBHCD.USBDevice[0].ulAddress = 1;
+                g_sUSBHCD.USBDevice[ulDevIndex].ulAddress = (ulDevIndex + 1);
 
                 //
                 // Move on to the addressed state.
                 //
-                g_sUSBHCD.eDeviceState[0] = HCD_DEV_ADDRESSED;
+                g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_ADDRESSED;
             }
             break;
         }
@@ -3942,23 +4530,42 @@ USBHCDMain(void)
             //
             // First check if we have read the configuration descriptor.
             //
-            if (g_sUSBHCD.USBDevice[0].pConfigDescriptor == 0)
+            if(!g_sUSBHCD.USBDevice[ulDevIndex].bConfigRead)
             {
+                DEBUG_OUTPUT("Connection %d - getting config descriptor\n",
+                             ulDevIndex);
+
                 //
-                // Initialize a request for the device descriptor.
+                // Initialize a request for the config descriptor.
                 //
-                if(USBHCDGetConfigDescriptor(0, &g_sUSBHCD.USBDevice[0]) == 0)
+                if(USBHCDGetConfigDescriptor(0,
+                                        &g_sUSBHCD.USBDevice[ulDevIndex]) == 0)
                 {
                     //
                     // If the device descriptor cannot be read then the device
                     // will be treated as unknown.
                     //
-                    g_sUSBHCD.eDeviceState[0] = HCD_DEV_ERROR;
+                    g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_ERROR;
+
+                    DEBUG_OUTPUT("Connection %d - failed to get descriptor\n",
+                                 ulDevIndex);
 
                     //
                     // Send an unknown connection event.
                     //
-                    SendUnknownConnect(0, 1);
+                    SendUnknownConnect(0, 0);
+
+                    //
+                    // If the device is connected via a hub, tell the hub
+                    // driver that we experienced an error enumerating the
+                    // device.
+                    //
+                    if(g_sUSBHCD.USBDevice[ulDevIndex].ucHub)
+                    {
+                        USBHHubEnumerationError(
+                                g_sUSBHCD.USBDevice[ulDevIndex].ucHub,
+                                g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort);
+                    }
                 }
             }
             //
@@ -3967,21 +4574,37 @@ USBHCDMain(void)
             //
             else
             {
+                DEBUG_OUTPUT("Connection %d - setting configuration.\n",
+                             ulDevIndex);
+
                 //
                 // Use the first configuration to set the device
                 // configuration.
                 //
-                USBHCDSetConfig(0, (unsigned long)&g_sUSBHCD.USBDevice[0], 1);
+                USBHCDSetConfig(0,
+                            (unsigned long)&g_sUSBHCD.USBDevice[ulDevIndex], 1);
 
                 //
                 // Move on to the configured state.
                 //
-                g_sUSBHCD.eDeviceState[0] = HCD_DEV_CONFIGURED;
+                g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_CONFIGURED;
 
                 //
-                // Open the driver for device 0.
+                // Open the driver for the device.
                 //
-                g_lUSBHActiveDriver = USBHCDOpenDriver(0, 0);
+                g_lUSBHActiveDriver[ulDevIndex] = USBHCDOpenDriver(0,
+                                                                   ulDevIndex);
+
+                //
+                // If the device is connected via a hub, tell the hub
+                // driver that enumeration is complete.
+                //
+                if(g_sUSBHCD.USBDevice[ulDevIndex].ucHub)
+                {
+                    USBHHubEnumerationComplete(
+                            g_sUSBHCD.USBDevice[ulDevIndex].ucHub,
+                            g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort);
+                }
             }
             break;
         }
@@ -3990,7 +4613,7 @@ USBHCDMain(void)
         //
         case HCD_DEV_REQUEST:
         {
-            g_sUSBHCD.eDeviceState[0] = HCD_DEV_CONNECTED;
+            g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_CONNECTED;
             break;
         }
         //
@@ -4005,15 +4628,18 @@ USBHCDMain(void)
         //
         case HCD_DEV_DISCONNECTED:
         {
+            DEBUG_OUTPUT("Connection %d - disconnected.\n",
+                         ulDevIndex);
+
             //
             // Handle device disconnect.
             //
-            USBHCDDeviceDisconnected(0);
+            USBHCDDeviceDisconnected(0, ulDevIndex);
 
             //
             // Return to the Idle state.
             //
-            g_sUSBHCD.eDeviceState[0] = HCD_IDLE;
+            g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_IDLE;
             break;
         }
 
@@ -4031,8 +4657,18 @@ USBHCDMain(void)
         //
         case HCD_DEV_ERROR:
         {
-            g_ulUSBHIntEvents |= INT_EVENT_DISCONNECT;
-            g_sUSBHCD.eDeviceState[0] = HCD_IDLE;
+            DEBUG_OUTPUT("Connection %d - Error!\n", ulDevIndex);
+
+            //
+            // If this device is connected directly to us, tidy up and ignore
+            // it until it is removed.  If the device is connected to a hub,
+            // we just leave it in the error state until it is removed.
+            //
+            if(ulDevIndex == 0)
+            {
+                g_ulUSBHIntEvents |= INT_EVENT_DISCONNECT;
+                g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_IDLE;
+            }
             break;
         }
         default:
@@ -4048,7 +4684,7 @@ USBHCDMain(void)
 //!
 //! \param ulIndex is the controller index to use for this transfer.
 //! \param pSetupPacket is the setup request to be sent.
-//! \param ulDevAddress is the address of the device for this request.
+//! \param pDevice is the device instance pointer for this request.
 //! \param pData is the data to send for OUT requests or the receive buffer
 //! for IN requests.
 //! \param ulSize is the size of the buffer in pData.
@@ -4065,12 +4701,15 @@ USBHCDMain(void)
 //*****************************************************************************
 unsigned long
 USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
-                      unsigned long ulDevAddress, unsigned char *pData,
+                      tUSBHostDevice *pDevice, unsigned char *pData,
                       unsigned long ulSize, unsigned long ulMaxPacketSize)
 {
     unsigned long ulRemaining;
     unsigned long ulDataSize;
 
+    //
+    // Debug sanity check.
+    //
     ASSERT(g_sUSBHEP0State.eState == EP0_STATE_IDLE);
     ASSERT(ulIndex == 0);
 
@@ -4089,7 +4728,7 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     //
     // Save the current address.
     //
-    g_sUSBHEP0State.ulDevAddress = ulDevAddress;
+    g_sUSBHEP0State.ulDevAddress = pDevice->ulAddress;
 
     //
     // Set the address the host will used to communicate with the device.
@@ -4132,6 +4771,14 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     }
 
     //
+    // Make sure we are talking to the correct device.
+    //
+    USBHostHubAddrSet(USB0_BASE, USB_EP_0,
+                      ((pDevice->ucHub << 8) | (pDevice->ucHubPort)),
+                      USB_EP_HOST_OUT | (pDevice->bLowSpeed ?
+                      USB_EP_SPEED_LOW : USB_EP_SPEED_FULL));
+
+    //
     // Send the Setup packet.
     //
     MAP_USBEndpointDataSend(USB0_BASE, USB_EP_0, USB_TRANS_SETUP);
@@ -4141,9 +4788,20 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     //
     while(g_sUSBHEP0State.eState != EP0_STATE_IDLE)
     {
+        MAP_IntDisable(INT_USB0);
+
+        if((g_ulUSBHIntEvents & (INT_EVENT_ENUM | INT_EVENT_SOF)) == (INT_EVENT_ENUM | INT_EVENT_SOF))
+        {
+            g_ulUSBHIntEvents &= ~(INT_EVENT_ENUM | INT_EVENT_SOF);
+
+            USBHCDEnumHandler();
+        }
+
+        MAP_IntEnable(INT_USB0);
+
         if(g_sUSBHEP0State.eState == EP0_STATE_ERROR)
         {
-            return(0);
+            return(0xffffffff);
         }
 
         //
@@ -4152,7 +4810,7 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
         //
         if(g_ulUSBHIntEvents & (INT_EVENT_VBUS_ERR | INT_EVENT_DISCONNECT))
         {
-            return(0);
+            return(0xffffffff);
         }
     }
 
@@ -4165,6 +4823,108 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     ulRemaining = g_sUSBHEP0State.ulBytesRemaining;
 
     return(ulDataSize - ulRemaining);
+}
+
+//*****************************************************************************
+//
+// Starts enumerating a new device connected via the hub.
+//
+// \param ulIndex is the index of the USB controller to use.
+// \param ulHub is the hub address from which the connection is being made.
+// \param ulPort is the hub port number that the new device is connected to.
+// \param pucConfigPool is memory to be used to store the device's config
+//        descriptor.
+// \param ulConfigSize is the number of bytes available in the buffer pointed
+//        to by pucConfigPool.
+//
+// This function is called by the hub class driver after it has detected a new
+// device connection and reset the device.
+//
+// \return Returns the index of the device allocated or 0 if no resources are
+//         available. Device index 0 is the hub itself.
+//
+//*****************************************************************************
+unsigned long
+USBHCDHubDeviceConnected(unsigned long ulIndex, unsigned char ucHub,
+                         unsigned char ucPort, tBoolean bLowSpeed,
+                         unsigned char *pucConfigPool,
+                         unsigned long ulConfigSize)
+{
+    unsigned long ulDevIndex;
+
+    //
+    // Debug sanity checks.
+    //
+    ASSERT(ulIndex == 0);
+    ASSERT(pucConfigPool);
+    ASSERT(ulConfigSize);
+    ASSERT(ucPort);
+
+    DEBUG_OUTPUT("Connection from hub %d, port %d.\n", ucHub, ucPort);
+
+    //
+    // Look for a free slot in the device table.
+    //
+    for(ulDevIndex = 1; ulDevIndex <= MAX_USB_DEVICES; ulDevIndex++)
+    {
+        if(g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor == 0)
+        {
+            //
+            // We found one. Set the state to ensure that it gets enumerated.
+            //
+            g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor =
+                                           (tConfigDescriptor *)pucConfigPool;
+            g_sUSBHCD.USBDevice[ulDevIndex].ulConfigDescriptorSize =
+                                                                ulConfigSize;
+            g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor->bLength = 0;
+            g_sUSBHCD.USBDevice[ulDevIndex].ucHub = ucHub;
+            g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort = ucPort;
+            g_sUSBHCD.USBDevice[ulDevIndex].bLowSpeed = bLowSpeed;
+            g_sUSBHCD.USBDevice[ulDevIndex].DeviceDescriptor.bLength = 0;
+
+            //
+            // Set the state to ensure enumeration begins.
+            //
+            g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_CONNECTED;
+
+            DEBUG_OUTPUT("Allocating device %d\n", ulDevIndex);
+
+            //
+            // Pass the device index back to the hub driver.
+            //
+            return(ulDevIndex);
+        }
+    }
+
+    //
+    // If we get here, there are device slots available so send back an invalid
+    // device index to tell the caller to ignore this device.
+    //
+    return(0);
+}
+
+//*****************************************************************************
+//
+// TODO: Documentation
+//
+//*****************************************************************************
+void
+USBHCDHubDeviceDisconnected(unsigned long ulIndex, unsigned long ulDevIndex)
+{
+    //
+    // Debug sanity checks.
+    //
+    ASSERT(ulIndex == 0);
+    ASSERT(ulDevIndex && (ulDevIndex <= MAX_USB_DEVICES));
+
+    DEBUG_OUTPUT("Disconnection from hub %d, port %d, device %d\n",
+            g_sUSBHCD.USBDevice[ulDevIndex].ucHub,
+            g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort, ulDevIndex);
+
+    //
+    // Set the device state to ensure that USBHCDMain cleans it up.
+    //
+    g_sUSBHCD.eDeviceState[ulDevIndex] = HCD_DEV_DISCONNECTED;
 }
 
 //*****************************************************************************
@@ -4314,10 +5074,12 @@ USBHCDEnumHandler(void)
                 MAP_USBHostEndpointStatusClear(USB0_BASE, USB_EP_0, ulEPStatus);
                 break;
             }
+
             //
             // Set the number of bytes to get out of this next packet.
             //
-            if(g_sUSBHEP0State.ulBytesRemaining > MAX_PACKET_SIZE_EP0)
+            if(g_sUSBHEP0State.ulBytesRemaining >
+               g_sUSBHEP0State.ulMaxPacketSize)
             {
                 //
                 // Don't send more than EP0_MAX_PACKET_SIZE bytes.
@@ -4490,6 +5252,250 @@ USBHCDEP0StateTx(void)
         //
         g_sUSBHEP0State.eState = EP0_STATE_STATUS_IN;
     }
+}
+
+//*****************************************************************************
+//
+//! This function returns the USB hub port for the requested device instance.
+//!
+//! \param ulInstance is a unique value indicating which device to query.
+//!
+//! This function returns the USB hub port for the device that is associated
+//! with the \e ulInstance parameter.  The caller must use the value for
+//! \e ulInstance was passed to the application when it receives a
+//! USB_EVENT_CONNECTED event.  The function returns the USB hub port for
+//! the interface number specified by the \e ulInterface parameter.
+//!
+//! \return The USB hub port for the requested interface.
+//
+//*****************************************************************************
+unsigned char
+USBHCDDevHubPort(unsigned long ulInstance)
+{
+    unsigned long ulDevIndex;
+
+    ulDevIndex = HCDInstanceToDevIndex(ulInstance);
+
+    if(ulDevIndex == 0xff)
+    {
+        return(ulDevIndex);
+    }
+
+    return(g_sUSBHCD.USBDevice[ulDevIndex].ucHubPort);
+}
+
+//*****************************************************************************
+//
+//! This function will return the USB address for the requested device
+//! instance.
+//!
+//! \param ulInstance is a unique value indicating which device to query.
+//!
+//! This function returns the USB address for the device that is associated
+//! with the \e ulInstance parameter.  The caller must use a value for
+//! \e ulInstance have been passed to the application when it receives a
+//! USB_EVENT_CONNECTED event.  The function will return the USB address for
+//! the interface number specified by the \e ulInterface parameter.
+//!
+//! \return The USB address for the requested interface.
+//
+//*****************************************************************************
+unsigned char
+USBHCDDevAddress(unsigned long ulInstance)
+{
+    unsigned long ulDevIndex;
+
+    ulDevIndex = HCDInstanceToDevIndex(ulInstance);
+
+    if(ulDevIndex == 0xff)
+    {
+        return(ulDevIndex);
+    }
+
+    return(g_sUSBHCD.USBDevice[ulDevIndex].ulAddress);
+}
+
+//*****************************************************************************
+//
+//! This function will return the USB class for the requested device
+//! instance.
+//!
+//! \param ulInstance is a unique value indicating which device to query.
+//! \param ulInterface is the interface number to query for the USB class.
+//!
+//! This function returns the USB class for the device that is associated
+//! with the \e ulInstance parameter.  The caller must use a value for
+//! \e ulInstance have been passed to the application when it receives a
+//! USB_EVENT_CONNECTED event.  The function will return the USB class for
+//! the interface number specified by the \e ulInterface parameter.  If
+//! \e ulInterface is set to 0xFFFFFFFF then the function will return the USB
+//! class for the first interface that is found in the device's USB
+//! descriptors.
+//!
+//! \return The USB class for the requested interface.
+//
+//*****************************************************************************
+unsigned char
+USBHCDDevClass(unsigned long ulInstance, unsigned long ulInterface)
+{
+    unsigned long ulDevIndex;
+    tInterfaceDescriptor *pInterface;
+
+    ulDevIndex = HCDInstanceToDevIndex(ulInstance);
+
+    //
+    // If the instance was not valid return an undefined class.
+    //
+    if(ulDevIndex == 0xff)
+    {
+        return(USB_CLASS_DEVICE);
+    }
+
+    //
+    // Get the interface descriptor.
+    //
+    pInterface = USBDescGetInterface(
+                            g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor,
+                            g_sUSBHCD.USBDevice[ulDevIndex].ulInterface,
+                            ulInterface);
+
+    //
+    // Make sure that the interface requested actually exists.
+    //
+    if(pInterface)
+    {
+        //
+        // Return the interface class.
+        //
+        return(pInterface->bInterfaceClass);
+    }
+
+    //
+    // No valid interface so return an undefined class.
+    //
+    return(USB_CLASS_DEVICE);
+}
+
+//*****************************************************************************
+//
+//! This function will return the USB subclass for the requested device
+//! instance.
+//!
+//! \param ulInstance is a unique value indicating which device to query.
+//! \param ulInterface is the interface number to query for the USB subclass.
+//!
+//! This function returns the USB subclass for the device that is associated
+//! with the \e ulInstance parameter.  The caller must use a value for
+//! \e ulInstance have been passed to the application when it receives a
+//! USB_EVENT_CONNECTED event.  The function will return the USB subclass for
+//! the interface number specified by the \e ulInterface parameter.  If
+//! \e ulInterface is set to 0xFFFFFFFF then the function will return the USB
+//! subclass for the first interface that is found in the device's USB
+//! descriptors.
+//!
+//! \return The USB subclass for the requested interface.
+//
+//*****************************************************************************
+unsigned char
+USBHCDDevSubClass(unsigned long ulInstance, unsigned long ulInterface)
+{
+    unsigned long ulDevIndex;
+    tInterfaceDescriptor *pInterface;
+
+    ulDevIndex = HCDInstanceToDevIndex(ulInstance);
+
+    //
+    // If the instance was not valid return an undefined subclass.
+    //
+    if(ulDevIndex == 0xff)
+    {
+        return(USB_SUBCLASS_UNDEFINED);
+    }
+
+    //
+    // Get the interface descriptor.
+    //
+    pInterface = USBDescGetInterface(
+                            g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor,
+                            g_sUSBHCD.USBDevice[ulDevIndex].ulInterface,
+                            ulInterface);
+
+    //
+    // Make sure that the interface requested actually exists.
+    //
+    if(pInterface)
+    {
+        //
+        // Return the interface subclass.
+        //
+        return(pInterface->bInterfaceSubClass);
+    }
+
+    //
+    // No valid interface so return an undefined subclass.
+    //
+    return(USB_SUBCLASS_UNDEFINED);
+}
+
+//*****************************************************************************
+//
+//! This function will return the USB protocol for the requested device
+//! instance.
+//!
+//! \param ulInstance is a unique value indicating which device to query.
+//! \param ulInterface is the interface number to query for the USB protocol.
+//!
+//! This function returns the USB protocol for the device that is associated
+//! with the \e ulInstance parameter.  The caller must use a value for
+//! \e ulInstance have been passed to the application when it receives a
+//! USB_EVENT_CONNECTED event.  The function will return the USB protocol for
+//! the interface number specified by the \e ulInterface parameter.  If
+//! \e ulInterface is set to 0xFFFFFFFF then the function will return the USB
+//! protocol for the first interface that is found in the device's USB
+//! descriptors.
+//!
+//! \return The USB protocol for the requested interface.
+//
+//*****************************************************************************
+unsigned char
+USBHCDDevProtocol(unsigned long ulInstance, unsigned long ulInterface)
+{
+    unsigned long ulDevIndex;
+    tInterfaceDescriptor *pInterface;
+
+    ulDevIndex = HCDInstanceToDevIndex(ulInstance);
+
+    //
+    // If the instance was not valid return an undefined protocol.
+    //
+    if(ulDevIndex == 0xff)
+    {
+        return(USB_PROTOCOL_UNDEFINED);
+    }
+
+    //
+    // Get the interface descriptor.
+    //
+    pInterface = USBDescGetInterface(
+                            g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor,
+                            g_sUSBHCD.USBDevice[ulDevIndex].ulInterface,
+                            ulInterface);
+
+    //
+    // Make sure that the interface requested actually exists.
+    //
+    if(pInterface)
+    {
+        //
+        // Return the interface protocol.
+        //
+        return(pInterface->bInterfaceProtocol);
+    }
+
+    //
+    // No valid interface so return an undefined protocol.
+    //
+    return(USB_PROTOCOL_UNDEFINED);
 }
 
 //*****************************************************************************

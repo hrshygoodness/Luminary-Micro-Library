@@ -2,7 +2,7 @@
 //
 // usbdcomp.h - USB composite device class driver.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -130,7 +130,7 @@ typedef struct
 
     //
     // The current "owner" of endpoint 0.  This is used to track the device
-    // class which is currently transfering data on EP0.
+    // class which is currently transferring data on EP0.
     //
     unsigned long ulEP0Owner;
 }

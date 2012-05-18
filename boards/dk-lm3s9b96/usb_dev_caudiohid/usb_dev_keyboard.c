@@ -3,7 +3,7 @@
 // usb_dev_keyboard.c - Main routines for the keyboard portion of the
 // application.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -1084,7 +1084,7 @@ void DrawVirtualKeyboard(tBoolean bBorder)
     //
     // Select the font we use for the keycaps.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Loop through each row, drawing each to the display
@@ -1906,7 +1906,7 @@ KeyboardInit(void)
     GrContextForegroundSet(&g_sContext, ClrBlack);
     GrRectFill(&g_sContext, &sRect);
 
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Enter the idle state.

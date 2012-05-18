@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="config.c"/>
+        <file name="config.h"/>
+        <file name="fsdata-s2e.h"/>
+        <file name="fs_s2e.c"/>
+        <file name="lwipopts.h"/>
+        <file name="ser2enet.c"/>
+        <file name="serial.c"/>
+        <file name="serial.h"/>
+        <file name="telnet.c"/>
+        <file name="telnet.h"/>
+        <file name="upnp.c"/>
+        <file name="upnp.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="fs">
+            <file name="404.html"/>
+            <file name="blstart.shtml"/>
+            <file name="cfg.js"/>
+            <file name="config1.shtml"/>
+            <file name="config2.shtml"/>
+            <file name="favicon.ico"/>
+            <file name="footer.html"/>
+            <file name="header.html"/>
+            <file name="index.html"/>
+            <file name="misc.shtml"/>
+            <file name="perror.shtml"/>
+            <file name="s2e.shtml"/>
+            <file name="styles.css"/>
+            <file name="upd.shtml"/>
+            <file name="ipchg.shtml"/>
+            <directory name="images">
+                <file name="ti_logo.gif"/>
+            </directory>
+        </directory>
+    </source>
+</importSpec>

@@ -1,7 +1,7 @@
 <!--
 Configuration file for Code Red project lang_demo
 
-Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2011-2012 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 -->
 
 <project chip="LM3S9B96"
@@ -43,6 +43,12 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
     <copy>drivers/camerafpga.h</copy>
   </import>
   <import src="../../..">
+    <copy>third_party/fonts/lang_demo/language.c</copy>
+    <copy>third_party/fonts/lang_demo/fontcustom14pt.c</copy>
+    <copy>third_party/fonts/lang_demo/fontcustom20pt.c</copy>
+    <copy>third_party/fonts/lang_demo/langremap.c</copy>
+    <copy>third_party/fonts/lang_demo/fontcustomr14pt.c</copy>
+    <copy>third_party/fonts/lang_demo/fontcustomr20pt.c</copy>
     <copy>utils/ustdlib.c</copy>
   </import>
   <import src=".">
@@ -52,6 +58,7 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
     <value>inc</value>
     <value>driverlib</value>
     <value>grlib</value>
+    <value>third_party</value>
     <value>utils</value>
   </requires>
   <setting id="assembler.def">
@@ -69,6 +76,7 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
   </setting>
   <setting id="compiler.def">
     <value>__CODE_RED</value>
+    <value>__NEWLIB__</value>
     <value>codered</value>
     <value>PART_LM3S9B96</value>
     <value>TARGET_IS_TEMPEST_RB1</value>
@@ -93,8 +101,8 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
     <value>../lang_demo_codered.ld</value>
   </setting>
   <setting id="linker.libs">
-    <value>gr</value>
-    <value>driver</value>
+    <value>gr-cm3</value>
+    <value>driver-cm3</value>
     <value>c</value>
     <value>gcc</value>
   </setting>
@@ -111,9 +119,13 @@ This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
   <setting id="compiler.inc">
     <value>${workspace_loc:/}</value>
     <value>..</value>
+    <value>${workspace_loc:/third_party}</value>
+    <value>${workspace_loc:/third_party/fonts/lang_demo}</value>
   </setting>
   <setting id="assembler.inc">
     <value>${workspace_loc:/}</value>
     <value>..</value>
+    <value>${workspace_loc:/third_party}</value>
+    <value>${workspace_loc:/third_party/fonts/lang_demo}</value>
   </setting>
 </project>

@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the interrupts example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+# This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B92
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -47,6 +52,7 @@ VPATH=../../../utils
 #
 IPATH=../../..
 
+#
 # The default rule, which causes the interrupts example to be built.
 #
 all: ${COMPILER}
@@ -70,7 +76,7 @@ ${COMPILER}:
 ${COMPILER}/interrupts.axf: ${COMPILER}/interrupts.o
 ${COMPILER}/interrupts.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/interrupts.axf: ${COMPILER}/uartstdio.o
-${COMPILER}/interrupts.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/interrupts.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/interrupts.axf: interrupts.ld
 SCATTERgcc_interrupts=interrupts.ld
 ENTRY_interrupts=ResetISR

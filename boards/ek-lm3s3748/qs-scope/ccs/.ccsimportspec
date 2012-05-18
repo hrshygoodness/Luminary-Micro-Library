@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="click.h"/>
+        <file name="commands.c"/>
+        <file name="commands.h"/>
+        <file name="data-acq.c"/>
+        <file name="data-acq.h"/>
+        <file name="file.c"/>
+        <file name="file.h"/>
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="menu-controls.c"/>
+        <file name="menu-controls.h"/>
+        <file name="menu.c"/>
+        <file name="menu.h"/>
+        <file name="qs-scope.c"/>
+        <file name="qs-scope.h"/>
+        <file name="renderer.c"/>
+        <file name="renderer.h"/>
+        <file name="usb_device.c"/>
+        <file name="usb_device.h"/>
+        <file name="usb_host.c"/>
+        <file name="usb_host.h"/>
+        <file name="usb_protocol.h"/>
+        <file name="usbdescriptors.c"/>
+        <file name="usbdescriptors.h"/>
+        <file name="usbhw.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

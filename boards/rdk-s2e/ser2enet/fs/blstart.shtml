@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<html><head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1">
+<link href="styles.css" rel="stylesheet" media="screen"><title>Stellaris S2E Module Firmware Update</title>
+</head>
+<body>
+<table width="100%" border="0" cellpadding="2" cellspacing="2">
+<tbody><tr>
+<td style="vertical-align: top; text-align: left; width: 15%;"></td>
+<td align="left" valign="top">
+<h2 align="center">Firmware Update</h2>
+</td></tr>
+<tr><td align="left" valign="top"></td>
+<td align="left" valign="top">
+<table style="width: 50%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr><td><div style="text-align: center;"><br><br>
+Press the "Program" button on the "Program" tab of the LM Flash Programmer application now to start download of a new software image.<br><br>
+</div>
+<table width="100%" border="1" cellpadding="4" cellspacing="2">
+<tbody>
+<tr>
+<td class="gr" width="25%">IP Address:</td>
+<td><!--#ipaddr--></td>
+</tr>
+<tr>
+<td class="gr">MAC Address:</td>
+<td><!--#macaddr--></td>
+</tr></tbody></table>
+</td>
+</tr><tr><td><br><div style="text-align: center;"><address>Note:
+The configuration web server has now been disabled and will not respond
+until the firmware update completes or the module is reset.</address></div></td></tr>
+</tbody></table></td></tr></tbody></table>
+<!--#doupdate-->
+</body></html>

@@ -1,0 +1,874 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0110 
+header_name {.h} 
+code_name {.cxx}
+decl {\#include <FL/Fl_File_Chooser.H>} {public global
+} 
+
+decl {\#include "My_Float_Input.H"} {public global
+} 
+
+decl {\#include "gui_handlers.h"} {global
+} 
+
+declblock {\#ifndef __WIN32} {after {\#endif}
+} {
+  decl {\#include <X11/xpm.h>} {}
+  decl {\#include "bdc-comm.xpm"} {}
+} 
+
+decl {char g_pathname[256];} {public
+} 
+
+Function {AddWindowIcon(Fl_Window *pWindow)} {open private return_type void
+} {
+  code {\#ifdef __WIN32
+pWindow->icon((char *)LoadIcon(fl_display, MAKEINTRESOURCE(1)));
+\#else
+Pixmap p, m;
+
+fl_open_display();
+
+XpmCreatePixmapFromData(fl_display, DefaultRootWindow(fl_display), (char **)bdc_comm_xpm, &p, &m, NULL);
+
+pWindow->icon((char *)p);
+\#endif} {}
+} 
+
+Function {CreateFirmwareUpdateWindow(void)} {open
+} {
+  Fl_Window g_pFirmwareUpdateWindow {
+    label {Update Firmware}
+    xywh {370 216 465 180} type Single align 16 hide modal size_range {465 180 465 180}
+  } {
+    Fl_Box {} {
+      label {Filename:}
+      xywh {25 25 70 20}
+    }
+    Fl_Output g_pUpdateFileName {
+      xywh {25 45 335 25}
+    }
+    Fl_Button {} {
+      label {Browse...}
+      callback {Fl_File_Chooser chooser(".", "Binary Files (*.bin)", Fl_File_Chooser::MULTI, "Please select file");
+chooser.show();
+
+// block until user picks something.
+while(chooser.shown())
+{
+    Fl::wait();
+}
+
+if(chooser.value() != 0)
+{
+    strncpy(g_pathname, chooser.value(), sizeof(g_pathname));
+    g_pUpdateFileName->value(g_pathname);
+}}
+      xywh {370 45 70 25} box GTK_UP_BOX
+    }
+    Fl_Progress g_pUpdateProgress {
+      label {Updating...}
+      xywh {25 90 415 20} selection_color 1 hide
+    }
+    Fl_Button {} {
+      label Update
+      callback {GUIUpdateFirmware();}
+      xywh {140 130 85 25} box GTK_UP_BOX
+    }
+    Fl_Return_Button {} {
+      label Cancel
+      callback {g_pFirmwareUpdateWindow->hide();
+delete g_pFirmwareUpdateWindow;
+g_pFirmwareUpdateWindow = 0;}
+      xywh {245 130 85 25} box GTK_UP_BOX
+    }
+  }
+  code {g_pUpdateFileName->value(g_pathname);} {}
+} 
+
+Function {CreateRecoverDeviceWindow(void)} {open
+} {
+  Fl_Window g_pRecoverDeviceWindow {
+    label {Recover Device}
+    xywh {358 455 465 315} type Single hide modal size_range {465 315 465 315}
+  } {
+    Fl_Box {} {
+      label {This will allow recovery of motor controllers that have been programmed with incorrect firmware (for example, programming a MDL-BDC with the firmware for a MDL-BDC24).  It is important that there be only one motor controller in the network that is in need of recovery; otherwise, one or both could be left in a state that can not be recovered without the use of JTAG.}
+      xywh {25 25 415 100} align 128
+    }
+    Fl_Box {} {
+      label {Proceed with caution!}
+      xywh {25 125 415 20} labelfont 2
+    }
+    Fl_Box {} {
+      label {Filename:}
+      xywh {25 160 70 20}
+    }
+    Fl_Output g_pRecoverFileName {
+      xywh {25 180 335 25}
+    }
+    Fl_Button {} {
+      label {Browse...}
+      callback {Fl_File_Chooser chooser(".", "Binary Files (*.bin)", Fl_File_Chooser::MULTI, "Please select file");
+chooser.show();
+
+// block until user picks something.
+while(chooser.shown())
+{
+    Fl::wait();
+}
+
+if(chooser.value() != 0)
+{
+    strncpy(g_pathname, chooser.value(), sizeof(g_pathname));
+    g_pRecoverFileName->value(g_pathname);
+}}
+      xywh {370 180 70 25} box GTK_UP_BOX
+    }
+    Fl_Progress g_pRecoverProgress {
+      label {Updating...}
+      xywh {25 225 415 20} selection_color 1 hide
+    }
+    Fl_Button {} {
+      label Update
+      callback {GUIRecoverDevice();}
+      xywh {140 265 85 25} box GTK_UP_BOX
+    }
+    Fl_Return_Button {} {
+      label Cancel
+      callback {g_pRecoverDeviceWindow->hide();}
+      xywh {245 265 85 25} box GTK_UP_BOX
+    }
+  }
+  code {g_pRecoverFileName->value(g_pathname);} {}
+} 
+
+Function {CreateHelpAboutWindow(void)} {} {
+  Fl_Window g_pHelpAboutWindow {
+    label {About BDC-COMM} open
+    xywh {1087 184 470 125} type Single align 16 hide modal size_range {430 125 430 125}
+  } {
+    Fl_Box {} {
+      image {ti.bmp} xywh {15 15 57 57}
+    }
+    Fl_Box {} {
+      label {Texas Instruments BDC24 Communciation Program}
+      xywh {85 15 370 20}
+    }
+    Fl_Box {} {
+      label {Version 8555}
+      xywh {85 35 370 20}
+    }
+    Fl_Box {} {
+      label {Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.}
+      xywh {85 55 370 20} labelsize 10
+    }
+    Fl_Return_Button {} {
+      label Close
+      callback {g_pHelpAboutWindow->hide();}
+      xywh {195 85 80 25} shortcut 0xff0d
+    }
+  }
+} 
+
+Function {CreateMainAppWindow(void)} {open
+} {
+  Fl_Window g_pMainWindow {
+    label {BDC-COMM} open selected
+    xywh {776 144 430 480} type Single box THIN_UP_BOX align 80 size_range {430 480 430 480} visible
+  } {
+    Fl_Menu_Bar g_pMainMenuBar {open
+      xywh {0 0 430 25}
+    } {
+      Submenu {} {
+        label {&File} open
+        xywh {0 0 62 20}
+      } {
+        MenuItem g_pMenuUpdate {
+          label {&Update Firmware...}
+          callback {CreateFirmwareUpdateWindow()->show();}
+          xywh {0 0 100 20} shortcut 0x40075 deactivate
+        }
+        MenuItem g_pMenuRecover {
+          label {&Recover Device...}
+          callback {CreateRecoverDeviceWindow()->show();}
+          xywh {0 0 100 20} shortcut 0x40072 deactivate divider
+        }
+        MenuItem {} {
+          label {E&xit}
+          callback {g_pMainWindow->hide();}
+          xywh {0 0 100 20} shortcut 0x40071
+        }
+      }
+      Submenu {} {
+        label {&Edit} open
+        xywh {0 0 62 20}
+      } {
+        MenuItem {} {
+          label {C&lear History}
+          callback {GUIPeriodicStatusHistorySetupAndClear(g_pExtendedStatusSelectMessage->value());}
+          xywh {0 0 30 20} shortcut 0x4006c
+        }
+        MenuItem {} {
+          label {&Copy History}
+          callback {GUIPeriodicStatusHistoryCopy(g_pExtendedStatusSelectMessage->value());}
+          xywh {0 0 30 20} shortcut 0x40063
+        }
+      }
+      Submenu g_pMenuStatus {
+        label {&Status: Disconnected}
+        xywh {0 0 100 20}
+      } {
+        MenuItem g_pMenuStatusButton {
+          label {&Connect...}
+          callback {GUIMenuStatus();}
+          xywh {0 0 100 20}
+        }
+      }
+      Submenu {} {
+        label {&Help} open
+        xywh {0 0 62 20}
+      } {
+        MenuItem {} {
+          label {&About...}
+          callback {CreateHelpAboutWindow()->show();}
+          xywh {0 0 30 20} shortcut 0xffbe
+        }
+      }
+    }
+    Fl_Box {} {
+      xywh {0 25 430 71} box ENGRAVED_BOX
+    }
+    Fl_Box g_pTrustedIndicator {
+      label Trusted
+      xywh {10 33 80 25} box ENGRAVED_BOX color 44 hide
+    }
+    Fl_Output g_pStatusFault {
+      callback {GUIFaultIndicatorSelect();}
+      xywh {325 62 100 25} box FLAT_BOX color 1 labelcolor 7 align 0 textcolor 7 hide
+    }
+    Fl_Choice g_pSelectBoard {
+      label {Board ID:}
+      callback {GUIDropDownBoardID();}
+      tooltip {Select the ID of the board you want to configure.} xywh {190 33 55 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+    } {}
+    Fl_Choice g_pSelectCOM {
+      label {COM Port:}
+      callback {GUIDropDownCOMPort();}
+      tooltip {Select the COM port that the appilcation uses.} xywh {335 33 85 25} box GTK_UP_BOX down_box GTK_DOWN_BOX when 1
+    } {}
+    Fl_Tabs {} {open
+      xywh {0 70 430 264} box ENGRAVED_BOX selection_color 1 labelcolor 7 align 17
+    } {
+      Fl_Group g_pTabMode {
+        label Mode open
+        xywh {9 91 416 234}
+      } {
+        Fl_Box {} {
+          label {Synchronous update:}
+          xywh {191 115 130 25}
+        }
+        Fl_Choice g_pSelectMode {
+          label {Mode:}
+          callback {GUIModeDropDownMode();} open
+          tooltip {Select the operational mode.} xywh {80 115 85 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        } {
+          MenuItem {} {
+            label Voltage
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label Current
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label Speed
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label Position
+            xywh {0 0 100 20}
+          }
+          MenuItem {} {
+            label VComp
+            xywh {0 0 100 20}
+          }
+        }
+        Fl_Button g_pModeSync {
+          label Sync
+          callback {GUIModeButtonSync();}
+          xywh {329 115 80 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+        Fl_Input g_pModeSetBox {
+          label {Value (%):}
+          callback {GUIModeValueSet(0);}
+          tooltip {Specifies the value sent to the motor controller.} xywh {90 160 75 25} deactivate
+          code0 {o->value(0.0);}
+          code1 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+        Fl_Value_Slider g_pModeSetSlider {
+          callback {GUIModeValueSet(1);}
+          tooltip {Update the target value.} xywh {174 160 236 24} type {Horz Knob} box GTK_DOWN_BOX selection_color 1 when 4 minimum -100 maximum 100 step 1 deactivate
+        }
+        Fl_Input g_pModeRamp {
+          label {Ramp:}
+          callback {GUIModeSpinnerRamp();}
+          tooltip {Specifies the rate of change of the output voltage (in voltage mode) or of the target voltage (in voltage compensation mode).} xywh {90 205 75 25} deactivate
+          code0 {o->range(0, 65536);}
+          code1 {o->precision(0);}
+          code2 {o->maximum_size(5);}
+          class My_Float_Input
+        }
+        Fl_Input g_pModeCompRamp {
+          label {Comp Ramp:}
+          callback {GUIModeSpinnerCompRamp();}
+          tooltip {Specifies the tracking rate of the output voltage (in voltage compensation mode).} xywh {90 240 75 25} deactivate
+          code0 {o->range(0, 65536);}
+          code1 {o->precision(0);}
+          code2 {o->maximum_size(5);}
+          class My_Float_Input
+        }
+        Fl_Choice g_pReference {
+          label {Reference:}
+          callback {GUIModeDropDownReference();}
+          tooltip {Selects the refernece for measuring the motor speed and/or position.} xywh {90 275 160 25} down_box BORDER_BOX deactivate
+        } {
+          MenuItem g_pReferenceEncoder {
+            label Encoder
+            xywh {0 0 100 20}
+          }
+          MenuItem g_pReferencePotentiometer {
+            label Potentiometer
+            xywh {0 0 100 20} value 1
+          }
+          MenuItem g_pReferenceInvEncoder {
+            label {Inverting Encoder}
+            xywh {0 0 100 20} value 1
+          }
+          MenuItem g_pReferenceQuadEncoder {
+            label {Quadrature Encoder}
+            xywh {0 0 100 20} value 1
+          }
+        }
+        Fl_Input g_pModeP {
+          label {P:}
+          callback {GUIModeSpinnerPID(0);}
+          tooltip {Specifies the 'P' coefficient, or gain applied to the instantaneous motor error (current, speed and position mode only).} xywh {285 205 115 25} deactivate
+          code0 {o->range(-32767.0, 32767.0);}
+          code1 {o->precision(3);}
+          code2 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+        Fl_Input g_pModeI {
+          label {I:}
+          callback {GUIModeSpinnerPID(1);}
+          tooltip {Specifies the 'I' coefficient, or gain applied to the integral of the motor error (current, speed and position mode only).} xywh {285 240 115 25} deactivate
+          code0 {o->range(-32767.0, 32767.0);}
+          code1 {o->precision(3);}
+          code2 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+        Fl_Input g_pModeD {
+          label {D:}
+          callback {GUIModeSpinnerPID(2);}
+          tooltip {Specifies the 'D' coefficient, or gain applied to the derivative of the motor error (current, speed and position mode only).} xywh {285 275 115 25} deactivate
+          code0 {o->range(-32767.0, 32767.0);}
+          code1 {o->precision(3);}
+          code2 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+      }
+      Fl_Group g_pTabConfiguration {
+        label Configuration
+        xywh {9 91 416 234} hide
+      } {
+        Fl_Input g_pConfigEncoderLines {
+          label {Encoder Lines:}
+          callback {GUIConfigSpinnerEncoderLines();}
+          tooltip {Specifies the number of lines in the attached encoder.  Enter '0' if no encoder is present.} xywh {125 115 70 25} deactivate
+          code0 {o->range(0,65535);}
+          code1 {o->precision(0);}
+          code2 {o->maximum_size(5);}
+          class My_Float_Input
+        }
+        Fl_Input g_pConfigPOTTurns {
+          label {POT Turns:}
+          callback {GUIConfigSpinnerPOTTurns();}
+          tooltip {Specifies the number of full turns in the travel of the potentiometer. Typical potentiometers used for rotational measurement have one, three, five, or ten turns in their travel.} xywh {125 150 70 25} deactivate
+          code0 {o->range(0, 255);}
+          code1 {o->precision(0);}
+          code2 {o->maximum_size(3);}
+          class My_Float_Input
+        }
+        Fl_Input g_pConfigMaxVout {
+          label {Max Vout (%):}
+          callback {GUIConfigSpinnerMaxVout();}
+          tooltip {Specifies the maximum voltage that can be safely applied to the motor.} xywh {330 115 70 25} deactivate
+          code0 {o->range(0, 100);}
+          code1 {o->precision(1);}
+          code2 {o->maximum_size(5);}
+          class My_Float_Input
+        }
+        Fl_Input g_pConfigFaultTime {
+          label {Fault Time (ms):}
+          callback {GUIConfigSpinnerFaultTime();}
+          xywh {330 150 70 25} deactivate
+          code0 {o->range(500, 65535);}
+          code1 {o->precision(0);}
+          code2 {o->maximum_size(5);}
+          class My_Float_Input
+        }
+        Fl_Box {} {
+          label {Stop Action:}
+          xywh {36 190 25 25}
+        }
+        Fl_Group {} {
+          xywh {93 190 72 65}
+        } {
+          Fl_Round_Button g_pConfigStopJumper {
+            label Jumper
+            callback {g_pConfigStopBrake->value(0);
+g_pConfigStopCoast->value(0);
+
+GUIConfigRadioStopAction(0);}
+            tooltip {Use the brake/coast jumper to determine the stop action.} xywh {95 190 70 25} type Radio down_box ROUND_DOWN_BOX value 1 selection_color 1 deactivate
+          }
+          Fl_Round_Button g_pConfigStopBrake {
+            label Brake
+            callback {g_pConfigStopJumper->value(0);
+g_pConfigStopCoast->value(0);
+
+GUIConfigRadioStopAction(1);}
+            tooltip {Use dynamic braking.} xywh {95 210 62 25} type Radio down_box ROUND_DOWN_BOX selection_color 1 deactivate
+          }
+          Fl_Round_Button g_pConfigStopCoast {
+            label Coast
+            callback {g_pConfigStopJumper->value(0);
+g_pConfigStopBrake->value(0);
+
+GUIConfigRadioStopAction(2);}
+            tooltip {Electrically disconnect the motor windings to allow the motor to coast to a stop.} xywh {95 230 62 25} type Radio down_box ROUND_DOWN_BOX selection_color 1 deactivate
+          }
+        }
+        Fl_Box {} {
+          label {Limit Switches:}
+          xywh {195 190 70 25}
+        }
+        Fl_Check_Button g_pConfigLimitSwitches {
+          label Enable
+          callback {GUIConfigCheckLimitSwitches();}
+          tooltip {Specifies whether to use hardware (jumpers) or software limits.} xywh {305 190 70 25} down_box DOWN_BOX selection_color 1 deactivate
+        }
+        Fl_Box {} {
+          label {Forward Soft Limit:}
+          xywh {223 220 40 25}
+        }
+        Fl_Group {} {open
+          xywh {304 220 40 46}
+        } {
+          Fl_Round_Button g_pConfigFwdLimitLt {
+            label lt
+            callback {g_pConfigFwdLimitGt->value(0);
+
+GUIConfigValueFwdLimit();}
+            tooltip {Less than the indicated position.} xywh {304 220 40 25} type Radio down_box ROUND_DOWN_BOX value 1 selection_color 1 deactivate
+          }
+          Fl_Round_Button g_pConfigFwdLimitGt {
+            label gt
+            callback {g_pConfigFwdLimitLt->value(0);
+
+GUIConfigValueFwdLimit();}
+            tooltip {Greater than the indicated position.} xywh {304 240 40 25} type Radio down_box ROUND_DOWN_BOX selection_color 1 deactivate
+          }
+        }
+        Fl_Input g_pConfigFwdLimitValue {
+          label {Position:}
+          callback {GUIConfigValueFwdLimit();}
+          tooltip {Specifies the motor position that corresponds to the position of the forward soft limit switch.} xywh {345 240 60 25} align 33 deactivate
+          code0 {o->range(-32767, 32767);}
+          code1 {o->precision(3);}
+          code2 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+        Fl_Box {} {
+          label {Reverse Soft Limit:}
+          xywh {223 270 40 25}
+        }
+        Fl_Group {} {
+          xywh {304 269 39 46}
+        } {
+          Fl_Round_Button g_pConfigRevLimitLt {
+            label lt
+            callback {g_pConfigRevLimitGt->value(0);
+
+GUIConfigValueRevLimit();}
+            tooltip {Less than the indicated position.} xywh {304 270 39 25} type Radio down_box ROUND_DOWN_BOX value 1 selection_color 1 deactivate
+          }
+          Fl_Round_Button g_pConfigRevLimitGt {
+            label gt
+            callback {g_pConfigRevLimitLt->value(0);
+
+GUIConfigValueRevLimit();}
+            tooltip {Greater than the indicated position.} xywh {304 290 39 25} type Radio down_box ROUND_DOWN_BOX selection_color 1 deactivate
+          }
+        }
+        Fl_Input g_pConfigRevLimitValue {
+          label {Position:}
+          callback {GUIConfigValueRevLimit();}
+          tooltip {Specifies the motor position that corresponds to the position of the reverse soft limit switch.} xywh {345 290 60 25} align 33 deactivate
+          code0 {o->range(-32767, 32767);}
+          code1 {o->precision(3);}
+          code2 {o->maximum_size(10);}
+          class My_Float_Input
+        }
+      }
+      Fl_Group g_pTabPeriodicStatus {
+        label {Periodic Status} open
+        xywh {9 91 416 234} hide
+      } {
+        Fl_Group {} {open
+          xywh {130 105 209 215}
+        } {
+          Fl_Choice g_pPeriodicSelectStatusMessage {
+            label {Status Message}
+            callback {GUIPeriodicStatusDropDownStatusMessage();} open
+            tooltip {Selects the periodic status message to be configured.} xywh {150 105 56 25} down_box BORDER_BOX deactivate
+          } {
+            MenuItem {} {
+              label {\#1}
+              xywh {0 0 30 20}
+            }
+            MenuItem {} {
+              label {\#2}
+              xywh {0 0 30 20}
+            }
+            MenuItem {} {
+              label {\#3}
+              xywh {0 0 30 20}
+            }
+            MenuItem {} {
+              label {\#4}
+              xywh {0 0 30 20}
+            }
+          }
+          Fl_Check_Button g_pPeriodicStatusEnablePSMsg {
+            label Enabled
+            callback {GUIPeriodicStatusCheckEnableSelect(o->value());}
+            xywh {264 295 75 25} down_box DOWN_BOX labelsize 12
+          }
+        }
+        Fl_Input g_pPeriodicStatusInterval {
+          label {Interval (ms)}
+          callback {GUIPeriodicStatusIntervalSet();}
+          tooltip {Sets the periodic interval. This is how often the messages will be sent from the board. A value of 0 disables the status message.} xywh {320 105 56 24} deactivate
+          code0 {o->maximum_size(5);}
+          code1 {o->range(0, 65536);}
+          code2 {o->precision(0);}
+          class My_Float_Input
+        }
+        Fl_Browser g_pPeriodicStatusPayloadList {
+          label Payload
+          callback {GUIPeriodicStatusPayloadListSelect();}
+          tooltip {Payload data provided by the periodic status message.} xywh {245 155 125 135} type Hold align 1 deactivate
+        }
+        Fl_Button g_pPeriodicStatusAddStatus {
+          label {@->}
+          callback {GUIPeriodicStatusButtonAddRemoveSelect(1);}
+          xywh {200 180 25 25} box GTK_UP_BOX align 16 deactivate
+        }
+        Fl_Button g_pPeriodicStatusRemoveStatus {
+          label {@<-}
+          callback {GUIPeriodicStatusButtonAddRemoveSelect(0);}
+          xywh {200 245 25 25} box GTK_UP_BOX align 16 deactivate
+        }
+        Fl_Browser g_pPeriodicStatusMessagesList {
+          label Messages
+          callback {GUIPeriodicStatusMessagesListSelect();}
+          tooltip {Listing of available status data. This list is filtered on avaialble space in the status message payload..} xywh {60 155 125 135} type Hold align 1 deactivate
+        }
+        Fl_Check_Button g_pPeriodicStatusFilterUsed {
+          label {Only Unused}
+          callback {GUIPeriodicStatusCheckFilterUsed();}
+          tooltip {Select this item to filter the Messages list to only show Status messages that are not being utilized in other periodic status messages.} xywh {69 293 20 25} down_box DOWN_BOX labelsize 12 align 8 deactivate
+          code0 {o->value(1);}
+        }
+      }
+      Fl_Group g_pTabSystem {
+        label System open
+        xywh {9 91 416 234} hide
+      } {
+        Fl_Output g_pSystemBoardInformation {
+          label {Board Information:}
+          xywh {135 105 275 25} box GTK_DOWN_BOX color 49
+          code0 {o->set_output();}
+        }
+        Fl_Value_Output g_pSystemHardwareVer {
+          label {Hardware Version:}
+          xywh {135 131 70 25} box GTK_DOWN_BOX maximum 0
+          code0 {o->set_output();}
+        }
+        Fl_Value_Output g_pSystemFirmwareVer {
+          label {Firmware Version:}
+          xywh {135 157 70 25} box GTK_DOWN_BOX maximum 0
+          code0 {o->set_output();}
+        }
+        Fl_Input g_pSystemAssignValue {
+          label {New Board ID:}
+          callback {GUISystemAssignValue();}
+          xywh {110 210 40 25} type Int deactivate
+          code0 {o->maximum_size(2);}
+        }
+        Fl_Button g_pSystemAssign {
+          label Assign
+          callback {GUISystemButtonAssign();}
+          tooltip {When clicking on this button, you have 5 seconds to press the user button on the board that you would like to update.} xywh {155 210 60 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+        Fl_Check_Button g_pSystemHeartbeat {
+          label Heartbeat
+          callback {GUISystemCheckHeartbeat();}
+          tooltip {Selects whether or not a heartbeat message is sent out to the system.} xywh {265 211 88 24} down_box DOWN_BOX value 1 selection_color 1
+        }
+        Fl_Button g_pSystemHalt {
+          label Halt
+          callback {GUISystemButtonHalt();}
+          tooltip {Issue a system HALT command.  If HALT is sent, the system must receive a RESUME command before it will respond to new commands.} xywh {24 276 75 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+        Fl_Button g_pSystemResume {
+          label Resume
+          callback {GUISystemButtonResume();}
+          tooltip {Resumes the system from a HALT command.  RESUME must be used if you wish to send new commands to a board after a HALT.} xywh {127 276 75 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+        Fl_Button g_pSystemReset {
+          label Reset
+          callback {GUISystemButtonReset();}
+          tooltip {Issues a reset command to the system.  This will cause the GUI to lose communication with the board.} xywh {229 276 75 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+        Fl_Button g_pSystemEnumerate {
+          label Enumerate
+          callback {GUISystemButtonEnumerate();}
+          tooltip {Re-enumerate the network.  When finished, the application selects the board with the lowest ID by default.  To select a different board, choose its ID.} xywh {329 276 75 25} box GTK_UP_BOX down_box GTK_DOWN_BOX deactivate
+        }
+      }
+    }
+    Fl_Box TI_Logo {
+      image {ti_logo.bmp} xywh {0 418 428 65}
+    }
+    Fl_Group {} {open
+      xywh {0 331 430 90} box ENGRAVED_BOX labeltype NO_LABEL align 0
+    } {
+      Fl_Value_Output g_pStatusSpeed {
+        label Speed
+        xywh {150 348 55 25} box GTK_DOWN_BOX align 1
+        code0 {o->precision(0);}
+      }
+      Fl_Value_Output g_pStatusVout {
+        label Vout
+        xywh {90 348 55 25} box GTK_DOWN_BOX align 1
+        code0 {o->precision(2);}
+      }
+      Fl_Value_Output g_pStatusTemperature {
+        label Temp
+        xywh {210 348 55 25} box GTK_DOWN_BOX align 1 when 4
+        code0 {o->precision(2);}
+      }
+      Fl_Value_Output g_pStatusCurrent {
+        label Current
+        xywh {90 392 55 25} box GTK_DOWN_BOX align 1
+        code0 {o->precision(2);}
+      }
+      Fl_Value_Output g_pStatusVbus {
+        label Vbus
+        xywh {150 392 55 25} box GTK_DOWN_BOX align 1
+        code0 {o->precision(2);}
+      }
+      Fl_Value_Output g_pStatusPosition {
+        label Position
+        xywh {210 392 55 25} box GTK_DOWN_BOX align 1
+        code0 {o->precision(3);}
+      }
+      Fl_Box {} {
+        label Motor
+        xywh {19 359 40 16}
+      }
+      Fl_Box {} {
+        label Status
+        xywh {17 375 45 16}
+      }
+      Fl_Button g_pSystemButtonExtendedStatus {
+        label {Extended Status @-4->}
+        callback {GUIExtendedStatusButtonToggle();}
+        tooltip {Toggle the Extended Status display.} xywh {305 354 100 50} box GTK_UP_BOX down_box GTK_DOWN_BOX align 128 deactivate
+      }
+    }
+    Fl_Group {} {open
+      xywh {428 314 472 95}
+    } {
+      Fl_Box {} {
+        xywh {430 349 432 50} box ENGRAVED_BOX align 1
+      }
+      Fl_Output g_pStatusLimit {
+        label Switch
+        tooltip {Shows the hardware switch Limit status.} xywh {525 367 55 25} box GTK_DOWN_BOX color 49 align 129
+        code0 {o->set_output();}
+      }
+      Fl_Output g_pStatusSoftLimit {
+        label Soft
+        tooltip {Shows the Soft Limit status.} xywh {645 367 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->set_output();}
+      }
+      Fl_Output g_pStatusStickyLimit {
+        label Sticky
+        callback {GUIExtendedStatusStkyLimitSelect();}
+        tooltip {Shows the Sticky Limit status. Select to clear from GUI.} xywh {585 367 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("..");}
+      }
+      Fl_Output g_pStatusSoftStickyLimit {
+        label {Soft Stky}
+        callback {GUIExtendedStatusStkySoftLimitSelect();}
+        tooltip {Shows the Soft Sticky Limits status. Select to clear from GUI.} xywh {705 367 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("..");}
+      }
+      Fl_Box {} {
+        label {Limit Status}
+        xywh {452 370 40 16} align 128
+      }
+    }
+    Fl_Group {} {open
+      xywh {430 301 432 50} box ENGRAVED_BOX labeltype NO_LABEL align 20
+    } {
+      Fl_Output g_pStatusCurrentFaults {
+        label Current
+        callback {GUIExtendedStatusFaultCountSelect(0x01);}
+        tooltip {Shows board's Current fault count. Select to clear.} xywh {525 319 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("0");}
+      }
+      Fl_Output g_pStatusVoltageFaults {
+        label Voltage
+        callback {GUIExtendedStatusFaultCountSelect(0x04);}
+        tooltip {Shows board's Voltage fault count. Select to clear.} xywh {645 319 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("0");}
+      }
+      Fl_Output g_pStatusGateFaults {
+        label Gate
+        callback {GUIExtendedStatusFaultCountSelect(0x08);}
+        tooltip {Shows board's Gate Drive fault count. Select to clear.} xywh {705 319 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("0");}
+      }
+      Fl_Output g_pStatusCommFaults {
+        label Comm
+        callback {GUIExtendedStatusFaultCountSelect(0x10);}
+        tooltip {Shows board's Communications fault count. Select to clear.} xywh {765 319 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("0");}
+      }
+      Fl_Output g_pStatusTemperatureFaults {
+        label Temp
+        callback {GUIExtendedStatusFaultCountSelect(0x02);}
+        tooltip {Shows board's Temperature fault count. Select to clear.} xywh {585 319 55 25} box GTK_DOWN_BOX color 49 align 1
+        code0 {o->value("0");}
+      }
+      Fl_Box {} {
+        label {Fault Counts}
+        xywh {452 321 40 16} align 128
+      }
+    }
+    Fl_Group {} {open
+      xywh {428 3 451 297} labelcolor 7
+    } {
+      Fl_Choice g_pExtendedStatusSelectMessage {
+        label {Periodic Message History}
+        callback {GUIExtendedStatusDropDownMessageSelect();} open
+        tooltip {Selects the periodic status message for history display.} xywh {680 33 56 25} down_box BORDER_BOX
+      } {
+        MenuItem {} {
+          label {\#1}
+          xywh {15 15 30 20}
+        }
+        MenuItem {} {
+          label {\#2}
+          xywh {15 15 30 20}
+        }
+        MenuItem {} {
+          label {\#3}
+          xywh {15 15 30 20}
+        }
+        MenuItem {} {
+          label {\#4}
+          xywh {15 15 30 20}
+        }
+      }
+      Fl_Text_Display g_pPeriodicMessageHistory {
+        xywh {431 97 430 203} box ENGRAVED_FRAME color 49 labelfont 4 when 6 textfont 4
+      }
+      Fl_Progress g_pPeriodicMessageHistoryBar {
+        xywh {431 93 430 3} box FLAT_BOX color 1 selection_color 1 labeltype NO_LABEL
+      }
+      Fl_Text_Display g_pPeriodicMessageHistoryLegend {
+        xywh {431 68 430 25} box ENGRAVED_FRAME color 49 labelfont 4 textfont 4
+        code0 {o->scrollbar_width(4);}
+      }
+    }
+    Fl_Group {} {open
+      xywh {430 397 432 50} box ENGRAVED_BOX align 20
+    } {
+      Fl_Box {} {
+        label {CAN Interface}
+        xywh {452 414 40 16} align 128
+      }
+      Fl_Output g_pStatusCanSts {
+        label Status
+        tooltip {Shows the current value for the CAN Status register.} xywh {525 415 55 25} color 50 align 1
+      }
+      Fl_Output g_pStatusCanRxErr {
+        label RxErr
+        tooltip {Shows the RX Error bits from the CAN Error register.} xywh {585 415 55 25} color 50 align 1
+      }
+      Fl_Output g_pStatusCanTxErr {
+        label TxErr
+        tooltip {Shows the TX Error bits from the CAN Error register.} xywh {645 415 55 25} color 50 align 1
+      }
+    }
+    Fl_Output g_pStickyFaultIndicatorComm {
+      callback {GUIExtendedStatusStickyFaultSelect(0x10);}
+      xywh {805 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" COMM");}
+    }
+    Fl_Output g_pStickyFaultIndicatorGate {
+      callback {GUIExtendedStatusStickyFaultSelect(0x08);}
+      xywh {749 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" GATE");}
+    }
+    Fl_Output g_pStickyFaultIndicatorVbus {
+      callback {GUIExtendedStatusStickyFaultSelect(0x04);}
+      xywh {693 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" VBUS");}
+    }
+    Fl_Output g_pStickyFaultIndicatorTemp {
+      callback {GUIExtendedStatusStickyFaultSelect(0x02);}
+      xywh {637 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" TEMP");}
+    }
+    Fl_Output g_pStickyFaultIndicatorCurr {
+      callback {GUIExtendedStatusStickyFaultSelect(0x01);}
+      xywh {582 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" CURR");}
+    }
+    Fl_Output g_pStickyFaultIndicatorPowr {
+      callback {GUIExtendedStatusPowerSelect();}
+      xywh {527 446 57 27} box ENGRAVED_BOX color 49 align 0 textcolor 16
+      code0 {o->value(" POWR");}
+    }
+    Fl_Box {} {
+      label {Sticky Faults}
+      xywh {430 446 98 27} box ENGRAVED_BOX
+    }
+    Fl_Progress {} {
+      xywh {429 25 2 455} box FLAT_BOX color 0 selection_color 0
+    }
+  }
+  code {AddWindowIcon(g_pMainWindow);} {}
+} 
+
+widget_class UserInterface {open
+  xywh {183 205 116 100} type Double hide
+} {} 

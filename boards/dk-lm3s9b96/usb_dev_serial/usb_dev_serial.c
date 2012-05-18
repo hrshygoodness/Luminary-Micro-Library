@@ -2,7 +2,7 @@
 //
 // usb_dev_serial.c - Main routines for the USB CDC serial example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -170,7 +170,7 @@ volatile unsigned long g_ulSysTickCount = 0;
 //
 //*****************************************************************************
 tContext g_sContext;
-#define TEXT_FONT               &g_sFontCmss22b
+#define TEXT_FONT               g_pFontCmss22b
 #define TEXT_HEIGHT             (GrFontHeightGet(TEXT_FONT))
 #define BUFFER_METER_HEIGHT     TEXT_HEIGHT
 #define BUFFER_METER_WIDTH      150
@@ -1250,7 +1250,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-dev-serial", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -1313,6 +1313,11 @@ main(void)
     //
     USBBufferInit((tUSBBuffer *)&g_sTxBuffer);
     USBBufferInit((tUSBBuffer *)&g_sRxBuffer);
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass our device information to the USB library and place the device

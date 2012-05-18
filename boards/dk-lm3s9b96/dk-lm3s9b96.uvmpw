@@ -8,17 +8,17 @@
   <WorkspaceName>dk-lm3s9b96</WorkspaceName>
 
   <project>
-    <PathAndName>..\..\driverlib\driverlib.uvproj</PathAndName>
+    <PathAndName>..\..\driverlib\driverlib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
-    <PathAndName>..\..\grlib\grlib.uvproj</PathAndName>
+    <PathAndName>..\..\grlib\grlib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
-    <PathAndName>..\..\usblib\usblib.uvproj</PathAndName>
+    <PathAndName>..\..\usblib\usblib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
@@ -119,6 +119,11 @@
 
   <project>
     <PathAndName>.\ext_demo_2\ext_demo_2.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\fontview\fontview.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

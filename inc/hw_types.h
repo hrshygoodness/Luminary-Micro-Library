@@ -2,7 +2,7 @@
 //
 // hw_types.h - Common types and macros.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -121,6 +121,12 @@ typedef unsigned char tBoolean;
          (SYSCTL_DID0_VER_1 | SYSCTL_DID0_CLASS_FIRESTORM))
 #endif
 
+#ifndef CLASS_IS_BLIZZARD
+#define CLASS_IS_BLIZZARD                                                    \
+        ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_VER_M | SYSCTL_DID0_CLASS_M)) == \
+         (SYSCTL_DID0_VER_1 | SYSCTL_DID0_CLASS_BLIZZARD))
+#endif
+
 #ifndef REVISION_IS_A0
 #define REVISION_IS_A0                                                     \
         ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_MAJ_M | SYSCTL_DID0_MIN_M)) == \
@@ -173,6 +179,12 @@ typedef unsigned char tBoolean;
 #define REVISION_IS_C3                                                     \
         ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_MAJ_M | SYSCTL_DID0_MIN_M)) == \
          (SYSCTL_DID0_MAJ_REVC | SYSCTL_DID0_MIN_3))
+#endif
+
+#ifndef REVISION_IS_C5
+#define REVISION_IS_C5                                                     \
+        ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_MAJ_M | SYSCTL_DID0_MIN_M)) == \
+         (SYSCTL_DID0_MAJ_REVC | SYSCTL_DID0_MIN_5))
 #endif
 
 //*****************************************************************************

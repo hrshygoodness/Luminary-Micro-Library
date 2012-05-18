@@ -2,7 +2,7 @@
 //
 // widget.h - Prototypes for the widget base "class".
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Graphics Library.
+// This is part of revision 8555 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -138,6 +138,56 @@ tWidget;
 //
 //*****************************************************************************
 #define WIDGET_MSG_PTR_UP       0x00000004
+
+//*****************************************************************************
+//
+//! This message is sent by the application to indicate that there has been a
+//! key press or button press meaning "up".  \e ulParam1 by convention is a
+//! pointer to the widget that is the intended recipient of the key press.
+//! This is controlled by the application.
+//
+//*****************************************************************************
+#define WIDGET_MSG_KEY_UP       0x00000005
+
+//*****************************************************************************
+//
+//! This message is sent by the application to indicate that there has been a
+//! key press or button press meaning "down".  \e ulParam1 by convention is a
+//! pointer to the widget that is the intended recipient of the key press.
+//! This is controlled by the application.
+//
+//*****************************************************************************
+#define WIDGET_MSG_KEY_DOWN     0x00000006
+
+//*****************************************************************************
+//
+//! This message is sent by the application to indicate that there has been a
+//! key press or button press meaning "left".  \e ulParam1 by convention is a
+//! pointer to the widget that is the intended recipient of the key press.
+//! This is controlled by the application.
+//
+//*****************************************************************************
+#define WIDGET_MSG_KEY_LEFT     0x00000007
+
+//*****************************************************************************
+//
+//! This message is sent by the application to indicate that there has been a
+//! key press or button press meaning "right".  \e ulParam1 by convention is a
+//! pointer to the widget that is the intended recipient of the key press.
+//! This is controlled by the application.
+//
+//*****************************************************************************
+#define WIDGET_MSG_KEY_RIGHT    0x00000008
+
+//*****************************************************************************
+//
+//! This message is sent by the application to indicate that there has been a
+//! key press or button press meaning "select".  \e ulParam1 by convention is a
+//! pointer to the widget that is the intended recipient of the key press.
+//! This is controlled by the application.
+//
+//*****************************************************************************
+#define WIDGET_MSG_KEY_SELECT   0x00000009
 
 //*****************************************************************************
 //

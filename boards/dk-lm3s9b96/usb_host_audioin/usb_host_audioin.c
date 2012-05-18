@@ -2,7 +2,7 @@
 //
 // usb_host_audioin.c - Main routine for the USB host audio input example.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -198,7 +198,7 @@ RectangularButton(g_sPlayBtn, &g_sPlayBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, g_psPlayText, 0, 0, 0, 0, OnBtnPlay);
+                   g_pFontCm20, g_psPlayText, 0, 0, 0, 0, OnBtnPlay);
 
 //******************************************************************************
 //
@@ -220,7 +220,7 @@ Canvas(g_sStatus, WIDGET_ROOT, &g_sPlayBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 240-24, 320, 24,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT |
         CANVAS_STYLE_TEXT_LEFT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, g_psStatusText, 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, g_psStatusText, 0, 0);
 
 //******************************************************************************
 //
@@ -230,7 +230,7 @@ Canvas(g_sStatus, WIDGET_ROOT, &g_sPlayBackground, 0,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sStatus, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "usb host audio in", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "usb host audio in", 0, 0);
 
 //******************************************************************************
 //
@@ -537,11 +537,22 @@ AudioEvent(unsigned long ulEvent, unsigned long ulParam)
         }
         case SOUND_EVENT_UNKNOWN_DEV:
         {
-            //
-            // Unknown device connected.
-            //
-            strcpy(g_psStatusText, "Unknown Device");
-            WidgetPaint((tWidget *)&g_sStatus);
+            if(ulParam == 1)
+            {
+                //
+                // Unknown device connected.
+                //
+                strcpy(g_psStatusText, "Unknown Device");
+                WidgetPaint((tWidget *)&g_sStatus);
+            }
+            else
+            {
+                //
+                // Unknown device disconnected.
+                //
+                strcpy(g_psStatusText, "No Device");
+                WidgetPaint((tWidget *)&g_sStatus);
+            }
 
             break;
         }

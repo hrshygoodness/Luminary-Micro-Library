@@ -2,7 +2,7 @@
  *
  * qs-bldc_codered.ld - Code Red linker configuration file for qs-bldc.
  *
- * Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+ * Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
  * Software License Agreement
  * 
  * Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 6852 of the RDK-BLDC Firmware Package.
+ * This is part of revision 8555 of the RDK-BLDC Firmware Package.
  *
  *****************************************************************************/
 
@@ -48,12 +48,12 @@ SECTIONS
         *(.ARM.extab* .gnu.linkonce.armextab.*)
     } > FLASH
 
+    __exidx_start = .;
     .ARM.exidx :
     {
-        __exidx_start = .;
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-        __exidx_end = .;
     } > FLASH
+    __exidx_end = .;
 
     _etext = .;
 

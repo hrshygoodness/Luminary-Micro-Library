@@ -1,0 +1,182 @@
+; -----------------------------------------------------------------------------
+;
+; Stellaris USB DFU Runtime device driver installer
+;
+; The composite devices supported by this INF file contains a HID mouse with
+; a Device Firmware Upgrade runtime interface (basically, just a stub that
+; tells the host that the device supports DFU).  Since HID is supported
+; natively by Windows, no HID-specific sections are required here.  All this
+; file does, therefore, is ensure that the DFU drivers and WinUSB subsystem
+; are installed to support switching from DFU runtime mode into "real" DFU
+; mode in preparation for download and upload operations.
+;
+; This device offers DFU on interface number 1 and publishes PID 0x0A while in
+; runtime mode.  When it is switched to DFU mode (implemented by the boot_usb
+; boot loader), the device reenumerates and publishes PID 0xFF instead.  This
+; is seen as a different device by Windows and requires a second INF file to
+; support it.  This INF file is boot_usb.inf which installs exactly the same
+; files as this one.
+;
+; -----------------------------------------------------------------------------
+
+; NOTE: When you customize this INF for your own device, create a new class
+; name (Class) and a new GUID (ClassGuid). GUIDs may be created using the
+; guidgen tool from Windows Visual Studio or the Windows SDK.
+
+[Version]
+Signature = "$Windows NT$"
+Class = StellarisDFURuntimeDeviceClass
+ClassGuid={0D42186B-31A8-4800-B875-1A5525A407B9}
+Provider = %ProviderName%
+CatalogFile.NTx86=boot_demo_usb_x86.cat
+CatalogFile.NTamd64=boot_demo_usb_amd64.cat
+DriverVer=01/28/2012,1.3.8555
+
+; ========== Manufacturer/Models sections ===========
+
+[Manufacturer]
+%ProviderName% = StellarisDFUDevice_WinUSB,NTx86,NTamd64
+
+; NOTE: Replace the VID and PID in the following two sections with the
+; correct values for your device.
+
+[StellarisDFUDevice_WinUSB.NTx86]
+%USB\StellarisDFUDevice.DeviceDesc% =DFU_Install, USB\VID_1CBE&PID_000A&MI_01
+
+[StellarisDFUDevice_WinUSB.NTamd64]
+%USB\StellarisDFUDevice.DeviceDesc% =DFU_Install, USB\VID_1CBE&PID_000A&MI_01
+
+; =================== Installation ===================
+
+[ClassInstall32]
+AddReg=AddReg_ClassInstall
+
+[AddReg_ClassInstall]
+HKR,,,,"%DeviceClassDisplayName%"
+HKR,,Icon,,-1
+
+[DFU_Install.NTx86]
+Include=winusb.inf
+Needs=WINUSB.NT
+CopyFiles=System32_CopyFiles
+
+[DFU_Install.NTamd64]
+Include=winusb.inf
+Needs=WINUSB.NT
+CopyFiles=SysWOW64_CopyFiles
+CopyFiles=System64_CopyFiles
+
+[DFU_Install.NTx86.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+
+[DFU_Install.NTamd64.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+
+[WinUSB_ServiceInstall]
+DisplayName     = %WinUSB_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+[DFU_Install.NTx86.Wdf]
+KmdfService=WINUSB, WinDFU_Install
+
+[DFU_Install.NTamd64.Wdf]
+KmdfService=WINUSB, WinDFU_Install
+
+[WinDFU_Install]
+KmdfLibraryVersion=1.9
+
+[DFU_Install.NTx86.HW]
+AddReg=Dev_AddReg
+
+[DFU_Install.NTamd64.HW]
+AddReg=Dev_AddReg
+
+; NOTE: The following GUID is used by software that accesses Stellaris DFU
+; devices (dfuprog and LM Flash Programmer).  If you want your device to be
+; accessible by these tools, don't change it.
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{D17C772B-AF45-4041-9979-AAFE96BF6398}"
+
+[DFU_Install.NTx86.CoInstallers]
+AddReg=CoInstallers_AddReg
+CopyFiles=CoInstallers_CopyFiles
+
+[DFU_Install.NTamd64.CoInstallers]
+AddReg=CoInstallers_AddReg
+CopyFiles=CoInstallers_CopyFiles
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller01009.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+[CoInstallers_CopyFiles]
+WinUSBCoInstaller2.dll
+WdfCoInstaller01009.dll
+
+[System32_CopyFiles]
+lmusbdll.dll
+lmusbdll.lib
+lmdfu.dll
+lmdfu.lib
+
+[System64_CopyFiles]
+lmusbdll.dll, lmusbdll64.dll
+lmusbdll.lib, lmusbdll64.lib
+lmdfu.dll, lmdfu64.dll
+lmdfu.lib, lmdfu64.lib
+
+[SysWOW64_CopyFiles]
+lmusbdll.dll
+lmusbdll.lib
+lmdfu.dll
+lmdfu.lib
+
+[DestinationDirs]
+CoInstallers_CopyFiles=11
+System32_CopyFiles=10,system32
+SysWOW64_CopyFiles=10,syswow64
+System64_CopyFiles=10,system32
+CoInstallers_CopyFiles=11
+
+; ================= Source Media Section =====================
+
+[SourceDisksNames]
+1 = %DISK_NAME%,,,\i386
+2 = %DISK_NAME%,,,\amd64
+
+[SourceDisksFiles.x86]
+WinUSBCoInstaller2.dll=1
+WdfCoInstaller01009.dll=1
+lmusbdll.dll=1
+lmusbdll.lib=1
+lmdfu.dll=1
+lmdfu.lib=1
+
+[SourceDisksFiles.amd64]
+WinUSBCoInstaller2.dll=2
+WdfCoInstaller01009.dll=2
+lmusbdll.dll=1
+lmusbdll.lib=1
+lmdfu.dll=1
+lmdfu.lib=1
+lmusbdll64.dll=2
+lmusbdll64.lib=2
+lmdfu64.dll=2
+lmdfu64.lib=2
+
+; =================== Strings ===================
+
+; Note: Replace these as appropriate to describe your device.
+
+[Strings]
+ProviderName="Texas Instruments Inc."
+USB\StellarisDFUDevice.DeviceDesc="Stellaris Device Firmware Upgrade (runtime mode)"
+WinUSB_SvcDesc="WinUSB"
+DISK_NAME="Stellaris Install Disk"
+DeviceClassDisplayName="Stellaris Device Firmware Upgrade (runtime mode)"
+

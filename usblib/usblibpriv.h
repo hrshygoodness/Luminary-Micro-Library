@@ -4,7 +4,7 @@
 //                function prototypes between the various modules in the USB
 //                library.  This header MUST NOT be used by application code.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -51,15 +51,10 @@ extern void USBHostIntHandlerInternal(unsigned long ulIndex,
 
 //*****************************************************************************
 //
-// These defines are used to register the tick handlers used by the stack.
-// These handlers are internal to the stack and should never be called directly
-// by an application.
+// The maximum nuber of tick handlers that can be registered in a system.
 //
 //*****************************************************************************
-#define USB_TICK_HANDLER_OTG        0   // OTG mode tick handler.
-#define USB_TICK_HANDLER_DEVICE     1   // Device mode tick handler.
-#define USB_TICK_HANDLER_HOST       2   // Host mode tick handler.
-#define USB_TICK_HANDLER_NUM        3   // Total number of tick handlers.
+#define MAX_USB_TICK_HANDLERS       6
 
 //*****************************************************************************
 //
@@ -85,11 +80,13 @@ typedef void(* tUSBTickHandler)(void *pvInstance, unsigned long ulTicksmS);
 //
 //*****************************************************************************
 extern void InternalUSBTickInit(void);
-extern void InternalUSBRegisterTickHandler(unsigned long ulHandler,
-                                           tUSBTickHandler pfHandler,
+extern void InternalUSBTickReset(void);
+extern long InternalUSBRegisterTickHandler(tUSBTickHandler pfHandler,
                                            void *pvInstance);
 extern void InternalUSBStartOfFrameTick(unsigned long ulTicksmS);
-extern void InternalUSBHCDSendEvent(unsigned long ulEvent);
+extern void InternalUSBHCDSendEvent(unsigned long ulEvent,
+                                    unsigned long ulIndex,
+                                    unsigned long ulDevIndex);
 
 //*****************************************************************************
 //

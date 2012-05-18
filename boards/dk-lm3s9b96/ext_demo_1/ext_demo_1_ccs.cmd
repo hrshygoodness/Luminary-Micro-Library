@@ -2,7 +2,7 @@
  *
  * ext_demo_1_ccs.cmd - CCS linker configuration file for ext_demo_1.
  *
- * Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+ * Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
  * Software License Agreement
  * 
  * Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+ * This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
  *
  *****************************************************************************/
 
@@ -46,8 +46,8 @@ MEMORY
     /* Application stored in and executes from external flash */
     FLASH (RX) : origin = APP_BASE, length = 0x00800000
     /* Application uses internal RAM for data */
-    /* 0x180 is reserved for the vector table, initialized by boot loader */
-    SRAM (RWX) : origin = 0x20000180, length = 0x00017e80
+    /* 0x280 is reserved for the vector table, initialized by boot loader */
+    SRAM (RWX) : origin = 0x20000280, length = 0x00017d80
 }
 
 /* Section allocation in memory */
@@ -59,6 +59,7 @@ SECTIONS
     .const  :   > FLASH
     .cinit  :   > FLASH
     .pinit  :   > FLASH
+    .init_array : > FLASH
 
     .vtable :   > RAM_BASE
     .data   :   > SRAM

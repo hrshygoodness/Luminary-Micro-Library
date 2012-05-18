@@ -8,7 +8,7 @@
   <WorkspaceName>rdk-bldc</WorkspaceName>
 
   <project>
-    <PathAndName>..\..\driverlib\driverlib.uvproj</PathAndName>
+    <PathAndName>..\..\driverlib\driverlib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

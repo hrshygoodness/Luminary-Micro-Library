@@ -2,7 +2,7 @@
 //
 // usbenum.c - Enumeration code to handle all endpoint zero traffic.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -88,38 +88,38 @@ static long USBDStringIndexFromRequest(unsigned short usLang,
 const tFIFOConfig g_sUSBDefaultFIFOConfig =
 {
     {
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 }
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 }
     },
     {
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 },
-        { 1, false, 0 }
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 },
+        { false, 0 }
     },
 };
 
@@ -130,51 +130,6 @@ const tFIFOConfig g_sUSBDefaultFIFOConfig =
 //*****************************************************************************
 #define HALT_EP_IN              0
 #define HALT_EP_OUT             1
-
-//*****************************************************************************
-//
-// The states for endpoint zero during enumeration.
-//
-//*****************************************************************************
-typedef enum
-{
-    //
-    // The USB device is waiting on a request from the host controller on
-    // endpoint zero.
-    //
-    USB_STATE_IDLE,
-
-    //
-    // The USB device is sending data back to the host due to an IN request.
-    //
-    USB_STATE_TX,
-
-    //
-    // The USB device is sending the configuration descriptor back to the host
-    // due to an IN request.
-    //
-    USB_STATE_TX_CONFIG,
-
-    //
-    // The USB device is receiving data from the host due to an OUT
-    // request from the host.
-    //
-    USB_STATE_RX,
-
-    //
-    // The USB device has completed the IN or OUT request and is now waiting
-    // for the host to acknowledge the end of the IN/OUT transaction.  This
-    // is the status phase for a USB control transaction.
-    //
-    USB_STATE_STATUS,
-
-    //
-    // This endpoint has signaled a stall condition and is waiting for the
-    // stall to be acknowledged by the host controller.
-    //
-    USB_STATE_STALL
-}
-tEP0State;
 
 //*****************************************************************************
 //
@@ -228,116 +183,6 @@ tEP0State;
 //
 //*****************************************************************************
 static unsigned char g_pucDataBufferIn[EP0_MAX_PACKET_SIZE];
-
-//*****************************************************************************
-//
-// The USB controller device information.
-//
-//*****************************************************************************
-typedef struct
-{
-    //
-    // The device information for the USB device.
-    //
-    tDeviceInfo *psInfo;
-
-    //
-    // The instance data for the USB device.
-    //
-    void *pvInstance;
-
-    //
-    // The current state of endpoint zero.
-    //
-    volatile tEP0State eEP0State;
-
-    //
-    // The devices current address, this also has a change pending bit in the
-    // MSB of this value specified by DEV_ADDR_PENDING.
-    //
-    volatile unsigned long ulDevAddress;
-
-    //
-    // This holds the current active configuration for this device.
-    //
-    unsigned long ulConfiguration;
-
-    //
-    // This holds the configuration id that will take effect after a reset.
-    //
-    unsigned long ulDefaultConfiguration;
-
-    //
-    // This holds the current alternate interface for this device.
-    //
-    unsigned char pucAltSetting[USB_MAX_INTERFACES_PER_DEVICE];
-
-    //
-    // This is the pointer to the current data being sent out or received
-    // on endpoint zero.
-    //
-    unsigned char *pEP0Data;
-
-    //
-    // This is the number of bytes that remain to be sent from or received
-    // into the g_sUSBDeviceState.pEP0Data data buffer.
-    //
-    volatile unsigned long ulEP0DataRemain;
-
-    //
-    // The amount of data being sent/received due to a custom request.
-    //
-    unsigned long ulOUTDataSize;
-
-    //
-    // Holds the current device status.
-    //
-    unsigned char ucStatus;
-
-    //
-    // Holds the endpoint status for the HALT condition.  This array is sized
-    // to hold halt status for all IN and OUT endpoints.
-    //
-    unsigned char ucHalt[2][NUM_USB_EP - 1];
-
-    //
-    // Holds the configuration descriptor section number currently being sent
-    // to the host.
-    //
-    unsigned char ucConfigSection;
-
-    //
-    // Holds the offset within the configuration descriptor section currently
-    // being sent to the host.
-    //
-    unsigned char ucSectionOffset;
-
-    //
-    // Holds the index of the configuration that we are currently sending back
-    // to the host.
-    //
-    unsigned char ucConfigIndex;
-
-    //
-    // This flag is set to true if the client has called USBDPowerStatusSet
-    // and tells the USB library not to try to determine the current power
-    // status from the configuration descriptor.
-    //
-    tBoolean bPwrSrcSet;
-
-    //
-    // This flag indicates whether or not remote wake up signaling is in
-    // progress.
-    //
-    tBoolean bRemoteWakeup;
-
-    //
-    // During remote wake up signaling, this counter is used to track the
-    // number of milliseconds since the signaling was initiated.
-    //
-    unsigned char ucRemoteWakeupCount;
-}
-tDeviceInstance;
 
 tDeviceInstance g_psUSBDevice[1];
 
@@ -394,6 +239,17 @@ static const tStdRequest g_psUSBDStdRequests[] =
 //! unchanged between this call and any matching call to USBDCDTerm() since
 //! it is not copied by the USB library.
 //!
+//! The USBStackModeSet() function can be called with USB_MODE_FORCE_DEVICE in
+//! order to cause the USB library to force the USB operating mode to a device
+//! controller.  This allows the application to used the USBVBUS and USBID pins
+//! as GPIOs on devices that support forcing OTG to operate as a device only
+//! controller.  By default the USB library will assume that the USBVBUS and
+//! USBID pins are configured as USB pins and not GPIOs.
+//!
+//! \note Forcing of the USB controller mode feature is not available on all
+//! Stellaris microcontrollers.  Consult the data sheet for the microcontroller
+//! that the application is using to determine if this feature is available.
+//!
 //! \return None.
 //
 //*****************************************************************************
@@ -413,6 +269,7 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
     // Should not call this if the stack is in host mode.
     //
     ASSERT(g_eUSBMode != USB_MODE_HOST);
+    ASSERT(g_eUSBMode != USB_MODE_FORCE_HOST);
 
     //
     // Initialize a couple of fields in the device state structure.
@@ -428,7 +285,7 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
     g_psUSBDevice[0].eEP0State = USB_STATE_IDLE;
 
     //
-    // If no mode is set then make the mode become device mode.
+    // Default to device mode if no mode was set.
     //
     if(g_eUSBMode == USB_MODE_NONE)
     {
@@ -436,10 +293,9 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
     }
 
     //
-    // Only do hardware update if the stack is in Device mode, do not touch the
-    // hardware for OTG mode operation.
+    // Only do hardware update if the stack is in not in OTG mode.
     //
-    if(g_eUSBMode == USB_MODE_DEVICE)
+    if(g_eUSBMode != USB_MODE_OTG)
     {
         //
         // Reset the USB controller.
@@ -455,36 +311,38 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
         // Turn on USB Phy clock.
         //
         MAP_SysCtlUSBPLLEnable();
+
+        //
+        // If the application is requesting OTG or DEVICE mode then set the mode
+        // detection to OTG.  If the mode was device then the rest of the library
+        // should make sure that no OTG signaling actually occurs.
+        //
+        if((g_eUSBMode == USB_MODE_DEVICE) || (g_eUSBMode == USB_MODE_OTG))
+        {
+            //
+            // Switch to OTG mode to detect VBUS changes.
+            //
+            MAP_USBOTGMode(USB0_BASE);
+        }
+        else
+        {
+            //
+            // Force device mode on devices that support forcing mode.
+            //
+            MAP_USBDevMode(USB0_BASE);
+        }
+
+        //
+        // In all other cases, set the mode to device this function should not
+        // be called in OTG mode.
+        //
+        g_eUSBMode = USB_MODE_DEVICE;
     }
 
     //
     // Initialize the USB tick module.
     //
     InternalUSBTickInit();
-
-    //
-    // Only do hardware update if the stack is in Device mode, do not touch the
-    // hardware for OTG mode operation.
-    //
-    if(g_eUSBMode == USB_MODE_DEVICE)
-    {
-        //
-        // Ask for the interrupt status.  As a side effect, this clears all
-        // pending USB interrupts.
-        //
-        MAP_USBIntStatusControl(USB0_BASE);
-        MAP_USBIntStatusEndpoint(USB0_BASE);
-
-        //
-        // Enable USB Interrupts.
-        //
-        MAP_USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
-                                           USB_INTCTRL_DISCONNECT |
-                                           USB_INTCTRL_RESUME |
-                                           USB_INTCTRL_SUSPEND |
-                                           USB_INTCTRL_SOF);
-        MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
-    }
 
     //
     // Get a pointer to the default configuration descriptor.
@@ -515,11 +373,26 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
     }
 
     //
-    // Only do hardware update if the stack is in Device mode, do not touch the
-    // hardware for OTG mode operation.
+    // Only do hardware update if the stack is not in OTG mode.
     //
-    if(g_eUSBMode == USB_MODE_DEVICE)
+    if(g_eUSBMode != USB_MODE_OTG)
     {
+        //
+        // Get the current interrupt status.to clear all pending USB interrupts.
+        //
+        MAP_USBIntStatusControl(USB0_BASE);
+        MAP_USBIntStatusEndpoint(USB0_BASE);
+
+        //
+        // Enable USB Interrupts.
+        //
+        MAP_USBIntEnableControl(USB0_BASE, USB_INTCTRL_RESET |
+                                           USB_INTCTRL_DISCONNECT |
+                                           USB_INTCTRL_RESUME |
+                                           USB_INTCTRL_SUSPEND |
+                                           USB_INTCTRL_SOF);
+        MAP_USBIntEnableEndpoint(USB0_BASE, USB_INTEP_ALL);
+
         //
         // Make sure we disconnect from the host for a while.  This ensures
         // that the host will enumerate us even if we were previously
@@ -573,6 +446,12 @@ USBDCDTerm(unsigned long ulIndex)
     // Disable the USB interrupts.
     //
     MAP_IntDisable(INT_USB0);
+
+    //
+    // Reset the tick handlers so that they can be reconfigured when and if
+    // USBDCDInit() is called.
+    //
+    InternalUSBTickReset();
 
     g_psUSBDevice[0].psInfo = (tDeviceInfo *)0;
     g_psUSBDevice[0].pvInstance = 0;
@@ -878,7 +757,7 @@ USBDCDRemoteWakeupRequest(unsigned long ulIndex)
 //
 //*****************************************************************************
 void
-USBDeviceResumeTickHandler(unsigned long ulIndex)
+USBDeviceResumeTickHandler(tDeviceInstance *psDevInst)
 {
     if(g_psUSBDevice[0].bRemoteWakeup)
     {
@@ -1956,7 +1835,6 @@ USBDGetDescriptor(void *pvInstance, tUSBRequest *pUSBRequest)
             {
                 psDevice->sCallbacks.pfnGetDescriptor(psUSBControl->pvInstance,
                                                       pUSBRequest);
-                return;
             }
             else
             {
@@ -1966,7 +1844,8 @@ USBDGetDescriptor(void *pvInstance, tUSBRequest *pUSBRequest)
                 //
                 USBDCDStallEP0(0);
             }
-            break;
+
+            return;
         }
     }
 
@@ -2288,9 +2167,8 @@ USBDSetConfiguration(void *pvInstance, tUSBRequest *pUSBRequest)
             //
             // Configure endpoints for the new configuration.
             //
-            USBDeviceConfig(0,
-                         psDevice->ppConfigDescriptors[pUSBRequest->wValue - 1],
-                         psDevice->psFIFOConfig);
+            USBDeviceConfig(psUSBControl,
+                         psDevice->ppConfigDescriptors[pUSBRequest->wValue - 1]);
         }
 
         //
@@ -2474,7 +2352,7 @@ USBDSetInterface(void *pvInstance, tUSBRequest *pUSBRequest)
             // Reconfigure the endpoints to match the requirements of the
             // new alternate setting for the interface.
             //
-            bRetcode = USBDeviceConfigAlternate(0, psConfig, ucInterface,
+            bRetcode = USBDeviceConfigAlternate(psUSBControl, psConfig, ucInterface,
                                            psInterface->bAlternateSetting);
 
             //
@@ -2708,7 +2586,7 @@ USBDEP0StateTxConfig(unsigned long ulIndex)
         //
         // Did we reach the end of the first section?
         //
-        if(psConfig->psSections[0]->ucSize == ulToSend)
+        if(psConfig->psSections[0]->usSize == ulToSend)
         {
             //
             // Update our tracking indices to point to the start of the next
@@ -2751,7 +2629,7 @@ USBDEP0StateTxConfig(unsigned long ulIndex)
         //
         // Calculate bytes are available in the current configuration section.
         //
-        ulSecBytes = (unsigned long)(psSection->ucSize -
+        ulSecBytes = (unsigned long)(psSection->usSize -
                      g_psUSBDevice[0].ucSectionOffset);
 
         //
@@ -2786,7 +2664,7 @@ USBDEP0StateTxConfig(unsigned long ulIndex)
         //
         // Have we reached the end of a section?
         //
-        if(g_psUSBDevice[0].ucSectionOffset == psSection->ucSize)
+        if(g_psUSBDevice[0].ucSectionOffset == psSection->usSize)
         {
             //
             // Yes - move to the next one.
@@ -2975,7 +2853,7 @@ USBDeviceIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         //
         // Handle resume signaling if required.
         //
-        USBDeviceResumeTickHandler(0);
+        USBDeviceResumeTickHandler(&g_psUSBDevice[0]);
 
         //
         // Have we counted enough SOFs to allow us to call the tick function?

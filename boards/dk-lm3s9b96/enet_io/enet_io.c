@@ -2,7 +2,7 @@
 //
 // enet_io.c - I/O control via a web server.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -200,15 +200,15 @@ static const char *g_pcConfigSSITags[] =
 
 //*****************************************************************************
 //
-//! The number of individual SSI tags that the HTTPD server can expect to
-//! find in our configuration pages.
+// The number of individual SSI tags that the HTTPD server can expect to
+// find in our configuration pages.
 //
 //*****************************************************************************
 #define NUM_CONFIG_SSI_TAGS     (sizeof(g_pcConfigSSITags) / sizeof (char *))
 
 //*****************************************************************************
 //
-//! Prototypes for the various CGI handler functions.
+// Prototypes for the various CGI handler functions.
 //
 //*****************************************************************************
 static char *ControlCGIHandler(int iIndex, int iNumParams, char *pcParam[],
@@ -218,8 +218,8 @@ static char *SetTextCGIHandler(int iIndex, int iNumParams, char *pcParam[],
 
 //*****************************************************************************
 //
-//! Prototype for the main handler used to process server-side-includes for the
-//! application's web-based configuration screens.
+// Prototype for the main handler used to process server-side-includes for the
+// application's web-based configuration screens.
 //
 //*****************************************************************************
 static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen);
@@ -234,10 +234,10 @@ static int SSIHandler(int iIndex, char *pcInsert, int iInsertLen);
 
 //*****************************************************************************
 //
-//! This array is passed to the HTTPD server to inform it of special URIs
-//! that are treated as common gateway interface (CGI) scripts.  Each URI name
-//! is defined along with a pointer to the function which is to be called to
-//! process it.
+// This array is passed to the HTTPD server to inform it of special URIs
+// that are treated as common gateway interface (CGI) scripts.  Each URI name
+// is defined along with a pointer to the function which is to be called to
+// process it.
 //
 //*****************************************************************************
 static const tCGI g_psConfigCGIURIs[] =
@@ -248,26 +248,26 @@ static const tCGI g_psConfigCGIURIs[] =
 
 //*****************************************************************************
 //
-//! The number of individual CGI URIs that are configured for this system.
+// The number of individual CGI URIs that are configured for this system.
 //
 //*****************************************************************************
 #define NUM_CONFIG_CGI_URIS     (sizeof(g_psConfigCGIURIs) / sizeof(tCGI))
 
 //*****************************************************************************
 //
-//! The file sent back to the browser by default following completion of any
-//! of our CGI handlers.  Each individual handler returns the URI of the page
-//! to load in response to it being called.
+// The file sent back to the browser by default following completion of any
+// of our CGI handlers.  Each individual handler returns the URI of the page
+// to load in response to it being called.
 //
 //*****************************************************************************
 #define DEFAULT_CGI_RESPONSE    "/io_cgi.ssi"
 
 //*****************************************************************************
 //
-//! The file sent back to the browser in cases where a parameter error is
-//! detected by one of the CGI handlers.  This should only happen if someone
-//! tries to access the CGI directly via the broswer command line and doesn't
-//! enter all the required parameters alongside the URI.
+// The file sent back to the browser in cases where a parameter error is
+// detected by one of the CGI handlers.  This should only happen if someone
+// tries to access the CGI directly via the broswer command line and doesn't
+// enter all the required parameters alongside the URI.
 //
 //*****************************************************************************
 #define PARAM_ERROR_RESPONSE    "/perror.htm"
@@ -504,7 +504,7 @@ DisplayIPAddress(unsigned long ipaddr, unsigned long ulCol,
     //
     // Display the string.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss18b);
+    GrContextFontSet(&g_sContext, g_pFontCmss18b);
     GrStringDraw(&g_sContext, pucBuf, -1, ulCol, ulRow, true);
 }
 
@@ -596,7 +596,7 @@ lwIPHostTimerHandler(void)
         GrRectFill(&g_sContext, &sRect);
 
         GrContextForegroundSet(&g_sContext, ClrWhite);
-        GrContextFontSet(&g_sContext, &g_sFontCmss18b);
+        GrContextFontSet(&g_sContext, g_pFontCmss18b);
         GrStringDraw(&g_sContext, "IP Address:", -1, 60, STATUS_Y - 20, false);
         GrStringDraw(&g_sContext, "Subnet Mask:", -1, 60, STATUS_Y, false);
         GrStringDraw(&g_sContext, "Gateway:", -1, 60, STATUS_Y + 20, false);
@@ -662,7 +662,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "enet-io", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -729,7 +729,7 @@ main(void)
     sRect.sYMax = TEXT_BOX_BOTTOM - 1;
     GrContextForegroundSet(&g_sContext, ClrWhite);
     GrRectDraw(&g_sContext, &sRect);
-    GrContextFontSet(&g_sContext, &g_sFontCmss18);
+    GrContextFontSet(&g_sContext, g_pFontCmss18);
     GrStringDraw(&g_sContext, " Browser Text: ", -1, 6, TEXT_BOX_TOP - 10,
                  true);
 

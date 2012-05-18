@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="about.c"/>
+        <file name="about.h"/>
+        <file name="bdc-ui.c"/>
+        <file name="bdc-ui.h"/>
+        <file name="buttons.c"/>
+        <file name="buttons.h"/>
+        <file name="can_comm.c"/>
+        <file name="can_comm.h"/>
+        <file name="config.c"/>
+        <file name="config.h"/>
+        <file name="current.c"/>
+        <file name="current.h"/>
+        <file name="dev_list.c"/>
+        <file name="dev_list.h"/>
+        <file name="help.c"/>
+        <file name="help.h"/>
+        <file name="menu.c"/>
+        <file name="menu.h"/>
+        <file name="position.c"/>
+        <file name="position.h"/>
+        <file name="rit128x96x4.c"/>
+        <file name="rit128x96x4.h"/>
+        <file name="speed.c"/>
+        <file name="speed.h"/>
+        <file name="splash.c"/>
+        <file name="splash.h"/>
+        <file name="status.c"/>
+        <file name="status.h"/>
+        <file name="update.c"/>
+        <file name="update.h"/>
+        <file name="vcomp.c"/>
+        <file name="vcomp.h"/>
+        <file name="voltage.c"/>
+        <file name="voltage.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

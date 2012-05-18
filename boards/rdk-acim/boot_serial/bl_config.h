@@ -2,8 +2,23 @@
 //
 // bl_config.h - The configurable parameters of the boot loader.
 //
-// Copyright (c) 2008 Texas Instruments Incorporated.  All rights reserved.
-// TI Information - Selective Disclosure
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+// Software License Agreement
+// 
+// Texas Instruments (TI) is supplying this software for use solely and
+// exclusively on TI's microcontroller products. The software is owned by
+// TI and/or its suppliers, and is protected under applicable copyright
+// laws. You may not combine this software with "viral" open-source
+// software in order to form a larger program.
+// 
+// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+// DAMAGES, FOR ANY REASON WHATSOEVER.
+// 
+// This is part of revision 8555 of the RDK-ACIM Firmware Package.
 //
 //*****************************************************************************
 
@@ -545,7 +560,7 @@
 //
 // Specifies the GPIO peripheral containing the pin which is used to select
 // between USB host and device modes.  The value is of the form
-// SYSCTL_PERIPH_GPIOx, where GPIOx represents the required GPIO port.
+// SYSCTL_RCGC2_GPIOx, where GPIOx represents the required GPIO port.
 //
 // Depends on: USB_ENABLE_UPDATE, USB_HAS_MUX
 // Exclusive of: None

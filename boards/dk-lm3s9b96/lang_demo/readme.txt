@@ -12,10 +12,32 @@ instructions for operation of the application.
 The second panel shows the available languages and allows them to be
 switched between English, German, Spanish and Italian.
 
+The string table and custom fonts used by this application can be found
+under /third_party/fonts/lang_demo.  The original strings that the
+application intends displaying are found in the language.csv file (encoded
+in UTF8 format to allow accented characters and Asian language ideographs
+to be included.  The mkstringtable tool is used to generate two versions
+of the string table, one which remains encoded in UTF8 format and the other
+which has been remapped to a custom codepage allowing the table to be
+reduced in size compared to the original UTF8 text.  The tool also produces
+character map files listing each character used in the string table.  These
+are then provided as input to the ftrasterize tool which generates two
+custom fonts for the application, one indexed using Unicode and a smaller
+one indexed using the custom codepage generated for this string table.
+
+The command line parameters required for mkstringtable and ftrasterize
+can be found in the makefile in third_party/fonts/lang_demo.
+
+By default, the application builds to use the custom codepage version of
+the string table and its matching custom font.  To build using the UTF8
+string table and Unicode-indexed custom font, ensure that the definition of
+\b USE_REMAPPED_STRINGS at the top of the lang_demo.c source file is
+commented out.
+
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -31,4 +53,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.

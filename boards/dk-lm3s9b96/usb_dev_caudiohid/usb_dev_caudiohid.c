@@ -3,7 +3,7 @@
 // usb_dev_caudiohid.c - The main routine for the combined audio hid keyboard
 // device.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -263,7 +263,7 @@ UpdateStatus(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     GrContextBackgroundSet(&g_sContext, DISPLAY_BANNER_BG);
 
@@ -370,7 +370,7 @@ main(void)
     // Put the application name in the middle of the banner.
     //
     GrContextForegroundSet(&g_sContext, DISPLAY_TEXT_FG);
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-dev-audio-hid", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -387,6 +387,11 @@ main(void)
         USBDAudioCompositeInit(0, &g_sAudioDevice);
     g_sCompDevice.psDevices[1].pvInstance =
         USBDHIDKeyboardCompositeInit(0, &g_sKeyboardDevice);
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass the device information to the USB library and place the device

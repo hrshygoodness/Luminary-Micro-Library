@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="audio.c"/>
+        <file name="audio.h"/>
+        <file name="enet.c"/>
+        <file name="enet.h"/>
+        <file name="fs_qs.c"/>
+        <file name="fsdata-qs.h"/>
+        <file name="game.c"/>
+        <file name="game.h"/>
+        <file name="globals.h"/>
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="lmimaze.java"/>
+        <file name="lwipopts.h"/>
+        <file name="qs_ek-lm3s6965.c"/>
+        <file name="random.c"/>
+        <file name="random.h"/>
+        <file name="screen_saver.c"/>
+        <file name="screen_saver.h"/>
+        <file name="sounds.c"/>
+        <file name="sounds.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="html">
+            <file name="404.html"/>
+            <file name="block.html"/>
+            <file name="family.html"/>
+            <file name="footer.html"/>
+            <file name="header.html"/>
+            <file name="index.html"/>
+            <file name="ti.html"/>
+            <file name="lmimaze.class"/>
+            <file name="qs_game.html"/>
+            <file name="side.html"/>
+            <file name="styles.css"/>
+            <directory name="images">
+                <file name="awards08.jpg"/>
+                <file name="chips.jpg"/>
+                <file name="favicon.ico"/>
+                <file name="fury_block.gif"/>
+                <file name="ti_logo.gif"/>
+                <file name="no16bit.jpg"/>
+                <file name="no8bit.jpg"/>
+                <file name="noasm.jpg"/>
+                <file name="nopin.jpg"/>
+            </directory>
+        </directory>
+    </source>
+</importSpec>

@@ -2,7 +2,7 @@
 //
 // audioplay.c - WAV file player function for the Tempest checkout application
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -114,7 +114,7 @@ extern tCanvasWidget g_sPlayBackground;
 ListBox(g_sDirList, &g_sListBackground, 0, 0,
         &g_sKitronix320x240x16_SSD2119,
         0, 30, 125, 174, LISTBOX_STYLE_OUTLINE, ClrBlack, ClrDarkBlue,
-        ClrSilver, ClrWhite, ClrWhite, &g_sFontCmss12, g_ppcDirListStrings,
+        ClrSilver, ClrWhite, ClrWhite, g_pFontCmss12, g_ppcDirListStrings,
         NUM_LIST_STRINGS, 0, OnListBoxChange);
 
 //******************************************************************************
@@ -137,7 +137,7 @@ RectangularButton(g_sPlayBtn, &g_sPlayBackground, 0, 0,
                   &g_sKitronix320x240x16_SSD2119, 162, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
                   0, 0, 0, CLR_TEXT,
-                  &g_sFontCmss18b, g_psPlayText, g_pucRedButton_90x24_Up,
+                  g_pFontCmss18b, g_psPlayText, g_pucRedButton_90x24_Up,
                   g_pucRedButton_90x24_Down, 0, 0, OnBtnPlay);
 
 //******************************************************************************
@@ -159,35 +159,35 @@ extern tCanvasWidget g_sWaveInfoBackground;
 Canvas(g_sVolume, &g_sWaveInfoBackground, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 85, 42, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontFixed6x8,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontFixed6x8,
        "Volume: ", 0, 0);
 
 char g_pcVolume[6]="100%";
 Canvas(g_sWaveVolume, &g_sWaveInfoBackground, &g_sVolume, 0,
        &g_sKitronix320x240x16_SSD2119, 184, 85, 40, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontFixed6x8,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontFixed6x8,
        g_pcVolume, 0, 0);
 
 char g_pcTime[40]="";
 Canvas(g_sWaveInfoTime, &g_sWaveInfoBackground, &g_sWaveVolume, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 70, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontFixed6x8,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontFixed6x8,
        g_pcTime, 0, 0);
 
 char g_pcFormat[40]="";
 Canvas(g_sWaveInfoSample, &g_sWaveInfoBackground, &g_sWaveInfoTime, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 55, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontCmss12,
        g_pcFormat, 0, 0);
 
 char g_pcFileName[16]="";
 Canvas(g_sWaveInfoFileName, &g_sWaveInfoBackground, &g_sWaveInfoSample, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 40, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontCmss12,
        g_pcFileName, 0, 0);
 
 //******************************************************************************
@@ -198,7 +198,7 @@ Canvas(g_sWaveInfoFileName, &g_sWaveInfoBackground, &g_sWaveInfoSample, 0,
 Canvas(g_sWaveInfoBackground, &g_sAudioScreen, &g_sPlayBackground,
        &g_sWaveInfoFileName, &g_sKitronix320x240x16_SSD2119, 130, 30, 155, 80,
        CANVAS_STYLE_OUTLINE | CANVAS_STYLE_FILL, ClrBlack, ClrWhite, ClrWhite,
-       &g_sFontCmss12, 0, 0, 0);
+       g_pFontCmss12, 0, 0, 0);
 
 //******************************************************************************
 //
@@ -230,7 +230,7 @@ Canvas(g_sListBackground, &g_sAudioScreen, &g_sSlider, &g_sDirList,
 RectangularButton(g_sAudioHomeBtn, &g_sAudioScreen, &g_sListBackground, 0,
                   &g_sKitronix320x240x16_SSD2119, 10, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
-                   0, 0, 0, CLR_TEXT, &g_sFontCmss18b, "Home",
+                   0, 0, 0, CLR_TEXT, g_pFontCmss18b, "Home",
                    g_pucRedButton_90x24_Up, g_pucRedButton_90x24_Down, 0, 0,
                    OnBtnAudioToHome);
 

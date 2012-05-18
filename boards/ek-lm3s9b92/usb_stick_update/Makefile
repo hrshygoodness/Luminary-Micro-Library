@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the USB memory stick updater example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+# This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B92
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -42,6 +47,7 @@ include ${ROOT}/makedefs
 #
 IPATH=../../..
 
+#
 # The default rule, which causes the USB memory stick updater example to be built.
 #
 all: ${COMPILER}
@@ -65,8 +71,8 @@ ${COMPILER}:
 ${COMPILER}/usb_stick_update.axf: ${COMPILER}/simple_fs.o
 ${COMPILER}/usb_stick_update.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/usb_stick_update.axf: ${COMPILER}/usb_stick_update.o
-${COMPILER}/usb_stick_update.axf: ${ROOT}/usblib/${COMPILER}/libusb.a
-${COMPILER}/usb_stick_update.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/usb_stick_update.axf: ${ROOT}/usblib/${COMPILER}-cm3/libusb-cm3.a
+${COMPILER}/usb_stick_update.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/usb_stick_update.axf: usb_stick_update.ld
 SCATTERgcc_usb_stick_update=usb_stick_update.ld
 ENTRY_usb_stick_update=ResetISR

@@ -3,7 +3,7 @@
 // boot_demo_usb.c - Main routines for the USB HID/DFU composite device
 //                   example.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -482,7 +482,7 @@ UpdateDisplay(unsigned char ucButtons, tBoolean bRedraw)
     //
     // Set the font we use for the button text.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss18);
+    GrContextFontSet(&g_sContext, g_pFontCmss18);
 
     //
     // Loop through each of the mouse buttons, drawing each in turn.
@@ -690,8 +690,8 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
-    GrStringDrawCentered(&g_sContext, "usb-dev-mouse", -1,
+    GrContextFontSet(&g_sContext, g_pFontCm20);
+    GrStringDrawCentered(&g_sContext, "boot-demo-usb", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
     //
@@ -733,7 +733,7 @@ main(void)
         //
         // Tell the user what we are doing.
         //
-        GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+        GrContextFontSet(&g_sContext, g_pFontCmss22b);
         GrContextForegroundSet(&g_sContext, ClrWhite);
         GrStringDrawCentered(&g_sContext, "   Waiting for host...   ", -1,
                              GrContextDpyWidthGet(&g_sContext) / 2, 40, true);
@@ -776,7 +776,7 @@ main(void)
     //
     // Tell the user what's going on.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+    GrContextFontSet(&g_sContext, g_pFontCmss22b);
     GrStringDrawCentered(&g_sContext, " Switching to DFU mode ", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 40, true);
 

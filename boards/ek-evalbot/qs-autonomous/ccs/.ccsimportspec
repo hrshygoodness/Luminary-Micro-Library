@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="auto_task.c"/>
+        <file name="auto_task.h"/>
+        <file name="display_task.c"/>
+        <file name="display_task.h"/>
+        <file name="drive_task.c"/>
+        <file name="drive_task.h"/>
+        <file name="led_task.c"/>
+        <file name="led_task.h"/>
+        <file name="pid.c"/>
+        <file name="pid.h"/>
+        <file name="qs-autonomous.c"/>
+        <file name="random.c"/>
+        <file name="random.h"/>
+        <file name="sound_task.c"/>
+        <file name="sound_task.h"/>
+        <file name="sounds.c"/>
+        <file name="sounds.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

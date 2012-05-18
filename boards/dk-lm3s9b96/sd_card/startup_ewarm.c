@@ -3,7 +3,7 @@
 // startup_ewarm.c - Startup code for use with IAR's Embedded Workbench,
 //                   version 5.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -35,6 +35,7 @@
 // Forward declaration of the default fault handlers.
 //
 //*****************************************************************************
+void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
@@ -86,7 +87,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
 {
     { .ulPtr = (unsigned long)pulStack + sizeof(pulStack) },
                                             // The initial stack pointer
-    __iar_program_start,                    // The reset handler
+    ResetISR,                               // The reset handler
     NmiSR,                                  // The NMI handler
     FaultISR,                               // The hard fault handler
     IntDefaultHandler,                      // The MPU fault handler
@@ -157,6 +158,25 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // External Bus Interface 0
     IntDefaultHandler                       // GPIO Port J
 };
+
+//*****************************************************************************
+//
+// This is the code that gets called when the processor first starts execution
+// following a reset event.  Only the absolutely necessary set is performed,
+// after which the application supplied entry() routine is called.  Any fancy
+// actions (such as making decisions based on the reset cause register, and
+// resetting the bits in that register) are left solely in the hands of the
+// application.
+//
+//*****************************************************************************
+void
+ResetISR(void)
+{
+    //
+    // Call the application's entry point.
+    //
+    __iar_program_start();
+}
 
 //*****************************************************************************
 //

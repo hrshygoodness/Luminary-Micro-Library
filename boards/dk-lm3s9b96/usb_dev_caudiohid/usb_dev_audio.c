@@ -2,7 +2,7 @@
 //
 // usb_dev_audio.c - Routines to handle the audio device.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -332,7 +332,7 @@ USBBufferCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
             // adjusting the sample rate.
             //
             if((g_sBuffer.pucBuffer + AUDIO_BUFFER_SIZE -
-                (AUDIO_PACKET_SIZE * 2)) < g_sBuffer.pucPlay)
+                (AUDIO_PACKET_SIZE * 2)) > g_sBuffer.pucPlay)
             {
                 //
                 // Only allow an adjustment of at most one fractional bit.

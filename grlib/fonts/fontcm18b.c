@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// fontcm18b.c - Font definition for the 18 point Cm bold font.
+// fontcm18b.c - Font definition for the 18pt Cm bold font.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2011-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Graphics Library.
+// This is part of revision 8555 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -33,6 +33,7 @@
 //*****************************************************************************
 //
 // Details of this font:
+//     Characters: 32 to 126 inclusive
 //     Style: cm
 //     Size: 18 point
 //     Bold: yes
@@ -44,6 +45,7 @@
 //*****************************************************************************
 //
 // The compressed data for the 18 point Cm bold font.
+// Contains characters 32 to 126 inclusive.
 //
 //*****************************************************************************
 static const unsigned char g_pucCm18bData[2099] =

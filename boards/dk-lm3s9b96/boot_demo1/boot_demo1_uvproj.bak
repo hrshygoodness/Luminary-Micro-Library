@@ -343,7 +343,7 @@
             <uThumb>0</uThumb>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>rvmdk PART_LM3S9B96</Define>
+              <Define>rvmdk PART_LM3S9B96 TARGET_IS_TEMPEST_RB1</Define>
               <Undefine></Undefine>
               <IncludePath>.;..;..\..\..;..\..\..\third_party\lwip-1.3.2\apps;..\..\..\third_party\bget;..\..\..\third_party\lwip-1.3.2\ports\stellaris\include;..\..\..\third_party\lwip-1.3.2\src\include;..\..\..\third_party\lwip-1.3.2\src\include\ipv4;..\..\..\third_party;</IncludePath>
             </VariousControls>

@@ -3,7 +3,7 @@
 // videocap.c - An example application supporting video capture using the
 //              FPGA/Camera Daughter Board.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -250,7 +250,7 @@ ImageButton(g_sShowButton, &g_sBackground, 0, 0,
             &g_sKitronix320x240x16_FPGA, 270, 220, 50, 20,
             (IB_STYLE_FILL | IB_STYLE_TEXT | IB_STYLE_IMAGE_OFF |
              IB_STYLE_KEYCAP_OFF | IB_STYLE_RELEASE_NOTIFY), ClrWhite,
-             ClrRed, ClrRed, &g_sFontCmss18, "Menu", 0, 0,
+             ClrRed, ClrRed, g_pFontCmss18, "Menu", 0, 0,
              0, 2, 2, 0, 0, OnShowBtnPress);
 
 //*****************************************************************************
@@ -271,34 +271,34 @@ ImageButton(g_sScaleButton, &g_psScreens[MAIN_SCREEN], &g_sFreezeButton, 0,
             &g_sKitronix320x240x16_FPGA, 220, 60, 80, 30,
             (IB_STYLE_TEXT | IB_STYLE_KEYCAP_OFF |
             IB_STYLE_RELEASE_NOTIFY), ClrWhite, ClrRed, ClrRed,
-            &g_sFontCmss18, "Scale", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
+            g_pFontCmss18, "Scale", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
             0, 2, 2, 0, 0, OnScaleBtnPress);
 
 ImageButton(g_sFreezeButton, &g_psScreens[MAIN_SCREEN], &g_sSavePictCtrlButton,
             0, &g_sKitronix320x240x16_FPGA, 220, 100, 80, 30,
             (IB_STYLE_TEXT | IB_STYLE_KEYCAP_OFF |
             IB_STYLE_RELEASE_NOTIFY), ClrWhite, ClrRed, ClrRed,
-            &g_sFontCmss18, "Freeze", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
+            g_pFontCmss18, "Freeze", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
             0, 2, 2, 0, 0, OnFreezeBtnPress);
 
 ImageButton(g_sSavePictCtrlButton, &g_psScreens[MAIN_SCREEN], &g_sHideButton, 0,
             &g_sKitronix320x240x16_FPGA, 220, 140, 80, 30,
             (IB_STYLE_TEXT | IB_STYLE_KEYCAP_OFF |
             IB_STYLE_RELEASE_NOTIFY), ClrWhite, ClrRed, ClrRed,
-            &g_sFontCmss18, "Controls", g_pucRedBtn80x30Up,
+            g_pFontCmss18, "Controls", g_pucRedBtn80x30Up,
             g_pucRedBtn80x30Down, 0, 2, 2, 0, 0, OnPictureCtrlSaveBtnPress);
 
 ImageButton(g_sHideButton, &g_psScreens[MAIN_SCREEN], &g_sErrorMessage, 0,
             &g_sKitronix320x240x16_FPGA, 220, 180, 80, 30,
             (IB_STYLE_TEXT | IB_STYLE_KEYCAP_OFF |
             IB_STYLE_RELEASE_NOTIFY), ClrWhite, ClrRed, ClrRed,
-            &g_sFontCmss18, "Hide", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
+            g_pFontCmss18, "Hide", g_pucRedBtn80x30Up, g_pucRedBtn80x30Down,
             0, 2, 2, 0, 0, OnHideBtnPress);
 
 Canvas(g_sErrorMessage, &g_psScreens[MAIN_SCREEN], 0, 0,
        &g_sKitronix320x240x16_FPGA, 10, 120, 200, 24,
        (CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT_HCENTER |
-       CANVAS_STYLE_TEXT_VCENTER), ClrMagenta, 0, ClrBlack, &g_sFontCmss18b,
+       CANVAS_STYLE_TEXT_VCENTER), ClrMagenta, 0, ClrBlack, g_pFontCmss18b,
        "", 0, 0);
 
 //*****************************************************************************
@@ -318,28 +318,28 @@ ImageButton(g_sFlipButton, &g_psScreens[PICT_CTRL_SCREEN], &g_sMirrorButton, 0,
             &g_sKitronix320x240x16_FPGA, 220, 95, 50, 20,
             (IB_STYLE_FILL | IB_STYLE_TEXT | IB_STYLE_IMAGE_OFF |
             IB_STYLE_KEYCAP_OFF | IB_STYLE_RELEASE_NOTIFY), ClrWhite,
-            ClrRed, ClrRed, &g_sFontCmss16, "Flip", 0, 0,
+            ClrRed, ClrRed, g_pFontCmss16, "Flip", 0, 0,
             0, 2, 2, 0, 0, OnFlipBtnPress);
 
 ImageButton(g_sMirrorButton, &g_psScreens[PICT_CTRL_SCREEN], &g_sMainButton, 0,
             &g_sKitronix320x240x16_FPGA, 220, 120, 50, 20,
             (IB_STYLE_FILL | IB_STYLE_TEXT | IB_STYLE_IMAGE_OFF |
             IB_STYLE_KEYCAP_OFF | IB_STYLE_RELEASE_NOTIFY), ClrWhite,
-            ClrRed, ClrRed, &g_sFontCmss16, "Mirror", 0, 0,
+            ClrRed, ClrRed, g_pFontCmss16, "Mirror", 0, 0,
             0, 2, 2, 0, 0, OnMirrorBtnPress);
 
 ImageButton(g_sMainButton, &g_psScreens[PICT_CTRL_SCREEN], &g_sPCHideButton, 0,
             &g_sKitronix320x240x16_FPGA, 220, 145, 50, 20,
             (IB_STYLE_FILL | IB_STYLE_TEXT | IB_STYLE_IMAGE_OFF |
             IB_STYLE_KEYCAP_OFF | IB_STYLE_RELEASE_NOTIFY), ClrWhite,
-            ClrRed, ClrRed, &g_sFontCmss16, "Main", 0, 0,
+            ClrRed, ClrRed, g_pFontCmss16, "Main", 0, 0,
             0, 2, 2, 0, 0, OnMainBtnPress);
 
 ImageButton(g_sPCHideButton, &g_psScreens[PICT_CTRL_SCREEN], &g_sBrightness, 0,
             &g_sKitronix320x240x16_FPGA, 220, 170, 50, 20,
             (IB_STYLE_FILL | IB_STYLE_TEXT | IB_STYLE_IMAGE_OFF |
             IB_STYLE_KEYCAP_OFF | IB_STYLE_RELEASE_NOTIFY), ClrWhite,
-            ClrRed, ClrRed, &g_sFontCmss16, "Hide", 0, 0,
+            ClrRed, ClrRed, g_pFontCmss16, "Hide", 0, 0,
             0, 2, 2, 0, 0, OnHideBtnPress);
 
 Slider(g_sBrightness, &g_psScreens[PICT_CTRL_SCREEN], &g_sSaturation, 0,
@@ -348,7 +348,7 @@ Slider(g_sBrightness, &g_psScreens[PICT_CTRL_SCREEN], &g_sSaturation, 0,
        SL_STYLE_BACKG_TEXT | SL_STYLE_TEXT_OPAQUE |
        SL_STYLE_BACKG_TEXT_OPAQUE),
        ClrRed, ClrBlack, 0, ClrWhite, ClrWhite,
-       &g_sFontCm16, "Brightness", 0, 0, OnBrightnessChange);
+       g_pFontCm16, "Brightness", 0, 0, OnBrightnessChange);
 
 Slider(g_sSaturation, &g_psScreens[PICT_CTRL_SCREEN], &g_sContrast, 0,
        &g_sKitronix320x240x16_FPGA, 50, 120, 160, 20, 0, 255, 128,
@@ -356,7 +356,7 @@ Slider(g_sSaturation, &g_psScreens[PICT_CTRL_SCREEN], &g_sContrast, 0,
        SL_STYLE_BACKG_TEXT | SL_STYLE_TEXT_OPAQUE |
        SL_STYLE_BACKG_TEXT_OPAQUE),
        ClrRed, ClrBlack, 0, ClrWhite, ClrWhite,
-       &g_sFontCm16, "Saturation", 0, 0, OnSaturationChange);
+       g_pFontCm16, "Saturation", 0, 0, OnSaturationChange);
 
 Slider(g_sContrast, &g_psScreens[PICT_CTRL_SCREEN], 0, 0,
        &g_sKitronix320x240x16_FPGA, 50, 145, 160, 20, 0, 255, 128,
@@ -364,7 +364,7 @@ Slider(g_sContrast, &g_psScreens[PICT_CTRL_SCREEN], 0, 0,
        SL_STYLE_BACKG_TEXT | SL_STYLE_TEXT_OPAQUE |
        SL_STYLE_BACKG_TEXT_OPAQUE),
        ClrRed, ClrBlack, 0, ClrWhite, ClrWhite,
-       &g_sFontCm16, "Contrast", 0, 0, OnContrastChange);
+       g_pFontCm16, "Contrast", 0, 0, OnContrastChange);
 
 //*****************************************************************************
 //

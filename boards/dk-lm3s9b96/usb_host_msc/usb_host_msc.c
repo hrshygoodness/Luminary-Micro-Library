@@ -2,7 +2,7 @@
 //
 // usb_host_msc.c - Example program for reading files from a USB flash drive.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -111,6 +111,14 @@
 //
 //*****************************************************************************
 #define CMD_BUF_SIZE    64
+
+//*****************************************************************************
+//
+// Defines the number of times to call to check if the attached device is
+// ready.
+//
+//*****************************************************************************
+#define USBMSC_DRIVE_RETRY      4
 
 //*****************************************************************************
 //
@@ -293,6 +301,11 @@ volatile enum
     STATE_UNKNOWN_DEVICE,
 
     //
+    // A mass storage device was connected but failed to ever report ready.
+    //
+    STATE_TIMEOUT_DEVICE,
+
+    //
     // A power fault has occurred.
     //
     STATE_POWER_FAULT
@@ -420,13 +433,13 @@ extern tCanvasWidget g_sCDBackground;
 ListBox(g_sStatusList, &g_sBackground, 0, 0, &g_sKitronix320x240x16_SSD2119,
         40, 170, 220, 52, (LISTBOX_STYLE_OUTLINE | LISTBOX_STYLE_LOCKED |
         LISTBOX_STYLE_WRAP), ClrBlack, ClrBlack, ClrSilver, ClrSilver, ClrWhite,
-        &g_sFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
+        g_pFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
         NUM_STATUS_STRINGS, 0);
 
 ListBox(g_sDirList, &g_sBackground, &g_sStatusList, 0,
         &g_sKitronix320x240x16_SSD2119,
         40, 60, 120, 100, LISTBOX_STYLE_OUTLINE, ClrBlack, ClrDarkBlue,
-        ClrSilver, ClrWhite, ClrWhite, &g_sFontCmss12, g_ppcDirListStrings,
+        ClrSilver, ClrWhite, ClrWhite, g_pFontCmss12, g_ppcDirListStrings,
         NUM_LIST_STRINGS, 0, OnListBoxChange);
 
 //*****************************************************************************
@@ -436,7 +449,7 @@ ListBox(g_sDirList, &g_sBackground, &g_sStatusList, 0,
 //*****************************************************************************
 Canvas(g_sPWDTitle, &g_sBackground, &g_sDirList, 0,
        &g_sKitronix320x240x16_SSD2119, 10, 35, 40, 20, CANVAS_STYLE_TEXT,
-       ClrBlack, 0, ClrWhite, &g_sFontCmss12, "PWD:", 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCmss12, "PWD:", 0, 0);
 
 //*****************************************************************************
 //
@@ -445,7 +458,7 @@ Canvas(g_sPWDTitle, &g_sBackground, &g_sDirList, 0,
 //*****************************************************************************
 Canvas(g_sPWD, &g_sBackground, &g_sPWDTitle, 0, &g_sKitronix320x240x16_SSD2119,
        50, 35, 260, 20, (CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL |
-       CANVAS_STYLE_TEXT_LEFT), ClrBlack, 0, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_LEFT), ClrBlack, 0, ClrWhite, g_pFontCmss12,
        g_cCwdBuf, 0, 0);
 
 //*****************************************************************************
@@ -458,7 +471,7 @@ RectangularButton(g_sCDBtn, &g_sCDBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, "CD", 0, 0, 0, 0, OnBtnCD);
+                   g_pFontCm20, "CD", 0, 0, 0, 0, OnBtnCD);
 
 //*****************************************************************************
 //
@@ -479,7 +492,7 @@ RectangularButton(g_sUpBtn, &g_sUpBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, "Up", 0, 0, 0, 0, OnBtnUp);
+                   g_pFontCm20, "Up", 0, 0, 0, 0, OnBtnUp);
 
 //*****************************************************************************
 //
@@ -508,7 +521,7 @@ Canvas(g_sBackground, WIDGET_ROOT, &g_sUpBackground, &g_sPWD,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "usb-host-msc", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "usb-host-msc", 0, 0);
 
 //*****************************************************************************
 //
@@ -990,7 +1003,7 @@ USBHCDEvents(void *pvData)
         //
         // An unknown device has been connected.
         //
-        case USB_EVENT_CONNECTED:
+        case USB_EVENT_UNKNOWN_CONNECTED:
         {
             //
             // An unknown device was detected.
@@ -1837,6 +1850,7 @@ main(void)
     int nStatus;
     tUSBMode eLastMode;
     char *pcString;
+    unsigned long ulDriveTimeout;
 
     //
     // Set the system clock to run at 50MHz from the PLL.
@@ -1947,6 +1961,11 @@ main(void)
     g_ulMSCInstance = USBHMSCDriveOpen(0, MSCCallback);
 
     //
+    // Initialize the drive timeout.
+    //
+    ulDriveTimeout = USBMSC_DRIVE_RETRY;
+
+    //
     // Initialize the power configuration. This sets the power enable signal
     // to be active high and does not enable the power fault.
     //
@@ -2037,10 +2056,24 @@ main(void)
                     if(USBHMSCDriveReady(g_ulMSCInstance) != 0)
                     {
                         //
-                        // Wait about 100ms before attempting to check if the
+                        // Wait about 500ms before attempting to check if the
                         // device is ready again.
                         //
-                        SysCtlDelay(SysCtlClockGet()/30);
+                        SysCtlDelay(SysCtlClockGet()/(3*2));
+
+                        //
+                        // Decrement the retry count.
+                        //
+                        ulDriveTimeout--;
+
+                        //
+                        // If the timeout is hit then go to the
+                        // STATE_TIMEOUT_DEVICE state.
+                        //
+                        if(ulDriveTimeout == 0)
+                        {
+                            g_eState = STATE_TIMEOUT_DEVICE;
+                        }
 
                         break;
                     }
@@ -2109,6 +2142,34 @@ main(void)
                         //
                         ListBoxClear(&g_sDirList);
                         ListBoxTextAdd(&g_sDirList, "Unknown device.");
+                        WidgetPaint((tWidget *)&g_sDirList);
+                    }
+
+                    //
+                    // Set the Device Present flag.
+                    //
+                    g_ulFlags = FLAGS_DEVICE_PRESENT;
+
+                    break;
+                }
+
+                //
+                // The connected mass storage device is not reporting ready.
+                //
+                case STATE_TIMEOUT_DEVICE:
+                {
+                    //
+                    // If this is the first time in this state then print a
+                    // message.
+                    //
+                    if((g_ulFlags & FLAGS_DEVICE_PRESENT) == 0)
+                    {
+                        //
+                        // Clear the screen and indicate that an unknown device
+                        // is present.
+                        //
+                        ListBoxClear(&g_sDirList);
+                        ListBoxTextAdd(&g_sDirList, "Device Timeout.");
                         WidgetPaint((tWidget *)&g_sDirList);
                     }
 

@@ -2,7 +2,7 @@
 //
 // listbox.c - A listbox widget.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Graphics Library.
+// This is part of revision 8555 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -76,7 +76,7 @@ ListBoxPaint(tWidget *pWidget)
     tRectangle sWidgetRect, sLineRect;
     short sHeight;
     long lWidth;
-    unsigned short usCount, usString;
+    unsigned short usString;
 
     //
     // Check the arguments.
@@ -138,7 +138,6 @@ ListBoxPaint(tWidget *pWidget)
     // Start drawing at the top of the widget.
     //
     sLineRect = sWidgetRect;
-    usCount = 0;
     usString = pListBox->usStartEntry;
     sHeight = GrFontHeightGet(pListBox->pFont);
 
@@ -147,7 +146,7 @@ ListBoxPaint(tWidget *pWidget)
     // strings to draw.
     //
     while((sLineRect.sYMin < sWidgetRect.sYMax) &&
-          (usCount < pListBox->usPopulated))
+          (usString < pListBox->usPopulated))
     {
         //
         // Calculate the rectangle that will enclose this line of text.
@@ -193,15 +192,22 @@ ListBoxPaint(tWidget *pWidget)
         }
 
         //
-        // Move on to the next string.
+        // Move on to the next string, wrapping if necessary.
         //
-        usCount++;
         usString++;
         if(usString == pListBox->usMaxEntries)
         {
             usString = 0;
         }
         sLineRect.sYMin += sHeight;
+
+        //
+        // If we are wrapping and got back at the oldest entry, we drop out.
+        //
+        if(usString == pListBox->usOldestEntry)
+        {
+            break;
+        }
     }
 
     //
@@ -422,20 +428,20 @@ ListBoxPointer(tListBoxWidget *pListBox, unsigned long ulMsg, long lX, long lY)
 
                 if(lScroll)
                 {
-                	long lTemp;
-                	
+                    long lTemp;
+
                     //
                     // Adjust the start entry appropriately, taking care to handle
-                    // the wrap case.  The use of a temporary variable here is 
+                    // the wrap case.  The use of a temporary variable here is
                     // required to work around a compiler bug which resulted in an
-                    // invalid value of pListBox->usStartEntry following the 
+                    // invalid value of pListBox->usStartEntry following the
                     // calculation.
                     //
                     lTemp = pListBox->usStartEntry;
                     lTemp += lScroll;
                     lTemp %= (long)pListBox->usMaxEntries;
                     pListBox->usStartEntry = (unsigned short)lTemp;
-                
+
                     //
                     // Remember that we scrolled.
                     //

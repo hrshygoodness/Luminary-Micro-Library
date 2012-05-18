@@ -2,7 +2,7 @@
 //
 // adc_ctrl.c - ADC control routines.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-BLDC Firmware Package.
+// This is part of revision 8555 of the RDK-BLDC Firmware Package.
 //
 //*****************************************************************************
 
@@ -540,7 +540,7 @@ ADC0IntTrap(void)
     // Reset/Reconfigure the sequence if a change in PWM output drive
     // state is detected.
     //
-    ulPWMEnable = HWREG(PWM_BASE + PWM_O_ENABLE);
+    ulPWMEnable = HWREG(PWM0_BASE + PWM_O_ENABLE);
     if(ulPWMEnable != ulLastPWMEnable)
     {
         //
@@ -1021,7 +1021,7 @@ ADC0IntTrapLinear(void)
     // Reset/Reconfigure the sequence if a change in PWM output drive
     // state is detected.
     //
-    ulPWMEnable = HWREG(PWM_BASE + PWM_O_ENABLE);
+    ulPWMEnable = HWREG(PWM0_BASE + PWM_O_ENABLE);
     if(ulPWMEnable != ulLastPWMEnable)
     {
         unsigned long ulIPhase;

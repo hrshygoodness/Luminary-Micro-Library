@@ -2,7 +2,7 @@
 //
 // hw_flash.h - Macros used when accessing the flash controller.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -42,6 +42,9 @@
 #define FLASH_FWBVAL            0x400FD030  // Flash Write Buffer Valid
 #define FLASH_FCTL              0x400FD0F8  // Flash Control
 #define FLASH_FWBN              0x400FD100  // Flash Write Buffer n
+#define FLASH_FSIZE             0x400FDFC0  // Flash Size
+#define FLASH_SSIZE             0x400FDFC4  // SRAM Size
+#define FLASH_ROMSWMAP          0x400FDFCC  // ROM Software Map
 #define FLASH_RMCTL             0x400FE0F0  // ROM Control
 #define FLASH_FMPRE             0x400FE130  // Flash Memory Protection Read
                                             // Enable
@@ -119,6 +122,12 @@
 // The following are defines for the bit fields in the FLASH_FCRIS register.
 //
 //*****************************************************************************
+#define FLASH_FCRIS_PROGRIS     0x00002000  // PROGVER Raw Interrupt Status
+#define FLASH_FCRIS_ERRIS       0x00000800  // ERVER Raw Interrupt Status
+#define FLASH_FCRIS_INVDRIS     0x00000400  // Invalid Data Raw Interrupt
+                                            // Status
+#define FLASH_FCRIS_VOLTRIS     0x00000200  // VOLTSTAT Raw Interrupt Status
+#define FLASH_FCRIS_ERIS        0x00000004  // EEPROM Raw Interrupt Status
 #define FLASH_FCRIS_PRIS        0x00000002  // Programming Raw Interrupt Status
 #define FLASH_FCRIS_ARIS        0x00000001  // Access Raw Interrupt Status
 
@@ -127,6 +136,11 @@
 // The following are defines for the bit fields in the FLASH_FCIM register.
 //
 //*****************************************************************************
+#define FLASH_FCIM_PROGMASK     0x00002000  // PROGVER Interrupt Mask
+#define FLASH_FCIM_ERMASK       0x00000800  // ERVER Interrupt Mask
+#define FLASH_FCIM_INVDMASK     0x00000400  // Invalid Data Interrupt Mask
+#define FLASH_FCIM_VOLTMASK     0x00000200  // VOLT Interrupt Mask
+#define FLASH_FCIM_EMASK        0x00000004  // EEPROM Interrupt Mask
 #define FLASH_FCIM_PMASK        0x00000002  // Programming Interrupt Mask
 #define FLASH_FCIM_AMASK        0x00000001  // Access Interrupt Mask
 
@@ -135,6 +149,16 @@
 // The following are defines for the bit fields in the FLASH_FCMISC register.
 //
 //*****************************************************************************
+#define FLASH_FCMISC_PROGMISC   0x00002000  // PROGVER Masked Interrupt Status
+                                            // and Clear
+#define FLASH_FCMISC_ERMISC     0x00000800  // ERVER Masked Interrupt Status
+                                            // and Clear
+#define FLASH_FCMISC_INVDMISC   0x00000400  // Invalid Data Masked Interrupt
+                                            // Status and Clear
+#define FLASH_FCMISC_VOLTMISC   0x00000200  // VOLT Masked Interrupt Status and
+                                            // Clear
+#define FLASH_FCMISC_EMISC      0x00000004  // EEPROM Masked Interrupt Status
+                                            // and Clear
 #define FLASH_FCMISC_PMISC      0x00000002  // Programming Masked Interrupt
                                             // Status and Clear
 #define FLASH_FCMISC_AMISC      0x00000001  // Access Masked Interrupt Status
@@ -169,6 +193,44 @@
 //
 //*****************************************************************************
 #define FLASH_FWBN_DATA_M       0xFFFFFFFF  // Data
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_FSIZE register.
+//
+//*****************************************************************************
+#define FLASH_FSIZE_SIZE_M      0x0000FFFF  // Flash Size
+#define FLASH_FSIZE_SIZE_8KB    0x00000003  // 8 KB of Flash
+#define FLASH_FSIZE_SIZE_16KB   0x00000007  // 16 KB of Flash
+#define FLASH_FSIZE_SIZE_32KB   0x0000000F  // 32 KB of Flash
+#define FLASH_FSIZE_SIZE_64KB   0x0000001F  // 64 KB of Flash
+#define FLASH_FSIZE_SIZE_96KB   0x0000002F  // 96 KB of Flash
+#define FLASH_FSIZE_SIZE_128KB  0x0000003F  // 128 KB of Flash
+#define FLASH_FSIZE_SIZE_192KB  0x0000005F  // 192 KB of Flash
+#define FLASH_FSIZE_SIZE_256KB  0x0000007F  // 256 KB of Flash
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_SSIZE register.
+//
+//*****************************************************************************
+#define FLASH_SSIZE_SIZE_M      0x0000FFFF  // SRAM Size
+#define FLASH_SSIZE_SIZE_2KB    0x00000007  // 2 KB of SRAM
+#define FLASH_SSIZE_SIZE_4KB    0x0000000F  // 4 KB of SRAM
+#define FLASH_SSIZE_SIZE_6KB    0x00000017  // 6 KB of SRAM
+#define FLASH_SSIZE_SIZE_8KB    0x0000001F  // 8 KB of SRAM
+#define FLASH_SSIZE_SIZE_12KB   0x0000002F  // 12 KB of SRAM
+#define FLASH_SSIZE_SIZE_16KB   0x0000003F  // 16 KB of SRAM
+#define FLASH_SSIZE_SIZE_20KB   0x0000004F  // 20 KB of SRAM
+#define FLASH_SSIZE_SIZE_24KB   0x0000005F  // 24 KB of SRAM
+#define FLASH_SSIZE_SIZE_32KB   0x0000007F  // 32 KB of SRAM
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the FLASH_ROMSWMAP register.
+//
+//*****************************************************************************
+#define FLASH_ROMSWMAP_SAFERTOS 0x00000001  // SafeRTOS Present
 
 //*****************************************************************************
 //
@@ -230,8 +292,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG0 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG0_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG0_NW       0x80000000  // Not Written
-#define FLASH_USERREG0_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG0_DATA_S   0
 
 //*****************************************************************************
@@ -239,8 +301,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG1 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG1_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG1_NW       0x80000000  // Not Written
-#define FLASH_USERREG1_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG1_DATA_S   0
 
 //*****************************************************************************
@@ -248,8 +310,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG2 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG2_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG2_NW       0x80000000  // Not Written
-#define FLASH_USERREG2_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG2_DATA_S   0
 
 //*****************************************************************************
@@ -257,8 +319,8 @@
 // The following are defines for the bit fields in the FLASH_USERREG3 register.
 //
 //*****************************************************************************
+#define FLASH_USERREG3_DATA_M   0xFFFFFFFF  // User Data
 #define FLASH_USERREG3_NW       0x80000000  // Not Written
-#define FLASH_USERREG3_DATA_M   0x7FFFFFFF  // User Data
 #define FLASH_USERREG3_DATA_S   0
 
 //*****************************************************************************

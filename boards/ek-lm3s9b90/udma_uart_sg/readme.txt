@@ -1,0 +1,28 @@
+uDMA scatter-gather memory/UART transfer
+
+This example demonstrates using the scatter-gather mode of the uDMA
+controller to transfer multiple memory buffers to and from a UART.
+This example uses UART1 in loopback mode.
+
+UART0, connected to the FTDI virtual COM port and running at 115,200,
+8-N-1, is used to display messages from this application.
+
+-------------------------------------------------------------------------------
+
+Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 8555 of the EK-LM3S9B90 Firmware Package.

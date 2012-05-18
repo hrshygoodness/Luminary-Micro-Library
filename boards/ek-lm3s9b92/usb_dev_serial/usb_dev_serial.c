@@ -2,7 +2,7 @@
 //
 // usb_dev_serial.c - Main routines for the USB CDC serial example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
@@ -625,6 +626,11 @@ ControlHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue,
         case USB_EVENT_CONNECTED:
         {
             //
+            // Turn on the user LED.
+            //
+            GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_0, GPIO_PIN_0);
+
+            //
             // Flush the buffers.
             //
             USBBufferFlush(&g_sTxBuffer);
@@ -638,6 +644,11 @@ ControlHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue,
         //
         case USB_EVENT_DISCONNECTED:
         {
+            //
+            // Turn off the user LED.
+            //
+            GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_0, 0);
+
             break;
         }
 
@@ -879,10 +890,26 @@ main(void)
                                    UART_INT_FE | UART_INT_RT | UART_INT_RX));
 
     //
+    // Enable and configure the user LED pin.
+    //
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_0);
+
+    //
+    // Turn off the user LED.
+    //
+    GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_0, 0);
+
+    //
     // Initialize the transmit and receive buffers.
     //
     USBBufferInit(&g_sTxBuffer);
     USBBufferInit(&g_sRxBuffer);
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass the device information to the USB library and place the device

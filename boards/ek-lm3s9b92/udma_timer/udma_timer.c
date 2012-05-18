@@ -2,7 +2,7 @@
 //
 // udma_timer.c - uDMA with timer example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
@@ -258,14 +259,14 @@ main(void)
     // Configure one of the timers as free running 32-bit counter.  Its
     // value will be used as a time reference.
     //
-    ROM_TimerConfigure(TIMER1_BASE, TIMER_CFG_32_BIT_PER);
+    ROM_TimerConfigure(TIMER1_BASE, TIMER_CFG_PERIODIC);
     ROM_TimerLoadSet(TIMER1_BASE, TIMER_A, ~0);
     ROM_TimerEnable(TIMER1_BASE, TIMER_A);
 
     //
     // Configure the 32-bit periodic timer.
     //
-    ROM_TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_PER);
+    ROM_TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC);
     ROM_TimerLoadSet(TIMER0_BASE, TIMER_A, TIMEOUT_VAL - 1);
 
     //

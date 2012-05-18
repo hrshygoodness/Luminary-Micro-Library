@@ -13,7 +13,7 @@
       <TargetOption>
         <TargetCommonOption>
           <Device>LM3S818</Device>
-          <Vendor>Luminary Micro</Vendor>
+          <Vendor>Texas Instruments</Vendor>
           <Cpu>IRAM(0x20000000-0x20001FFF) IROM(0-0xFFFF) CLOCK(6000000) CPUTYPE("Cortex-M3")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"STARTUP\Luminary\Startup.s" ("Luminary Startup Code")</StartupFile>
@@ -29,7 +29,6 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile></SFDFile>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>

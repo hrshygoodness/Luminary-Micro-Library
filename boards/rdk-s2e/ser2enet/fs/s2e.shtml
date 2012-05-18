@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<html><head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1">
+<link href="./styles.css" rel="stylesheet" media="screen"><title>Stellaris S2E Module Status</title></head>
+<body>
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr><td></td><td><h2>Status &amp; Configuration</h2></td></tr><tr>
+<td valign="top" width="15%">Home<br><br>
+<a href="config1.shtml">Port 0<br>
+Settings</a><br><br>
+<a href="config2.shtml">Port 1<br>
+Settings</a><br><br>
+<a href="misc.shtml">Miscellaneous<br>
+Settings</a><br><br>
+<a href="upd.shtml">Firmware<br>
+Update</a><br><br></td><td>
+<table width="100%" border="0" cellpadding="4" cellspacing="2">
+<tbody>
+<tr><td class="gr">Name:</td>
+<td><b><!--#modname--></b></td>
+</tr><tr>
+<td class="gr">Firmware Revision:</td>
+<td><!--#revision--></td>
+</tr><tr>
+<td class="gr" width="25%">IP
+Address:</td>
+<td><!--#ipaddr--></td>
+</tr><tr>
+<td class="gr">MAC Address:</td>
+<td><!--#macaddr--></td>
+</tr></tbody></table>
+<h3>Current port settings:</h3>
+<table width="100%" border="0" cellpadding="2" cellspacing="2">
+<tbody><tr>
+<td class="gr" width="20%"></td>
+<td class="grey" align="center">Port 0</td>
+<td class="grey" align="center">Port 1</td>
+</tr><tr>
+<td class="gr">Baud Rate: </td>
+<td align="center"><!--#p0br--> bits/second</td>
+<td align="center"><!--#p1br--> bits/second</td>
+</tr><tr>
+<td class="gr">Data Size: </td>
+<td align="center"><!--#p0bc--> bits/character</td>
+<td align="center"><!--#p1bc--> bits/character</td>
+</tr><tr>
+<td class="gr">Parity: </td>
+<td align="center"><!--#p0p--></td>
+<td align="center"><!--#p1p--></td>
+</tr><tr>
+<td class="gr"">Stop Bits: </td>
+<td align="center"><!--#p0sb--> bit(s)</td>
+<td align="center"><!--#p1sb--> bit(s)</td>
+</tr><tr>
+<td class="gr">Flow Control: </td>
+<td align="center"><!--#p0fc--></td>
+<td align="center"><!--#p1fc--></td>
+</tr><tr>
+<td class="gr">Local Telnet Port Number: </td>
+<td align="center"><!--#p0tlp--></td>
+<td align="center"><!--#p1tlp--></td>
+</tr><tr>
+<td class="gr">Remote Telnet Port Number: </td>
+<td align="center"><!--#p0trp--></td>
+<td align="center"><!--#p1trp--></td>
+</tr><tr>
+<td class="gr">Telnet Mode:</td>
+<td align="center"><!--#p0tnm--></td>
+<td align="center"><!--#p1tnm--></td>
+</tr><tr>
+<td class="gr">Telnet Protocol:</td>
+<td align="center"><!--#p0prot--></td>
+<td align="center"><!--#p1prot--></td>
+</tr><tr>
+<td class="gr">Telnet Server IP: </td>
+<td align="center"><!--#p0tip--></td>
+<td align="center"><!--#p1tip--></td>
+</tr><tr>
+<td class="gr">Telnet Timeout: </td>
+<td align="center"><!--#p0tt--> seconds</td>
+<td align="center"><!--#p1tt--> seconds</td>
+</tr></tbody></table>
+<p>
+</td></tr></tbody></table>
+</body></html>

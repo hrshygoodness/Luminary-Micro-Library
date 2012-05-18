@@ -2,7 +2,7 @@
 //
 // sd_card.c - Example program for reading files from an SD card.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -258,13 +258,13 @@ extern tCanvasWidget g_sCDBackground;
 ListBox(g_sStatusList, &g_sBackground, 0, 0, &g_sKitronix320x240x16_SSD2119,
         40, 170, 220, 52, (LISTBOX_STYLE_OUTLINE | LISTBOX_STYLE_LOCKED |
         LISTBOX_STYLE_WRAP), ClrBlack, ClrBlack, ClrSilver, ClrSilver, ClrWhite,
-        &g_sFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
+        g_pFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
         NUM_STATUS_STRINGS, 0);
 
 ListBox(g_sDirList, &g_sBackground, &g_sStatusList, 0,
         &g_sKitronix320x240x16_SSD2119,
         40, 60, 120, 100, LISTBOX_STYLE_OUTLINE, ClrBlack, ClrDarkBlue,
-        ClrSilver, ClrWhite, ClrWhite, &g_sFontCmss12, g_ppcDirListStrings,
+        ClrSilver, ClrWhite, ClrWhite, g_pFontCmss12, g_ppcDirListStrings,
         NUM_LIST_STRINGS, 0, OnListBoxChange);
 
 //*****************************************************************************
@@ -274,7 +274,7 @@ ListBox(g_sDirList, &g_sBackground, &g_sStatusList, 0,
 //*****************************************************************************
 Canvas(g_sPWDTitle, &g_sBackground, &g_sDirList, 0,
        &g_sKitronix320x240x16_SSD2119, 10, 35, 40, 20, CANVAS_STYLE_TEXT,
-       ClrBlack, 0, ClrWhite, &g_sFontCmss12, "PWD:", 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCmss12, "PWD:", 0, 0);
 
 //*****************************************************************************
 //
@@ -283,7 +283,7 @@ Canvas(g_sPWDTitle, &g_sBackground, &g_sDirList, 0,
 //*****************************************************************************
 Canvas(g_sPWD, &g_sBackground, &g_sPWDTitle, 0, &g_sKitronix320x240x16_SSD2119,
        50, 35, 260, 20, (CANVAS_STYLE_TEXT | CANVAS_STYLE_FILL |
-       CANVAS_STYLE_TEXT_LEFT), ClrBlack, 0, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_LEFT), ClrBlack, 0, ClrWhite, g_pFontCmss12,
        g_cCwdBuf, 0, 0);
 
 //*****************************************************************************
@@ -296,7 +296,7 @@ RectangularButton(g_sCDBtn, &g_sCDBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, "CD", 0, 0, 0, 0, OnBtnCD);
+                   g_pFontCm20, "CD", 0, 0, 0, 0, OnBtnCD);
 
 //*****************************************************************************
 //
@@ -317,7 +317,7 @@ RectangularButton(g_sUpBtn, &g_sUpBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, "Up", 0, 0, 0, 0, OnBtnUp);
+                   g_pFontCm20, "Up", 0, 0, 0, 0, OnBtnUp);
 
 //*****************************************************************************
 //
@@ -346,7 +346,7 @@ Canvas(g_sBackground, WIDGET_ROOT, &g_sUpBackground, &g_sPWD,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "sd-card", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "sd-card", 0, 0);
 
 //*****************************************************************************
 //

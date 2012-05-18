@@ -2,7 +2,7 @@
 //
 // usbhost.h - Host specific definitions for the USB host library.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -60,7 +60,6 @@ extern "C"
 #define USBHCD_PIPE_ISOC_IN_DMA     0x01820000
 #define USBHCD_PIPE_BULK_OUT_DMA    0x01210000
 #define USBHCD_PIPE_BULK_IN_DMA     0x01220000
-
 
 //*****************************************************************************
 //
@@ -166,7 +165,35 @@ typedef struct
     unsigned long ulInterface;
 
     //
-    //! A pointer to the device descriptor for this device.
+    //! A flag used to determine whether we need to pass an interrupt
+    //! notification on to this device as a result of endpoint activity.
+    //
+    tBoolean bNotifyInt;
+
+    //
+    //! A flag used to record whether this is a low-speed or a full-speed
+    //! device.
+    //
+    tBoolean bLowSpeed;
+
+    //
+    //! A flag indicating whether or not we have read the device's
+    //! configuration descriptor yet.
+    //
+    tBoolean bConfigRead;
+
+    //
+    //! The hub number to which this device is attached.
+    //
+    unsigned char ucHub;
+
+    //
+    //! The hub port number to which the device is attached.
+    //
+    unsigned char ucHubPort;
+
+    //
+    //! The device descriptor for this device.
     //
     tDeviceDescriptor DeviceDescriptor;
 
@@ -253,18 +280,25 @@ extern void USBHCDSetConfig(unsigned long ulIndex, unsigned long ulDevice,
 extern void USBHCDSetInterface(unsigned long ulIndex, unsigned long ulDevice,
                                unsigned long ulInterface,
                                unsigned ulAltSetting);
-
+extern unsigned long USBHCDHubDeviceConnected(unsigned long ulIndex,
+                                              unsigned char ucHub,
+                                              unsigned char ucPort,
+                                              tBoolean bLowSpeed,
+                                              unsigned char *pucConfigPool,
+                                              unsigned long ulConfigSize);
+extern void USBHCDHubDeviceDisconnected(unsigned long ulIndex,
+                                        unsigned long ulDevIndex);
 extern void USBHCDSuspend(unsigned long ulIndex);
 extern void USBHCDResume(unsigned long ulIndex);
 extern void USBHCDReset(unsigned long ulIndex);
 extern void USBHCDPipeFree(unsigned long ulPipe);
 extern unsigned long USBHCDPipeAlloc(unsigned long ulIndex,
                                      unsigned long ulEndpointType,
-                                     unsigned long ulDevAddr,
+                                     tUSBHostDevice *psDevice,
                                      tHCDPipeCallback pCallback);
 extern unsigned long USBHCDPipeAllocSize(unsigned long ulIndex,
                                      unsigned long ulEndpointType,
-                                     unsigned long ulDevAddr,
+                                     tUSBHostDevice *psDevice,
                                      unsigned long ulFIFOSize,
                                      tHCDPipeCallback pCallback);
 extern unsigned long USBHCDPipeConfig(unsigned long ulPipe,
@@ -280,16 +314,27 @@ extern unsigned long USBHCDPipeRead(unsigned long ulPipe, unsigned char *pData,
 extern unsigned long USBHCDPipeSchedule(unsigned long ulPipe,
                                         unsigned char *pucData,
                                         unsigned long ulSize);
+extern void USBHCDPipeDataAck(unsigned long ulPipe);
 extern unsigned long USBHCDPipeReadNonBlocking(unsigned long ulPipe,
                                                unsigned char *pucData,
                                                unsigned long ulSize);
 extern unsigned long USBHCDControlTransfer(unsigned long ulIndex,
                                            tUSBRequest *pSetupPacket,
-                                           unsigned long ulAddress,
+                                           tUSBHostDevice *pDevice,
                                            unsigned char *pData,
                                            unsigned long ulSize,
                                            unsigned long ulMaxPacketSize);
 extern void USB0HostIntHandler(void);
+
+extern unsigned char USBHCDDevHubPort(unsigned long ulInstance);
+extern unsigned char USBHCDDevAddress(unsigned long ulInstance);
+extern unsigned char USBHCDDevClass(unsigned long ulInstance,
+                                    unsigned long ulInterface);
+extern unsigned char USBHCDDevSubClass(unsigned long ulInstance,
+                                       unsigned long ulInterface);
+extern unsigned char USBHCDDevProtocol(unsigned long ulInstance,
+                                       unsigned long ulInterface);
+
 
 //*****************************************************************************
 //
@@ -299,6 +344,8 @@ extern void USB0HostIntHandler(void);
 extern const tUSBHostClassDriver g_USBHostMSCClassDriver;
 extern const tUSBHostClassDriver g_USBHIDClassDriver;
 extern const tUSBHostClassDriver g_USBHostAudioClassDriver;
+
+#include "usbhostpriv.h"
 
 //*****************************************************************************
 //

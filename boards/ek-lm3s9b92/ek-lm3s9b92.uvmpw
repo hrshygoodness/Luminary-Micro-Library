@@ -8,12 +8,12 @@
   <WorkspaceName>ek-lm3s9b92</WorkspaceName>
 
   <project>
-    <PathAndName>..\..\driverlib\driverlib.uvproj</PathAndName>
+    <PathAndName>..\..\driverlib\driverlib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
-    <PathAndName>..\..\usblib\usblib.uvproj</PathAndName>
+    <PathAndName>..\..\usblib\usblib-cm3.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

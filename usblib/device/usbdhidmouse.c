@@ -2,7 +2,7 @@
 //
 // usbdhidmouse.c - USB HID Mouse device class driver.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -268,9 +268,9 @@ HIDMouseRxHandler(void *pvCBData, unsigned long ulEvent,
         {
             //
             // We are being asked for a report that does not exist for
-            // this device.
+            // this device.  Return 0 to indicate that we are not providing
+            // a buffer.
             //
-            *(unsigned char **)pvMsgData = (void *)0;
             return(0);
         }
 

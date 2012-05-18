@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\boot_serial\boot_serial.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\qs-stepper\qs-stepper.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>boot_serial</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>qs-stepper</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>

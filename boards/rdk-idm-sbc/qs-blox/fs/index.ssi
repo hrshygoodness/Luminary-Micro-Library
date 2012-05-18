@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>BLOX Game Control</title>
+
+<link rel="stylesheet" href="style.css" type="text/css">
+<!--#lvar-->
+<script type="text/javascript" language="JavaScript">
+function SetFormDefaults()
+{
+    var i = 0;
+    for(i = 0; i < document.SetLevel.Level.length; i++)
+    {
+        if(document.SetLevel.Level.options[i].value == level)
+        {
+            document.SetLevel.Level.selectedIndex = i;
+            return;
+        }
+    }
+}
+function SetDifficultyLevel()
+{
+    var req = false;
+    var difflevel = 0;
+
+    function LevelComplete()
+    {
+        if(req.readyState == 4)
+        {
+            if(req.status == 200)
+            {
+                document.getElementById("level").innerHTML = "<div>" + req.responseText + "</div>";
+            }
+        }
+    }
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        difflevel = document.SetLevel.Level.options[document.SetLevel.Level.selectedIndex].value;
+        req.open("GET", "/setlevel.cgi?level=" + difflevel, true);
+        req.onreadystatechange = LevelComplete;
+        req.send(null);
+    }
+}
+
+function Refresh()
+{
+    var req = false;
+
+    function RefreshComplete()
+    {
+        if(req.readyState == 4)
+        {
+            if(req.status == 200)
+            {
+                var doc;
+
+                //
+                // Nasty hacky bit of JavaScript to ensure that the XML is
+                // handled correctly by Internet Explorer.  This solution to
+                // the problem was found in the discussion at:
+                //
+                // http://lapsusbloggus.blogspot.com/2006/03/getting-responsexml-to-work-in-ie_24.html
+                //
+                if (window.ActiveXObject)
+                {
+                    //
+                    // Create a new XML object and load the response text into
+                    // it.
+                    //
+                    doc = new ActiveXObject("Microsoft.XMLDOM");
+                    doc.loadXML(req.responseText);
+                    var element = doc.getElementsByTagName('hiscore').item(0);
+                    document.getElementById("hiscore").innerHTML = element.text;
+                    element = doc.getElementsByTagName('score').item(0);
+                    document.getElementById("score").innerHTML = element.text;
+                    element = doc.getElementsByTagName('bloxstate').item(0);
+                    document.getElementById("state").innerHTML = element.text;
+                }
+                else
+                {
+                    //
+                    // We're not running on Internet Explorer so get the XML
+                    // directly from the response.
+                    //
+                    doc = req.responseXML;
+                    var element = doc.getElementsByTagName('hiscore').item(0);
+                    document.getElementById("hiscore").innerHTML = element.textContent;
+                    element = doc.getElementsByTagName('score').item(0);
+                    document.getElementById("score").innerHTML = element.textContent;
+                    element = doc.getElementsByTagName('bloxstate').item(0);
+                    document.getElementById("state").innerHTML = element.textContent;
+                }
+            }
+        }
+    }
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        req.open("GET", "/status.xml?id=" + Math.random(), true);
+        req.onreadystatechange = RefreshComplete;
+        req.send(null);
+    }
+}
+
+//
+// This nasty hack works around the fact that IE doesn't support the standard
+// JavaScript window.setInterval() function.  The code here was found in a
+// posting at http://www.hedgerwow.com/360/dhtml/js-setInterval-fix.html.
+//
+function FixSetInterval()
+{
+    //
+    // If we are not running on IE return without doing anything
+    //
+    if(!document.uniqueID)
+    {
+        return;
+    };
+
+    //
+    // Copy the default setInterval behavior
+    //
+    var nativeSetInterval = window.setInterval;
+
+    window.setInterval = function(fn,ms)
+    {
+        var param = [];
+        if(arguments.length<=2)
+        {
+            return nativeSetInterval(fn,ms);
+        }
+        else
+        {
+            for(var i=2;i<arguments.length;i+=1)
+            {
+                param[i-2] =  arguments[i];
+            }
+        }
+
+        if(typeof(fn)=='function')
+        {
+            return (function (fn,ms,param)
+            {
+                var fo = function ()
+                {
+                    fn.apply(window,param);
+                };
+                return nativeSetInterval(fo,ms);
+            })(fn,ms,param);
+        }
+        else if(typeof(fn)=='string')
+        {
+            return nativeSetInterval(fn,ms);
+        }
+        else
+        {
+            throw Error('setInterval Error\nInvalid function type');
+        }
+    };
+}
+
+function OnLoadHandler()
+{
+    SetFormDefaults();
+    Refresh();
+    FixSetInterval();
+    setInterval("Refresh()", 2500);
+}
+
+</script>
+</head>
+<body onload="OnLoadHandler();">
+<center>
+<img alt="BLOX" src="logo.gif" height="159" width="300"></center>
+<table align="center" border="0" cellpadding="2" cellspacing="2" width="600">
+<tbody>
+<tr>
+<td align="right" valign="middle" width="200">Game
+State:</td>
+<td align="center" valign="middle" width="400">
+<div class="bigtext" id="state"><!--#state--></div>
+</td>
+</tr>
+<tr>
+<td align="right" valign="middle" width="200">High
+Score:</td>
+<td align="center" valign="middle" width="400">
+<div class="bigtext" id="hiscore"><!--#hiscore--></div>
+</td>
+</tr>
+<tr>
+<td align="right" valign="middle" width="200">Score:</td>
+<td align="center" valign="middle" width="400">
+<div class="bigtext" id="score"><!--#score--></div>
+</td>
+</tr>
+<tr>
+<td align="right" valign="middle" width="200">Difficulty:</td>
+<td align="center" valign="middle" width="400">
+<div class="bigtext" id="level"><!--#level--></div>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+<br>
+<center>
+<form method="get" action="/setlevel.cgi" name="SetLevel">
+<select size="1" name="Level"><!--#lch--></select>
+<button value="Set difficulty level" name="SetButton" type="button" onclick="SetDifficultyLevel();">Set
+difficulty level</button><br>
+</form>
+</center>
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+<tbody>
+<tr>
+<td align="center" valign="middle" width="300">
+<address>This web site is being served from a TI Stellaris<br>
+<b>Intelligent Display Module - Single Board Computer</b><br>
+reference design kit running the qs-blox application.</address>
+</td>
+<td align="center" valign="middle" width="300">
+<p align="center"><img alt="Texas Instruments" src="ti.gif" height="100" width="300"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p align="center"></p>
+<p align="center"></p>
+</body></html>

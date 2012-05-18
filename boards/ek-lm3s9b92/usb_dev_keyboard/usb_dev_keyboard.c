@@ -2,7 +2,7 @@
 //
 // usb_dev_keyboard.c - Main routines for the keyboard example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -26,6 +26,7 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -550,6 +551,11 @@ main(void)
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
+
+    //
     // Pass our device information to the USB HID device class driver,
     // initialize the USB
     // controller and connect the device to the bus.
@@ -577,50 +583,10 @@ main(void)
         UARTprintf("Waiting for host...\n");
 
         //
-        // Wait for USB configuration to complete. Even in this state, we look
-        // for key presses and, if any occur while the bus is suspended, we
-        // issue a remote wakeup request.
+        // Wait for USB configuration to complete. 
         //
         while(!g_bConnected)
         {
-            //
-            // Remember the current time.
-            //
-            ulLastTickCount = g_ulSysTickCount;
-
-            //
-            // Has the suspend state changed since last time we checked?
-            //
-            if(bLastSuspend != g_bSuspended)
-            {
-                //
-                // Yes - the state changed so update the display.
-                //
-                bLastSuspend = g_bSuspended;
-                UARTprintf(bLastSuspend ? "Bus suspended...\n" :
-                           "Waiting for host...\n");
-            }
-
-            //
-            // See if the button was just pressed and the device is suspended.
-            //
-            ulButton = ROM_GPIOPinRead(GPIO_PORTB_BASE, GPIO_PIN_4);
-            if((ulButton == 0) && (ulPrevious != 0) && g_bSuspended)
-            {
-                //
-                // Request a remote wakeup.
-                //
-                USBDHIDKeyboardRemoteWakeupRequest((void *)&g_sKeyboardDevice);
-            }
-            ulPrevious = ulButton;
-
-            //
-            // Wait for at least 1 system tick to have gone by before we poll
-            // the buttons again.
-            //
-            while(g_ulSysTickCount == ulLastTickCount)
-            {
-            }
         }
 
         //
@@ -675,12 +641,15 @@ main(void)
                 //
                 if(g_bSuspended)
                 {
+                    //
+                    // We are suspended so request a remote wakeup.
+                    //
                     USBDHIDKeyboardRemoteWakeupRequest(
                                                    (void *)&g_sKeyboardDevice);
                 }
                 else
                 {
-                    SendString("Stellaris...See How Far Your Dollar Can Go");
+                    SendString("Make the Switch to TI Microcontrollers!");
                 }
             }
             ulPrevious = ulButton;
@@ -691,7 +660,19 @@ main(void)
             //
             while(g_ulSysTickCount == ulLastTickCount)
             {
+                //
+                // Hang around doing nothing.
+                //
             }
+        }
+
+        //
+        // Dropping out of the previous loop indicates that the host has
+        // disconnected so go back and wait for reconnection.
+        //
+        if(g_bConnected == false)
+        {
+            UARTprintf("Host disconnected...\n");
         }
     }
 }

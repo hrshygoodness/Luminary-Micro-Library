@@ -1,7 +1,7 @@
 <!--
 Configuration file for Sourcery G++ workspace rdk-acim
 
-Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -17,14 +17,14 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 6852 of the RDK-ACIM Firmware Package.
+This is part of revision 8555 of the RDK-ACIM Firmware Package.
 -->
 
 <workspace>
   <project description="../../inc/inc.sgxx" />
   <project description="../../boot_loader/boot_loader.sgxx" />
   <project description="../../utils/utils.sgxx" />
-  <project description="../../driverlib/driverlib.sgxx" />
+  <project description="../../driverlib/driverlib-cm3.sgxx" />
   <project description="boot_serial/boot_serial.sgxx" />
   <project description="qs-acim/qs-acim.sgxx" />
 </workspace>

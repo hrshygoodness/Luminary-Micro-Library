@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="cgifuncs.c"/>
+        <file name="cgifuncs.h"/>
+        <file name="display_task.c"/>
+        <file name="display_task.h"/>
+        <file name="fs.c"/>
+        <file name="htmldata.h"/>
+        <file name="idle_task.c"/>
+        <file name="idle_task.h"/>
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="led_task.c"/>
+        <file name="led_task.h"/>
+        <file name="lwipopts.h"/>
+        <file name="lwip_task.c"/>
+        <file name="lwip_task.h"/>
+        <file name="priorities.h"/>
+        <file name="random.c"/>
+        <file name="random.h"/>
+        <file name="safertos_demo.c"/>
+        <file name="spider_task.c"/>
+        <file name="spider_task.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="html">
+            <file name="404.htm"/>
+            <file name="block.htm"/>
+            <file name="family.htm"/>
+            <file name="favicon.ico"/>
+            <file name="footer.htm"/>
+            <file name="header.htm"/>
+            <file name="index.htm"/>
+            <file name="io.ssi"/>
+            <file name="lwipstat.ssi"/>
+            <file name="perror.htm"/>
+            <file name="safertos.htm"/>
+            <file name="side.htm"/>
+            <file name="styles.css"/>
+            <file name="ti.htm"/>
+            <directory name="images">
+                <file name="100lqfp.jpg"/>
+                <file name="108bga.jpg"/>
+                <file name="48lqfp.jpg"/>
+                <file name="48qfn.jpg"/>
+                <file name="64lqfp.jpg"/>
+                <file name="awards08.jpg"/>
+                <file name="cortex.jpg"/>
+                <file name="safertos.jpg"/>
+                <file name="stellar.jpg"/>
+                <file name="stellaris.gif"/>
+                <file name="ti.gif"/>
+                <file name="ti_logo.gif"/>
+                <file name="tuv.gif"/>
+            </directory>
+        </directory>
+    </source>
+</importSpec>

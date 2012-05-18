@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<html><head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1">
+<link href="styles.css" rel="stylesheet" media="screen"><title>Stellaris S2E Module Port 1 Settings</title><!--#p1vars--><!--#p1tvars--><!--#p1ipvar-->
+<script type="text/javascript" src="cfg.js"></script>
+</head>
+<body onload="SetFormDefaults()">
+
+<table width="100%" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr><td></td><td><h2>Port 1 Settings</h2></td></tr><tr>
+<td width="15%" valign="top"><a href="s2e.shtml">Home</a><br>
+<br>
+<a href="config1.shtml">Port 0<br>Settings</a><br><br>
+Port 1<br>Settings<br><br>
+<a href="misc.shtml">Miscellaneous<br>Settings</a><br><br>
+<a href="upd.shtml">Firmware<br>Update</a><br><br></td>
+<td align="left" valign="top">
+<table width="100%" border="0" cellpadding="4" cellspacing="2">
+<tbody><tr><td class="gr">Name:</td>
+<td><b><!--#modname--></b></td>
+</tr><tr>
+<td class="gr">Firmware Revision:</td>
+<td><!--#revision--></td></tr>
+<tr><td class="gr" width="25%">IP Address:</td>
+<td><!--#ipaddr--></td></tr>
+<tr><td class="gr">MAC Address:</td>
+<td><!--#macaddr--></td></tr></tbody></table>
+<h3>Settings:</h3>
+<p>The current settings for port 1 may be changed using the
+form below. To make the new settings apply each time the S2E module is
+reset, ensure that "Make these the default settings" is checked before
+pressing the "Apply Changes" button. If this control is not checked,
+the changes are applied to the port but the existing
+defaults are used whenever the module is next reset.
+<p><form name="config" action="config.cgi" method="get">
+<input name="port" value="1" type="hidden">
+<table width="100%" border="0" cellpadding="2" cellspacing="2">
+<tbody><tr class="gr">
+<td width="30%" class="gr"></td>
+<td width="30%" class="gl">Current</td>
+<td width="40%" class="gl">Updated</td>
+</tr>
+<tr><td class="gr">Baud Rate: </td>
+<td><!--#p1br--> bits/second</td>
+<td><select size="1" name="br"><option value="1024000">1024000</option><option value="460800">460800</option><option value="230400">230400</option><option value="115200">115200</option><option value="57600">57600</option><option value="38400">38400</option><option value="19200">19200</option><option value="14400">14400</option><option value="9600">9600</option><option value="4800">4800</option><option value="2400">2400</option><option value="1200">1200</option><option value="600">600</option><option value="300">300</option><option value="110">110</option></select>
+bits/S<br></td></tr>
+<tr><td class="gr">Data Size: </td>
+<td><!--#p1bc-->bits/character</td>
+<td><select size="1" name="bc"><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select>
+bits/character<br></td></tr>
+<tr><td class="gr">Parity: </td>
+<td><!--#p1p--></td>
+<td><select name="parity"><option value="1">None</option><option value="2">Odd</option><option value="3">Even</option><option value="4">Mark</option><option value="5">Space</option></select>
+</td></tr>
+<tr><td class="gr">Stop Bits: </td>
+<td><!--#p1sb-->bit(s)</td>
+<td><select size="1" name="stop"><option value="1">1</option><option value="2">2</option></select>
+bit(s)<br></td></tr>
+<tr><td class="gr">Flow Control: </td>
+<td><!--#p1fc--></td>
+<td><select size="1" name="flow"><option value="1">None</option><option value="3">Hardware</option></select>
+</td></tr>
+<tr><td class="gr">Local Telnet Port Number: </td>
+<td><!--#p1tlp--></td>
+<td><input maxlength="5" size="6" name="telnetlp"></td></tr>
+<tr><td class="gr">Remote Telnet Port Number: </td>
+<td><!--#p1trp--></td>
+<td><input maxlength="5" size="6" name="telnetrp"></td></tr>
+<tr><td class="gr">Telnet Mode: </td>
+<td><!--#p1tnm--></td>
+<td><select size="1" name="tnmode" onchange="SetIPState();"><option value="0">Server</option><option value="1">Client</option></select>
+</td></tr>
+<tr><td class="gr">Telnet Protocol: </td>
+<td><!--#p1prot--></td>
+<td><select size="1" name="tnprot"><option value="0">Telnet</option><option value="1">Raw</option></select>
+</td></tr>
+<tr><td class="gr">Telnet Server IP: </td>
+<td><!--#p1tip--></td>
+<td>
+<input maxlength="3" size="3" name="telnetip1">.
+<input maxlength="3" size="3" name="telnetip2">.
+<input maxlength="3" size="3" name="telnetip3">.
+<input maxlength="3" size="3" name="telnetip4">
+</td></tr>
+<tr><td class="gr">Telnet Timeout: </td>
+<td><!--#p1tt-->seconds</td>
+<td><input maxlength="4" size="6" name="telnett">
+seconds <font size="-1">(&lt; 256, 0 for no timeout)</font><br></td></tr>
+<tr><td></td>
+<td align="center"><input name="Submit" value="Submit" type="submit"></td>
+<td style="text-align: center;">
+<div>&nbsp;<input name="default" value="1" type="checkbox"> Make these the default settings.<br>
+</div></td></tr></tbody></table></form></td></tr></tbody></table>
+</body></html>

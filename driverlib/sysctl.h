@@ -2,7 +2,7 @@
 //
 // sysctl.h - Prototypes for the system control driver.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
+// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -55,7 +55,10 @@ extern "C"
 #endif
 #define SYSCTL_PERIPH_ADC0      0x00100001  // ADC0
 #define SYSCTL_PERIPH_ADC1      0x00100002  // ADC1
+#ifndef DEPRECATED
 #define SYSCTL_PERIPH_PWM       0x00100010  // PWM
+#endif
+#define SYSCTL_PERIPH_PWM0      0x00100010  // PWM
 #define SYSCTL_PERIPH_CAN0      0x00100100  // CAN 0
 #define SYSCTL_PERIPH_CAN1      0x00100200  // CAN 1
 #define SYSCTL_PERIPH_CAN2      0x00100400  // CAN 2
@@ -103,6 +106,74 @@ extern "C"
 #define SYSCTL_PERIPH_PLL       0x30000010  // PLL
 #define SYSCTL_PERIPH_TEMP      0x30000020  // Temperature sensor
 #define SYSCTL_PERIPH_MPU       0x30000080  // Cortex M3 MPU
+#define SYSCTL_PERIPH2_ADC0     0xf0003800  // ADC 0
+#define SYSCTL_PERIPH2_ADC1     0xf0003801  // ADC 1
+#define SYSCTL_PERIPH2_CAN0     0xf0003400  // CAN 0
+#define SYSCTL_PERIPH2_CAN1     0xf0003401  // CAN 1
+#define SYSCTL_PERIPH2_CAN2     0xf0003402  // CAN 2
+#define SYSCTL_PERIPH2_COMP0    0xf0003c00  // Analog comparator 0
+#define SYSCTL_PERIPH2_COMP1    0xf0003c01  // Analog comparator 1
+#define SYSCTL_PERIPH2_COMP2    0xf0003c02  // Analog comparator 2
+#define SYSCTL_PERIPH_EEPROM0   0xf0005800  // EEPROM 0
+#define SYSCTL_PERIPH_FAN0      0xf0005400  // FAN 0
+#define SYSCTL_PERIPH2_GPIOA    0xf0000800  // GPIO A
+#define SYSCTL_PERIPH2_GPIOB    0xf0000801  // GPIO B
+#define SYSCTL_PERIPH2_GPIOC    0xf0000802  // GPIO C
+#define SYSCTL_PERIPH2_GPIOD    0xf0000803  // GPIO D
+#define SYSCTL_PERIPH2_GPIOE    0xf0000804  // GPIO E
+#define SYSCTL_PERIPH2_GPIOF    0xf0000805  // GPIO F
+#define SYSCTL_PERIPH2_GPIOG    0xf0000806  // GPIO G
+#define SYSCTL_PERIPH2_GPIOH    0xf0000807  // GPIO H
+#define SYSCTL_PERIPH2_GPIOJ    0xf0000808  // GPIO J
+#define SYSCTL_PERIPH_GPIOK     0xf0000809  // GPIO K
+#define SYSCTL_PERIPH_GPIOL     0xf000080a  // GPIO L
+#define SYSCTL_PERIPH_GPIOM     0xf000080b  // GPIO M
+#define SYSCTL_PERIPH_GPION     0xf000080c  // GPIO N
+#define SYSCTL_PERIPH_GPIOP     0xf000080d  // GPIO P
+#define SYSCTL_PERIPH_GPIOQ     0xf000080e  // GPIO Q
+#define SYSCTL_PERIPH_GPIOR     0xf000080f  // GPIO R
+#define SYSCTL_PERIPH_GPIOS     0xf0000810  // GPIO S
+#define SYSCTL_PERIPH2_HIB      0xf0001400  // Hibernation module
+#define SYSCTL_PERIPH2_I2C0     0xf0002000  // I2C 0
+#define SYSCTL_PERIPH2_I2C1     0xf0002001  // I2C 1
+#define SYSCTL_PERIPH_I2C2      0xf0002002  // I2C 2
+#define SYSCTL_PERIPH_I2C3      0xf0002003  // I2C 3
+#define SYSCTL_PERIPH_I2C4      0xf0002004  // I2C 4
+#define SYSCTL_PERIPH_I2C5      0xf0002005  // I2C 5
+#define SYSCTL_PERIPH_LPC0      0xf0004800  // LPC 0
+#define SYSCTL_PERIPH_PECI0     0xf0005000  // PECI 0
+#define SYSCTL_PERIPH2_PWM0     0xf0004000  // PWM 0
+#define SYSCTL_PERIPH_PWM1      0xf0004001  // PWM 1
+#define SYSCTL_PERIPH2_QEI0     0xf0004400  // QEI 0
+#define SYSCTL_PERIPH2_QEI1     0xf0004401  // QEI 1
+#define SYSCTL_PERIPH2_SSI0     0xf0001c00  // SSI 0
+#define SYSCTL_PERIPH2_SSI1     0xf0001c01  // SSI 1
+#define SYSCTL_PERIPH_SSI2      0xf0001c02  // SSI 2
+#define SYSCTL_PERIPH_SSI3      0xf0001c03  // SSI 3
+#define SYSCTL_PERIPH2_TIMER0   0xf0000400  // Timer 0
+#define SYSCTL_PERIPH2_TIMER1   0xf0000401  // Timer 1
+#define SYSCTL_PERIPH2_TIMER2   0xf0000402  // Timer 2
+#define SYSCTL_PERIPH2_TIMER3   0xf0000403  // Timer 3
+#define SYSCTL_PERIPH_TIMER4    0xf0000404  // Timer 4
+#define SYSCTL_PERIPH_TIMER5    0xf0000405  // Timer 5
+#define SYSCTL_PERIPH_WTIMER0   0xf0005c00  // Wide Timer 0
+#define SYSCTL_PERIPH_WTIMER1   0xf0005c01  // Wide Timer 1
+#define SYSCTL_PERIPH_WTIMER2   0xf0005c02  // Wide Timer 2
+#define SYSCTL_PERIPH_WTIMER3   0xf0005c03  // Wide Timer 3
+#define SYSCTL_PERIPH_WTIMER4   0xf0005c04  // Wide Timer 4
+#define SYSCTL_PERIPH_WTIMER5   0xf0005c05  // Wide Timer 5
+#define SYSCTL_PERIPH2_UART0    0xf0001800  // UART 0
+#define SYSCTL_PERIPH2_UART1    0xf0001801  // UART 1
+#define SYSCTL_PERIPH2_UART2    0xf0001802  // UART 2
+#define SYSCTL_PERIPH_UART3     0xf0001803  // UART 3
+#define SYSCTL_PERIPH_UART4     0xf0001804  // UART 4
+#define SYSCTL_PERIPH_UART5     0xf0001805  // UART 5
+#define SYSCTL_PERIPH_UART6     0xf0001806  // UART 6
+#define SYSCTL_PERIPH_UART7     0xf0001807  // UART 7
+#define SYSCTL_PERIPH2_UDMA     0xf0000c00  // uDMA
+#define SYSCTL_PERIPH2_USB0     0xf0002800  // USB 0
+#define SYSCTL_PERIPH2_WDOG0    0xf0000000  // Watchdog 0
+#define SYSCTL_PERIPH2_WDOG1    0xf0000001  // Watchdog 1
 
 //*****************************************************************************
 //
@@ -394,6 +465,10 @@ extern "C"
 #define SYSCTL_XTAL_14_3MHZ     0x00000500  // External crystal is 14.31818 MHz
 #define SYSCTL_XTAL_16MHZ       0x00000540  // External crystal is 16 MHz
 #define SYSCTL_XTAL_16_3MHZ     0x00000580  // External crystal is 16.384 MHz
+#define SYSCTL_XTAL_18MHZ       0x000005C0  // External crystal is 18.0 MHz
+#define SYSCTL_XTAL_20MHZ       0x00000600  // External crystal is 20.0 MHz
+#define SYSCTL_XTAL_24MHZ       0x00000640  // External crystal is 24.0 MHz
+#define SYSCTL_XTAL_25MHZ       0x00000680  // External crystal is 25.0 MHz
 #define SYSCTL_OSC_MAIN         0x00000000  // Osc source is main osc
 #define SYSCTL_OSC_INT          0x00000010  // Osc source is int. osc
 #define SYSCTL_OSC_INT4         0x00000020  // Osc source is int. osc /4
@@ -477,6 +552,7 @@ extern "C"
 #define SYSCTL_DSLP_OSC_INT     0x00000010  // Osc source is int. osc
 #define SYSCTL_DSLP_OSC_INT30   0x00000030  // Osc source is int. 30 KHz
 #define SYSCTL_DSLP_OSC_EXT32   0x00000070  // Osc source is ext. 32 KHz
+#define SYSCTL_DSLP_PIOSC_PD    0x00000002  // Power down PIOSC in deep-sleep
 
 //*****************************************************************************
 //
@@ -495,6 +571,8 @@ extern "C"
 //
 //*****************************************************************************
 #define SYSCTL_MOSC_VALIDATE    0x00000001  // Enable MOSC validation
+#define SYSCTL_MOSC_INTERRUPT   0x00000002  // Generate interrupt on MOSC fail
+#define SYSCTL_MOSC_NO_XTAL     0x00000004  // No crystal is attached to MOSC
 
 //*****************************************************************************
 //
@@ -505,6 +583,9 @@ extern unsigned long SysCtlSRAMSizeGet(void);
 extern unsigned long SysCtlFlashSizeGet(void);
 extern tBoolean SysCtlPinPresent(unsigned long ulPin);
 extern tBoolean SysCtlPeripheralPresent(unsigned long ulPeripheral);
+extern tBoolean SysCtlPeripheralReady(unsigned long ulPeripheral);
+extern void SysCtlPeripheralPowerOn(unsigned long ulPeripheral);
+extern void SysCtlPeripheralPowerOff(unsigned long ulPeripheral);
 extern void SysCtlPeripheralReset(unsigned long ulPeripheral);
 extern void SysCtlPeripheralEnable(unsigned long ulPeripheral);
 extern void SysCtlPeripheralDisable(unsigned long ulPeripheral);

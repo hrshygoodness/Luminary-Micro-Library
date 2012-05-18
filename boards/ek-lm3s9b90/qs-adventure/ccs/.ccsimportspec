@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="clib.c"/>
+        <file name="common.h"/>
+        <file name="enet_if.c"/>
+        <file name="fileio.c"/>
+        <file name="io.c"/>
+        <file name="lwipopts.h"/>
+        <file name="osdepend.c"/>
+        <file name="qs-adventure.c"/>
+        <file name="usb_if.c"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

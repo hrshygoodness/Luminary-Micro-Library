@@ -2,7 +2,7 @@
 //
 // usbdcdc.c - USB CDC ACM (serial) device class driver.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -2203,8 +2203,7 @@ USBDCDCCompositeInit(unsigned long ulIndex, const tUSBDCDCDevice *psCDCDevice)
     //
     // Register our tick handler (this must be done after USBDCDInit).
     //
-    InternalUSBRegisterTickHandler(USB_TICK_HANDLER_DEVICE,
-                                   CDCTickHandler,
+    InternalUSBRegisterTickHandler(CDCTickHandler,
                                    (void *)psCDCDevice);
 
     //

@@ -3,7 +3,7 @@
 	<name>qs-bldc</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib</project>
+		<project>driverlib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

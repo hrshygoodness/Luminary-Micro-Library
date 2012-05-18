@@ -3,7 +3,7 @@
 // wavfile.c - This file supports reading audio data from a .wav file and
 // reading the file format.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //******************************************************************************
 
@@ -51,20 +51,20 @@
 
 //******************************************************************************
 //
-//! This function returns the format of a wav file that has been opened with
-//! the WavOpen() function.
-//!
-//! \param psWavData is the structure that was passed to the WavOpen() function.
-//! \param pWavHeader is the structure to fill with the format of the wav file.
-//!
-//! This function is used to get the audio format of a file that was opened
-//! with the WavOpen() function.  The \e psWavData parameter should be the
-//! same structure that was passed to the WavOpen() function.  The
-//! \e pWavHeader function will be filled with the format of the open file if
-//! the \e psWavData is a valid open file.  If this function is called with
-//! an invalid \e psWavData then the results will be undetermined.
-//!
-//! \return None.
+// This function returns the format of a wav file that has been opened with
+// the WavOpen() function.
+//
+// \param psWavData is the structure that was passed to the WavOpen() function.
+// \param pWavHeader is the structure to fill with the format of the wav file.
+//
+// This function is used to get the audio format of a file that was opened
+// with the WavOpen() function.  The \e psWavData parameter should be the
+// same structure that was passed to the WavOpen() function.  The
+// \e pWavHeader function will be filled with the format of the open file if
+// the \e psWavData is a valid open file.  If this function is called with
+// an invalid \e psWavData then the results will be undetermined.
+//
+// \return None.
 //
 //******************************************************************************
 void
@@ -82,23 +82,23 @@ WavGetFormat(tWavFile *psWavData, tWavHeader *pWavHeader)
 
 //******************************************************************************
 //
-//! This function is called to open and determine if a file is a valid .wav
-//! file.
-//!
-//! \param pcFileName is the null terminated string for the file to open.
-//! \param psWavData is the structure used to hold the file state information.
-//!
-//! This function is used to open a file and determine if it is a valid .wav
-//! file.  The \e pcFileName will be opened and read to look for a valid .wav
-//! file header and prepared for calling the WavRead() or WavGetFormat()
-//! functions.  When an application is done with the .wav file it should call
-//! the WavClose() function to free up the file.  The function will return
-//! zero if the function successfully opened a .wav file and a non-zero value
-//! indicates that the file was a valid .wav file or the file could not be
-//! opened.
-//!
-//! \return A value of zero indicates that the file was successfully opened and
-//! any other value indicates that the file was not opened.
+// This function is called to open and determine if a file is a valid .wav
+// file.
+//
+// \param pcFileName is the null terminated string for the file to open.
+// \param psWavData is the structure used to hold the file state information.
+//
+// This function is used to open a file and determine if it is a valid .wav
+// file.  The \e pcFileName will be opened and read to look for a valid .wav
+// file header and prepared for calling the WavRead() or WavGetFormat()
+// functions.  When an application is done with the .wav file it should call
+// the WavClose() function to free up the file.  The function will return
+// zero if the function successfully opened a .wav file and a non-zero value
+// indicates that the file was a valid .wav file or the file could not be
+// opened.
+//
+// \return A value of zero indicates that the file was successfully opened and
+// any other value indicates that the file was not opened.
 //
 //******************************************************************************
 int
@@ -223,16 +223,16 @@ WavOpen(const char *pcFileName, tWavFile *psWavData)
 
 //******************************************************************************
 //
-//! This is used to close a .wav file that was opened with WavOpen().
-//!
-//! \param psWavData is the file structure that was passed into the WavOpen()
-//! function.
-//!
-//! This function should be called when a function has completed using a .wav
-//! file that was opened with the WavOpen() function.  This will free up any
-//! file system data that is held while the file is open.
-//!
-//! \return None.
+// This is used to close a .wav file that was opened with WavOpen().
+//
+// \param psWavData is the file structure that was passed into the WavOpen()
+// function.
+//
+// This function should be called when a function has completed using a .wav
+// file that was opened with the WavOpen() function.  This will free up any
+// file system data that is held while the file is open.
+//
+// \return None.
 //
 //******************************************************************************
 void
@@ -254,20 +254,20 @@ WavClose(tWavFile *psWavData)
 
 //******************************************************************************
 //
-//! This function is used to read audio data from a file that was opened with
-//! the WavOpen() function.
-//!
-//! \param psWavData is the file structure that was passed into the WavOpen()
-//! function.
-//! \param pucBuffer is the buffer to read data into.
-//! \param ulSize is the amount of data to read in bytes.
-//!
-//!
-//! This function handles reading data from a .wav file that was opened with
-//! the WavOpen() function.   The function will return the actual number of
-//! of bytes read from the file.
-//!
-//! \return This function returns the number of bytes read from the file.
+// This function is used to read audio data from a file that was opened with
+// the WavOpen() function.
+//
+// \param psWavData is the file structure that was passed into the WavOpen()
+// function.
+// \param pucBuffer is the buffer to read data into.
+// \param ulSize is the amount of data to read in bytes.
+//
+//
+// This function handles reading data from a .wav file that was opened with
+// the WavOpen() function.   The function will return the actual number of
+// of bytes read from the file.
+//
+// \return This function returns the number of bytes read from the file.
 //
 //******************************************************************************
 unsigned short

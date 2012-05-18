@@ -2,7 +2,7 @@
 //
 // udma_timer_ccp.c - uDMA with timer edge capture example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/pwm.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
@@ -206,7 +207,7 @@ SetupSignalSource(void)
     // Enable the PWM peripheral and configure the GPIO pin
     // used for PWM0.  GPIO pin D0 is used for PWM0 output.
     //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
     GPIOPinConfigure(GPIO_PD0_PWM0);
     GPIOPinTypePWM(GPIO_PORTD_BASE, GPIO_PIN_0);
 
@@ -214,11 +215,11 @@ SetupSignalSource(void)
     // Configure the PWM0 output to generate a 50% square wave with a
     // period of 5000 processor cycles.
     //
-    PWMGenConfigure(PWM_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, TIMEOUT_VAL);
-    PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, TIMEOUT_VAL / 2);
-    PWMOutputState(PWM_BASE, PWM_OUT_0_BIT, 1);
-    PWMGenEnable(PWM_BASE, PWM_GEN_0);
+    PWMGenConfigure(PWM0_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, TIMEOUT_VAL);
+    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, TIMEOUT_VAL / 2);
+    PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, 1);
+    PWMGenEnable(PWM0_BASE, PWM_GEN_0);
 }
 
 //*****************************************************************************
@@ -288,7 +289,7 @@ main(void)
     // Set up Timer0B for edge-timer mode, positive edge
     //
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
-    TimerConfigure(TIMER0_BASE, TIMER_CFG_16_BIT_PAIR | TIMER_CFG_B_CAP_TIME);
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_B_CAP_TIME);
     TimerControlEvent(TIMER0_BASE, TIMER_B, TIMER_EVENT_POS_EDGE);
     TimerLoadSet(TIMER0_BASE, TIMER_B, 0xffff);
 

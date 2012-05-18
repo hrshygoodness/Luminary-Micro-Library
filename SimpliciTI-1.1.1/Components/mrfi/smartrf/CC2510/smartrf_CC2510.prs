@@ -1,0 +1,32 @@
+FSCTRL1  |0xDF07|0x0A|Frequency synthesizer control.
+FSCTRL0  |0xDF08|0x00|Frequency synthesizer control.
+FREQ2    |0xDF09|0x5D|Frequency control word, high byte.
+FREQ1    |0xDF0A|0x44|Frequency control word, middle byte.
+FREQ0    |0xDF0B|0xEC|Frequency control word, low byte.
+MDMCFG4  |0xDF0C|0x2D|Modem configuration.
+MDMCFG3  |0xDF0D|0x3B|Modem configuration.
+MDMCFG2  |0xDF0E|0x73|Modem configuration.
+MDMCFG1  |0xDF0F|0x23|Modem configuration.
+MDMCFG0  |0xDF10|0x3B|Modem configuration.
+CHANNR   |0xDF06|0x03|Channel number.
+DEVIATN  |0xDF11|0x00|Modem deviation setting (when FSK modulation is enabled).
+FREND1   |0xDF1A|0xB6|Front end RX configuration.
+FREND0   |0xDF1B|0x10|Front end RX configuration.
+MCSM0    |0xDF14|0x10|Main Radio Control State Machine configuration.
+FOCCFG   |0xDF15|0x1D|Frequency Offset Compensation Configuration.
+BSCFG    |0xDF16|0x1C|Bit synchronization Configuration.
+AGCCTRL2 |0xDF17|0xC7|AGC control.
+AGCCTRL1 |0xDF18|0x00|AGC control.
+AGCCTRL0 |0xDF19|0xB2|AGC control.
+FSCAL3   |0xDF1C|0xEA|Frequency synthesizer calibration.
+FSCAL2   |0xDF1D|0x0A|Frequency synthesizer calibration.
+FSCAL1   |0xDF1E|0x00|Frequency synthesizer calibration.
+FSCAL0   |0xDF1F|0x11|Frequency synthesizer calibration.
+TEST2    |0xDF23|0x88|Various test settings.
+TEST1    |0xDF24|0x31|Various test settings.
+TEST0    |0xDF25|0x09|Various test settings.
+PA_TABLE0|0xDF2E|0xFE|PA output power setting.
+PKTCTRL1 |0xDF03|0x04|Packet automation control.
+PKTCTRL0 |0xDF04|0x05|Packet automation control.
+ADDR     |0xDF05|0x00|Device address.
+PKTLEN   |0xDF02|0xFF|Packet length.

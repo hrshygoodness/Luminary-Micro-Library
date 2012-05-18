@@ -2,7 +2,7 @@
 //
 // ui.c - User interface module.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-BLDC Firmware Package.
+// This is part of revision 8555 of the RDK-BLDC Firmware Package.
 //
 //*****************************************************************************
 
@@ -633,7 +633,7 @@ UIInit(void)
     //
     // Configure and enable a timer to provide a periodic interrupt.
     //
-    TimerConfigure(TIMER1_BASE, TIMER_CFG_32_BIT_PER);
+    TimerConfigure(TIMER1_BASE, TIMER_CFG_PERIODIC);
     TimerLoadSet(TIMER1_BASE, TIMER_A, (SYSTEM_CLOCK / TIMER1A_INT_RATE));
     TimerIntEnable(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
     IntEnable(INT_TIMER1A);

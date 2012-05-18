@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the USB host mass storage example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -52,6 +57,7 @@ IPATH=..
 IPATH+=../../..
 IPATH+=../../../third_party
 
+#
 # The default rule, which causes the USB host mass storage example to be built.
 #
 all: ${COMPILER}
@@ -82,9 +88,9 @@ ${COMPILER}/usb_host_msc.axf: ${COMPILER}/touch.o
 ${COMPILER}/usb_host_msc.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/usb_host_msc.axf: ${COMPILER}/usb_host_msc.o
 ${COMPILER}/usb_host_msc.axf: ${COMPILER}/ustdlib.o
-${COMPILER}/usb_host_msc.axf: ${ROOT}/usblib/${COMPILER}/libusb.a
-${COMPILER}/usb_host_msc.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/usb_host_msc.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/usb_host_msc.axf: ${ROOT}/usblib/${COMPILER}-cm3/libusb-cm3.a
+${COMPILER}/usb_host_msc.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/usb_host_msc.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/usb_host_msc.axf: usb_host_msc.ld
 SCATTERgcc_usb_host_msc=usb_host_msc.ld
 ENTRY_usb_host_msc=ResetISR

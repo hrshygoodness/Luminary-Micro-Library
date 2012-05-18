@@ -2,7 +2,7 @@
 //
 // hello.c - Simple hello world example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -105,14 +105,14 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&sContext, &g_sFontCm20);
+    GrContextFontSet(&sContext, g_pFontCm20);
     GrStringDrawCentered(&sContext, "hello", -1,
                          GrContextDpyWidthGet(&sContext) / 2, 10, 0);
 
     //
     // Say hello using the Computer Modern 40 point font.
     //
-    GrContextFontSet(&sContext, &g_sFontCm40);
+    GrContextFontSet(&sContext, g_pFontCm40);
     GrStringDrawCentered(&sContext, "Hello World!", -1,
                          GrContextDpyWidthGet(&sContext) / 2,
                          ((GrContextDpyHeightGet(&sContext) - 24) / 2) + 24,

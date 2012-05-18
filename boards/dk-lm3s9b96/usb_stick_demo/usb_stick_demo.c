@@ -2,7 +2,7 @@
 //
 // usb_stick_demo.c - USB stick update demo.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -120,14 +120,14 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&sContext, &g_sFontCm20);
+    GrContextFontSet(&sContext, g_pFontCm20);
     GrStringDrawCentered(&sContext, "usb-stick-demo", -1,
                          GrContextDpyWidthGet(&sContext) / 2, 10, 0);
 
     //
     // Indicate what is happening.
     //
-    GrContextFontSet(&sContext, &g_sFontCm24);
+    GrContextFontSet(&sContext, g_pFontCm24);
     GrStringDrawCentered(&sContext, "Press the user button to", -1,
                          GrContextDpyWidthGet(&sContext) / 2, 60, 0);
     GrStringDrawCentered(&sContext, "start the USB stick updater", -1,

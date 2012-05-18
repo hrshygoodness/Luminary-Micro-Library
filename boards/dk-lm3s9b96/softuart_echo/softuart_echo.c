@@ -3,7 +3,7 @@
 // softuart_echo.c - Example for reading data from and writing data to the
 //                   SoftUART.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -274,14 +274,14 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "uart-echo", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 11, 0);
 
     //
     // Initialize the display and write status.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss22b);
+    GrContextFontSet(&g_sContext, g_pFontCmss22b);
     GrStringDraw(&g_sContext, "Port:",       -1,  70, 40, 0);
     GrStringDraw(&g_sContext, "Baud:",       -1,  70, 65, 0);
     GrStringDraw(&g_sContext, "Data:",       -1,  70, 90, 0);
@@ -322,7 +322,7 @@ main(void)
     // Configure the timer for the SoftUART transmitter.
     //
     ROM_TimerConfigure(TIMER0_BASE,
-                       (TIMER_CFG_16_BIT_PAIR | TIMER_CFG_A_PERIODIC |
+                       (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC |
                         TIMER_CFG_B_PERIODIC));
     ROM_TimerLoadSet(TIMER0_BASE, TIMER_A, g_ulBitTime);
     ROM_TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT | TIMER_TIMB_TIMEOUT);

@@ -4,7 +4,7 @@
 //                             display with an SSD2119 controller attached via
 //                             the FPGA/Camera daughter board.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -189,35 +189,35 @@ WriteCommand(unsigned char ucData)
 
 //*****************************************************************************
 //
-//! Initializes the display driver.
-//!
-//! \param ulFrameBufAddr is the address of the graphics frame buffer relative
-//! to the start of FPGA SRAM.
-//!
-//! This function initializes the SSD2119 display controller on the panel,
-//! preparing it to display data, and also configures the the buffer used to
-//! store the graphics image when operating in FPGA auto-refresh mode.  This
-//! buffer must be (320 * 240 * 2) bytes in size to hold one full screen image.
-//! Valid values for the \e ulFrameBuffAddr parameter are, therefore, between
-//! 0 and 1MB - (320 * 240 * 2).
-//!
-//! The display driver operates in one of two modes.  By default, the display
-//! controller on the LCD panel is accessed directly via writes to its command
-//! and data registers.  To allow use with video captured using the FPGA,
-//! however, a second mode is implemented where the graphics image is held in
-//! FPGA SRAM and the display is automatically refreshed, mixing video and
-//! graphics.  In this mode, the display driver renders the graphics into an
-//! offscreen buffer in FPGA SRAM rather than by writing to the LCD controller
-//! registers directly and the FPGA itself refreshes the LCD display.
-//!
-//! On exit from this function the system is in ``auto'' mode.  Further calls
-//! to the display driver will access the display via the graphics buffer
-//! managed by the FPGA.  In this mode, video capture and display is supported.
-//! To allow direct access to the LCD command and data registers, the
-//! application must call Kitronix320x240x16_FPGAModeSet(false) to switch
-//! to ``legacy'' mode.  In this mode, motion video display is not possible.
-//!
-//! \return None.
+// Initializes the display driver.
+//
+// \param ulFrameBufAddr is the address of the graphics frame buffer relative
+// to the start of FPGA SRAM.
+//
+// This function initializes the SSD2119 display controller on the panel,
+// preparing it to display data, and also configures the the buffer used to
+// store the graphics image when operating in FPGA auto-refresh mode.  This
+// buffer must be (320 * 240 * 2) bytes in size to hold one full screen image.
+// Valid values for the \e ulFrameBuffAddr parameter are, therefore, between
+// 0 and 1MB - (320 * 240 * 2).
+//
+// The display driver operates in one of two modes.  By default, the display
+// controller on the LCD panel is accessed directly via writes to its command
+// and data registers.  To allow use with video captured using the FPGA,
+// however, a second mode is implemented where the graphics image is held in
+// FPGA SRAM and the display is automatically refreshed, mixing video and
+// graphics.  In this mode, the display driver renders the graphics into an
+// offscreen buffer in FPGA SRAM rather than by writing to the LCD controller
+// registers directly and the FPGA itself refreshes the LCD display.
+//
+// On exit from this function the system is in ``auto'' mode.  Further calls
+// to the display driver will access the display via the graphics buffer
+// managed by the FPGA.  In this mode, video capture and display is supported.
+// To allow direct access to the LCD command and data registers, the
+// application must call Kitronix320x240x16_FPGAModeSet(false) to switch
+// to ``legacy'' mode.  In this mode, motion video display is not possible.
+//
+// \return None.
 //
 //*****************************************************************************
 void
@@ -409,13 +409,13 @@ Kitronix320x240x16_FPGAInit(unsigned long ulFrameBufAddr)
 
 //*****************************************************************************
 //
-//! Enables or disables the LCD display backlight.
-//!
-//! \param bEnable is \b true to enable the backlight or \b false to disable it.
-//!
-//! This function turns the display backlight on or off.
-//!
-//! \return None.
+// Enables or disables the LCD display backlight.
+//
+// \param bEnable is \b true to enable the backlight or \b false to disable it.
+//
+// This function turns the display backlight on or off.
+//
+// \return None.
 //
 //*****************************************************************************
 void
@@ -439,18 +439,18 @@ Kitronix320x240x16_FPGABacklight(tBoolean bEnable)
 
 //*****************************************************************************
 //
-//! Draws a pixel on the screen (FPGA auto refresh mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the pixel.
-//! \param lY is the Y coordinate of the pixel.
-//! \param ulValue is the color of the pixel.
-//!
-//! This function sets the given pixel to a particular color.  The coordinates
-//! of the pixel are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a pixel on the screen (FPGA auto refresh mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the pixel.
+// \param lY is the Y coordinate of the pixel.
+// \param ulValue is the color of the pixel.
+//
+// This function sets the given pixel to a particular color.  The coordinates
+// of the pixel are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -466,28 +466,28 @@ Kitronix320x240x16_FPGAPixelDrawAuto(void *pvDisplayData, long lX, long lY,
 
 //*****************************************************************************
 //
-//! Draws a horizontal sequence of pixels on the screen (FPGA auto refresh
-//! mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the first pixel.
-//! \param lY is the Y coordinate of the first pixel.
-//! \param lX0 is sub-pixel offset within the pixel data, which is valid for 1
-//! or 4 bit per pixel formats.
-//! \param lCount is the number of pixels to draw.
-//! \param lBPP is the number of bits per pixel; must be 1, 4, or 8.
-//! \param pucData is a pointer to the pixel data.  For 1 and 4 bit per pixel
-//! formats, the most significant bit(s) represent the left-most pixel.
-//! \param pucPalette is a pointer to the palette used to draw the pixels.
-//!
-//! This function draws a horizontal sequence of pixels on the screen, using
-//! the supplied palette.  For 1 bit per pixel format, the palette contains
-//! pre-translated colors; for 4 and 8 bit per pixel formats, the palette
-//! contains 24-bit RGB values that must be translated before being written to
-//! the display.
-//!
-//! \return None.
+// Draws a horizontal sequence of pixels on the screen (FPGA auto refresh
+// mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the first pixel.
+// \param lY is the Y coordinate of the first pixel.
+// \param lX0 is sub-pixel offset within the pixel data, which is valid for 1
+// or 4 bit per pixel formats.
+// \param lCount is the number of pixels to draw.
+// \param lBPP is the number of bits per pixel; must be 1, 4, or 8.
+// \param pucData is a pointer to the pixel data.  For 1 and 4 bit per pixel
+// formats, the most significant bit(s) represent the left-most pixel.
+// \param pucPalette is a pointer to the palette used to draw the pixels.
+//
+// This function draws a horizontal sequence of pixels on the screen, using
+// the supplied palette.  For 1 bit per pixel format, the palette contains
+// pre-translated colors; for 4 and 8 bit per pixel formats, the palette
+// contains 24-bit RGB values that must be translated before being written to
+// the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -693,19 +693,19 @@ Kitronix320x240x16_FPGAPixelDrawMultipleAuto(void *pvDisplayData, long lX,
 
 //*****************************************************************************
 //
-//! Draws a horizontal line (FPGA auto refresh mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX1 is the X coordinate of the start of the line.
-//! \param lX2 is the X coordinate of the end of the line.
-//! \param lY is the Y coordinate of the line.
-//! \param ulValue is the color of the line.
-//!
-//! This function draws a horizontal line on the display.  The coordinates of
-//! the line are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a horizontal line (FPGA auto refresh mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX1 is the X coordinate of the start of the line.
+// \param lX2 is the X coordinate of the end of the line.
+// \param lY is the Y coordinate of the line.
+// \param ulValue is the color of the line.
+//
+// This function draws a horizontal line on the display.  The coordinates of
+// the line are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -732,19 +732,19 @@ Kitronix320x240x16_FPGALineDrawHAuto(void *pvDisplayData, long lX1, long lX2,
 
 //*****************************************************************************
 //
-//! Draws a vertical line (FPGA auto refresh mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the line.
-//! \param lY1 is the Y coordinate of the start of the line.
-//! \param lY2 is the Y coordinate of the end of the line.
-//! \param ulValue is the color of the line.
-//!
-//! This function draws a vertical line on the display.  The coordinates of the
-//! line are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a vertical line (FPGA auto refresh mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the line.
+// \param lY1 is the Y coordinate of the start of the line.
+// \param lY2 is the Y coordinate of the end of the line.
+// \param ulValue is the color of the line.
+//
+// This function draws a vertical line on the display.  The coordinates of the
+// line are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -782,19 +782,19 @@ Kitronix320x240x16_FPGALineDrawVAuto(void *pvDisplayData, long lX, long lY1,
 
 //*****************************************************************************
 //
-//! Fills a rectangle (FPGA auto refresh mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param pRect is a pointer to the structure describing the rectangle.
-//! \param ulValue is the color of the rectangle.
-//!
-//! This function fills a rectangle on the display.  The coordinates of the
-//! rectangle are assumed to be within the extents of the display, and the
-//! rectangle specification is fully inclusive (in other words, both sXMin and
-//! sXMax are drawn, along with sYMin and sYMax).
-//!
-//! \return None.
+// Fills a rectangle (FPGA auto refresh mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param pRect is a pointer to the structure describing the rectangle.
+// \param ulValue is the color of the rectangle.
+//
+// This function fills a rectangle on the display.  The coordinates of the
+// rectangle are assumed to be within the extents of the display, and the
+// rectangle specification is fully inclusive (in other words, both sXMin and
+// sXMax are drawn, along with sYMin and sYMax).
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -837,17 +837,17 @@ Kitronix320x240x16_FPGARectFillAuto(void *pvDisplayData, const tRectangle *pRect
 
 //*****************************************************************************
 //
-//! Flushes any cached drawing operations (FPGA auto refresh mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//!
-//! This functions flushes any cached drawing operations to the display.  This
-//! is useful when a local frame buffer is used for drawing operations, and the
-//! flush would copy the local frame buffer to the display.  For the SSD2119
-//! driver, the flush is a no operation.
-//!
-//! \return None.
+// Flushes any cached drawing operations (FPGA auto refresh mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+//
+// This functions flushes any cached drawing operations to the display.  This
+// is useful when a local frame buffer is used for drawing operations, and the
+// flush would copy the local frame buffer to the display.  For the SSD2119
+// driver, the flush is a no operation.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -860,18 +860,18 @@ Kitronix320x240x16_FPGAFlushAuto(void *pvDisplayData)
 
 //*****************************************************************************
 //
-//! Draws a pixel on the screen (direct LCD access mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the pixel.
-//! \param lY is the Y coordinate of the pixel.
-//! \param ulValue is the color of the pixel.
-//!
-//! This function sets the given pixel to a particular color.  The coordinates
-//! of the pixel are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a pixel on the screen (direct LCD access mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the pixel.
+// \param lY is the Y coordinate of the pixel.
+// \param ulValue is the color of the pixel.
+//
+// This function sets the given pixel to a particular color.  The coordinates
+// of the pixel are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -899,28 +899,28 @@ Kitronix320x240x16_FPGAPixelDraw(void *pvDisplayData, long lX, long lY,
 
 //*****************************************************************************
 //
-//! Draws a horizontal sequence of pixels on the screen (direct LCD access
-//! mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the first pixel.
-//! \param lY is the Y coordinate of the first pixel.
-//! \param lX0 is sub-pixel offset within the pixel data, which is valid for 1
-//! or 4 bit per pixel formats.
-//! \param lCount is the number of pixels to draw.
-//! \param lBPP is the number of bits per pixel; must be 1, 4, or 8.
-//! \param pucData is a pointer to the pixel data.  For 1 and 4 bit per pixel
-//! formats, the most significant bit(s) represent the left-most pixel.
-//! \param pucPalette is a pointer to the palette used to draw the pixels.
-//!
-//! This function draws a horizontal sequence of pixels on the screen, using
-//! the supplied palette.  For 1 bit per pixel format, the palette contains
-//! pre-translated colors; for 4 and 8 bit per pixel formats, the palette
-//! contains 24-bit RGB values that must be translated before being written to
-//! the display.
-//!
-//! \return None.
+// Draws a horizontal sequence of pixels on the screen (direct LCD access
+// mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the first pixel.
+// \param lY is the Y coordinate of the first pixel.
+// \param lX0 is sub-pixel offset within the pixel data, which is valid for 1
+// or 4 bit per pixel formats.
+// \param lCount is the number of pixels to draw.
+// \param lBPP is the number of bits per pixel; must be 1, 4, or 8.
+// \param pucData is a pointer to the pixel data.  For 1 and 4 bit per pixel
+// formats, the most significant bit(s) represent the left-most pixel.
+// \param pucPalette is a pointer to the palette used to draw the pixels.
+//
+// This function draws a horizontal sequence of pixels on the screen, using
+// the supplied palette.  For 1 bit per pixel format, the palette contains
+// pre-translated colors; for 4 and 8 bit per pixel formats, the palette
+// contains 24-bit RGB values that must be translated before being written to
+// the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -1136,19 +1136,19 @@ Kitronix320x240x16_FPGAPixelDrawMultiple(void *pvDisplayData, long lX,
 
 //*****************************************************************************
 //
-//! Draws a horizontal line (direct LCD access mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX1 is the X coordinate of the start of the line.
-//! \param lX2 is the X coordinate of the end of the line.
-//! \param lY is the Y coordinate of the line.
-//! \param ulValue is the color of the line.
-//!
-//! This function draws a horizontal line on the display.  The coordinates of
-//! the line are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a horizontal line (direct LCD access mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX1 is the X coordinate of the start of the line.
+// \param lX2 is the X coordinate of the end of the line.
+// \param lY is the Y coordinate of the line.
+// \param ulValue is the color of the line.
+//
+// This function draws a horizontal line on the display.  The coordinates of
+// the line are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -1192,19 +1192,19 @@ Kitronix320x240x16_FPGALineDrawH(void *pvDisplayData, long lX1, long lX2,
 
 //*****************************************************************************
 //
-//! Draws a vertical line (direct LCD access mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param lX is the X coordinate of the line.
-//! \param lY1 is the Y coordinate of the start of the line.
-//! \param lY2 is the Y coordinate of the end of the line.
-//! \param ulValue is the color of the line.
-//!
-//! This function draws a vertical line on the display.  The coordinates of the
-//! line are assumed to be within the extents of the display.
-//!
-//! \return None.
+// Draws a vertical line (direct LCD access mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param lX is the X coordinate of the line.
+// \param lY1 is the Y coordinate of the start of the line.
+// \param lY2 is the Y coordinate of the end of the line.
+// \param ulValue is the color of the line.
+//
+// This function draws a vertical line on the display.  The coordinates of the
+// line are assumed to be within the extents of the display.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -1248,19 +1248,19 @@ Kitronix320x240x16_FPGALineDrawV(void *pvDisplayData, long lX, long lY1,
 
 //*****************************************************************************
 //
-//! Fills a rectangle (direct LCD access mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param pRect is a pointer to the structure describing the rectangle.
-//! \param ulValue is the color of the rectangle.
-//!
-//! This function fills a rectangle on the display.  The coordinates of the
-//! rectangle are assumed to be within the extents of the display, and the
-//! rectangle specification is fully inclusive (in other words, both sXMin and
-//! sXMax are drawn, along with sYMin and sYMax).
-//!
-//! \return None.
+// Fills a rectangle (direct LCD access mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param pRect is a pointer to the structure describing the rectangle.
+// \param ulValue is the color of the rectangle.
+//
+// This function fills a rectangle on the display.  The coordinates of the
+// rectangle are assumed to be within the extents of the display, and the
+// rectangle specification is fully inclusive (in other words, both sXMin and
+// sXMax are drawn, along with sYMin and sYMax).
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -1335,17 +1335,17 @@ Kitronix320x240x16_FPGARectFill(void *pvDisplayData, const tRectangle *pRect,
 
 //*****************************************************************************
 //
-//! Flushes any cached drawing operations (direct LCD access mode).
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//!
-//! This functions flushes any cached drawing operations to the display.  This
-//! is useful when a local frame buffer is used for drawing operations, and the
-//! flush would copy the local frame buffer to the display.  For the SSD2119
-//! driver, the flush is a no operation.
-//!
-//! \return None.
+// Flushes any cached drawing operations (direct LCD access mode).
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+//
+// This functions flushes any cached drawing operations to the display.  This
+// is useful when a local frame buffer is used for drawing operations, and the
+// flush would copy the local frame buffer to the display.  For the SSD2119
+// driver, the flush is a no operation.
+//
+// \return None.
 //
 //*****************************************************************************
 static void
@@ -1358,19 +1358,19 @@ Kitronix320x240x16_FPGAFlush(void *pvDisplayData)
 
 //*****************************************************************************
 //
-//! Translates a 24-bit RGB color to a display driver-specific color.
-//!
-//! \param pvDisplayData is a pointer to the driver-specific data for this
-//! display driver.
-//! \param ulValue is the 24-bit RGB color.  The least-significant byte is the
-//! blue channel, the next byte is the green channel, and the third byte is the
-//! red channel.
-//!
-//! This function translates a 24-bit RGB color into a value that can be
-//! written into the display's frame buffer in order to reproduce that color,
-//! or the closest possible approximation of that color.
-//!
-//! \return Returns the display-driver specific color.
+// Translates a 24-bit RGB color to a display driver-specific color.
+//
+// \param pvDisplayData is a pointer to the driver-specific data for this
+// display driver.
+// \param ulValue is the 24-bit RGB color.  The least-significant byte is the
+// blue channel, the next byte is the green channel, and the third byte is the
+// red channel.
+//
+// This function translates a 24-bit RGB color into a value that can be
+// written into the display's frame buffer in order to reproduce that color,
+// or the closest possible approximation of that color.
+//
+// \return Returns the display-driver specific color.
 //
 //*****************************************************************************
 static unsigned long
@@ -1385,21 +1385,21 @@ Kitronix320x240x16_FPGAColorTranslate(void *pvDisplayData,
 
 //*****************************************************************************
 //
-//! Translates a 24-bit RGB color to a display driver-specific color.
-//!
-//! \param ulValue is the 24-bit RGB color.  The least-significant byte is the
-//! blue channel, the next byte is the green channel, and the third byte is the
-//! red channel.
-//!
-//! This function translates a 24-bit RGB color into a value that can be
-//! written into the display's frame buffer in order to reproduce that color,
-//! or the closest possible approximation of that color.  Functionally, it is
-//! exactly equivalent to Kitronix320x240x16_FPGAColorTranslate() except that
-//! it does not require the driver-specific data structure pointer to be
-//! passed and is, hence, callable from clients other than the graphics
-//! library.
-//!
-//! \return Returns the display-driver specific color.
+// Translates a 24-bit RGB color to a display driver-specific color.
+//
+// \param ulValue is the 24-bit RGB color.  The least-significant byte is the
+// blue channel, the next byte is the green channel, and the third byte is the
+// red channel.
+//
+// This function translates a 24-bit RGB color into a value that can be
+// written into the display's frame buffer in order to reproduce that color,
+// or the closest possible approximation of that color.  Functionally, it is
+// exactly equivalent to Kitronix320x240x16_FPGAColorTranslate() except that
+// it does not require the driver-specific data structure pointer to be
+// passed and is, hence, callable from clients other than the graphics
+// library.
+//
+// \return Returns the display-driver specific color.
 //
 //*****************************************************************************
 unsigned long
@@ -1413,27 +1413,27 @@ Kitronix320x240x16_FPGAColorMap(unsigned long ulValue)
 
 //*****************************************************************************
 //
-//! Sets the display driver mode.
-//!
-//! \param bAutoRefresh is \b true if the display driver should use the
-//! FPGA's frame-buffer-based automatic refresh mode or \b false to remain in
-//! direct LCD access mode.
-//!
-//! This display driver operates in one of two modes.  By default, the display
-//! controller on the LCD panel is accessed directly via writes to its command
-//! and data registers.  To allow use with video captured using the FPGA,
-//! however, a second mode is implemented where the graphics image is held in
-//! FPGA SRAM and the display is automatically refreshed, mixing video and
-//! graphics.  In this mode, the display driver renders the graphics into an
-//! offscreen buffer in FPGA SRAM rather than by writing to the LCD controller
-//! registers.
-//!
-//! \note When disabling auto refresh mode, the caller must wait for the FPGA
-//! to signal that it has stopped accessing the LCD controller before calling
-//! the display driver again.  Calls are safe following the next ``LCD transfer
-//! end interrupt'' from the FPGA.
-//!
-//! \return None.
+// Sets the display driver mode.
+//
+// \param bAutoRefresh is \b true if the display driver should use the
+// FPGA's frame-buffer-based automatic refresh mode or \b false to remain in
+// direct LCD access mode.
+//
+// This display driver operates in one of two modes.  By default, the display
+// controller on the LCD panel is accessed directly via writes to its command
+// and data registers.  To allow use with video captured using the FPGA,
+// however, a second mode is implemented where the graphics image is held in
+// FPGA SRAM and the display is automatically refreshed, mixing video and
+// graphics.  In this mode, the display driver renders the graphics into an
+// offscreen buffer in FPGA SRAM rather than by writing to the LCD controller
+// registers.
+//
+// \note When disabling auto refresh mode, the caller must wait for the FPGA
+// to signal that it has stopped accessing the LCD controller before calling
+// the display driver again.  Calls are safe following the next ``LCD transfer
+// end interrupt'' from the FPGA.
+//
+// \return None.
 //
 //*****************************************************************************
 void
@@ -1487,9 +1487,9 @@ Kitronix320x240x16_FPGAModeSet(tBoolean bAutoRefresh)
 
 //*****************************************************************************
 //
-//! The display structure that describes the driver for the Kitronix
-//! K350QVG-V1-F TFT panel with an SSD2119 controller attached via the
-//! FPGA/camera daughter board.
+// The display structure that describes the driver for the Kitronix
+// K350QVG-V1-F TFT panel with an SSD2119 controller attached via the
+// FPGA/camera daughter board.
 //
 //*****************************************************************************
 tDisplay g_sKitronix320x240x16_FPGA =
@@ -1510,6 +1510,6 @@ tDisplay g_sKitronix320x240x16_FPGA =
 //*****************************************************************************
 //
 // Close the Doxygen group.
-//! @}
+// @}
 //
 //*****************************************************************************

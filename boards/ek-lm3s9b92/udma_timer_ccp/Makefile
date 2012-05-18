@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the Edge capture timer with uDMA example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+# This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B92
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -47,6 +52,7 @@ VPATH=../../../utils
 #
 IPATH=../../..
 
+#
 # The default rule, which causes the Edge capture timer with uDMA example to be built.
 #
 all: ${COMPILER}
@@ -70,7 +76,7 @@ ${COMPILER}:
 ${COMPILER}/udma_timer_ccp.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/udma_timer_ccp.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/udma_timer_ccp.axf: ${COMPILER}/udma_timer_ccp.o
-${COMPILER}/udma_timer_ccp.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/udma_timer_ccp.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/udma_timer_ccp.axf: udma_timer_ccp.ld
 SCATTERgcc_udma_timer_ccp=udma_timer_ccp.ld
 ENTRY_udma_timer_ccp=ResetISR

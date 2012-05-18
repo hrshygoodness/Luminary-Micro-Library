@@ -2,7 +2,7 @@
 //
 // usb_host_audio.c - Main routine for the USB host audio example.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -203,7 +203,7 @@ extern tCanvasWidget g_sPlayBackground;
 ListBox(g_sDirList, &g_sListBackground, 0, 0,
         &g_sKitronix320x240x16_SSD2119,
         0, 30, 125, 180, LISTBOX_STYLE_OUTLINE, ClrBlack, ClrDarkBlue,
-        ClrSilver, ClrWhite, ClrWhite, &g_sFontCmss12, g_ppcDirListStrings,
+        ClrSilver, ClrWhite, ClrWhite, g_pFontCmss12, g_ppcDirListStrings,
         NUM_LIST_STRINGS, 0, OnListBoxChange);
 
 
@@ -218,7 +218,7 @@ RectangularButton(g_sPlayBtn, &g_sPlayBackground, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrBlack, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCm20, g_psPlayText, 0, 0, 0, 0, OnBtnPlay);
+                   g_pFontCm20, g_psPlayText, 0, 0, 0, 0, OnBtnPlay);
 
 //*****************************************************************************
 //
@@ -240,21 +240,21 @@ char g_pcTime[40]="";
 Canvas(g_sWaveInfoTime, &g_sWaveInfoBackground, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 70, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontFixed6x8,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontFixed6x8,
        g_pcTime, 0, 0);
 
 char g_pcFormat[40]="";
 Canvas(g_sWaveInfoSample, &g_sWaveInfoBackground, &g_sWaveInfoTime, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 55, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontCmss12,
        g_pcFormat, 0, 0);
 
 char g_pcFileName[16]="";
 Canvas(g_sWaveInfoFileName, &g_sWaveInfoBackground, &g_sWaveInfoSample, 0,
        &g_sKitronix320x240x16_SSD2119, 140, 40, 140, 10,
        CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, &g_sFontCmss12,
+       CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, ClrWhite, ClrWhite, g_pFontCmss12,
        g_pcFileName, 0, 0);
 
 //*****************************************************************************
@@ -265,7 +265,7 @@ Canvas(g_sWaveInfoFileName, &g_sWaveInfoBackground, &g_sWaveInfoSample, 0,
 Canvas(g_sWaveInfoBackground, WIDGET_ROOT, &g_sPlayBackground,
        &g_sWaveInfoFileName, &g_sKitronix320x240x16_SSD2119, 130, 30, 190, 80,
        CANVAS_STYLE_OUTLINE | CANVAS_STYLE_FILL, ClrBlack, ClrWhite, ClrWhite,
-       &g_sFontCmss12, 0, 0, 0);
+       g_pFontCmss12, 0, 0, 0);
 
 //*****************************************************************************
 //
@@ -295,7 +295,7 @@ Canvas(g_sStatus, WIDGET_ROOT, &g_sListBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 240-24, 320, 24,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT |
         CANVAS_STYLE_TEXT_LEFT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, g_psStatusText, 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, g_psStatusText, 0, 0);
 
 //*****************************************************************************
 //
@@ -305,7 +305,7 @@ Canvas(g_sStatus, WIDGET_ROOT, &g_sListBackground, 0,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sStatus, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 24,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "usb host audio", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "usb host audio", 0, 0);
 
 //*****************************************************************************
 //
@@ -980,11 +980,22 @@ AudioEvent(unsigned long ulEvent, unsigned long ulParam)
         }
         case SOUND_EVENT_UNKNOWN_DEV:
         {
-            //
-            // Unknown device connected.
-            //
-            strcpy(g_psStatusText, "Unknown Device");
-            WidgetPaint((tWidget *)&g_sStatus);
+            if(ulParam == 1)
+            {
+                //
+                // Unknown device connected.
+                //
+                strcpy(g_psStatusText, "Unknown Device");
+                WidgetPaint((tWidget *)&g_sStatus);
+            }
+            else
+            {
+                //
+                // Unknown device disconnected.
+                //
+                strcpy(g_psStatusText, "No Device");
+                WidgetPaint((tWidget *)&g_sStatus);
+            }
 
             break;
         }

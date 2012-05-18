@@ -1,0 +1,77 @@
+.topic HIDC_CHANNEL1_FIND
+Pressing this button will move and scale the waveform for channel 1 to make it visible on the display.
+
+.topic HIDC_CHANNEL2_FIND
+Pressing this button will move and scale the waveform for channel 2 to make it visible on the display.
+
+.topic HIDC_CHANNEL1_SCALE
+This control allows the voltage scale for channel 1 to be adjusted.
+
+.topic HIDC_CHANNEL2_SCALE
+This control allows the voltage scale for channel 2 to be adjusted.
+
+.topic HIDC_CHANNEL1_POS
+This control allows the vertical position of the channel 1 waveform to be adjusted.
+
+.topic HIDC_CHANNEL2_POS
+This control allows the vertical position of the channel 2 waveform to be adjusted.
+
+.topic HIDC_TRIGGER_TYPE
+Select the trigger type you want to use with this control.
+
+.topic HIDC_ENABLE_CH2
+This control enables or disables the second channel.
+
+.topic HIDC_TRIGGER_CH1
+This radio button selects triggering from the channel 1 signal.
+
+.topic HIDC_TRIGGER_CH2
+This radio button selects triggering from the channel 2 signal when it is enabled.
+
+.topic HIDC_START_STOP
+This button can be used to start or stop continuous capture.
+
+.topic HIDC_CAPTURE
+When continuous capture is stopped, pressing this button will set up for a single capture using the current trigger settings.
+
+.topic HIDC_TRIGGER_LEVEL
+This slider sets the trigger level in millivolts.
+
+.topic HIDC_TIMEBASE
+The oscilloscope timebase is set using this control.
+
+.topic HIDC_TRIGGER_POS
+This slider can be moved to change the trigger position allowing you to see the waveform before or after triggering.
+
+.topic HIDC_CH1_MIN
+This field shows the minimum voltage measured for channel 1 in the last captured waveform.
+
+.topic HIDC_CH1_MAX
+This field shows the maximum voltage measured for channel 1 in the last captured waveform.
+
+.topic HIDC_CH1_MEAN
+This field shows the mean channel 1 voltage in the last captured waveform.
+
+.topic HIDC_CH2_MIN
+This field shows the minimum voltage measured for channel 2 in the last captured waveform.
+
+.topic HIDC_CH2_MAX
+This field shows the maximum voltage measured for channel 2 in the last captured waveform.
+
+.topic HIDC_CH2_MEAN
+This field shows the mean channel 2 voltage in the last captured waveform.
+
+.topic HIDC_CHANNEL1_POS_TEXT
+This field shows the vertical offset for channel 1.
+
+.topic HIDC_CHANNEL2_POS_TEXT
+This field shows the vertical offset for channel 2.
+
+.topic HIDC_TRIGGER_LEVEL_TEXT
+This field shows the current trigger level in volts.
+
+.topic HIDC_WAVEFORM
+This area of the displays represents the captured waveform(s). You can change the elements show using the "Display Options..." entry on the system menu (top left).
+
+.topic HIDOK
+Press this button to end the oscilloscope application.

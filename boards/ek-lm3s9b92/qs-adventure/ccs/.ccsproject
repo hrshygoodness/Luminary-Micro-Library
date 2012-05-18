@@ -4,7 +4,7 @@
 <projectOptions>
 <deviceVariant value="Cortex M.LM3S9B92"/>
 <deviceEndianness value="little"/>
-<codegenToolVersion value="4.6.4"/>
+<codegenToolVersion value="4.9.0"/>
 <isElfFormat value="true"/>
 <rts value="libc.a"/>
 </projectOptions>

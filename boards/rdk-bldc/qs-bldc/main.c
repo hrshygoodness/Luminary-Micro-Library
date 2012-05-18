@@ -2,7 +2,7 @@
 //
 // main.c - Brushless DC motor drive main application.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-BLDC Firmware Package.
+// This is part of revision 8555 of the RDK-BLDC Firmware Package.
 //
 //*****************************************************************************
 
@@ -94,7 +94,7 @@
 //! move the drive speed towards the target speed.  Also, the amplitude of
 //! the PWM outputs is adjusted by a PI controller, moving the rotor speed to
 //! the desired speed.  In the case of deceleration, the deceleration rate
-//! may be reduced based on the DC bus voltage.  The result of this speed 
+//! may be reduced based on the DC bus voltage.  The result of this speed
 //! adjustment is a new step angle, which is subsequently used by the waveform
 //! update interrupt handler to generate the output waveforms.
 //!
@@ -622,25 +622,22 @@ MainLongMul(long lX, long lY)
     bx      lr;
 }
 #endif
+//
+// For CCS implement this function in pure assembly.  This prevents the TI
+// compiler from doing funny things with the optimizer.
+//
 #if defined(ccs)
-static long
-MainLongMul(long lX, long lY)
-{
-    //
-    // The assembly code to efficiently perform the multiply (using the
-    // instruction to multiply two 32-bit values and return the full 64-bit
-    // result).
-    //
-    __asm("    smull   r0, r1, r0, r1\n"
+long MainLongMul(long lX, long lY);
+    __asm("    .sect \".text:MainLongMul\"\n"
+          "    .clink\n"
+          "    .thumbfunc MainLongMul\n"
+          "    .thumb\n"
+          "    .global MainLongMul\n"
+          "MainLongMul:\n"
+          "    smull   r0, r1, r0, r1\n"
           "    lsrs    r0, r0, #16\n"
           "    orr     r0, r0, r1, lsl #16\n"
           "    bx      lr\n");
-
-    //
-    // This is needed to keep the TI compiler from optimizing away the code.
-    //
-    return(lX * lY);
-}
 #endif
 
 //*****************************************************************************
@@ -748,8 +745,8 @@ MainSetPWMFrequency(void)
     //
     // Disable the update interrupts temporarily.
     //
-    IntDisable(INT_PWM1);
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_1);
+    IntDisable(INT_PWM0_2);
 
     //
     // Set the new PWM frequency.
@@ -759,15 +756,15 @@ MainSetPWMFrequency(void)
     //
     // Compute the new angle delta based on the new PWM frequency and the
     // number of poles in the motor.
-    // 
+    //
     g_ulAngleDelta = (((g_ulSpeed / 60) << 9) / g_ulPWMFrequency) << 9;
     g_ulAngleDelta *= (g_sParameters.ucNumPoles / 2);
 
     //
     // Re-enable the update interrupts.
     //
-    IntEnable(INT_PWM1);
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_1);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -866,7 +863,7 @@ MainSetDirection(tBoolean bForward)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor should be running in the forward direction.
@@ -949,7 +946,7 @@ MainSetDirection(tBoolean bForward)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -973,7 +970,7 @@ MainUpdateFAdjI(long lNewFAdjI)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the new I coefficient is zero.
@@ -1015,7 +1012,7 @@ MainUpdateFAdjI(long lNewFAdjI)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -1039,7 +1036,7 @@ MainUpdatePAdjI(long lNewPAdjI)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the new I coefficient is zero.
@@ -1081,7 +1078,7 @@ MainUpdatePAdjI(long lNewPAdjI)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -1214,8 +1211,8 @@ MainWaveformTick(void)
         //
         // For now, there are no other modulations enabled, so ensure that
         // the Duty Cycle is set to minimal.
-        // 
-        else 
+        //
+        else
         {
             pulDutyCycles[0] = pulDutyCycles[1] = pulDutyCycles[2] = 0;
         }
@@ -1299,7 +1296,7 @@ MainPrechargeHandler(void)
     {
         PWMOutputOn();
     }
-    
+
     //
     // Reset the Watchdog to allow for potentially slow startup.
     //
@@ -1395,7 +1392,7 @@ MainStartupHandler(void)
             if(g_ulStateCount == 0)
             {
                 g_ulStartupState++;
-                g_ulStateCount = 
+                g_ulStateCount =
                     (unsigned long)(g_sParameters.usStartupCount / 2);
             }
             break;
@@ -2475,12 +2472,12 @@ MainMillisecondTick(void)
     {
         g_ulMeasuredSpeed = g_ulBEMFRotorSpeed;
     }
-    else if(HWREGBITH(&(g_sParameters.usFlags), FLAG_ENCODER_BIT) == 
+    else if(HWREGBITH(&(g_sParameters.usFlags), FLAG_ENCODER_BIT) ==
             FLAG_ENCODER_PRESENT)
     {
         g_ulMeasuredSpeed = g_ulRotorSpeed;
     }
-    else if(HWREGBITH(&(g_sParameters.usFlags), FLAG_SENSOR_TYPE_BIT) == 
+    else if(HWREGBITH(&(g_sParameters.usFlags), FLAG_SENSOR_TYPE_BIT) ==
             FLAG_SENSOR_TYPE_GPIO)
     {
         g_ulMeasuredSpeed = g_ulHallRotorSpeed;
@@ -2715,7 +2712,7 @@ MainRun(void)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor drive is presently stopped.
@@ -2734,7 +2731,7 @@ MainRun(void)
         if((g_sParameters.usSensorlessBEMFThresh) &&
            (g_ulPhaseBEMFVoltage > g_sParameters.usSensorlessBEMFThresh))
         {
-            IntEnable(INT_PWM2);
+            IntEnable(INT_PWM0_2);
             return;
         }
 
@@ -2773,7 +2770,7 @@ MainRun(void)
 
         //
         // Get the number of milliseconds to remain in the precharge state.
-        // Allow an extra 6ms for the phased in precharge software in 
+        // Allow an extra 6ms for the phased in precharge software in
         // pwm_ctrl.c
         //
         g_ulStateCount = g_sParameters.ucPrechargeTime + 6;
@@ -2825,7 +2822,7 @@ MainRun(void)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -2844,7 +2841,7 @@ MainStop(void)
     //
     // Temporarily disable the millisecond interrupt.
     //
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_2);
 
     //
     // See if the motor is running in the forward direction.
@@ -2917,7 +2914,7 @@ MainStop(void)
     //
     // Re-enable the millisecond interrupt.
     //
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -2938,8 +2935,8 @@ MainEmergencyStop(void)
     //
     // Temporarily disable the update interrupts.
     //
-    IntDisable(INT_PWM1);
-    IntDisable(INT_PWM2);
+    IntDisable(INT_PWM0_1);
+    IntDisable(INT_PWM0_2);
 
     //
     // Indicate that the motor drive is no longer running by changing the blink
@@ -2987,8 +2984,8 @@ MainEmergencyStop(void)
     //
     // Re-enable the update interrupts.
     //
-    IntEnable(INT_PWM1);
-    IntEnable(INT_PWM2);
+    IntEnable(INT_PWM0_1);
+    IntEnable(INT_PWM0_2);
 }
 
 //*****************************************************************************
@@ -3360,7 +3357,7 @@ main(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
@@ -3380,7 +3377,7 @@ main(void)
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOE);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOF);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOG);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM);
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_PWM0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_QEI0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER0);
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER1);
@@ -3403,9 +3400,9 @@ main(void)
     IntPrioritySet(INT_TIMER0A,     0x20);
     IntPrioritySet(INT_WATCHDOG,    0x40);
     IntPrioritySet(INT_ADC0SS0,     0x60);
-    IntPrioritySet(INT_PWM0,        0x80);
-    IntPrioritySet(INT_PWM1,        0xa0);
-    IntPrioritySet(INT_PWM2,        0xc0);
+    IntPrioritySet(INT_PWM0_0,      0x80);
+    IntPrioritySet(INT_PWM0_1,      0xa0);
+    IntPrioritySet(INT_PWM0_2,      0xc0);
     IntPrioritySet(FAULT_SYSTICK,   0xc0);
     IntPrioritySet(INT_ETH,         0xe0);
     IntPrioritySet(INT_CAN0,        0xe0);
@@ -3477,7 +3474,7 @@ main(void)
     // Configure Timer 0 as a one-shot timer to be used for commutating the
     // motor in Sensorless mode, based on Back EMF detection.
     //
-    TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_OS);
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_ONE_SHOT);
     TimerIntEnable(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
     IntEnable(INT_TIMER0A);
 
@@ -3495,7 +3492,7 @@ main(void)
         // Check to see if bootloader start has been requested.
         //
         if(g_bStartBootloader)
-        {    
+        {
             //
             // Emergency stop the motor drive.
             //
@@ -3505,7 +3502,7 @@ main(void)
             // Disable the watchdog timer.
             //
             WatchdogResetDisable(WATCHDOG0_BASE);
-    
+
             //
             // Disable all processor interrupts.  Instead of disabling them
             // one at a time (and possibly missing an interrupt if new sources

@@ -2,7 +2,7 @@
 //
 // grlib_demo.c - Demonstration of the Stellaris Graphics Library.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -190,7 +190,7 @@ Canvas(g_sCanvas2, g_psPanels + 2, &g_sCanvas3, 0,
 Canvas(g_sCanvas1, g_psPanels + 2, &g_sCanvas2, 0,
        &g_sKitronix320x240x16_SSD2119, 5, 27, 195, 76,
        CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT,
-       ClrMidnightBlue, ClrGray, ClrSilver, &g_sFontCm22, "Text", 0, 0);
+       ClrMidnightBlue, ClrGray, ClrSilver, g_pFontCm22, "Text", 0, 0);
 
 //*****************************************************************************
 //
@@ -214,7 +214,7 @@ tCheckBoxWidget g_psCheckBoxes[] =
     CheckBoxStruct(g_psPanels + 3, g_psCheckBoxes + 1, 0,
                    &g_sKitronix320x240x16_SSD2119, 40, 30, 185, 42,
                    CB_STYLE_OUTLINE | CB_STYLE_FILL | CB_STYLE_TEXT, 16,
-                   ClrMidnightBlue, ClrGray, ClrSilver, &g_sFontCm22, "Select",
+                   ClrMidnightBlue, ClrGray, ClrSilver, g_pFontCm22, "Select",
                    0, OnCheckChange),
     CheckBoxStruct(g_psPanels + 3, g_psCheckBoxes + 2, 0,
                    &g_sKitronix320x240x16_SSD2119, 40, 82, 185, 48,
@@ -223,7 +223,7 @@ tCheckBoxWidget g_psCheckBoxes[] =
     CheckBoxStruct(g_psPanels + 3, g_psCheckBoxIndicators, 0,
                    &g_sKitronix320x240x16_SSD2119, 40, 134, 189, 42,
                    CB_STYLE_OUTLINE | CB_STYLE_TEXT, 16,
-                   0, ClrGray, ClrGreen, &g_sFontCm20, "Select",
+                   0, ClrGray, ClrGreen, g_pFontCm20, "Select",
                    0, OnCheckChange),
 };
 #define NUM_CHECK_BOXES         (sizeof(g_psCheckBoxes) /   \
@@ -241,11 +241,11 @@ Container(g_sContainer2, g_psPanels + 4, &g_sContainer3, 0,
           &g_sKitronix320x240x16_SSD2119, 5, 109, 200, 76,
           (CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT |
            CTR_STYLE_TEXT_CENTER), ClrMidnightBlue, ClrGray, ClrSilver,
-          &g_sFontCm22, "Group2");
+          g_pFontCm22, "Group2");
 Container(g_sContainer1, g_psPanels + 4, &g_sContainer2, 0,
           &g_sKitronix320x240x16_SSD2119, 5, 27, 200, 76,
           CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT, ClrMidnightBlue,
-          ClrGray, ClrSilver, &g_sFontCm22, "Group1");
+          ClrGray, ClrSilver, g_pFontCm22, "Group1");
 
 //*****************************************************************************
 //
@@ -274,19 +274,19 @@ tCanvasWidget g_psPushButtonIndicators[] =
                  CANVAS_STYLE_IMG, 0, 0, 0, 0, 0, g_pucLightOff, 0),
     CanvasStruct(g_psPanels + 5, g_psPushButtonIndicators + 7, 0,
                  &g_sKitronix320x240x16_SSD2119, 190, 35, 110, 24,
-                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, &g_sFontCm20, "Non-auto",
+                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, g_pFontCm20, "Non-auto",
                  0, 0),
     CanvasStruct(g_psPanels + 5, g_psPushButtonIndicators + 8, 0,
                  &g_sKitronix320x240x16_SSD2119, 190, 55, 110, 24,
-                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, &g_sFontCm20, "repeat",
+                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, g_pFontCm20, "repeat",
                  0, 0),
     CanvasStruct(g_psPanels + 5, g_psPushButtonIndicators + 9, 0,
                  &g_sKitronix320x240x16_SSD2119, 190, 115, 110, 24,
-                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, &g_sFontCm20, "Auto",
+                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, g_pFontCm20, "Auto",
                  0, 0),
     CanvasStruct(g_psPanels + 5, 0, 0,
                  &g_sKitronix320x240x16_SSD2119, 190, 135, 110, 24,
-                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, &g_sFontCm20, "repeat",
+                 CANVAS_STYLE_TEXT, 0, 0, ClrSilver, g_pFontCm20, "repeat",
                  0, 0),
 };
 tPushButtonWidget g_psPushButtons[] =
@@ -295,34 +295,34 @@ tPushButtonWidget g_psPushButtons[] =
                             &g_sKitronix320x240x16_SSD2119, 30, 35, 40, 40,
                             PB_STYLE_FILL | PB_STYLE_OUTLINE | PB_STYLE_TEXT,
                             ClrMidnightBlue, ClrBlack, ClrGray, ClrSilver,
-                            &g_sFontCm22, "1", 0, 0, 0, 0, OnButtonPress),
+                            g_pFontCm22, "1", 0, 0, 0, 0, OnButtonPress),
     CircularButtonStruct(g_psPanels + 5, g_psPushButtons + 2, 0,
                          &g_sKitronix320x240x16_SSD2119, 100, 55, 20,
                          PB_STYLE_FILL | PB_STYLE_OUTLINE | PB_STYLE_TEXT,
                          ClrMidnightBlue, ClrBlack, ClrGray, ClrSilver,
-                         &g_sFontCm22, "3", 0, 0, 0, 0, OnButtonPress),
+                         g_pFontCm22, "3", 0, 0, 0, 0, OnButtonPress),
     RectangularButtonStruct(g_psPanels + 5, g_psPushButtons + 3, 0,
                             &g_sKitronix320x240x16_SSD2119, 130, 30, 50, 50,
                             PB_STYLE_IMG | PB_STYLE_TEXT, 0, 0, 0, ClrSilver,
-                            &g_sFontCm22, "5", g_pucBlue50x50,
+                            g_pFontCm22, "5", g_pucBlue50x50,
                             g_pucBlue50x50Press, 0, 0, OnButtonPress),
     RectangularButtonStruct(g_psPanels + 5, g_psPushButtons + 4, 0,
                             &g_sKitronix320x240x16_SSD2119, 30, 115, 40, 40,
                             (PB_STYLE_FILL | PB_STYLE_OUTLINE | PB_STYLE_TEXT |
                              PB_STYLE_AUTO_REPEAT), ClrMidnightBlue, ClrBlack,
-                            ClrGray, ClrSilver, &g_sFontCm22, "2", 0, 0, 125,
+                            ClrGray, ClrSilver, g_pFontCm22, "2", 0, 0, 125,
                             25, OnButtonPress),
     CircularButtonStruct(g_psPanels + 5, g_psPushButtons + 5, 0,
                          &g_sKitronix320x240x16_SSD2119, 100, 135, 20,
                          (PB_STYLE_FILL | PB_STYLE_OUTLINE | PB_STYLE_TEXT |
                           PB_STYLE_AUTO_REPEAT), ClrMidnightBlue, ClrBlack,
-                         ClrGray, ClrSilver, &g_sFontCm22, "4", 0, 0, 125, 25,
+                         ClrGray, ClrSilver, g_pFontCm22, "4", 0, 0, 125, 25,
                          OnButtonPress),
     RectangularButtonStruct(g_psPanels + 5, g_psPushButtonIndicators, 0,
                             &g_sKitronix320x240x16_SSD2119, 130, 110, 50, 50,
                             (PB_STYLE_IMG | PB_STYLE_TEXT |
                              PB_STYLE_AUTO_REPEAT), 0, 0, 0, ClrSilver,
-                            &g_sFontCm22, "6", g_pucBlue50x50,
+                            g_pFontCm22, "6", g_pucBlue50x50,
                             g_pucBlue50x50Press, 125, 25, OnButtonPress),
 };
 #define NUM_PUSH_BUTTONS        (sizeof(g_psPushButtons) /   \
@@ -360,15 +360,15 @@ tRadioButtonWidget g_psRadioButtons1[] =
 {
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 1, 0,
                       &g_sKitronix320x240x16_SSD2119, 10, 50, 80, 45,
-                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, &g_sFontCm20,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, g_pFontCm20,
                       "One", 0, OnRadioChange),
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtons1 + 2, 0,
                       &g_sKitronix320x240x16_SSD2119, 10, 95, 80, 45,
-                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, &g_sFontCm20,
+                      RB_STYLE_TEXT, 16, 0, ClrSilver, ClrSilver, g_pFontCm20,
                       "Two", 0, OnRadioChange),
     RadioButtonStruct(g_psRadioContainers, g_psRadioButtonIndicators, 0,
                       &g_sKitronix320x240x16_SSD2119, 10, 140, 80, 45,
-                      RB_STYLE_TEXT, 24, 0, ClrSilver, ClrSilver, &g_sFontCm20,
+                      RB_STYLE_TEXT, 24, 0, ClrSilver, ClrSilver, g_pFontCm20,
                       "Three", 0, OnRadioChange)
 };
 #define NUM_RADIO1_BUTTONS      (sizeof(g_psRadioButtons1) /   \
@@ -395,11 +395,11 @@ tContainerWidget g_psRadioContainers[] =
     ContainerStruct(g_psPanels + 6, g_psRadioContainers + 1, g_psRadioButtons1,
                     &g_sKitronix320x240x16_SSD2119, 5, 27, 148, 160,
                     CTR_STYLE_OUTLINE | CTR_STYLE_TEXT, 0, ClrGray, ClrSilver,
-                    &g_sFontCm20, "Group One"),
+                    g_pFontCm20, "Group One"),
     ContainerStruct(g_psPanels + 6, 0, g_psRadioButtons2,
                     &g_sKitronix320x240x16_SSD2119, 167, 27, 148, 160,
                     CTR_STYLE_OUTLINE | CTR_STYLE_TEXT, 0, ClrGray, ClrSilver,
-                    &g_sFontCm20, "Group Two")
+                    g_pFontCm20, "Group Two")
 };
 
 //*****************************************************************************
@@ -410,7 +410,7 @@ tContainerWidget g_psRadioContainers[] =
 Canvas(g_sSliderValueCanvas, g_psPanels + 7, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 210, 30, 60, 40,
        CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_OPAQUE, ClrBlack, 0, ClrSilver,
-       &g_sFontCm24, "50%",
+       g_pFontCm24, "50%",
        0, 0);
 
 tSliderWidget g_psSliders[] =
@@ -420,13 +420,13 @@ tSliderWidget g_psSliders[] =
                  (SL_STYLE_FILL | SL_STYLE_BACKG_FILL | SL_STYLE_OUTLINE |
                   SL_STYLE_TEXT | SL_STYLE_BACKG_TEXT),
                  ClrGray, ClrBlack, ClrSilver, ClrWhite, ClrWhite,
-                 &g_sFontCm20, "25%", 0, 0, OnSliderChange),
+                 g_pFontCm20, "25%", 0, 0, OnSliderChange),
     SliderStruct(g_psPanels + 7, g_psSliders + 2, 0,
                  &g_sKitronix320x240x16_SSD2119, 5, 155, 220, 25, 0, 100, 25,
                  (SL_STYLE_FILL | SL_STYLE_BACKG_FILL | SL_STYLE_OUTLINE |
                   SL_STYLE_TEXT),
                  ClrWhite, ClrBlueViolet, ClrSilver, ClrBlack, 0,
-                 &g_sFontCm18, "Foreground Text Only", 0, 0, OnSliderChange),
+                 g_pFontCm18, "Foreground Text Only", 0, 0, OnSliderChange),
     SliderStruct(g_psPanels + 7, g_psSliders + 3, 0,
                  &g_sKitronix320x240x16_SSD2119, 240, 70, 26, 110, 0, 100, 50,
                  (SL_STYLE_FILL | SL_STYLE_BACKG_FILL | SL_STYLE_VERTICAL |
@@ -449,7 +449,7 @@ tSliderWidget g_psSliders[] =
                   SL_STYLE_BACKG_TEXT | SL_STYLE_TEXT_OPAQUE |
                   SL_STYLE_BACKG_TEXT_OPAQUE),
                  ClrBlue, ClrYellow, ClrSilver, ClrYellow, ClrBlue,
-                 &g_sFontCm18, "Text in both areas", 0, 0,
+                 g_pFontCm18, "Text in both areas", 0, 0,
                  OnSliderChange),
 };
 
@@ -518,14 +518,14 @@ char *g_pcPanelNames[] =
 //*****************************************************************************
 RectangularButton(g_sPrevious, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 0, 190,
                   50, 50, PB_STYLE_FILL, ClrBlack, ClrBlack, 0, ClrSilver,
-                  &g_sFontCm20, "-", g_pucBlue50x50, g_pucBlue50x50Press, 0, 0,
+                  g_pFontCm20, "-", g_pucBlue50x50, g_pucBlue50x50Press, 0, 0,
                   OnPrevious);
 Canvas(g_sTitle, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 50, 190, 220, 50,
        CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_OPAQUE, 0, 0, ClrSilver,
-       &g_sFontCm20, 0, 0, 0);
+       g_pFontCm20, 0, 0, 0);
 RectangularButton(g_sNext, 0, 0, 0, &g_sKitronix320x240x16_SSD2119, 270, 190,
                   50, 50, PB_STYLE_IMG | PB_STYLE_TEXT, ClrBlack, ClrBlack, 0,
-                  ClrSilver, &g_sFontCm20, "+", g_pucBlue50x50,
+                  ClrSilver, g_pFontCm20, "+", g_pucBlue50x50,
                   g_pucBlue50x50Press, 0, 0, OnNext);
 
 //*****************************************************************************
@@ -694,7 +694,7 @@ OnIntroPaint(tWidget *pWidget, tContext *pContext)
     //
     // Display the introduction text in the canvas.
     //
-    GrContextFontSet(pContext, &g_sFontCm18);
+    GrContextFontSet(pContext, g_pFontCm18);
     GrContextForegroundSet(pContext, ClrSilver);
     GrStringDraw(pContext, "This application demonstrates the Stellaris", -1,
                  0, 32, 0);
@@ -775,13 +775,13 @@ OnPrimitivePaint(tWidget *pWidget, tContext *pContext)
     // Draw a piece of text in fonts of increasing size.
     //
     GrContextForegroundSet(pContext, ClrSilver);
-    GrContextFontSet(pContext, &g_sFontCm14);
+    GrContextFontSet(pContext, g_pFontCm14);
     GrStringDraw(pContext, "Strings", -1, 125, 110, 0);
-    GrContextFontSet(pContext, &g_sFontCm18);
+    GrContextFontSet(pContext, g_pFontCm18);
     GrStringDraw(pContext, "Strings", -1, 145, 124, 0);
-    GrContextFontSet(pContext, &g_sFontCm22);
+    GrContextFontSet(pContext, g_pFontCm22);
     GrStringDraw(pContext, "Strings", -1, 165, 142, 0);
-    GrContextFontSet(pContext, &g_sFontCm24);
+    GrContextFontSet(pContext, g_pFontCm24);
     GrStringDraw(pContext, "Strings", -1, 185, 162, 0);
 
     //
@@ -812,7 +812,7 @@ OnCanvasPaint(tWidget *pWidget, tContext *pContext)
     //
     // Indicate that the contents of this canvas were drawn by the application.
     //
-    GrContextFontSet(pContext, &g_sFontCm12);
+    GrContextFontSet(pContext, g_pFontCm12);
     GrStringDrawCentered(pContext, "App Drawn", -1, 260, 50, 1);
 }
 
@@ -1065,7 +1065,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&sContext, &g_sFontCm20);
+    GrContextFontSet(&sContext, g_pFontCm20);
     GrStringDrawCentered(&sContext, "grlib demo", -1,
                          GrContextDpyWidthGet(&sContext) / 2, 8, 0);
 

@@ -1,0 +1,50 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=lmscope.chm
+Contents file=lmscope.hhc
+Default Font=Verdana,8,0
+Default Window=main
+Default topic=HIDD_ROOT_DIALOG.HTM
+Display compile progress=Yes
+Full text search stop list file=stoplist.stp
+Full-text search=Yes
+Index file=lmscope.hhk
+Language=0x409 English (United States)
+Title=TI Stellaris Oscilloscope
+
+[WINDOWS]
+main=,"lmscope.hhc","lmscope.hhk","HIDD_ROOT_DIALOG.HTM",,,,,,0x42520,,0x3006,[50,50,750,650],,,,,,,0
+
+
+[FILES]
+HIDD_ROOT_DIALOG.HTM
+ctrlhlp.h
+html\connections.html
+html\luminary.css
+html\stellaris_main.html
+html\stellaris_menu.html
+html\stellaris_navigation.html
+html\stellaris_usb.html
+html\sysmenu.html
+html\windows_main.html
+html\stellaris_files.html
+html\triggering.html
+html\stellaris_setup.html
+html\stellaris_help.html
+html\stellaris_display.html
+html\windows_build.html
+
+[ALIAS]
+HIDD_LMSCOPE_DIALOG = HIDD_ROOT_DIALOG.htm
+
+[MAP]
+#include ctrlhlp.h
+#include HTMLDefines.h
+
+[TEXT POPUPS]
+ctrlhlp.h
+ctrlhlp.txt
+
+[INFOTYPES]
+

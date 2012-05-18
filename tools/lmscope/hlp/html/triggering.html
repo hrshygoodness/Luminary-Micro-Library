@@ -1,0 +1,120 @@
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="ADC">
+	<param name="Keyword" value="always">
+	<param name="Keyword" value="analog to digital converter">
+	<param name="Keyword" value="falling">
+	<param name="Keyword" value="interrupt">
+	<param name="Keyword" value="ISR">
+	<param name="Keyword" value="level">
+	<param name="Keyword" value="level">
+	<param name="Keyword" value="one shot">
+	<param name="Keyword" value="position">
+	<param name="Keyword" value="rising">
+	<param name="Keyword" value="running">
+	<param name="Keyword" value="stopped">
+	<param name="Keyword" value="trigger">
+	<param name="Keyword" value="trigger level">
+	<param name="Keyword" value="trigger position">
+</OBJECT><!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html><head>
+<link rel="stylesheet" type="text/css" href="luminary.css">
+<meta name="GENERATOR" content="Microsoft® HTML Help Workshop 4.1"><title>Setting Triggers</title></head>
+<body>
+<h1>Setting Triggers</h1>
+<div style="text-align: center;"><br>
+The following options are
+available in the "Trigger" group of controls accessed via the qs-scope
+menu:<br>
+</div>
+<br>
+<center>
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;" border="1" cellpadding="2" cellspacing="0">
+<tbody>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">Trigger</td>
+<td style="vertical-align: top; text-align: left; width: 493px;">This
+option sets the
+type of trigger in use. Choices are "Always", "Rising", "Falling" or
+"Level". By default, "Always" is selected.<br>
+</td>
+</tr>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">Trig Channel</td>
+<td style="width: 493px;" align="left" valign="top">This option
+allows the channel whose data will be scanned for trigger events to be
+set.<br>
+</td>
+</tr>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">Trig Level</td>
+<td style="width: 493px;" align="left" valign="top">This option
+sets the trigger level in
+millivolts. If the trigger level display is enabled, a horizontal line
+indicates the current trigger level on the screen.<br>
+</td>
+</tr>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">Trig Pos</td>
+<td style="width: 493px;" align="left" valign="top">This option
+sets the trigger position
+within the display window. This may be moved left and right to allow
+waveform data before or after the trigger event to be seen.<br>
+</td>
+</tr>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">Mode</td>
+<td style="width: 493px;" align="left" valign="top">This control
+selects between "Running"
+mode where the oscilloscope performs continuous capture, or "Stopped"
+where captures must be requested one at a time.<br>
+</td>
+</tr>
+<tr>
+<td style="font-weight: bold; width: 85px;" align="left" valign="top">One Shot</td>
+<td style="width: 493px;" align="left" valign="top">If in "Stopped"
+mode, pressing "left" or "right" on this control commands the
+oscilloscope to capture and display one data set.<br>
+</td>
+</tr>
+</tbody>
+</table>
+</center>
+<h2><a name="trignotes"></a>
+Triggering Notes</h2>
+Trigger detection is performed in software during the Analog-to-Digital
+Converter (ADC) interrupt service routine. At the highest capture rate
+(1MSample/second), the ADC FIFO will overflow in 8µS if not serviced so
+time in the ISR is obiously a precious commodity. To ensure correct
+operation at all capture rates, therefore, a simple edge detection
+algorithm is
+used which merely checks every second sample to determine whether the
+signal is rising or falling. This works well with typical signals but
+can result in false triggers in very noisy cases.<br>
+<br>
+The qs-scope application defaults to "Always" trigger mode in which
+edge detection is not performed and the oscilloscope merely returns all
+samples captured from the point that a waveform is requested. This is a
+useful mode to allow the trigger level to be adjusted prior to setting
+the trigger edge. At the highest capture rates, the ADC interrupt
+handler uses the vast majority of the CPU while performing trigger
+event detection and, as a result, the user interface will not be
+serviced while trigger detection is occurring. To prevent
+this, qs-scope uses a high priority interrupt on the push buttons to
+signal to the data acquisition module that the current capture should
+be aborted whenever a button is pressed. This allows the user to set
+the trigger level and type successfully at all capture rates and also
+allows the user to cancel a One Shot trigger request where the trigger
+event is never detected (for example, if the trigger level is set to a
+voltage that never occurs in the measured signal).<br>
+<br>
+This
+abort mechanism is not available when remotely controlling qs-scope via
+USB. If qs-scope is waiting for a trigger, the user may have to press
+the EK board buttons to abort the capture request in this case since
+the USB interrupt is deliberately set at a lower priority than the ADC
+interrupt (to prevent the USB handling from preempting the more time
+critical ADC operation). Note that this is only the case when capturing
+at the highest supported rate. At lower capture rates, there is
+sufficient time for USB and the user interface to be serviced at the
+same time as an ongoing waveform capture.<br>
+</body></html>

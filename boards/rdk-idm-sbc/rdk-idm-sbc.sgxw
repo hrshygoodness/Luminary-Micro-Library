@@ -1,0 +1,48 @@
+<!--
+Configuration file for Sourcery G++ workspace rdk-idm-sbc
+
+Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 8555 of the RDK-IDM-SBC Firmware Package.
+-->
+
+<workspace>
+  <project description="../../inc/inc.sgxx" />
+  <project description="../../boot_loader/boot_loader.sgxx" />
+  <project description="../../third_party/third_party.sgxx" />
+  <project description="../../utils/utils.sgxx" />
+  <project description="../../driverlib/driverlib-cm3.sgxx" />
+  <project description="../../grlib/grlib-cm3.sgxx" />
+  <project description="../../usblib/usblib-cm3.sgxx" />
+  <project description="calibrate/calibrate.sgxx" />
+  <project description="fontview/fontview.sgxx" />
+  <project description="grlib_demo/grlib_demo.sgxx" />
+  <project description="hello/hello.sgxx" />
+  <project description="hello_widget/hello_widget.sgxx" />
+  <project description="i2s_demo/i2s_demo.sgxx" />
+  <project description="idm-checkout/idm-checkout.sgxx" />
+  <project description="lang_demo/lang_demo.sgxx" />
+  <project description="qs-blox/qs-blox.sgxx" />
+  <project description="scribble/scribble.sgxx" />
+  <project description="sd_card/sd_card.sgxx" />
+  <project description="showjpeg/showjpeg.sgxx" />
+  <project description="usb_host_keyboard/usb_host_keyboard.sgxx" />
+  <project description="usb_host_mouse/usb_host_mouse.sgxx" />
+  <project description="usb_host_msc/usb_host_msc.sgxx" />
+  <project description="usb_stick_demo/usb_stick_demo.sgxx" />
+  <project description="usb_stick_update/usb_stick_update.sgxx" />
+</workspace>

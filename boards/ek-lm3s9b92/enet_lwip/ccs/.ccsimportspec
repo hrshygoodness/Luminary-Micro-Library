@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="enet_lwip.c"/>
+        <file name="lmi-fsdata.h"/>
+        <file name="lmi_fs.c"/>
+        <file name="lwipopts.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="fs">
+            <file name="404.htm"/>
+            <file name="block.htm"/>
+            <file name="family.htm"/>
+            <file name="footer.htm"/>
+            <file name="header.htm"/>
+            <file name="index.htm"/>
+            <file name="ti.htm"/>
+            <file name="side.htm"/>
+            <file name="styles.css"/>
+            <directory name="images">
+                <file name="awards08.jpg"/>
+                <file name="chips.jpg"/>
+                <file name="favicon.ico"/>
+                <file name="no16bit.jpg"/>
+                <file name="no8bit.jpg"/>
+                <file name="noasm.jpg"/>
+                <file name="stellaris.gif"/>
+                <file name="ti_logo.gif"/>
+            </directory>
+        </directory>
+    </source>
+</importSpec>

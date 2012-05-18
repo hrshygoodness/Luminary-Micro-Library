@@ -2,7 +2,7 @@
 //
 // boot_demo_eth.c - Ethernet boot loader example application.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -123,7 +123,7 @@ void OnButtonPress(tWidget *pWidget);
 Canvas(g_sIPAddr, &g_sBackground, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 220, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCmss18b, g_pcIPAddr, 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCmss18b, g_pcIPAddr, 0, 0);
 
 //*****************************************************************************
 //
@@ -134,7 +134,7 @@ Canvas(g_sIPAddr, &g_sBackground, 0, 0,
 Canvas(g_sMACAddr, &g_sBackground, &g_sIPAddr, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 200, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCmss18b, g_pcMACAddr, 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCmss18b, g_pcMACAddr, 0, 0);
 
 //*****************************************************************************
 //
@@ -144,7 +144,7 @@ Canvas(g_sMACAddr, &g_sBackground, &g_sIPAddr, 0,
 Canvas(g_sStatus, &g_sBackground, &g_sMACAddr, 0,
        &g_sKitronix320x240x16_SSD2119,  60, 110, 200, 40,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCmss22b, "Waiting for signal.", 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCmss22b, "Waiting for signal.", 0, 0);
 
 //*****************************************************************************
 //
@@ -163,7 +163,7 @@ Canvas(g_sBackground, WIDGET_ROOT, 0, &g_sStatus,
 Canvas(g_sHeading, WIDGET_ROOT, &g_sBackground, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "boot-demo-eth", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "boot-demo-eth", 0, 0);
 
 //*****************************************************************************
 //

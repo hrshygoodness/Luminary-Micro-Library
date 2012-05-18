@@ -1,0 +1,67 @@
+ZIP - Infocom Z-code Interpreter Program V2.0 7 Nov 1993
+--------------------------------------------------------
+
+Author:
+
+    Mark Howell (howell_ma@movies.enet.dec.com)
+
+Contents:
+
+    readme.1st - this file
+    Makefile - Unix makefile
+    amiga.mak - Amiga Aztec C makefile
+    msc.mak - Microsoft Quick C makefile
+    vms.mak - VMS VAX C makefile
+    control.c - Sources
+    extern.c
+    fileio.c
+    getopt.c
+    input.c
+    interpre.c
+    math.c
+    memory.c
+    object.c
+    operand.c
+    osdepend.c
+    property.c
+    screen.c
+    text.c
+    variable.c
+    zip.c
+    ztypes.h - Header file
+    amigaio.c - Machine specific I/O drivers
+    mscio.c
+    smgio.c
+    unixio.c
+
+Building:
+
+    Unix: make
+
+    DOS: nmake /F msc.mak
+
+    VMS: mms/desc=vms.mak
+
+    Amiga: Make file is amiga.mak
+
+Bugs:
+
+    Please report bugs and portability bugs to the author.
+
+Interpreter:
+
+    zip - This interpreter will run all Infocom V1 to V5 games. It includes
+          support for timeouts in Border Zone, screen displays in Beyond Zork
+          and implements the #record debugging function, etc.
+
+        usage: zip [options] story-file-name
+
+            options are:
+
+                -l n - number of lines in display
+                -c n - number of columns in display
+                -r n - right margin (default = 0)
+                -t n - top margin (default = 0)
+
+            The lines and columns options are only useful if the I/O driver
+            cannot automatically work out the size of the screen.

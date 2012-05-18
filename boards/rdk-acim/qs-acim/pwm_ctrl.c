@@ -2,7 +2,7 @@
 //
 // pwm_ctrl.c - PWM control routines.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-ACIM Firmware Package.
+// This is part of revision 8555 of the RDK-ACIM Firmware Package.
 //
 //*****************************************************************************
 
@@ -280,11 +280,11 @@ PWMSetDeadBand(void)
     //
     // Set the dead band times for all three PWM generators.
     //
-    PWMDeadBandEnable(PWM_BASE, PWM_GEN_0, g_sParameters.ucDeadTime,
+    PWMDeadBandEnable(PWM0_BASE, PWM_GEN_0, g_sParameters.ucDeadTime,
                       g_sParameters.ucDeadTime);
-    PWMDeadBandEnable(PWM_BASE, PWM_GEN_1, g_sParameters.ucDeadTime,
+    PWMDeadBandEnable(PWM0_BASE, PWM_GEN_1, g_sParameters.ucDeadTime,
                       g_sParameters.ucDeadTime);
-    PWMDeadBandEnable(PWM_BASE, PWM_GEN_2, g_sParameters.ucDeadTime,
+    PWMDeadBandEnable(PWM0_BASE, PWM_GEN_2, g_sParameters.ucDeadTime,
                       g_sParameters.ucDeadTime);
 
     //
@@ -311,7 +311,7 @@ PWMSetFrequency(void)
     //
     // Disable the PWM interrupt temporarily.
     //
-    IntDisable(INT_PWM0);
+    IntDisable(INT_PWM0_0);
 
     //
     // Determine the configured PWM frequency.
@@ -412,7 +412,7 @@ PWMSetFrequency(void)
     //
     // Re-enable the PWM interrupt.
     //
-    IntEnable(INT_PWM0);
+    IntEnable(INT_PWM0_0);
 }
 
 //*****************************************************************************
@@ -452,7 +452,7 @@ PWMUpdateDutyCycle(void)
     //
     // Set the pulse width of the U phase of the motor.
     //
-    PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, ulWidth);
+    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ulWidth);
 
     //
     // Get the pulse width of the V phase of the motor.
@@ -470,7 +470,7 @@ PWMUpdateDutyCycle(void)
     //
     // Set the pulse width of the V phase of the motor.
     //
-    PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, ulWidth);
+    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2, ulWidth);
 
     //
     // Get the pulse width of the W phase of the motor.
@@ -488,12 +488,12 @@ PWMUpdateDutyCycle(void)
     //
     // Set the pulse width of the W phase of the motor.
     //
-    PWMPulseWidthSet(PWM_BASE, PWM_OUT_4, ulWidth);
+    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_4, ulWidth);
 
     //
     // Perform a synchronous update of all three PWM generators.
     //
-    PWMSyncUpdate(PWM_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT);
+    PWMSyncUpdate(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT);
 }
 
 //*****************************************************************************
@@ -516,8 +516,8 @@ PWM0IntHandler(void)
     // event; the second clear takes care of the case wehre the first gets
     // ignored.
     //
-    PWMGenIntClear(PWM_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
-    PWMGenIntClear(PWM_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
 
     //
     // Increment the count of PWM periods.
@@ -539,9 +539,9 @@ PWM0IntHandler(void)
             //
             // Set the new PWM period in each of the PWM generators.
             //
-            PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, g_ulPWMClock);
-            PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, g_ulPWMClock);
-            PWMGenPeriodSet(PWM_BASE, PWM_GEN_2, g_ulPWMClock);
+            PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, g_ulPWMClock);
+            PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, g_ulPWMClock);
+            PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, g_ulPWMClock);
 
             //
             // Indicate that the PWM frequency has been updated.
@@ -569,7 +569,7 @@ PWM0IntHandler(void)
         //
         // Trigger the waveform update software interrupt.
         //
-        HWREG(NVIC_SW_TRIG) = INT_PWM1 - 16;
+        HWREG(NVIC_SW_TRIG) = INT_PWM0_1 - 16;
     }
 
     //
@@ -587,7 +587,7 @@ PWM0IntHandler(void)
         //
         // Trigger the millisecond software interrupt.
         //
-        HWREG(NVIC_SW_TRIG) = INT_PWM2 - 16;
+        HWREG(NVIC_SW_TRIG) = INT_PWM0_2 - 16;
 
         //
         // Decrement the millisecond counter by the PWM frequency, which
@@ -614,7 +614,7 @@ PWMFaultHandler(void)
     //
     // Clear the fault interrupt.
     //
-    PWMFaultIntClear(PWM_BASE);
+    PWMFaultIntClear(PWM0_BASE);
 
     //
     // Emergency stop the motor drive.
@@ -671,7 +671,7 @@ PWMReducePeriodCount(unsigned long ulCount)
     //
     // Disable the PWM interrupt temporarily.
     //
-    IntDisable(INT_PWM0);
+    IntDisable(INT_PWM0_0);
 
     //
     // Decrement the PWM period count by the given number.
@@ -681,7 +681,7 @@ PWMReducePeriodCount(unsigned long ulCount)
     //
     // Re-enable the PWM interrupt.
     //
-    IntEnable(INT_PWM0);
+    IntEnable(INT_PWM0_0);
 }
 
 //*****************************************************************************
@@ -710,7 +710,7 @@ PWMSetDutyCycle(unsigned long ulDutyCycleU, unsigned long ulDutyCycleV,
     //
     // Disable the PWM interrupt temporarily.
     //
-    IntDisable(INT_PWM0);
+    IntDisable(INT_PWM0_0);
 
     //
     // Save the duty cycles for the three phases.
@@ -727,7 +727,7 @@ PWMSetDutyCycle(unsigned long ulDutyCycleU, unsigned long ulDutyCycleV,
     //
     // Re-enable the PWM interrupt.
     //
-    IntEnable(INT_PWM0);
+    IntEnable(INT_PWM0_0);
 }
 
 //*****************************************************************************
@@ -748,13 +748,13 @@ PWMOutputPrecharge(void)
     //
     // Disable the high side switches.
     //
-    PWMOutputState(PWM_BASE, PWM_OUT_1_BIT | PWM_OUT_3_BIT | PWM_OUT_5_BIT,
+    PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT | PWM_OUT_3_BIT | PWM_OUT_5_BIT,
                    false);
 
     //
     // Enable the low side switches.
     //
-    PWMOutputState(PWM_BASE, PWM_OUT_0_BIT | PWM_OUT_2_BIT | PWM_OUT_4_BIT,
+    PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT | PWM_OUT_2_BIT | PWM_OUT_4_BIT,
                    true);
 
     //
@@ -767,9 +767,9 @@ PWMOutputPrecharge(void)
     //
     // Set the PWM period based on the configured PWM frequency.
     //
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, g_ulPWMClock);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, g_ulPWMClock);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_2, g_ulPWMClock);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, g_ulPWMClock);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, g_ulPWMClock);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, g_ulPWMClock);
 
     //
     // Update the PWM duty cycles.
@@ -793,8 +793,8 @@ PWMOutputOn(void)
     //
     // Enable all six PWM outputs.
     //
-    PWMOutputState(PWM_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
-                              PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
+    PWMOutputState(PWM0_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
+                               PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
                    true);
 }
 
@@ -814,8 +814,8 @@ PWMOutputOff(void)
     //
     // Disable all six PWM outputs.
     //
-    PWMOutputState(PWM_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
-                              PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
+    PWMOutputState(PWM0_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
+                               PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
                    false);
 
     //
@@ -828,9 +828,9 @@ PWMOutputOff(void)
     //
     // Set the PWM period so that the ADC runs at 1 KHz.
     //
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, PWM_CLOCK / 1000);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, PWM_CLOCK / 1000);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_2, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, PWM_CLOCK / 1000);
 
     //
     // Update the PWM duty cycles.
@@ -863,9 +863,9 @@ PWMOutputDCBrake(unsigned long ulVoltage)
     //
     // Enable the U and V phases and disable the W phase.
     //
-    PWMOutputState(PWM_BASE, PWM_OUT_4_BIT | PWM_OUT_5_BIT, false);
-    PWMOutputState(PWM_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
-                              PWM_OUT_3_BIT), true);
+    PWMOutputState(PWM0_BASE, PWM_OUT_4_BIT | PWM_OUT_5_BIT, false);
+    PWMOutputState(PWM0_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
+                               PWM_OUT_3_BIT), true);
 
     //
     // Set the PWM duty cycles of the U phase to the required voltage level and
@@ -902,7 +902,7 @@ PWMSetUpdateRate(unsigned char ucUpdateRate)
     // longer possible for the waveform update software interrupt to be
     // triggered.
     //
-    IntDisable(INT_PWM0);
+    IntDisable(INT_PWM0_0);
 
     //
     // Change the update rate parameter.
@@ -912,7 +912,7 @@ PWMSetUpdateRate(unsigned char ucUpdateRate)
     //
     // Re-enable the PWM period interrupt.
     //
-    IntEnable(INT_PWM0);
+    IntEnable(INT_PWM0_0);
 }
 
 //*****************************************************************************
@@ -972,15 +972,15 @@ PWMInit(void)
     // Configure the three PWM generators for up/down counting mode,
     // synchronous updates, and to stop at zero on debug events.
     //
-    PWMGenConfigure(PWM_BASE, PWM_GEN_0, (PWM_GEN_MODE_UP_DOWN |
-                                          PWM_GEN_MODE_SYNC |
-                                          PWM_GEN_MODE_DBG_STOP));
-    PWMGenConfigure(PWM_BASE, PWM_GEN_1, (PWM_GEN_MODE_UP_DOWN |
-                                          PWM_GEN_MODE_SYNC |
-                                          PWM_GEN_MODE_DBG_STOP));
-    PWMGenConfigure(PWM_BASE, PWM_GEN_2, (PWM_GEN_MODE_UP_DOWN |
-                                          PWM_GEN_MODE_SYNC |
-                                          PWM_GEN_MODE_DBG_STOP));
+    PWMGenConfigure(PWM0_BASE, PWM_GEN_0, (PWM_GEN_MODE_UP_DOWN |
+                                           PWM_GEN_MODE_SYNC |
+                                           PWM_GEN_MODE_DBG_STOP));
+    PWMGenConfigure(PWM0_BASE, PWM_GEN_1, (PWM_GEN_MODE_UP_DOWN |
+                                           PWM_GEN_MODE_SYNC |
+                                           PWM_GEN_MODE_DBG_STOP));
+    PWMGenConfigure(PWM0_BASE, PWM_GEN_2, (PWM_GEN_MODE_UP_DOWN |
+                                           PWM_GEN_MODE_SYNC |
+                                           PWM_GEN_MODE_DBG_STOP));
 
     //
     // Set the initial duty cycles to 50%.
@@ -996,49 +996,49 @@ PWMInit(void)
     //
     PWMSetDeadBand();
     PWMSetFrequency();
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, PWM_CLOCK / 1000);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, PWM_CLOCK / 1000);
-    PWMGenPeriodSet(PWM_BASE, PWM_GEN_2, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, PWM_CLOCK / 1000);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, PWM_CLOCK / 1000);
     PWMUpdateDutyCycle();
 
     //
     // Enable the PWM generators.
     //
-    PWMGenEnable(PWM_BASE, PWM_GEN_0);
-    PWMGenEnable(PWM_BASE, PWM_GEN_1);
-    PWMGenEnable(PWM_BASE, PWM_GEN_2);
+    PWMGenEnable(PWM0_BASE, PWM_GEN_0);
+    PWMGenEnable(PWM0_BASE, PWM_GEN_1);
+    PWMGenEnable(PWM0_BASE, PWM_GEN_2);
 
     //
     // Synchronize the time base of the generators.
     //
-    PWMSyncTimeBase(PWM_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT);
+    PWMSyncTimeBase(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT);
 
     //
     // Configure an interrupt on the zero event of the first generator, and an
     // ADC trigger on the load event of the first generator.
     //
-    PWMGenIntClear(PWM_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
-    PWMGenIntTrigEnable(PWM_BASE, PWM_GEN_0,
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+    PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0,
                         PWM_INT_CNT_ZERO | PWM_TR_CNT_LOAD);
-    PWMGenIntTrigEnable(PWM_BASE, PWM_GEN_1, 0);
-    PWMGenIntTrigEnable(PWM_BASE, PWM_GEN_2, 0);
-    IntEnable(INT_PWM0);
-    IntEnable(INT_PWM1);
-    IntEnable(INT_PWM2);
+    PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_1, 0);
+    PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_2, 0);
+    IntEnable(INT_PWM0_0);
+    IntEnable(INT_PWM0_1);
+    IntEnable(INT_PWM0_2);
 
     //
     // Set all six PWM outputs to go to the inactive state when a fault event
     // occurs (which includes debug events).
     //
-    PWMOutputFault(PWM_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
-                              PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
+    PWMOutputFault(PWM0_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
+                               PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
                    true);
 
     //
     // Disable all six PWM outputs.
     //
-    PWMOutputState(PWM_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
-                              PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
+    PWMOutputState(PWM0_BASE, (PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT |
+                               PWM_OUT_3_BIT | PWM_OUT_4_BIT | PWM_OUT_5_BIT),
                    false);
 
     //

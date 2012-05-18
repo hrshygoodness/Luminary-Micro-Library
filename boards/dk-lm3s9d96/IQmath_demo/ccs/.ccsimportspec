@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="IQmath_demo.c"/>
+        <file name="math_float.c"/>
+        <file name="math_float.h"/>
+        <file name="math_IQ.c"/>
+        <file name="math_IQ.h"/>
+        <file name="model.c"/>
+        <file name="model.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

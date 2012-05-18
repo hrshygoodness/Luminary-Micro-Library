@@ -1,0 +1,9 @@
+.\rvmdk\usb.o: usb.c
+.\rvmdk\usb.o: ..\inc/hw_ints.h
+.\rvmdk\usb.o: ..\inc/hw_memmap.h
+.\rvmdk\usb.o: ..\inc/hw_types.h
+.\rvmdk\usb.o: ..\inc/hw_usb.h
+.\rvmdk\usb.o: ..\driverlib/debug.h
+.\rvmdk\usb.o: ..\driverlib/interrupt.h
+.\rvmdk\usb.o: ..\driverlib/udma.h
+.\rvmdk\usb.o: ..\driverlib/usb.h

@@ -3,7 +3,7 @@
 // gui_widgets.c - Functions and structures related to the graphical user
 //                 interface for the qs-checkout application.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -128,34 +128,34 @@ Canvas(g_sStellarisWare, &g_sHomeScreen, &g_sLMSymbol, 0,
 Canvas(g_sEKTitle, &g_sHomeScreen, &g_sStellarisWare, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 34, 320, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_HCENTER),
-       CLR_BACKGROUND, 0, CLR_TEXT, &g_sFontCmss22b,
+       CLR_BACKGROUND, 0, CLR_TEXT, g_pFontCmss22b,
        "LM3S9B96 Development Kit", 0, 0);
 
 ImageButton(g_sIOExamplesBtn, &g_sHomeScreen, &g_sEKTitle, 0,
             &g_sKitronix320x240x16_SSD2119, 20, 64, 180, 32,
             ( IB_STYLE_TEXT | IB_STYLE_RELEASE_NOTIFY),
-             CLR_TEXT, CLR_TEXT, ClrOrange, &g_sFontCmss18b, "IO Examples",
+             CLR_TEXT, CLR_TEXT, ClrOrange, g_pFontCmss18b, "IO Examples",
              g_pucRedButton_180x32_Up, g_pucRedButton_180x32_Down, 0, 3, 3,
              0, 0, OnBtnShowIOScreen);
 
 ImageButton(g_sDemoBtn, &g_sHomeScreen, &g_sIOExamplesBtn, 0,
             &g_sKitronix320x240x16_SSD2119, 20, 100, 180, 32,
             ( IB_STYLE_TEXT | IB_STYLE_RELEASE_NOTIFY),
-             CLR_TEXT, CLR_TEXT, ClrOrange, &g_sFontCmss18b, "Graphics Demo",
+             CLR_TEXT, CLR_TEXT, ClrOrange, g_pFontCmss18b, "Graphics Demo",
              g_pucRedButton_180x32_Up, g_pucRedButton_180x32_Down, 0, 3, 3,
              0, 0, OnBtnShowDemoScreen);
 
 ImageButton(g_sAudioPlayBtn, &g_sHomeScreen, &g_sDemoBtn, 0,
             &g_sKitronix320x240x16_SSD2119, 20, 136, 180, 32,
             ( IB_STYLE_TEXT | IB_STYLE_RELEASE_NOTIFY),
-             CLR_TEXT, CLR_TEXT, ClrOrange, &g_sFontCmss18b, "Audio Player",
+             CLR_TEXT, CLR_TEXT, ClrOrange, g_pFontCmss18b, "Audio Player",
              g_pucRedButton_180x32_Up, g_pucRedButton_180x32_Down, 0, 3, 3,
              0, 0, OnBtnShowAudioScreen);
 
 ImageButton(g_sImageShowBtn, &g_sHomeScreen, &g_sAudioPlayBtn, 0,
             &g_sKitronix320x240x16_SSD2119, 20, 172, 180, 32,
             ( IB_STYLE_TEXT | IB_STYLE_RELEASE_NOTIFY),
-             CLR_TEXT, CLR_TEXT, ClrOrange, &g_sFontCmss18b, "Image Viewer",
+             CLR_TEXT, CLR_TEXT, ClrOrange, g_pFontCmss18b, "Image Viewer",
              g_pucRedButton_180x32_Up, g_pucRedButton_180x32_Down, 0, 3, 3,
              0, 0, OnBtnShowImageScreen);
 
@@ -248,7 +248,7 @@ Slider(g_sThumbwheelSlider, &g_sIOScreen, 0, 0,
 Canvas(g_sMouseTitle, &g_sUSBContainer, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 178, 180, 38, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "Mouse:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "Mouse:", 0, 0);
 
 //*****************************************************************************
 //
@@ -258,7 +258,7 @@ Canvas(g_sMouseTitle, &g_sUSBContainer, 0, 0,
 Canvas(g_sMousePos, &g_sUSBContainer, &g_sMouseTitle, 0,
        &g_sKitronix320x240x16_SSD2119, 216, 180, 63, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, g_pcMousePos, 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, g_pcMousePos, 0, 0);
 
 //*****************************************************************************
 //
@@ -268,7 +268,7 @@ Canvas(g_sMousePos, &g_sUSBContainer, &g_sMouseTitle, 0,
 Canvas(g_sModeTitle, &g_sUSBContainer, &g_sMousePos, 0,
        &g_sKitronix320x240x16_SSD2119, 180, 160, 36, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "Mode:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "Mode:", 0, 0);
 
 //*****************************************************************************
 //
@@ -278,7 +278,7 @@ Canvas(g_sModeTitle, &g_sUSBContainer, &g_sMousePos, 0,
 Canvas(g_sModeString, &g_sUSBContainer, &g_sModeTitle, 0,
        &g_sKitronix320x240x16_SSD2119, 216, 160, 63, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "None", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "None", 0, 0);
 
 //*****************************************************************************
 //
@@ -288,7 +288,7 @@ Canvas(g_sModeString, &g_sUSBContainer, &g_sModeTitle, 0,
 Canvas(g_sMouseBtn1, &g_sUSBContainer, &g_sModeString, 0,
        &g_sKitronix320x240x16_SSD2119, 188, 210, 14, 14,
        (CANVAS_STYLE_IMG | CANVAS_STYLE_TEXT), 0, 0, CLR_TEXT,
-       &g_sFontFixed6x8, "1", g_pucGreyLED14x14Image, 0);
+       g_pFontFixed6x8, "1", g_pucGreyLED14x14Image, 0);
 
 //*****************************************************************************
 //
@@ -298,7 +298,7 @@ Canvas(g_sMouseBtn1, &g_sUSBContainer, &g_sModeString, 0,
 Canvas(g_sMouseBtn2, &g_sUSBContainer, &g_sMouseBtn1, 0,
        &g_sKitronix320x240x16_SSD2119, 219, 210, 14, 14,
        (CANVAS_STYLE_IMG | CANVAS_STYLE_TEXT), 0, 0, CLR_TEXT,
-       &g_sFontFixed6x8, "2", g_pucGreyLED14x14Image, 0);
+       g_pFontFixed6x8, "2", g_pucGreyLED14x14Image, 0);
 
 //*****************************************************************************
 //
@@ -308,7 +308,7 @@ Canvas(g_sMouseBtn2, &g_sUSBContainer, &g_sMouseBtn1, 0,
 Canvas(g_sMouseBtn3, &g_sUSBContainer, &g_sMouseBtn2, 0,
        &g_sKitronix320x240x16_SSD2119, 248, 210, 14, 14,
        (CANVAS_STYLE_IMG | CANVAS_STYLE_TEXT), 0, 0, CLR_TEXT,
-       &g_sFontFixed6x8, "3", g_pucGreyLED14x14Image, 0);
+       g_pFontFixed6x8, "3", g_pucGreyLED14x14Image, 0);
 
 //*****************************************************************************
 //
@@ -318,7 +318,7 @@ Canvas(g_sMouseBtn3, &g_sUSBContainer, &g_sMouseBtn2, 0,
 Container(g_sUSBContainer, &g_sIOScreen, &g_sThumbwheelSlider, &g_sMouseBtn3,
           &g_sKitronix320x240x16_SSD2119, 170, 150, 110, 80,
           (CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT),
-          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, &g_sFontFixed6x8,
+          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, g_pFontFixed6x8,
           "USB");
 
 //*****************************************************************************
@@ -329,7 +329,7 @@ Container(g_sUSBContainer, &g_sIOScreen, &g_sThumbwheelSlider, &g_sMouseBtn3,
 CheckBox(g_sLEDCheckbox, &g_sBoardIOContainer, 0, 0,
          &g_sKitronix320x240x16_SSD2119, 200, 92, 50, 12,
          CB_STYLE_TEXT | CB_STYLE_FILL, 12, CLR_BOX, CLR_TEXT, CLR_TEXT,
-         &g_sFontFixed6x8, " LED", 0, OnCheckLED);
+         g_pFontFixed6x8, " LED", 0, OnCheckLED);
 
 //*****************************************************************************
 //
@@ -339,7 +339,7 @@ CheckBox(g_sLEDCheckbox, &g_sBoardIOContainer, 0, 0,
 Canvas(g_sTouchTitle, &g_sBoardIOContainer, &g_sLEDCheckbox, 0,
        &g_sKitronix320x240x16_SSD2119, 178, 70, 38, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "Touch:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "Touch:", 0, 0);
 
 //*****************************************************************************
 //
@@ -349,7 +349,7 @@ Canvas(g_sTouchTitle, &g_sBoardIOContainer, &g_sLEDCheckbox, 0,
 Canvas(g_sTouchPos, &g_sBoardIOContainer, &g_sTouchTitle, 0,
        &g_sKitronix320x240x16_SSD2119, 216, 70, 63, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, g_pcTouchCoordinates, 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, g_pcTouchCoordinates, 0, 0);
 
 //*****************************************************************************
 //
@@ -359,7 +359,7 @@ Canvas(g_sTouchPos, &g_sBoardIOContainer, &g_sTouchTitle, 0,
 Canvas(g_sSDCard1, &g_sBoardIOContainer, &g_sTouchPos, 0,
        &g_sKitronix320x240x16_SSD2119, 180, 110, 90, 10,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       CLR_BOX, 0, CLR_ABSENT, &g_sFontFixed6x8, "MicroSD Card", 0, 0);
+       CLR_BOX, 0, CLR_ABSENT, g_pFontFixed6x8, "MicroSD Card", 0, 0);
 
 //*****************************************************************************
 //
@@ -369,7 +369,7 @@ Canvas(g_sSDCard1, &g_sBoardIOContainer, &g_sTouchPos, 0,
 Canvas(g_sSDCard2, &g_sBoardIOContainer, &g_sSDCard1, 0,
        &g_sKitronix320x240x16_SSD2119, 180, 120, 90, 10,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT), CLR_BOX, 0, CLR_ABSENT,
-       &g_sFontFixed6x8, "", 0, 0);
+       g_pFontFixed6x8, "", 0, 0);
 
 //*****************************************************************************
 //
@@ -379,7 +379,7 @@ Canvas(g_sSDCard2, &g_sBoardIOContainer, &g_sSDCard1, 0,
 Canvas(g_sPotTitle, &g_sBoardIOContainer, &g_sSDCard2, 0,
        &g_sKitronix320x240x16_SSD2119, 180, 50, 36, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "Pot:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "Pot:", 0, 0);
 
 //*****************************************************************************
 //
@@ -389,7 +389,7 @@ Canvas(g_sPotTitle, &g_sBoardIOContainer, &g_sSDCard2, 0,
 Canvas(g_sPotPos, &g_sBoardIOContainer, &g_sPotTitle, 0,
        &g_sKitronix320x240x16_SSD2119, 216, 50, 63, 20,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT |
-       CANVAS_STYLE_TEXT_OPAQUE), CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8,
+       CANVAS_STYLE_TEXT_OPAQUE), CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8,
        g_pucThumbwheelString, 0, 0);
 
 //*****************************************************************************
@@ -400,7 +400,7 @@ Canvas(g_sPotPos, &g_sBoardIOContainer, &g_sPotTitle, 0,
 Container(g_sBoardIOContainer, &g_sIOScreen, &g_sUSBContainer, &g_sPotPos,
           &g_sKitronix320x240x16_SSD2119, 170, 40, 110, 100,
           (CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT),
-          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, &g_sFontFixed6x8,
+          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, g_pFontFixed6x8,
           "Board I/O");
 
 //*****************************************************************************
@@ -411,7 +411,7 @@ Container(g_sBoardIOContainer, &g_sIOScreen, &g_sUSBContainer, &g_sPotPos,
 Canvas(g_sMACAddr, &g_sEthernetContainer, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 50, 70, 108, 18,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_LEFT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, g_pucMACAddrString, 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, g_pucMACAddrString, 0, 0);
 
 //*****************************************************************************
 //
@@ -422,7 +422,7 @@ Canvas(g_sIPAddr, &g_sEthernetContainer, &g_sMACAddr, 0,
        &g_sKitronix320x240x16_SSD2119,
        50, 50, 108, 20, (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT |
        CANVAS_STYLE_TEXT_LEFT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, g_pucIPAddrString, 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, g_pucIPAddrString, 0, 0);
 
 //*****************************************************************************
 //
@@ -432,7 +432,7 @@ Canvas(g_sIPAddr, &g_sEthernetContainer, &g_sMACAddr, 0,
 Canvas(g_sMACTitle, &g_sEthernetContainer, &g_sIPAddr, 0,
        &g_sKitronix320x240x16_SSD2119, 20, 70, 30, 18,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT | CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "MAC:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "MAC:", 0, 0);
 
 //*****************************************************************************
 //
@@ -443,7 +443,7 @@ Canvas(g_sIPTitle, &g_sEthernetContainer, &g_sMACTitle, 0,
        &g_sKitronix320x240x16_SSD2119,
        20, 50, 30, 20, (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT |
        CANVAS_STYLE_TEXT_RIGHT),
-       CLR_BOX, 0, CLR_TEXT, &g_sFontFixed6x8, "IP:", 0, 0);
+       CLR_BOX, 0, CLR_TEXT, g_pFontFixed6x8, "IP:", 0, 0);
 
 //*****************************************************************************
 //
@@ -453,7 +453,7 @@ Canvas(g_sIPTitle, &g_sEthernetContainer, &g_sMACTitle, 0,
 Container(g_sEthernetContainer, &g_sIOScreen, &g_sBoardIOContainer,
           &g_sIPTitle, &g_sKitronix320x240x16_SSD2119, 10, 40, 150, 50,
           (CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT),
-          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, &g_sFontFixed6x8,
+          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, g_pFontFixed6x8,
           "Ethernet");
 
 //*****************************************************************************
@@ -465,7 +465,7 @@ ListBox(g_sStatusList, &g_sStatusContainer, 0, 0,
         &g_sKitronix320x240x16_SSD2119, 20, 112, 130, 80,
         (LISTBOX_STYLE_LOCKED | LISTBOX_STYLE_WRAP),
         CLR_BACKGROUND, CLR_BACKGROUND, CLR_TEXT, CLR_TEXT, 0,
-        &g_sFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
+        g_pFontFixed6x8, g_ppcStatusStrings,  NUM_STATUS_STRINGS,
         0, 0);
 
 //*****************************************************************************
@@ -476,7 +476,7 @@ ListBox(g_sStatusList, &g_sStatusContainer, 0, 0,
 Container(g_sStatusContainer, &g_sIOScreen, &g_sEthernetContainer,
           &g_sStatusList, &g_sKitronix320x240x16_SSD2119, 10, 100, 150, 100,
           (CTR_STYLE_OUTLINE | CTR_STYLE_FILL | CTR_STYLE_TEXT),
-          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, &g_sFontFixed6x8,
+          CLR_BOX, CLR_OUTLINE, CLR_OUTLINE, g_pFontFixed6x8,
           "Status");
 
 //*****************************************************************************
@@ -487,7 +487,7 @@ Container(g_sStatusContainer, &g_sIOScreen, &g_sEthernetContainer,
 RectangularButton(g_sHomeBtn, &g_sIOScreen, &g_sStatusContainer, 0,
                   &g_sKitronix320x240x16_SSD2119, 10, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
-                   0, 0, 0, CLR_TEXT, &g_sFontCmss18b, "Home",
+                   0, 0, 0, CLR_TEXT, g_pFontCmss18b, "Home",
                    g_pucRedButton_90x24_Up, g_pucRedButton_90x24_Down, 0, 0,
                    OnBtnHome);
 

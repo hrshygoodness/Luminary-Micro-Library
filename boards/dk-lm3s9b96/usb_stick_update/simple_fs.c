@@ -2,7 +2,7 @@
 //
 // simple_fs.c - Functions for simple FAT file system support
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -27,31 +27,31 @@
 
 //*****************************************************************************
 //
-//! \addtogroup simple_fs_api
-//! @{
-//!
-//! This file system API should be used as follows:
-//! - Initialize it by calling SimpleFsInit().  You must supply a pointer to a
-//! 512 byte buffer that will be used for storing device sector data.
-//! - "Open" a file by calling SimpleFsOpen() and passing the 8.3-style filename
-//! as an 11-character string.
-//! - Read successive sectors from the file by using the convenience macro
-//! SimpleFsReadFileSector().
-//!
-//! This API does not use any file handles so there is no way to open more than
-//! one file at a time.  There is also no random access into the file, each
-//! sector must be read in sequence.
-//!
-//! The client of this API supplies a 512-byte buffer for storage of data read
-//! from the device.  But this file also maintains an additional, internal
-//! 512-byte buffer used for caching FAT sectors.  This minimizes the amount
-//! of device reads required to fetch cluster chain entries from the FAT.
-//!
-//! The application code (the client) must also provide a function used for
-//! reading sectors from the storage device, whatever it may be.  This allows
-//! the code in this file to be independent of the type of device used for
-//! storing the file system.  The name of the function is
-//! SimpleFsReadMediaSector().
+// \addtogroup simple_fs_api
+// @{
+//
+// This file system API should be used as follows:
+// - Initialize it by calling SimpleFsInit().  You must supply a pointer to a
+// 512 byte buffer that will be used for storing device sector data.
+// - "Open" a file by calling SimpleFsOpen() and passing the 8.3-style filename
+// as an 11-character string.
+// - Read successive sectors from the file by using the convenience macro
+// SimpleFsReadFileSector().
+//
+// This API does not use any file handles so there is no way to open more than
+// one file at a time.  There is also no random access into the file, each
+// sector must be read in sequence.
+//
+// The client of this API supplies a 512-byte buffer for storage of data read
+// from the device.  But this file also maintains an additional, internal
+// 512-byte buffer used for caching FAT sectors.  This minimizes the amount
+// of device reads required to fetch cluster chain entries from the FAT.
+//
+// The application code (the client) must also provide a function used for
+// reading sectors from the storage device, whatever it may be.  This allows
+// the code in this file to be independent of the type of device used for
+// storing the file system.  The name of the function is
+// SimpleFsReadMediaSector().
 //
 //*****************************************************************************
 
@@ -252,27 +252,27 @@ static unsigned char *g_pucSectorBuf;
 
 //*****************************************************************************
 //
-//! Initializes the simple file system
-//!
-//! \param pucSectorBuf is a pointer to a caller supplied 512-byte buffer
-//! that will be used for holding sectors that are loaded from the media
-//! storage device.
-//!
-//! Reads the MBR, partition table, and boot record to find the logical
-//! structure of the file system.  This function stores the file system
-//! structural data internally so that the remaining functions of the API
-//! can read the file system.
-//!
-//! To read data from the storage device, the function SimpleFsReadMediaSector()
-//! will be called.  This function is not implemented here but must be
-//! implemented by the user of this simple file system.
-//!
-//! This file system support is extremely simple-minded.  It will only
-//! find the first partition of a FAT16 or FAT32 formatted mass storage
-//! device.  Only very minimal error checking is performed in order to save
-//! code space.
-//!
-//! \return Zero if successful, non-zero if there was an error.
+// Initializes the simple file system
+//
+// \param pucSectorBuf is a pointer to a caller supplied 512-byte buffer
+// that will be used for holding sectors that are loaded from the media
+// storage device.
+//
+// Reads the MBR, partition table, and boot record to find the logical
+// structure of the file system.  This function stores the file system
+// structural data internally so that the remaining functions of the API
+// can read the file system.
+//
+// To read data from the storage device, the function SimpleFsReadMediaSector()
+// will be called.  This function is not implemented here but must be
+// implemented by the user of this simple file system.
+//
+// This file system support is extremely simple-minded.  It will only
+// find the first partition of a FAT16 or FAT32 formatted mass storage
+// device.  Only very minimal error checking is performed in order to save
+// code space.
+//
+// \return Zero if successful, non-zero if there was an error.
 //
 //*****************************************************************************
 unsigned long
@@ -455,27 +455,27 @@ SimpleFsInit(unsigned char *pucSectorBuf)
 
 //*****************************************************************************
 //
-//! Find the next cluster in a FAT chain
-//!
-//! \param ulThisCluster is the current cluster in the chain
-//!
-//! Reads the File Allocation Table (FAT) of the file system to find the
-//! next cluster in a chain of clusters.  The current cluster is passed in
-//! and the next cluster in the chain will be returned.
-//!
-//! This function reads sectors from the storage device as needed in order
-//! to parse the FAT tables.  Error handling is minimal since there is not
-//! much that can be done if an error is encountered.  If any error is
-//! encountered, or if this is the last cluster in the chain, then 0 is
-//! returned.  This signals the caller to stop traversing the chain (either
-//! due to error or end of chain).
-//!
-//! The function maintains a cache of a single sector from the FAT.  It only
-//! reads in a new FAT sector if the requested cluster is not in the
-//! currently cached sector.
-//!
-//! \return Next cluster number if successful, 0 if this is the last cluster
-//! or any error is found.
+// Find the next cluster in a FAT chain
+//
+// \param ulThisCluster is the current cluster in the chain
+//
+// Reads the File Allocation Table (FAT) of the file system to find the
+// next cluster in a chain of clusters.  The current cluster is passed in
+// and the next cluster in the chain will be returned.
+//
+// This function reads sectors from the storage device as needed in order
+// to parse the FAT tables.  Error handling is minimal since there is not
+// much that can be done if an error is encountered.  If any error is
+// encountered, or if this is the last cluster in the chain, then 0 is
+// returned.  This signals the caller to stop traversing the chain (either
+// due to error or end of chain).
+//
+// The function maintains a cache of a single sector from the FAT.  It only
+// reads in a new FAT sector if the requested cluster is not in the
+// currently cached sector.
+//
+// \return Next cluster number if successful, 0 if this is the last cluster
+// or any error is found.
 //
 //*****************************************************************************
 static unsigned long
@@ -576,36 +576,36 @@ SimpleFsGetNextCluster(unsigned long ulThisCluster)
 
 //*****************************************************************************
 //
-//! Read a single sector from a file into the sector buffer
-//!
-//! \param ulStartCluster is the first cluster of the file, used to
-//! initialize the file read.  Use 0 for successive sectors.
-//!
-//! Reads sectors in sequence from a file and stores the data in the sector
-//! buffer that was passed in the initial call to SimpleFsInit().  The function
-//! is initialized with the file to read by passing the starting cluster of
-//! the file.  The function will initialize some static data and return.  It
-//! does not read any file data when passed a starting cluster (and
-//! returns 0 - this is normal).
-//!
-//! Once the function has been initialized with the file's starting cluster,
-//! then successive calls should be made, passing a value of 0 for the
-//! cluster number.  This tells the function to read the next sector from the
-//! file and store it in the sector buffer.  The function remembers the last
-//! sector that was read, and each time it is called with a cluster value of
-//! 0, it will read the next sector.  The function will traverse the FAT
-//! chain as needed to read all the sectors.  When a sector has been
-//! successfully read from a file, the function will return non-zero.  When
-//! there are no more sectors to read, or any error is encountered, the
-//! function will return 0.
-//!
-//! Note that the function always reads a whole sector, even if the end of
-//! a file does not fill the last sector.  It is the responsibility of the
-//! caller to track the file size and to deal with a partially full last
-//! sector.
-//!
-//! \return Non-zero if a sector was read into the sector buffer, or
-//! 0 if there are no more sectors or if any error occurred.
+// Read a single sector from a file into the sector buffer
+//
+// \param ulStartCluster is the first cluster of the file, used to
+// initialize the file read.  Use 0 for successive sectors.
+//
+// Reads sectors in sequence from a file and stores the data in the sector
+// buffer that was passed in the initial call to SimpleFsInit().  The function
+// is initialized with the file to read by passing the starting cluster of
+// the file.  The function will initialize some static data and return.  It
+// does not read any file data when passed a starting cluster (and
+// returns 0 - this is normal).
+//
+// Once the function has been initialized with the file's starting cluster,
+// then successive calls should be made, passing a value of 0 for the
+// cluster number.  This tells the function to read the next sector from the
+// file and store it in the sector buffer.  The function remembers the last
+// sector that was read, and each time it is called with a cluster value of
+// 0, it will read the next sector.  The function will traverse the FAT
+// chain as needed to read all the sectors.  When a sector has been
+// successfully read from a file, the function will return non-zero.  When
+// there are no more sectors to read, or any error is encountered, the
+// function will return 0.
+//
+// Note that the function always reads a whole sector, even if the end of
+// a file does not fill the last sector.  It is the responsibility of the
+// caller to track the file size and to deal with a partially full last
+// sector.
+//
+// \return Non-zero if a sector was read into the sector buffer, or
+// 0 if there are no more sectors or if any error occurred.
 //
 //*****************************************************************************
 unsigned long
@@ -698,32 +698,32 @@ SimpleFsGetNextFileSector(unsigned long ulStartCluster)
 
 //*****************************************************************************
 //
-//! Find a file in the root directory of the file system and open it for
-//! reading.
-//!
-//! \param pcName83 is an 11-character string that represents the 8.3 file
-//! name of the file to open.
-//!
-//! This function traverses the root directory of the file system to find
-//! the file name specified by the caller.  Note that the file name must be
-//! an 8.3 file name that is 11 characters long.  The first 8 characters are
-//! the base name and the last 3 characters are the extension.  If there are
-//! fewer characters in the base name or extension, the name should be padded
-//! with spaces.  For example "myfile.bn" has fewer than 11 characters, and
-//! should be passed with padding like this: "myfile  bn ".  Note the extra
-//! spaces, and that the dot ('.') is not part of the string that is passed
-//! to this function.
-//!
-//! If the file is found, then it initializes the file for reading, and returns
-//! the file length.  The file can be read by making successive calls to
-//! SimpleFsReadFileSector().
-//!
-//! The function only searches the root directory and ignores any
-//! subdirectories.  It also ignores any long file name entries, looking only
-//! at the 8.3 file name for a match.
-//!
-//! \return The size of the file if it is found, or 0 if the file could not
-//! be found.
+// Find a file in the root directory of the file system and open it for
+// reading.
+//
+// \param pcName83 is an 11-character string that represents the 8.3 file
+// name of the file to open.
+//
+// This function traverses the root directory of the file system to find
+// the file name specified by the caller.  Note that the file name must be
+// an 8.3 file name that is 11 characters long.  The first 8 characters are
+// the base name and the last 3 characters are the extension.  If there are
+// fewer characters in the base name or extension, the name should be padded
+// with spaces.  For example "myfile.bn" has fewer than 11 characters, and
+// should be passed with padding like this: "myfile  bn ".  Note the extra
+// spaces, and that the dot ('.') is not part of the string that is passed
+// to this function.
+//
+// If the file is found, then it initializes the file for reading, and returns
+// the file length.  The file can be read by making successive calls to
+// SimpleFsReadFileSector().
+//
+// The function only searches the root directory and ignores any
+// subdirectories.  It also ignores any long file name entries, looking only
+// at the 8.3 file name for a match.
+//
+// \return The size of the file if it is found, or 0 if the file could not
+// be found.
 //
 //*****************************************************************************
 unsigned long
@@ -858,6 +858,6 @@ SimpleFsOpen(char *pcName83)
 //*****************************************************************************
 //
 // Close the Doxygen group.
-//! @}
+// @}
 //
 //*****************************************************************************

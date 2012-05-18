@@ -2,7 +2,7 @@
 //
 // usb_host_mouse.c - main application code for the host mouse example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,16 +18,18 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "usblib/usblib.h"
+#include "usblib/usbhid.h"
 #include "usblib/host/usbhost.h"
 #include "usblib/host/usbhhid.h"
 #include "usblib/host/usbhhidmouse.h"
@@ -194,7 +196,7 @@ __error__(char *pcFilename, unsigned long ulLine)
 //
 // This is the generic callback from host stack.
 //
-// \param pvData is actually a pointer to a tEventInfo structure.
+// pvData is actually a pointer to a tEventInfo structure.
 //
 // This function will be called to inform the application when a USB event has
 // occurred that is outside those related to the mouse device.  At this
@@ -203,8 +205,6 @@ __error__(char *pcFilename, unsigned long ulLine)
 // This function is required when the g_USBGenericEventDriver is included in
 // the host controller driver array that is passed in to the
 // USBHCDRegisterDrivers() function.
-//
-// \return None.
 //
 //*****************************************************************************
 void
@@ -224,8 +224,35 @@ USBHCDEvents(void *pvData)
         //
         case USB_EVENT_CONNECTED:
         {
-            UARTprintf("Unknown Device Connected\n");
+            //
+            // See if this is a HID Mouse.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_MOUSE))
+            {
+                //
+                // Indicate that the mouse has been detected.
+                //
+                UARTprintf("\nMouse Connected\n");
 
+                //
+                // Proceed to the STATE_MOUSE_INIT state so that the main loop
+                // can finish initialized the mouse since USBHMouseInit()
+                // cannot be called from within a callback.
+                //
+                g_eUSBState = STATE_MOUSE_INIT;
+            }
+
+            break;
+        }
+        //
+        // Unsupported device detected.
+        //
+        case USB_EVENT_UNKNOWN_CONNECTED:
+        {
+            UARTprintf("Unsupported Device Class (0x%02x) Connected.\n",
+                       pEventInfo->ulInstance);
             //
             // An unknown device was detected.
             //
@@ -233,22 +260,32 @@ USBHCDEvents(void *pvData)
 
             break;
         }
-
         //
-        // Keyboard has been unplugged.
+        // Device has been unplugged.
         //
         case USB_EVENT_DISCONNECTED:
         {
-            UARTprintf("Unknown Device Disconnected\n");
+            //
+            // Indicate that the device has been disconnected.
+            //
+            UARTprintf("Device Disconnected\n");
 
             //
-            // Unknown device has been removed.
+            // Change the state so that the main loop knows that the device is
+            // no longer present.
             //
             g_eUSBState = STATE_NO_DEVICE;
 
+            //
+            // Reset the button state.
+            //
+            g_ulButtons = 0;
+
             break;
         }
-
+        //
+        // Power Fault has occurred.
+        //
         case USB_EVENT_POWER_FAULT:
         {
             UARTprintf("Power Fault\n");
@@ -388,52 +425,15 @@ unsigned long
 MouseCallback(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgParam,
               void *pvMsgData)
 {
+    long lDoUpdate;
+
+    //
+    // Do an update unless there is no reason to.
+    //
+    lDoUpdate = 1;
+
     switch(ulEvent)
     {
-        //
-        // New mouse detected.
-        //
-        case USB_EVENT_CONNECTED:
-        {
-            //
-            // Indicate that the mouse has been detected.
-            //
-            UARTprintf("Mouse Connected\n");
-
-            //
-            // Proceed to the STATE_MOUSE_INIT state so that the main loop can
-            // finish initialized the mouse since USBHMouseInit() cannot be
-            // called from within a callback.
-            //
-            g_eUSBState = STATE_MOUSE_INIT;
-
-            break;
-        }
-
-        //
-        // Mouse has been unplugged.
-        //
-        case USB_EVENT_DISCONNECTED:
-        {
-            //
-            // Indicate that the mouse has been disconnected.
-            //
-            UARTprintf("Mouse Disconnected\n");
-
-            //
-            // Change the state so that the main loop knows that the mouse is
-            // no longer present.
-            //
-            g_eUSBState = STATE_NO_DEVICE;
-
-            //
-            // Reset the button state.
-            //
-            g_ulButtons = 0;
-
-            break;
-        }
-
         //
         // Mouse button press detected.
         //
@@ -485,14 +485,27 @@ MouseCallback(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgParam,
 
             break;
         }
+        default:
+        {
+            //
+            // No reason to update.
+            //
+            lDoUpdate = 0;
+
+            break;
+        }
     }
 
     //
-    // Display the current mouse position and button state.
+    // Display the current mouse position and button state if there was an
+    // update.
     //
-    UARTprintf("\rPos: %d, %d  Buttons: %d%d%d    ", g_lCursorX, g_lCursorY,
-               g_ulButtons & 1, (g_ulButtons & 2) >> 1,
-               (g_ulButtons & 4) >> 2);
+    if(lDoUpdate)
+    {
+        UARTprintf("\rPos: %d, %d  Buttons: %d%d%d    ", g_lCursorX, g_lCursorY,
+                   g_ulButtons & 1, (g_ulButtons & 2) >> 1,
+                   (g_ulButtons & 4) >> 2);
+    }
 
     return(0);
 }

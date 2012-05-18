@@ -1,0 +1,106 @@
+<!--
+Configuration file for Code Red project boot_can
+
+Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+Software License Agreement
+
+Texas Instruments (TI) is supplying this software for use solely and
+exclusively on TI's microcontroller products. The software is owned by
+TI and/or its suppliers, and is protected under applicable copyright
+laws. You may not combine this software with "viral" open-source
+software in order to form a larger program.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
+NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
+NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
+CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, FOR ANY REASON WHATSOEVER.
+
+This is part of revision 8555 of the RDK-BDC24 Firmware Package.
+-->
+
+<project chip="LM3S2616"
+         postBuild="arm-none-eabi-objcopy -O binary ${BuildArtifactFileName} ${BuildArtifactFileBaseName}.bin"
+         type="LMI Basic C project"
+         vendor="LMI">
+  <import src=".">
+    <exclude>{(Makefile|Makefile\..*|ccs|codered|ewarm|gcc|rvmdk|sourcerygxx)}</exclude>
+    <exclude>{startup_(ewarm|gcc|rvmdk|sourcerygxx|ccs).(c|S)}</exclude>
+    <exclude>{.*\.(ewd|ewp|eww|icf|Opt|sct|sgxx|Uv2|uvopt|uvproj|xml|ld|cmd)}</exclude>
+  </import>
+  <import src=".">
+    <include>*.txt</include>
+  </import>
+  <import src="../../..">
+    <copy>boot_loader/bl_autobaud.c</copy>
+    <copy>boot_loader/bl_can.c</copy>
+    <copy>boot_loader/bl_check.c</copy>
+    <copy>boot_loader/bl_decrypt.c</copy>
+    <copy>boot_loader/bl_enet.c</copy>
+    <copy>boot_loader/bl_flash.c</copy>
+    <copy>boot_loader/bl_i2c.c</copy>
+    <copy>boot_loader/bl_main.c</copy>
+    <copy>boot_loader/bl_packet.c</copy>
+    <copy>boot_loader/bl_ssi.c</copy>
+    <copy>boot_loader/bl_uart.c</copy>
+    <copy>boot_loader/bl_usb.c</copy>
+    <copy>boot_loader/bl_usbfuncs.c</copy>
+    <copy>boot_loader/bl_startup_codered.S</copy>
+  </import>
+  <requires>
+    <value>boot_loader</value>
+    <value>inc</value>
+  </requires>
+  <setting id="assembler.def">
+    <value>codered</value>
+  </setting>
+  <setting id="compiler.def"
+           buildType="Debug"
+           mode="replace">
+    <value>DEBUG</value>
+  </setting>
+  <setting id="compiler.def"
+           buildType="Release"
+           mode="replace">
+    <value>NDEBUG</value>
+  </setting>
+  <setting id="compiler.def">
+    <value>__CODE_RED</value>
+    <value>__NEWLIB__</value>
+    <value>codered</value>
+    <value>PART_LM3S2616</value>
+    <value>TARGET_IS_DUSTDEVIL_RA0</value>
+  </setting>
+  <setting id="compiler.opt"
+           buildType="Debug">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.opt"
+           buildType="Release">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.flags"
+           buildType="Debug">
+    <value>-Os</value>
+  </setting>
+  <setting id="compiler.flags"
+           buildType="Release">
+    <value>-Os</value>
+  </setting>
+  <setting id="linker.script">
+    <value>../../boot_loader/bl_link.ld</value>
+  </setting>
+  <setting id="linker.libs">
+    <value>c</value>
+    <value>gcc</value>
+  </setting>
+  <setting id="assembler.inc">
+    <value>..</value>
+  </setting>
+  <setting id="compiler.inc">
+    <value>${workspace_loc:/}</value>
+    <value>${workspace_loc:/boot_loader}</value>
+    <value>..</value>
+  </setting>
+</project>

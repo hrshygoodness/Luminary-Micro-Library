@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="chronos_drive.c"/>
+        <file name="simpliciti_config.h"/>
+        <file name="sounds.c"/>
+        <file name="sounds.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

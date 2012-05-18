@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the USB host keyboard example.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -49,6 +54,7 @@ VPATH+=../../../utils
 IPATH=..
 IPATH+=../../..
 
+#
 # The default rule, which causes the USB host keyboard example to be built.
 #
 all: ${COMPILER}
@@ -74,9 +80,9 @@ ${COMPILER}/usb_host_keyboard.axf: ${COMPILER}/set_pinout.o
 ${COMPILER}/usb_host_keyboard.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/usb_host_keyboard.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/usb_host_keyboard.axf: ${COMPILER}/usb_host_keyboard.o
-${COMPILER}/usb_host_keyboard.axf: ${ROOT}/usblib/${COMPILER}/libusb.a
-${COMPILER}/usb_host_keyboard.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/usb_host_keyboard.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/usb_host_keyboard.axf: ${ROOT}/usblib/${COMPILER}-cm3/libusb-cm3.a
+${COMPILER}/usb_host_keyboard.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/usb_host_keyboard.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/usb_host_keyboard.axf: usb_host_keyboard.ld
 SCATTERgcc_usb_host_keyboard=usb_host_keyboard.ld
 ENTRY_usb_host_keyboard=ResetISR

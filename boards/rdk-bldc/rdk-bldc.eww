@@ -2,7 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\..\..\driverlib\driverlib.ewp</path>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
   </project>
   <project>
     <path>$WS_DIR$\basic-bldc\basic-bldc.ewp</path>
@@ -17,7 +17,7 @@
     <batchDefinition>
       <name>All Examples</name>
       <member>
-        <project>driverlib</project>
+        <project>driverlib-cm3</project>
         <configuration>Debug</configuration>
       </member>
       <member>

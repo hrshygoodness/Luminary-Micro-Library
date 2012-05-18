@@ -2,7 +2,7 @@
 //
 // hall_ctrl.c - Routines to support use of the Hall Sensor inputs.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 6852 of the RDK-BLDC Firmware Package.
+// This is part of revision 8555 of the RDK-BLDC Firmware Package.
 //
 //*****************************************************************************
 
@@ -117,25 +117,25 @@ unsigned long g_ulHallValue = 0;
 static void
 HallSpeedNewValue(unsigned long ulNewSpeed)
 {
-    unsigned short usDelta;
+    unsigned long ulDelta;
 
     //
     // Compute the difference in the speed.
     //
     if(ulNewSpeed > g_ulHallRotorSpeed)
     {
-        usDelta = ulNewSpeed - g_ulHallRotorSpeed;
+        ulDelta = ulNewSpeed - g_ulHallRotorSpeed;
     }
     else
     {
-        usDelta = g_ulHallRotorSpeed - ulNewSpeed;
+        ulDelta = g_ulHallRotorSpeed - ulNewSpeed;
     }
 
     //
     // If the speed difference is too large then return without updating the
     // motor speed.
     //
-    if(usDelta > (g_sParameters.ulMaxSpeed / 2))
+    if(ulDelta > (g_sParameters.ulMaxSpeed / 2))
     {
         return;
     }

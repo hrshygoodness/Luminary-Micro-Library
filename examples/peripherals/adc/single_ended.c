@@ -3,7 +3,7 @@
 // single_ended.c - Example demonstrating how to configure the ADC for
 // single ended operation.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -207,6 +207,11 @@ main(void)
         while(!ADCIntStatus(ADC0_BASE, 3, false))
         {
         }
+
+        //
+        // Clear the ADC interrupt flag.
+        //
+        ADCIntClear(ADC0_BASE, 3);
 
         //
         // Read ADC Value.

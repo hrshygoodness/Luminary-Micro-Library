@@ -2,7 +2,7 @@
 //
 // usb_host_keyboard.c - main application code for the host keyboard example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -338,9 +338,9 @@ PrintChar(const char ucChar)
             // This is not a backspace so print the character to the screen.
             //
             GrStringDraw(&g_sContext, &ucChar, 1,
-                         GrFontMaxWidthGet(&g_sFontFixed6x8) * g_ulColumn,
+                         GrFontMaxWidthGet(g_pFontFixed6x8) * g_ulColumn,
                          DISPLAY_BANNER_HEIGHT + DISPLAY_TEXT_BORDER +
-                         (g_ulLine * GrFontHeightGet(&g_sFontFixed6x8)), 0);
+                         (g_ulLine * GrFontHeightGet(g_pFontFixed6x8)), 0);
         }
         else
         {
@@ -368,9 +368,9 @@ PrintChar(const char ucChar)
                 // the cursor again.
                 //
                 GrStringDraw(&g_sContext, " ", 1,
-                             GrFontMaxWidthGet(&g_sFontFixed6x8) * g_ulColumn,
+                             GrFontMaxWidthGet(g_pFontFixed6x8) * g_ulColumn,
                              DISPLAY_BANNER_HEIGHT + DISPLAY_TEXT_BORDER +
-                             (g_ulLine * GrFontHeightGet(&g_sFontFixed6x8)),
+                             (g_ulLine * GrFontHeightGet(g_pFontFixed6x8)),
                              true);
             }
             return;
@@ -444,7 +444,7 @@ UpdateStatus(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Update the status on the screen.
@@ -493,7 +493,7 @@ UpdateStatus(void)
 //
 // This is the generic callback from host stack.
 //
-// \param pvData is actually a pointer to a tEventInfo structure.
+// pvData is actually a pointer to a tEventInfo structure.
 //
 // This function will be called to inform the application when a USB event has
 // occurred that is outside those related to the keyboard device.  At this
@@ -502,8 +502,6 @@ UpdateStatus(void)
 // This function is required when the g_USBGenericEventDriver is included in
 // the host controller driver array that is passed in to the
 // USBHCDRegisterDrivers() function.
-//
-// \return None.
 //
 //*****************************************************************************
 void
@@ -523,7 +521,35 @@ USBHCDEvents(void *pvData)
         //
         case USB_EVENT_CONNECTED:
         {
-            UARTprintf("Unknown Device Connected\n");
+            //
+            // See if this is a HID Keyboard.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_KEYB))
+            {
+                //
+                // Indicate that the keyboard has been detected.
+                //
+                UARTprintf("Keyboard Connected\n");
+
+                //
+                // Proceed to the STATE_KEYBOARD_INIT state so that the main
+                // loop can finish initialized the mouse since
+                // USBHKeyboardInit() cannot be called from within a callback.
+                //
+                g_eUSBState = STATE_KEYBOARD_INIT;
+            }
+
+            break;
+        }
+        //
+        // Unsupported device detected.
+        //
+        case USB_EVENT_UNKNOWN_CONNECTED:
+        {
+            UARTprintf("Unsupported Device Class (0x%02x) Connected.\n",
+                       pEventInfo->ulInstance);
 
             //
             // An unknown device was detected.
@@ -531,24 +557,35 @@ USBHCDEvents(void *pvData)
             g_eUSBState = STATE_UNKNOWN_DEVICE;
 
             UpdateStatus();
+
             break;
         }
-
         //
-        // Keyboard has been unplugged.
+        // Device has been unplugged.
         //
         case USB_EVENT_DISCONNECTED:
         {
-            UARTprintf("Unknown Device Disconnected\n");
+            //
+            // Indicate that the device has been disconnected.
+            //
+            UARTprintf("Device Disconnected\n");
 
             //
-            // Unknown device has been removed.
+            // Change the state so that the main loop knows that the device
+            // is no longer present.
             //
             g_eUSBState = STATE_NO_DEVICE;
 
+            //
+            // Update the screen.
+            //
             UpdateStatus();
+
             break;
         }
+        //
+        // Power Fault occurred.
+        //
         case USB_EVENT_POWER_FAULT:
         {
             UARTprintf("Power Fault\n");
@@ -559,6 +596,7 @@ USBHCDEvents(void *pvData)
             g_eUSBState = STATE_POWER_FAULT;
 
             UpdateStatus();
+
             break;
         }
         default:
@@ -641,55 +679,6 @@ KeyboardCallback(void *pvCBData, unsigned long ulEvent,
     switch(ulEvent)
     {
         //
-        // New keyboard detected.
-        //
-        case USB_EVENT_CONNECTED:
-        {
-            //
-            // Indicate that the keyboard has been detected.
-            //
-            UARTprintf("Keyboard Connected\n");
-
-            //
-            // Proceed to the STATE_KEYBOARD_INIT state so that the main loop
-            // can finish initialized the mouse since USBHKeyboardInit() cannot
-            // be called from within a callback.
-            //
-            g_eUSBState = STATE_KEYBOARD_INIT;
-
-            break;
-        }
-
-        //
-        // Keyboard has been unplugged.
-        //
-        case USB_EVENT_DISCONNECTED:
-        {
-            //
-            // Indicate that the keyboard has been disconnected.
-            //
-            UARTprintf("Keyboard Disconnected\n");
-
-            //
-            // Change the state so that the main loop knows that the keyboard
-            // is no longer present.
-            //
-            g_eUSBState = STATE_NO_DEVICE;
-
-            //
-            // Reset the modifiers state.
-            //
-            g_ulModifiers = 0;
-
-            //
-            // Update the screen.
-            //
-            UpdateStatus();
-
-            break;
-        }
-
-        //
         // New Key press detected.
         //
         case USBH_EVENT_HID_KB_PRESS:
@@ -714,6 +703,32 @@ KeyboardCallback(void *pvCBData, unsigned long ulEvent,
                 // Update the screen based on the Caps Lock status.
                 //
                 UpdateStatus();
+            }
+            else if(ulMsgParam == HID_KEYB_USAGE_SCROLLOCK)
+            {
+                //
+                // The main loop needs to update the keyboard's Scroll Lock
+                // state.
+                //
+                g_eUSBState = STATE_KEYBOARD_UPDATE;
+
+                //
+                // Toggle the current Scroll Lock state.
+                //
+                g_ulModifiers ^= HID_KEYB_SCROLL_LOCK;
+            }
+            else if(ulMsgParam == HID_KEYB_USAGE_NUMLOCK)
+            {
+                //
+                // The main loop needs to update the keyboard's Scroll Lock
+                // state.
+                //
+                g_eUSBState = STATE_KEYBOARD_UPDATE;
+
+                //
+                // Toggle the current Num Lock state.
+                //
+                g_ulModifiers ^= HID_KEYB_NUM_LOCK;
             }
             else
             {
@@ -929,7 +944,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-host-keyboard", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 8, 0);
 
@@ -938,7 +953,7 @@ main(void)
     // Make sure to leave a small border for the text box.
     //
     g_ulCharsPerLine = (GrContextDpyWidthGet(&g_sContext) - 4) /
-                        GrFontMaxWidthGet(&g_sFontFixed6x8);
+                        GrFontMaxWidthGet(g_pFontFixed6x8);
 
     //
     // Calculate the number of lines per usable text screen.  This requires
@@ -947,7 +962,7 @@ main(void)
     //
     g_ulLinesPerScreen = (GrContextDpyHeightGet(&g_sContext) -
                           (2*(DISPLAY_BANNER_HEIGHT + 1)))/
-                          GrFontHeightGet(&g_sFontFixed6x8);
+                          GrFontHeightGet(g_pFontFixed6x8);
 
     //
     // Open and instance of the keyboard class driver.
@@ -1024,6 +1039,8 @@ main(void)
                 // initialized.
                 //
                 UpdateStatus();
+
+                USBHKeyboardModifierSet(g_ulKeyboardInstance, g_ulModifiers);
 
                 break;
             }

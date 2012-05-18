@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="adc_ctrl.c"/>
+        <file name="adc_ctrl.h"/>
+        <file name="button.c"/>
+        <file name="button.h"/>
+        <file name="can_if.c"/>
+        <file name="can_if.h"/>
+        <file name="commands.c"/>
+        <file name="commands.h"/>
+        <file name="constants.h"/>
+        <file name="controller.c"/>
+        <file name="controller.h"/>
+        <file name="encoder.c"/>
+        <file name="encoder.h"/>
+        <file name="fan.c"/>
+        <file name="fan.h"/>
+        <file name="hbridge.c"/>
+        <file name="hbridge.h"/>
+        <file name="led.c"/>
+        <file name="led.h"/>
+        <file name="limit.c"/>
+        <file name="limit.h"/>
+        <file name="math.c"/>
+        <file name="math.h"/>
+        <file name="param.c"/>
+        <file name="param.h"/>
+        <file name="pid.c"/>
+        <file name="pid.h"/>
+        <file name="pins.h"/>
+        <file name="qs-bdc.c"/>
+        <file name="servo_if.c"/>
+        <file name="servo_if.h"/>
+        <file name="wdog.c"/>
+        <file name="wdog.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

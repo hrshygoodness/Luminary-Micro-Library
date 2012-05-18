@@ -45,7 +45,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\debugger\Luminary\iolm3s818.ddf</state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\TexasInstruments\iolm3s818.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>

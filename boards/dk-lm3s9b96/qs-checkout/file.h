@@ -1,9 +1,9 @@
 //*****************************************************************************
 //
 // file.h - Public function prototypes and globals related to file handling
-//!         in the qs-checkout application.
+//          in the qs-checkout application.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,11 +19,11 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
-#ifndef _FILE_H_
-#define _FILE_H_
+#ifndef __FILE_H__
+#define __FILE_H__
 
 //*****************************************************************************
 //
@@ -54,4 +54,4 @@ int Cmd_pwd(int argc, char *argv[]);
 int Cmd_cat(int argc, char *argv[]);
 int Cmd_cd(int argc, char *argv[]);
 
-#endif
+#endif // __FILE_H__

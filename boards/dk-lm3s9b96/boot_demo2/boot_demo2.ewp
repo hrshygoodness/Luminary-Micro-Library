@@ -108,7 +108,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>LM3SxBxx	Luminary LM3SxBxx</state>
+          <state>LM3SxBxx	TexasInstruments LM3SxBxx</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -785,10 +785,10 @@
   <group>
     <name>Libraries</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\driverlib\ewarm\Exe\driverlib.a</name>
+      <name>$PROJ_DIR$\..\..\..\driverlib\ewarm-cm3\Exe\driverlib-cm3.a</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\grlib\ewarm\Exe\grlib.a</name>
+      <name>$PROJ_DIR$\..\..\..\grlib\ewarm-cm3\Exe\grlib-cm3.a</name>
     </file>
   </group>
   <group>

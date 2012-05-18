@@ -3,7 +3,7 @@
 // usb_funcs.c - Support functions for supporting USB mouse both as a device
 //               and as a host and Mass Storage Class host.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -28,6 +28,7 @@
 #include "inc/hw_ints.h"
 #include "driverlib/gpio.h"
 #include "driverlib/rom.h"
+#include "driverlib/sysctl.h"
 #include "usblib/usblib.h"
 #include "usblib/usbhid.h"
 #include "usblib/host/usbhost.h"
@@ -396,9 +397,31 @@ USBHCDEvents(void *pvData)
     switch(pEventInfo->ulEvent)
     {
         //
-        // An unknown device has been connected.
+        // The USB host has connected to and configured the device.
         //
         case USB_EVENT_CONNECTED:
+        {
+            //
+            // See if this is a HID Mouse.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_MOUSE))
+            {
+                g_eUSBState = STATE_MOUSE_DEVICE;
+
+                //
+                // Remember to tell the client that the connection state
+                // changed.
+                //
+                g_ulChangeFlags |= MOUSE_FLAG_CONNECTION;
+            }
+            break;
+        }
+        //
+        // An unsupported device has been connected.
+        //
+        case USB_EVENT_UNKNOWN_CONNECTED:
         {
             //
             // An unknown device was detected.
@@ -407,20 +430,29 @@ USBHCDEvents(void *pvData)
 
             break;
         }
-
         //
-        // The unknown device has been been unplugged.
+        // The USB host has disconnected from the device.
         //
         case USB_EVENT_DISCONNECTED:
         {
-            //
-            // Unknown device has been removed.
-            //
             g_eUSBState = STATE_NO_CONNECTION;
+
+            //
+            // See if this is a HID Mouse.
+            //
+            if((USBHCDDevClass(pEventInfo->ulInstance, 0) == USB_CLASS_HID) &&
+               (USBHCDDevProtocol(pEventInfo->ulInstance, 0) ==
+                USB_HID_PROTOCOL_MOUSE))
+            {
+                //
+                // Remember to tell the client that the connection state
+                // changed.
+                //
+                g_ulChangeFlags |= MOUSE_FLAG_CONNECTION;
+            }
 
             break;
         }
-
         //
         // A bus power fault was detected.
         //
@@ -801,6 +833,14 @@ USBFuncsProcess(void)
                 //
                 g_ulChangeFlags |= MSC_FLAG_CONNECTION;
             }
+            else
+            {
+                //
+                // Wait about 500ms before attempting to check if the
+                // device is ready again.
+                //
+                SysCtlDelay(SysCtlClockGet()/(3));
+            }
         }
     }
 
@@ -955,7 +995,6 @@ HostInit(void)
     //
     // Call the main loop for the Host controller driver.
     //
-    USBHCDMain();
     g_eUSBState = STATE_NO_CONNECTION;
 }
 

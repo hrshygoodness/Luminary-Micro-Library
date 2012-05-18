@@ -2,7 +2,7 @@
 //
 // enet_lwip.c - Sample WebServer Application using lwIP.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -30,6 +30,7 @@
 #include "driverlib/flash.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -577,14 +578,14 @@ DisplayIPAddress(void)
     //
     // Clear the "Waiting for IP..." string from the display.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss24);
+    GrContextFontSet(&g_sContext, g_pFontCmss24);
     GrStringDrawCentered(&g_sContext, "                          ", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 60, true);
 
     //
     // Display the new IP address.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss12);
+    GrContextFontSet(&g_sContext, g_pFontCmss12);
     usnprintf(pcString, 32, "IP %d.%d.%d.%d", g_ulLastIPAddr & 0xff,
               (g_ulLastIPAddr >> 8) & 0xff, (g_ulLastIPAddr >> 16) & 0xff,
               (g_ulLastIPAddr >> 24) & 0xff);
@@ -678,7 +679,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "enet-ptpd", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -738,7 +739,7 @@ main(void)
         //
         UARTprintf("MAC Address Not Programmed!\n");
 
-        GrContextFontSet(&g_sContext, &g_sFontCmss24);
+        GrContextFontSet(&g_sContext, g_pFontCmss24);
         GrStringDrawCentered(&g_sContext, "MAC Address", -1,
                              GrContextDpyWidthGet(&g_sContext) / 2,
                              GrContextDpyHeightGet(&g_sContext) / 2, false);
@@ -770,7 +771,7 @@ main(void)
     usnprintf(pcStringBuffer, 32, "MAC %02x:%02x:%02x:%02x:%02x:%02x",
               pucMACArray[0], pucMACArray[1], pucMACArray[2],
               pucMACArray[3], pucMACArray[4], pucMACArray[5]);
-    GrContextFontSet(&g_sContext, &g_sFontCmss12);
+    GrContextFontSet(&g_sContext, g_pFontCmss12);
     GrStringDrawCentered(&g_sContext, pcStringBuffer, -1,
                          GrContextDpyWidthGet(&g_sContext) / 2,
                          GrContextDpyHeightGet(&g_sContext) - 10, false);
@@ -796,7 +797,7 @@ main(void)
     // Indicate that DHCP has started.
     //
     UARTprintf("Waiting for IP... ");
-    GrContextFontSet(&g_sContext, &g_sFontCmss20);
+    GrContextFontSet(&g_sContext, g_pFontCmss20);
     GrStringDrawCentered(&g_sContext, "Waiting for IP...", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 60, false);
 
@@ -824,7 +825,7 @@ main(void)
     //
     // Draw the time field separation colons.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss24);
+    GrContextFontSet(&g_sContext, g_pFontCmss24);
     GrStringDrawCentered(&g_sContext, "Current System Time is", -1, 160,
                          TIME_POS_Y - 30, false);
     GrStringDrawCentered(&g_sContext, ":", -1, 160 - FIELD_WIDTH,
@@ -865,7 +866,7 @@ main(void)
             // Yes - set the correct font since we know we have to draw
             // something.
             //
-            GrContextFontSet(&g_sContext, &g_sFontCmss24);
+            GrContextFontSet(&g_sContext, g_pFontCmss24);
 
             //
             // Did the hour digit change?
@@ -904,7 +905,7 @@ main(void)
             // Yes - update the display to indicate we are now showing GMT time.
             //
             bSet = true;
-            GrContextFontSet(&g_sContext, &g_sFontCmss24);
+            GrContextFontSet(&g_sContext, g_pFontCmss24);
             GrStringDrawCentered(&g_sContext, "    Current Time (GMT) is    ",
                                  -1, 160, TIME_POS_Y - 30, true);
         }

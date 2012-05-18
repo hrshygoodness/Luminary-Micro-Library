@@ -2,7 +2,7 @@
 //
 // set_pinout.c - Functions related to configuration of the device pinout.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,19 +18,20 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
+#include "inc/hw_gpio.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "inc/hw_gpio.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/i2c.h"
-#include "driverlib/gpio.h"
-#include "driverlib/epi.h"
 #include "driverlib/debug.h"
+#include "driverlib/epi.h"
+#include "driverlib/gpio.h"
+#include "driverlib/i2c.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
+#include "driverlib/sysctl.h"
 #include "set_pinout.h"
 #include "camerafpga.h"
 
@@ -110,8 +111,8 @@ const unsigned long g_pulGPIOBase[NUM_GPIO_PORTS] =
 typedef struct
 {
     unsigned char ucPortIndex;
-    unsigned char ucPctl;
     unsigned char ucPin;
+    unsigned long ulConfig;
 }
 tEPIPinInfo;
 
@@ -153,38 +154,38 @@ tEPIPinInfo;
 //*****************************************************************************
 static const tEPIPinInfo g_psEPIPinInfo[NUM_EPI_SIGNALS] =
 {
-    {7, 8, 3},       // EPI0S00 on PH3
-    {7, 8, 2},       // EPI0S01 on PH2
-    {2, 8, 4},       // EPI0S02 on PC4
-    {2, 8, 5},       // EPI0S03 on PC5
-    {2, 8, 6},       // EPI0S04 on PC6
-    {2, 8, 7},       // EPI0S05 on PC7
-    {7, 8, 0},       // EPI0S06 on PH0
-    {7, 8, 1},       // EPI0S07 on PH1
-    {4, 8, 0},       // EPI0S08 on PE0
-    {4, 8, 1},       // EPI0S09 on PE1
-    {7, 8, 4},       // EPI0S10 on PH4
-    {7, 8, 5},       // EPI0S11 on PH5
-    {5, 8, 4},       // EPI0S12 on PF4
-    {6, 8, 0},       // EPI0S13 on PG0
-    {6, 8, 1},       // EPI0S14 on PG1
-    {5, 8, 5},       // EPI0S15 on PF5
-    {8, 8, 0},       // EPI0S16 on PJ0
-    {8, 8, 1},       // EPI0S17 on PJ1
-    {8, 8, 2},       // EPI0S18 on PJ2
-    {8, 8, 3},       // EPI0S19 on PJ3
-    {3, 8, 2},       // EPI0S20 on PD2
-    {3, 8, 3},       // EPI0S21 on PD3
-    {1, 8, 5},       // EPI0S22 on PB5
-    {1, 8, 4},       // EPI0S23 on PB4
-    {4, 8, 2},       // EPI0S24 on PE2
-    {4, 8, 3},       // EPI0S25 on PE3
-    {7, 8, 6},       // EPI0S26 on PH6
-    {7, 8, 7},       // EPI0S27 on PH7
-    {8, 8, 4},       // EPI0S28 on PJ4
-    {8, 8, 5},       // EPI0S29 on PJ5
-    {8, 8, 6},       // EPI0S30 on PJ6
-    {6, 9, 7}        // EPI0S31 on PG7
+    { 7, 3, GPIO_PH3_EPI0S0 },
+    { 7, 2, GPIO_PH2_EPI0S1 },
+    { 2, 4, GPIO_PC4_EPI0S2 },
+    { 2, 5, GPIO_PC5_EPI0S3 },
+    { 2, 6, GPIO_PC6_EPI0S4 },
+    { 2, 7, GPIO_PC7_EPI0S5 },
+    { 7, 0, GPIO_PH0_EPI0S6 },
+    { 7, 1, GPIO_PH1_EPI0S7 },
+    { 4, 0, GPIO_PE0_EPI0S8 },
+    { 4, 1, GPIO_PE1_EPI0S9 },
+    { 7, 4, GPIO_PH4_EPI0S10 },
+    { 7, 5, GPIO_PH5_EPI0S11 },
+    { 5, 4, GPIO_PF4_EPI0S12 },
+    { 6, 0, GPIO_PG0_EPI0S13 },
+    { 6, 1, GPIO_PG1_EPI0S14 },
+    { 5, 5, GPIO_PF5_EPI0S15 },
+    { 8, 0, GPIO_PJ0_EPI0S16 },
+    { 8, 1, GPIO_PJ1_EPI0S17 },
+    { 8, 2, GPIO_PJ2_EPI0S18 },
+    { 8, 3, GPIO_PJ3_EPI0S19 },
+    { 3, 2, GPIO_PD2_EPI0S20 },
+    { 3, 3, GPIO_PD3_EPI0S21 },
+    { 1, 5, GPIO_PB5_EPI0S22 },
+    { 1, 4, GPIO_PB4_EPI0S23 },
+    { 4, 2, GPIO_PE2_EPI0S24 },
+    { 4, 3, GPIO_PE3_EPI0S25 },
+    { 7, 6, GPIO_PH6_EPI0S26 },
+    { 7, 7, GPIO_PH7_EPI0S27 },
+    { 8, 4, GPIO_PJ4_EPI0S28 },
+    { 8, 5, GPIO_PJ5_EPI0S29 },
+    { 8, 6, GPIO_PJ6_EPI0S30 },
+    { 6, 7, GPIO_PG7_EPI0S31 }
 };
 
 //*****************************************************************************
@@ -614,20 +615,28 @@ HB8ConfigGet(tDaughterIDInfo *psInfo)
         switch(ulWrWait)
         {
             case 0:
+            {
                 break;
+            }
 
             case 1:
+            {
                 ulConfig |= EPI_HB8_WRWAIT_1;
                 break;
+            }
 
             case 2:
+            {
                 ulConfig |= EPI_HB8_WRWAIT_2;
                 break;
+            }
 
             case 3:
             default:
+            {
                 ulConfig |= EPI_HB8_WRWAIT_3;
                 break;
+            }
         }
     }
 
@@ -660,20 +669,28 @@ HB8ConfigGet(tDaughterIDInfo *psInfo)
         switch(ulRdWait)
         {
             case 0:
+            {
                 break;
+            }
 
             case 1:
+            {
                 ulConfig |= EPI_HB8_RDWAIT_1;
                 break;
+            }
 
             case 2:
+            {
                 ulConfig |= EPI_HB8_RDWAIT_2;
                 break;
+            }
 
             case 3:
             default:
+            {
                 ulConfig |= EPI_HB8_RDWAIT_3;
                 break;
+            }
         }
     }
 
@@ -813,7 +830,7 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
     // also the current system clock.
     //
     ulClk = ROM_SysCtlClockGet();
-    ulNsPerTick = 1000000000/ulClk;
+    ulNsPerTick = 1000000000 / ulClk;
 
     //
     // If the EPI is not disabled (the daughter board may, for example, want
@@ -908,7 +925,7 @@ EPIPinConfigSet(tDaughterIDInfo *psInfo)
 static void
 PortControlSet(tDaughterIDInfo *psInfo)
 {
-    unsigned long ulPctl[NUM_GPIO_PORTS], ulLoop;
+    unsigned long ulLoop;
 
     //
     // To begin with, we set the port control values for all the non-EPI
@@ -918,66 +935,52 @@ PortControlSet(tDaughterIDInfo *psInfo)
     //
     // GPIO Port A pins
     //
-    // To use CAN0, this register value must be changed. The value here
-    // enables USB functionality instead of CAN. For CAN, use....
+    // To use CAN0, these calls must be changed.  This enables USB
+    // functionality instead of CAN. For CAN, use:
     //
-    //  ulPctl[0] = GPIO_PCTL_PA0_U0RX | GPIO_PCTL_PA1_U0TX |
-    //              GPIO_PCTL_PA2_SSI0CLK | GPIO_PCTL_PA3_SSI0FSS |
-    //              GPIO_PCTL_PA4_SSI0RX | GPIO_PCTL_PA5_SSI0TX |
-    //              GPIO_PCTL_PA6_CAN0RX | GPIO_PCTL_PA7_CAN0TX;
+    //     GPIOPinConfigure(GPIO_PA6_CAN0RX);
+    //     GPIOPinConfigure(GPIO_PA7_CAN0TX);
     //
-    ulPctl[0] = GPIO_PCTL_PA0_U0RX | GPIO_PCTL_PA1_U0TX |
-                GPIO_PCTL_PA2_SSI0CLK | GPIO_PCTL_PA3_SSI0FSS |
-                GPIO_PCTL_PA4_SSI0RX | GPIO_PCTL_PA5_SSI0TX |
-                GPIO_PCTL_PA6_USB0EPEN | GPIO_PCTL_PA7_USB0PFLT;
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinConfigure(GPIO_PA2_SSI0CLK);
+    GPIOPinConfigure(GPIO_PA3_SSI0FSS);
+    GPIOPinConfigure(GPIO_PA4_SSI0RX);
+    GPIOPinConfigure(GPIO_PA5_SSI0TX);
+    GPIOPinConfigure(GPIO_PA6_USB0EPEN);
+    GPIOPinConfigure(GPIO_PA7_USB0PFLT);
 
     //
     // GPIO Port B pins
     //
-    ulPctl[1] = GPIO_PCTL_PB2_I2C0SCL | GPIO_PCTL_PB3_I2C0SDA |
-                GPIO_PCTL_PB6_I2S0TXSCK | GPIO_PCTL_PB7_NMI;
-
-    //
-    // GPIO Port C pins
-    //
-    ulPctl[2] = GPIO_PCTL_PC0_TCK | GPIO_PCTL_PC1_TMS |
-                GPIO_PCTL_PC2_TDI | GPIO_PCTL_PC3_TDO;
+    GPIOPinConfigure(GPIO_PB2_I2C0SCL);
+    GPIOPinConfigure(GPIO_PB3_I2C0SDA);
+    GPIOPinConfigure(GPIO_PB6_I2S0TXSCK);
+    GPIOPinConfigure(GPIO_PB7_NMI);
 
     //
     // GPIO Port D pins.
     //
-    ulPctl[3] = GPIO_PCTL_PD0_I2S0RXSCK | GPIO_PCTL_PD1_I2S0RXWS |
-                GPIO_PCTL_PD4_I2S0RXSD | GPIO_PCTL_PD5_I2S0RXMCLK;
+    GPIOPinConfigure(GPIO_PD0_I2S0RXSCK);
+    GPIOPinConfigure(GPIO_PD1_I2S0RXWS);
+    GPIOPinConfigure(GPIO_PD4_I2S0RXSD);
+    GPIOPinConfigure(GPIO_PD5_I2S0RXMCLK);
 
     //
     // GPIO Port E pins
     //
-    ulPctl[4] = GPIO_PCTL_PE4_I2S0TXWS | GPIO_PCTL_PE5_I2S0TXSD;
+    GPIOPinConfigure(GPIO_PE4_I2S0TXWS);
+    GPIOPinConfigure(GPIO_PE5_I2S0TXSD);
 
     //
     // GPIO Port F pins
     //
-    ulPctl[5] = GPIO_PCTL_PF1_I2S0TXMCLK | GPIO_PCTL_PF2_LED1 |
-                GPIO_PCTL_PF3_LED0;
+    GPIOPinConfigure(GPIO_PF1_I2S0TXMCLK);
+    GPIOPinConfigure(GPIO_PF2_LED1);
+    GPIOPinConfigure(GPIO_PF3_LED0);
 
     //
-    // GPIO Port G pins
-    //
-    ulPctl[6] = 0;
-
-    //
-    // GPIO Port H pins
-    //
-    ulPctl[7] = 0;
-
-    //
-    // GPIO Port J pins
-    //
-    ulPctl[8] = 0;
-
-    //
-    // Now we OR in the values required for each of the EPI pins depending
-    // upon whether or not it is needed.
+    // Now we configure each of the EPI pins if it is needed.
     //
     for(ulLoop = 0; ulLoop < NUM_EPI_SIGNALS; ulLoop++)
     {
@@ -987,27 +990,11 @@ PortControlSet(tDaughterIDInfo *psInfo)
         if(psInfo->ulEPIPins & (1 << ulLoop))
         {
             //
-            // Yes - add the appropriate port control setting for it.
+            // Yes - configure the corresponding pin.
             //
-            ulPctl[g_psEPIPinInfo[ulLoop].ucPortIndex] |=
-                (g_psEPIPinInfo[ulLoop].ucPctl <<
-                 (g_psEPIPinInfo[ulLoop].ucPin * 4));
+            GPIOPinConfigure(g_psEPIPinInfo[ulLoop].ulConfig);
         }
     }
-
-    //
-    // Now that we have determined the required configuration, set the actual
-    // port control registers.
-    //
-    HWREG(GPIO_PORTA_BASE + GPIO_O_PCTL) = ulPctl[0];
-    HWREG(GPIO_PORTB_BASE + GPIO_O_PCTL) = ulPctl[1];
-    HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = ulPctl[2];
-    HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = ulPctl[3];
-    HWREG(GPIO_PORTE_BASE + GPIO_O_PCTL) = ulPctl[4];
-    HWREG(GPIO_PORTF_BASE + GPIO_O_PCTL) = ulPctl[5];
-    HWREG(GPIO_PORTG_BASE + GPIO_O_PCTL) = ulPctl[6];
-    HWREG(GPIO_PORTH_BASE + GPIO_O_PCTL) = ulPctl[7];
-    HWREG(GPIO_PORTJ_BASE + GPIO_O_PCTL) = ulPctl[8];
 }
 
 //*****************************************************************************
@@ -1318,99 +1305,88 @@ PinoutSet(void)
     //
     // GPIO Port A pins
     //
-    // To use CAN0, this register value must be changed. The value here
-    // enables USB functionality instead of CAN. For CAN, use....
+    // To use CAN0, these calls must be changed.  This enables USB
+    // functionality instead of CAN. For CAN, use:
     //
-    //  HWREG(GPIO_PORTA_BASE + GPIO_O_PCTL) = GPIO_PCTL_PA0_U0RX |
-    //                                         GPIO_PCTL_PA1_U0TX |
-    //                                         GPIO_PCTL_PA2_SSI0CLK |
-    //                                         GPIO_PCTL_PA3_SSI0FSS |
-    //                                         GPIO_PCTL_PA4_SSI0RX |
-    //                                         GPIO_PCTL_PA5_SSI0TX |
-    //                                         GPIO_PCTL_PA6_CAN0RX |
-    //                                         GPIO_PCTL_PA7_CAN0TX;
+    //     GPIOPinConfigure(GPIO_PA6_CAN0RX);
+    //     GPIOPinConfigure(GPIO_PA7_CAN0TX);
     //
-    //
-    HWREG(GPIO_PORTA_BASE + GPIO_O_PCTL) = GPIO_PCTL_PA0_U0RX |
-                                           GPIO_PCTL_PA1_U0TX |
-                                           GPIO_PCTL_PA2_SSI0CLK |
-                                           GPIO_PCTL_PA3_SSI0FSS |
-                                           GPIO_PCTL_PA4_SSI0RX |
-                                           GPIO_PCTL_PA5_SSI0TX |
-                                           GPIO_PCTL_PA6_USB0EPEN |
-                                           GPIO_PCTL_PA7_USB0PFLT;
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinConfigure(GPIO_PA2_SSI0CLK);
+    GPIOPinConfigure(GPIO_PA3_SSI0FSS);
+    GPIOPinConfigure(GPIO_PA4_SSI0RX);
+    GPIOPinConfigure(GPIO_PA5_SSI0TX);
+    GPIOPinConfigure(GPIO_PA6_USB0EPEN);
+    GPIOPinConfigure(GPIO_PA7_USB0PFLT);
 
     //
     // GPIO Port B pins
     //
-    HWREG(GPIO_PORTB_BASE + GPIO_O_PCTL) = GPIO_PCTL_PB2_I2C0SCL |
-                                           GPIO_PCTL_PB3_I2C0SDA |
-                                           GPIO_PCTL_PB4_EPI0S23 |
-                                           GPIO_PCTL_PB5_EPI0S22 |
-                                           GPIO_PCTL_PB6_I2S0TXSCK |
-                                           GPIO_PCTL_PB7_NMI;
+    GPIOPinConfigure(GPIO_PB2_I2C0SCL);
+    GPIOPinConfigure(GPIO_PB3_I2C0SDA);
+    GPIOPinConfigure(GPIO_PB4_EPI0S23);
+    GPIOPinConfigure(GPIO_PB5_EPI0S22);
+    GPIOPinConfigure(GPIO_PB6_I2S0TXSCK);
+    GPIOPinConfigure(GPIO_PB7_NMI);
 
     //
     // GPIO Port C pins
     //
-    HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = GPIO_PCTL_PC0_TCK |
-                                           GPIO_PCTL_PC1_TMS |
-                                           GPIO_PCTL_PC2_TDI |
-                                           GPIO_PCTL_PC3_TDO |
-                                           GPIO_PCTL_PC4_EPI0S2 |
-                                           GPIO_PCTL_PC5_EPI0S3 |
-                                           GPIO_PCTL_PC6_EPI0S4 |
-                                           GPIO_PCTL_PC7_EPI0S5;
+    GPIOPinConfigure(GPIO_PC4_EPI0S2);
+    GPIOPinConfigure(GPIO_PC5_EPI0S3);
+    GPIOPinConfigure(GPIO_PC6_EPI0S4);
+    GPIOPinConfigure(GPIO_PC7_EPI0S5);
 
     //
     // GPIO Port D pins.
     //
-    HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = GPIO_PCTL_PD0_I2S0RXSCK |
-                                           GPIO_PCTL_PD1_I2S0RXWS |
-                                           GPIO_PCTL_PD2_EPI0S20 |
-                                           GPIO_PCTL_PD3_EPI0S21 |
-                                           GPIO_PCTL_PD4_I2S0RXSD |
-                                           GPIO_PCTL_PD5_I2S0RXMCLK;
+    GPIOPinConfigure(GPIO_PD0_I2S0RXSCK);
+    GPIOPinConfigure(GPIO_PD1_I2S0RXWS);
+    GPIOPinConfigure(GPIO_PD2_EPI0S20);
+    GPIOPinConfigure(GPIO_PD3_EPI0S21);
+    GPIOPinConfigure(GPIO_PD4_I2S0RXSD);
+    GPIOPinConfigure(GPIO_PD5_I2S0RXMCLK);
 
     //
     // GPIO Port E pins
     //
-    HWREG(GPIO_PORTE_BASE + GPIO_O_PCTL) = GPIO_PCTL_PE0_EPI0S8 |
-                                           GPIO_PCTL_PE1_EPI0S9 |
-                                           GPIO_PCTL_PE2_EPI0S24 |
-                                           GPIO_PCTL_PE3_EPI0S25 |
-                                           GPIO_PCTL_PE4_I2S0TXWS |
-                                           GPIO_PCTL_PE5_I2S0TXSD;
+    GPIOPinConfigure(GPIO_PE0_EPI0S8);
+    GPIOPinConfigure(GPIO_PE1_EPI0S9);
+    GPIOPinConfigure(GPIO_PE2_EPI0S24);
+    GPIOPinConfigure(GPIO_PE3_EPI0S25);
+    GPIOPinConfigure(GPIO_PE4_I2S0TXWS);
+    GPIOPinConfigure(GPIO_PE5_I2S0TXSD);
 
     //
     // GPIO Port F pins
     //
-    HWREG(GPIO_PORTF_BASE + GPIO_O_PCTL) = GPIO_PCTL_PF1_I2S0TXMCLK |
-                                           GPIO_PCTL_PF2_LED1 |
-                                           GPIO_PCTL_PF3_LED0 |
-                                           GPIO_PCTL_PF4_EPI0S12 |
-                                           GPIO_PCTL_PF5_EPI0S15;
+    GPIOPinConfigure(GPIO_PF1_I2S0TXMCLK);
+    GPIOPinConfigure(GPIO_PF2_LED1);
+    GPIOPinConfigure(GPIO_PF3_LED0);
+    GPIOPinConfigure(GPIO_PF4_EPI0S12);
+    GPIOPinConfigure(GPIO_PF5_EPI0S15);
 
     //
     // GPIO Port G pins
     //
-    HWREG(GPIO_PORTG_BASE + GPIO_O_PCTL) = GPIO_PCTL_PG0_EPI0S13 |
-                                           GPIO_PCTL_PG1_EPI0S14 |
-                                           GPIO_PCTL_PG7_EPI0S31;
+    GPIOPinConfigure(GPIO_PG0_EPI0S13);
+    GPIOPinConfigure(GPIO_PG1_EPI0S14);
+    GPIOPinConfigure(GPIO_PG7_EPI0S31);
 
     //
     // GPIO Port H pins
     //
-    HWREG(GPIO_PORTH_BASE + GPIO_O_PCTL) = GPIO_PCTL_PH0_EPI0S6 |
-                                           GPIO_PCTL_PH1_EPI0S7 |
-                                           GPIO_PCTL_PH2_EPI0S1 |
-                                           GPIO_PCTL_PH3_EPI0S0 |
-                                           GPIO_PCTL_PH4_EPI0S10 |
-                                           GPIO_PCTL_PH5_EPI0S11 |
+    GPIOPinConfigure(GPIO_PH0_EPI0S6);
+    GPIOPinConfigure(GPIO_PH1_EPI0S7);
+    GPIOPinConfigure(GPIO_PH2_EPI0S1);
+    GPIOPinConfigure(GPIO_PH3_EPI0S0);
+    GPIOPinConfigure(GPIO_PH4_EPI0S10);
+    GPIOPinConfigure(GPIO_PH5_EPI0S11);
 #ifndef EPI_CONFIG_FPGA
-                                           GPIO_PCTL_PH6_EPI0S26 |
+    GPIOPinConfigure(GPIO_PH6_EPI0S26);
 #endif
-                                           GPIO_PCTL_PH7_EPI0S27;
+    GPIOPinConfigure(GPIO_PH7_EPI0S27);
 
 #ifdef EPI_CONFIG_FPGA
     //
@@ -1420,23 +1396,23 @@ PinoutSet(void)
     // EPI30 a normal GPIO so that it is available for use as the
     // interrupt line from the FPGA.
     //
-    HWREG(GPIO_PORTJ_BASE + GPIO_O_PCTL) = GPIO_PCTL_PJ0_EPI0S16 |
-                                           GPIO_PCTL_PJ1_EPI0S17 |
-                                           GPIO_PCTL_PJ2_EPI0S18 |
-                                           GPIO_PCTL_PJ3_EPI0S19 |
-                                           GPIO_PCTL_PJ4_EPI0S28 |
-                                           GPIO_PCTL_PJ5_EPI0S29;
+    GPIOPinConfigure(GPIO_PJ0_EPI0S16);
+    GPIOPinConfigure(GPIO_PJ1_EPI0S17);
+    GPIOPinConfigure(GPIO_PJ2_EPI0S18);
+    GPIOPinConfigure(GPIO_PJ3_EPI0S19);
+    GPIOPinConfigure(GPIO_PJ4_EPI0S28);
+    GPIOPinConfigure(GPIO_PJ5_EPI0S29);
 #else
     //
     // GPIO Port J pins
     //
-    HWREG(GPIO_PORTJ_BASE + GPIO_O_PCTL) = GPIO_PCTL_PJ0_EPI0S16 |
-                                           GPIO_PCTL_PJ1_EPI0S17 |
-                                           GPIO_PCTL_PJ2_EPI0S18 |
-                                           GPIO_PCTL_PJ3_EPI0S19 |
-                                           GPIO_PCTL_PJ4_EPI0S28 |
-                                           GPIO_PCTL_PJ5_EPI0S29 |
-                                           GPIO_PCTL_PJ6_EPI0S30;
+    GPIOPinConfigure(GPIO_PJ0_EPI0S16);
+    GPIOPinConfigure(GPIO_PJ1_EPI0S17);
+    GPIOPinConfigure(GPIO_PJ2_EPI0S18);
+    GPIOPinConfigure(GPIO_PJ3_EPI0S19);
+    GPIOPinConfigure(GPIO_PJ4_EPI0S28);
+    GPIOPinConfigure(GPIO_PJ5_EPI0S29);
+    GPIOPinConfigure(GPIO_PJ6_EPI0S30);
 #endif
 
     //

@@ -2,7 +2,7 @@
 //
 // usb_stick_update.c - Example to update flash from a USB memory stick.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,26 +18,35 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
 #include <string.h>
-#include "inc/hw_types.h"
-#include "inc/hw_memmap.h"
 #include "inc/hw_flash.h"
 #include "inc/hw_gpio.h"
+#include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
-#include "driverlib/gpio.h"
 #include "usblib/usblib.h"
 #include "usblib/usbmsc.h"
 #include "usblib/host/usbhost.h"
 #include "usblib/host/usbhmsc.h"
 #include "simple_fs.h"
+
+//*****************************************************************************
+//
+// Defines the number of times to call to check if the attached device is
+// ready.
+//
+//*****************************************************************************
+#define USBMSC_DRIVE_RETRY      4
 
 //*****************************************************************************
 //
@@ -105,7 +114,7 @@
 // from this address.
 //
 //*****************************************************************************
-#define APP_START_ADDRESS 0x3000
+#define APP_START_ADDRESS 0x3800
 
 //*****************************************************************************
 //
@@ -332,11 +341,12 @@ ReadAppAndProgram(void)
     unsigned long ulProgAddr;
     unsigned long ulSavedRegs[2];
     volatile unsigned long ulIdx;
+    unsigned long ulDriveTimeout;
 
     //
-    // Configure the ID pin back to an input.
+    // Initialize the drive timeout.
     //
-    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_0);
+    ulDriveTimeout = USBMSC_DRIVE_RETRY;
 
     //
     // Check to see if the mass storage device is ready.  Some large drives
@@ -345,10 +355,22 @@ ReadAppAndProgram(void)
     while(USBHMSCDriveReady(g_ulMSCInstance))
     {
         //
-        // Kill some time before retrying
+        // Wait about 500ms before attempting to check if the
+        // device is ready again.
         //
-        for(ulIdx = 0; ulIdx < (100000); ulIdx++)
+        SysCtlDelay(SysCtlClockGet()/(3*2));
+
+        //
+        // Decrement the retry count.
+        //
+        ulDriveTimeout--;
+
+        //
+        // If the timeout is hit then return with a failure.
+        //
+        if(ulDriveTimeout == 0)
         {
+            return(1);
         }
     }
 
@@ -637,11 +659,10 @@ ConfigureUSBInterface(void)
     USBHCDPowerConfigInit(0, USBHCD_VBUS_AUTO_HIGH | USBHCD_VBUS_FILTER);
 
     //
-    // Set the ID pin to be driven low so that OTG calls are not necessary.
+    // Force the USB mode to host with no callback on mode changes since
+    // there should not be any.
     //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_0);
-    GPIOPinWrite(GPIO_PORTB_BASE, GPIO_PIN_0, 0);
+    USBStackModeSet(0, USB_MODE_FORCE_HOST, 0);
 
     //
     // Wait 10ms for the pin to go low.

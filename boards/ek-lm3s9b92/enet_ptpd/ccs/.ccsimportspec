@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="enet_ptpd.c"/>
+        <file name="lmi-fsdata.h"/>
+        <file name="lmi_fs.c"/>
+        <file name="lwipopts.h"/>
+        <file name="random.c"/>
+        <file name="random.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+        <directory name="fs">
+            <file name="404.htm"/>
+            <file name="index.htm"/>
+            <file name="ptpclock.ssi"/>
+            <file name="styles.css"/>
+        </directory>
+    </source>
+</importSpec>

@@ -2,7 +2,7 @@
 //
 // usb_dev_mouse.c - Main routines for the enumeration example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -26,6 +26,7 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -113,7 +114,7 @@ volatile enum
     MOUSE_STATE_UNCONFIGURED,
 
     //
-    // No keys to send and not waiting on data.
+    // Nothing to send and not waiting on data.
     //
     MOUSE_STATE_IDLE,
 
@@ -154,6 +155,7 @@ MouseHandler(void *pvCBData, unsigned long ulEvent,
         {
             g_eMouseState = MOUSE_STATE_IDLE;
             g_bConnected = true;
+
             break;
         }
 
@@ -164,6 +166,7 @@ MouseHandler(void *pvCBData, unsigned long ulEvent,
         {
             g_bConnected = false;
             g_eMouseState = MOUSE_STATE_UNCONFIGURED;
+
             break;
         }
 
@@ -340,6 +343,11 @@ main(void)
     ROM_SysTickEnable();
 
     //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
+
+    //
     // Pass the USB library our device information, initialize the USB
     // controller and connect the device to the bus.
     //
@@ -381,5 +389,10 @@ main(void)
                 MoveHandler();
             }
         }
+
+        //
+        // Update the status.
+        //
+        UARTprintf("Host disconnected...\n");
     }
 }

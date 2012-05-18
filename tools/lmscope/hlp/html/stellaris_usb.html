@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html><head><link rel="stylesheet" type="text/css" href="luminary.css"><meta name="GENERATOR" content="Microsoft® HTML Help Workshop 4.1"><title>USB Host and Device Operation</title></head><body><object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="device">
+	<param name="Keyword" value="flash stick">
+	<param name="Keyword" value="host">
+	<param name="Keyword" value="mass storage class">
+	<param name="Keyword" value="MSC">
+	<param name="Keyword" value="OTG">
+	<param name="Keyword" value="USB">
+	<param name="Keyword" value="USB device">
+	<param name="Keyword" value="USB host">
+</object>
+
+
+
+<h1>USB Host and Device Operation</h1>
+<p>
+The qs-scope application can operate either as a USB host or as a device with the mode being selected from the <a href="stellaris_setup.html">Setup</a> control group.</p><h2>USB Device</h2>In
+USB device mode, the qs-scope application configures the EK board to
+allow connection to a USB host. A packet-based, application-specific
+protocol is defined to allow communication with an application on the
+host system. The LMScope Windows application implements this protocol
+and uses it to remotely control the qs-scope application and receive
+waveform data from it for display on the host system.<br><br>By default, the qs-scope application configures the USB controller for device-mode operation.<h2>USB Host</h2>In
+USB host mode, the qs-scope application acts as a host system
+supporting USB Mass Storage Class (MSC) devices. This allows
+MSC-compliant USB storage such as flash sticks to be connected to the
+board and accessed from the application.<br>In this mode, the EK board
+is responsible for providing power to the attached USB device assuming that the device is not self-powered. To support host
+operation, the board must be powered either by an external 5V DC power
+supply or via the "Debug USB" port connected to a PC.<br><br>
+
+
+</body></html>

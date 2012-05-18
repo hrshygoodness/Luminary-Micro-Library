@@ -2,7 +2,7 @@
 //
 // hello_widget.c - Simple hello world example using
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -69,7 +69,7 @@ void OnButtonPress(tWidget *pWidget);
 Canvas(g_sHeading, &g_sBackground, 0, &g_sPushBtn,
        &g_sKitronix320x240x16_SSD2119, 0, 0, 320, 23,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_OUTLINE | CANVAS_STYLE_TEXT),
-       ClrDarkBlue, ClrWhite, ClrWhite, &g_sFontCm20, "hello-widget", 0, 0);
+       ClrDarkBlue, ClrWhite, ClrWhite, g_pFontCm20, "hello-widget", 0, 0);
 
 //*****************************************************************************
 //
@@ -90,7 +90,7 @@ RectangularButton(g_sPushBtn, &g_sHeading, 0, 0,
                   (PB_STYLE_OUTLINE | PB_STYLE_TEXT_OPAQUE | PB_STYLE_TEXT |
                    PB_STYLE_FILL | PB_STYLE_RELEASE_NOTIFY),
                    ClrDarkBlue, ClrBlue, ClrWhite, ClrWhite,
-                   &g_sFontCmss22b, "Show Welcome", 0, 0, 0, 0, OnButtonPress);
+                   g_pFontCmss22b, "Show Welcome", 0, 0, 0, 0, OnButtonPress);
 
 //*****************************************************************************
 //
@@ -103,7 +103,7 @@ RectangularButton(g_sPushBtn, &g_sHeading, 0, 0,
 Canvas(g_sHello, &g_sPushBtn, 0, 0,
        &g_sKitronix320x240x16_SSD2119, 0, 150, 320, 40,
        (CANVAS_STYLE_FILL | CANVAS_STYLE_TEXT),
-       ClrBlack, 0, ClrWhite, &g_sFontCm40, "Hello World!", 0, 0);
+       ClrBlack, 0, ClrWhite, g_pFontCm40, "Hello World!", 0, 0);
 
 //*****************************************************************************
 //

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
 
-  <SchemaVersion>1.0</SchemaVersion>
+  <SchemaVersion>1.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
@@ -13,7 +13,7 @@
       <TargetOption>
         <TargetCommonOption>
           <Device>LM3S9B92</Device>
-          <Vendor>Luminary Micro</Vendor>
+          <Vendor>Texas Instruments</Vendor>
           <Cpu>IRAM(0x20000000-0x20017FFF) IROM(0-0x3FFFF) CLOCK(8000000) CPUTYPE("Cortex-M3")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile>"STARTUP\Luminary\Startup.s" ("Luminary Startup Code")</StartupFile>
@@ -398,12 +398,12 @@
             <File>
               <FileName>usb_dev_keyboard.c</FileName>
               <FileType>1</FileType>
-              <FilePath>usb_dev_keyboard.c</FilePath>
+              <FilePath>.\usb_dev_keyboard.c</FilePath>
             </File>
             <File>
               <FileName>usb_keyb_structs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>usb_keyb_structs.c</FilePath>
+              <FilePath>.\usb_keyb_structs.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -411,14 +411,14 @@
           <GroupName>Libraries</GroupName>
           <Files>
             <File>
-              <FileName>driverlib.lib</FileName>
+              <FileName>driverlib-cm3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\driverlib\rvmdk\driverlib.lib</FilePath>
+              <FilePath>..\..\..\driverlib\rvmdk-cm3\driverlib-cm3.lib</FilePath>
             </File>
             <File>
-              <FileName>usblib.lib</FileName>
+              <FileName>usblib-cm3.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\usblib\rvmdk\usblib.lib</FilePath>
+              <FilePath>..\..\..\usblib\rvmdk-cm3\usblib-cm3.lib</FilePath>
             </File>
           </Files>
         </Group>

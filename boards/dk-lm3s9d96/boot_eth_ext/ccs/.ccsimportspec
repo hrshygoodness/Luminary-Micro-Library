@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="boot_eth_ext.c"/>
+        <file name="bl_config.h"/>
+    </source>
+</importSpec>

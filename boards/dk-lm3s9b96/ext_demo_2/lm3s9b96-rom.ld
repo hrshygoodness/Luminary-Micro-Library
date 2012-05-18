@@ -28,7 +28,7 @@ GROUP(-lgcc -lc -lcs3 -lcs3unhosted -lcs3stellaris_tempest)
 
 MEMORY
 {
-  ram (rwx) : ORIGIN = 0x20000180, LENGTH = 0x00017e80
+  ram (rwx) : ORIGIN = 0x20000280, LENGTH = 0x00017d80
   rom (rx) : ORIGIN = 0x60000000, LENGTH = 0x00800000
   boot (rx) : ORIGIN = 0x01000000, LENGTH = 0x00005f00
 }

@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<!-- Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1"><title>I/O Control Demo 1</title>
+
+<script language="JavaScript">
+<!--
+function toggle_led()
+{
+    var req = false;
+    var led = false;
+    function ledComplete()
+    {
+        if(led.readyState == 4)
+        {
+            if(led.status == 200)
+            {
+                document.getElementById("ledstate").innerHTML = "<div>" + led.responseText + "</div>";
+            }
+        }
+    }
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+        led = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+        led = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        req.open("GET", "/cgi-bin/toggle_led?id" + Math.random(), true);
+        req.send(null);
+    }
+    if(led)
+    {
+        led.open("GET", "/ledstate?id=" + Math.random(), true);
+        led.onreadystatechange = ledComplete;
+        led.send(null);
+    }
+}
+
+function speedSet()
+{
+    var req = false;
+    var speed_txt = document.getElementById("speed_percent");
+    function speedComplete()
+    {
+        if(req.readyState == 4)
+        {
+            if(req.status == 200)
+            {
+                document.getElementById("current_speed").innerHTML = "<div>" + req.responseText + "</div>";
+            }
+        }
+    }
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        req.open("GET", "/cgi-bin/set_speed?percent=" + speed_txt.value + "&id" + Math.random(), true);
+        req.onreadystatechange = speedComplete;
+        req.send(null);
+    }
+}
+
+function ledstateGet()
+{
+    var led = false;
+    function ledComplete()
+    {
+        if(led.readyState == 4)
+        {
+            if(led.status == 200)
+            {
+                document.getElementById("ledstate").innerHTML = "<div>" + led.responseText + "</div>";
+            }
+        }
+    }
+
+    if(window.XMLHttpRequest)
+    {
+        led = new XMLHttpRequest();
+    }
+        else if(window.ActiveXObject)
+    {
+        led = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(led)
+    {
+        led.open("GET", "/ledstate?id=" + Math.random(), true);
+        led.onreadystatechange = ledComplete;
+        led.send(null);
+    }
+}
+
+function speedGet()
+{
+    var req = false;
+    function speedReturned()
+    {
+        if(req.readyState == 4)
+        {
+            if(req.status == 200)
+            {
+                document.getElementById("current_speed").innerHTML = "<div>" + req.responseText + "</div>";
+            }
+        }
+    }
+
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+    }
+        else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        req.open("GET", "/get_speed?id=" + Math.random(), true);
+        req.onreadystatechange = speedReturned;
+        req.send(null);
+    }
+}
+
+//-->
+</script>
+<style type="text/css">
+body
+{
+font-family: Arial;
+background-color: white;
+margin: 10px;
+padding: 0px
+}
+h1
+{
+color: #7C7369;
+font-family: Arial;
+font-size: 24pt;
+font-style: italic;
+}
+h2
+{
+color: #000000;
+font-family: Arial;
+font-size: 18pt;
+font-style: bold;
+}
+h3
+{
+color: #7C7369;
+font-family: Arial;
+font-size: 12pt;
+font-style: bold;
+}
+</style>
+</head>
+<body onload="ledstateGet();speedGet();">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody>
+<tr>
+<td align="center" height="84" valign="bottom" width="360" ><img alt="Texas Instruments" src="images/ti_logo.gif" height="84" width="360"><br></td>
+<td>
+<td align="center" valign="middle">
+<h1>Stellaris<small><sup>&reg;</sup></small> LM3S9D96 Development Kit</h1>
+</td>
+</tr>
+</tbody>
+</table>
+<table width="100%">
+<tbody>
+<tr>
+<td align="left" valign="top" width="25%">
+<br>
+<ul>
+<li> <a href="index.htm">About TI</a>
+<br>
+<br>
+</li>
+<li> <a href="family.htm">About the Stellaris Family</a>
+<br>
+<br>
+</li>
+<li> <a href="block.htm">Block Diagram</a>
+<br>
+<br>
+</li>
+<li> <a href="io_http.htm">I/O Control Demo 1<br>
+(HTTP Requests)</a>
+<br>
+<br>
+</li>
+<li><a href="io_cgi.ssi">I/O Control Demo 2<br>
+(SSI/CGI)<br>
+<br>
+</a></li>
+</ul>
+</td>
+<td align="left" valign="top" width="75%">
+<center>
+<h2 align="center">I/O Control Demo 1</h2>
+</center>
+<hr size="2" width="100%">
+<p>This demonstration shows how to perform control and
+status
+reporting using HTTP requests embedded within Javascript code on the
+web page itself. Using this method, it is possible to update sections
+of text on the current page without the need to refresh the entire page.</p>
+<p>Toggle USER LED and report the state of the LED
+</p>
+<table>
+<tbody>
+<tr>
+<td><input id="toggle" value="Toggle LED" onclick="toggle_led();" type="button"></td>
+<td>USER LED:</td>
+<td>
+<div id="ledstate" align="center"> - </div>
+</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<p>Set the speed of the animation on the display. Speed is expressed as a percentage.
+</p>
+<table>
+<tbody>
+<tr>
+<td>Current Speed:</td>
+<td>
+<div id="current_speed" align="center"> - </div>
+</td>
+</tr>
+<tr>
+<td><input id="speed_set" value="Set Speed" onclick="speedSet();" type="button"></td>
+<td><input maxlength="3" size="4" id="speed_percent" type="text">%</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br><br>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody>
+<tr>
+<td align="right" valign="center">
+<h1><br>
+</h1>
+</td>
+<td align="right" valign="center">
+<h3>Copyright &copy; 2009-2012 Texas Instruments Incorporated.  All rights reserved.</h3>
+</td>
+</tr>
+</tbody>
+</table>
+</body></html>

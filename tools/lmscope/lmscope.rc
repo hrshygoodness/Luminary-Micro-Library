@@ -1,0 +1,385 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+// Generated Help ID header file
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.hm"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\lmscope.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\lmscope.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 365, 67
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About lmscope"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "TI Stellaris Oscilloscope",IDC_ABOUT_NAME,99,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.",IDC_STATIC,99,35,255,8
+    DEFPUSHBUTTON   "OK",IDOK,308,44,50,16,WS_GROUP
+    LTEXT           "Version",IDC_ABOUT_VERSION,99,22,27,8,SS_NOPREFIX
+    LTEXT           "8555",IDC_ABOUT_BUILDNUM,126,22,50,8,SS_NOPREFIX
+    CONTROL         142,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE,11,7,79,48
+END
+
+IDD_LMSCOPE_DIALOG DIALOGEX 0, 0, 375, 292
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CONTEXTHELP | WS_EX_APPWINDOW
+CAPTION "TI Stellaris Oscilloscope"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "&Quit",IDOK,139,255,50,16,0,0,HIDOK
+    COMBOBOX        IDC_TIMEBASE,51,257,68,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP,0,HIDC_TIMEBASE
+    COMBOBOX        IDC_CHANNEL1_SCALE,15,208,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,0,HIDC_CHANNEL1_SCALE
+    PUSHBUTTON      "Find",IDC_CHANNEL1_FIND,31,229,31,15,0,0,HIDC_CHANNEL1_FIND
+    CONTROL         "",IDC_CHANNEL1_POS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,79,177,13,61,0,HIDC_CHANNEL1_POS
+    CONTROL         "Enable",IDC_ENABLE_CH2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,116,190,37,10,0,HIDC_ENABLE_CH2
+    COMBOBOX        IDC_CHANNEL2_SCALE,114,207,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,0,HIDC_CHANNEL2_SCALE
+    PUSHBUTTON      "Find",IDC_CHANNEL2_FIND,130,229,31,15,0,0,HIDC_CHANNEL2_FIND
+    CONTROL         "",IDC_CHANNEL2_POS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,178,176,13,61,0,HIDC_CHANNEL2_POS
+    CONTROL         "Channel 1",IDC_TRIGGER_CH1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,227,194,45,10,0,HIDC_TRIGGER_CH1
+    CONTROL         "Channel 2",IDC_TRIGGER_CH2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,227,206,46,10,0,HIDC_TRIGGER_CH2
+    CONTROL         "",IDC_TRIGGER_POS,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_GROUP | WS_TABSTOP,234,234,100,11,0,HIDC_TRIGGER_POS
+    PUSHBUTTON      "One Shot Trigger",IDC_CAPTURE,242,254,72,14,0,0,HIDC_CAPTURE
+    COMBOBOX        IDC_TRIGGER_TYPE,281,185,58,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,0,HIDC_TRIGGER_TYPE
+    PUSHBUTTON      "Stop",IDC_START_STOP,285,204,50,14,0,0,HIDC_START_STOP
+    CONTROL         "",IDC_TRIGGER_LEVEL,"msctls_trackbar32",TBS_VERT | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,345,176,13,81,0,HIDC_TRIGGER_LEVEL
+    CTEXT           "5.26V",IDC_CHANNEL2_POS_TEXT,172,237,24,8
+    GROUPBOX        "Channel 1",IDC_STATIC,7,170,94,82
+    GROUPBOX        "Channel 2",IDC_STATIC,106,170,94,82
+    GROUPBOX        "Trigger",IDC_STATIC,215,170,153,104
+    GROUPBOX        "Source",IDC_STATIC,221,182,55,40
+    CTEXT           "2.3V",IDC_CHANNEL1_POS_TEXT,71,237,24,8
+    CTEXT           "-800mV",IDC_TRIGGER_LEVEL_TEXT,336,262,24,8
+    LTEXT           "Timebase:",IDC_STATIC,10,259,40,8
+    GROUPBOX        "",IDC_STATIC,7,0,361,165
+    RTEXT           "Minimum:",IDC_STATIC,274,79,36,8
+    RTEXT           "Maximum:",IDC_STATIC,274,90,36,8
+    RTEXT           "Mean:",IDC_STATIC,274,101,36,8
+    LTEXT           "1.23V",IDC_CH1_MIN,315,79,34,8,0,0,HIDC_CH1_MIN
+    LTEXT           "2.65V",IDC_CH1_MAX,315,90,34,8,0,0,HIDC_CH1_MAX
+    LTEXT           "2.18V",IDC_CH1_MEAN,315,101,34,8,0,0,HIDC_CH1_MEAN
+    RTEXT           "Minimum:",IDC_STATIC,274,121,36,8
+    RTEXT           "Maximum:",IDC_STATIC,274,132,36,8
+    RTEXT           "Mean:",IDC_STATIC,274,143,36,8
+    LTEXT           "1.23V",IDC_CH2_MIN,315,121,33,8,0,0,HIDC_CH2_MIN
+    LTEXT           "2.65V",IDC_CH2_MAX,315,132,33,8,0,0,HIDC_CH2_MAX
+    LTEXT           "2.18V",IDC_CH2_MEAN,315,143,34,8,0,0,HIDC_CH2_MEAN
+    CONTROL         "",IDC_WAVEFORM,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE | SS_SUNKEN | WS_BORDER,26,9,180,150,WS_EX_TRANSPARENT,HIDC_WAVEFORM
+    GROUPBOX        "",IDC_STATIC,224,72,129,41,BS_FLAT
+    CTEXT           "Channel",IDC_CH1_TEXT1,235,85,30,10
+    CTEXT           "1",IDC_CH1_TEXT2,235,95,30,10
+    CTEXT           "Channel",IDC_CH2_TEXT1,235,126,30,10
+    CTEXT           "2",IDC_CH2_TEXT2,235,136,30,10
+    GROUPBOX        "",IDC_STATIC,224,114,129,41
+    CONTROL         143,IDC_STATIC,"Static",SS_BITMAP,219,23,140,30
+    GROUPBOX        "",IDC_STATIC,234,121,33,26
+    GROUPBOX        "",IDC_STATIC,234,80,33,26
+END
+
+IDD_DISPLAY_OPTIONS DIALOGEX 0, 0, 110, 94
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Display Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDOK,30,73,50,14
+    CONTROL         "Show &graticule",IDC_SHOW_GRATICULE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,12,63,10
+    CONTROL         "Show trigger &level",IDC_SHOW_TRIG_LEVEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,24,73,10
+    CONTROL         "Show trigger &position",IDC_SHOW_TRIG_POS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,36,83,10
+    CONTROL         "Show g&round level",IDC_SHOW_GROUND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,48,75,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,8555
+ PRODUCTVERSION 1,0,0,8555
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "Texas Instruments"
+            VALUE "FileDescription", "USB oscilloscope example application."
+            VALUE "FileVersion", "8555"
+            VALUE "InternalName", "lmscope.exe"
+            VALUE "LegalCopyright", "Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved."
+            VALUE "OriginalFilename", "lmscope.exe"
+            VALUE "ProductName", "LMScope"
+            VALUE "ProductVersion", "8555"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 11
+        RIGHTMARGIN, 358
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 60
+    END
+
+    IDD_LMSCOPE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 368
+        VERTGUIDE, 226
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 285
+    END
+
+    IDD_DISPLAY_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 101
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_LMSCOPE_DIALOG DLGINIT
+BEGIN
+    IDC_TIMEBASE, 0x403, 8, 0
+0x7535, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 9, 0
+0x3031, 0x5375, 0x642f, 0x7669, "\000" 
+    IDC_TIMEBASE, 0x403, 9, 0
+0x3032, 0x5375, 0x642f, 0x7669, "\000" 
+    IDC_TIMEBASE, 0x403, 9, 0
+0x3035, 0x5375, 0x642f, 0x7669, "\000" 
+    IDC_TIMEBASE, 0x403, 10, 0
+0x3031, 0x7530, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 10, 0
+0x3032, 0x7530, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 10, 0
+0x3035, 0x7530, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 8, 0
+0x6d31, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 8, 0
+0x6d32, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 8, 0
+0x6d35, 0x2f53, 0x6964, 0x0076, 
+    IDC_TIMEBASE, 0x403, 9, 0
+0x3031, 0x536d, 0x642f, 0x7669, "\000" 
+    IDC_TIMEBASE, 0x403, 9, 0
+0x3035, 0x536d, 0x642f, 0x7669, "\000" 
+    IDC_TIMEBASE, 0x403, 10, 0
+0x3031, 0x6d30, 0x2f53, 0x6964, 0x0076, 
+    IDC_CHANNEL1_SCALE, 0x403, 6, 0
+0x3031, 0x6d30, 0x0056, 
+    IDC_CHANNEL1_SCALE, 0x403, 6, 0
+0x3032, 0x6d30, 0x0056, 
+    IDC_CHANNEL1_SCALE, 0x403, 6, 0
+0x3035, 0x6d30, 0x0056, 
+    IDC_CHANNEL1_SCALE, 0x403, 3, 0
+0x5631, "\000" 
+    IDC_CHANNEL1_SCALE, 0x403, 3, 0
+0x5632, "\000" 
+    IDC_CHANNEL1_SCALE, 0x403, 3, 0
+0x5635, "\000" 
+    IDC_CHANNEL1_SCALE, 0x403, 4, 0
+0x3031, 0x0056, 
+    IDC_CHANNEL2_SCALE, 0x403, 6, 0
+0x3031, 0x6d30, 0x0056, 
+    IDC_CHANNEL2_SCALE, 0x403, 6, 0
+0x3032, 0x6d30, 0x0056, 
+    IDC_CHANNEL2_SCALE, 0x403, 6, 0
+0x3035, 0x6d30, 0x0056, 
+    IDC_CHANNEL2_SCALE, 0x403, 3, 0
+0x5631, "\000" 
+    IDC_CHANNEL2_SCALE, 0x403, 3, 0
+0x5632, "\000" 
+    IDC_CHANNEL2_SCALE, 0x403, 3, 0
+0x5635, "\000" 
+    IDC_CHANNEL2_SCALE, 0x403, 4, 0
+0x3031, 0x0056, 
+    IDC_TRIGGER_TYPE, 0x403, 7, 0
+0x6c41, 0x6177, 0x7379, "\000" 
+    IDC_TRIGGER_TYPE, 0x403, 6, 0
+0x654c, 0x6576, 0x006c, 
+    IDC_TRIGGER_TYPE, 0x403, 7, 0
+0x6952, 0x6973, 0x676e, "\000" 
+    IDC_TRIGGER_TYPE, 0x403, 8, 0
+0x6146, 0x6c6c, 0x6e69, 0x0067, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_LMSYMBOL            BITMAP                  "LM_Symbol.bmp"
+IDB_LMLOGO              BITMAP                  "LuminaryMicroLogo.bmp"
+IDB_TISYMBOL            BITMAP                  "TI_Symbol.bmp"
+IDB_TILOGO              BITMAP                  "TILogo.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_HTML1               HTML                    "hlp\\HIDD_ROOT_DIALOG.htm"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About LMScope..."
+    IDS_STATUS_SEARCHING    "Searching for oscilloscope device..."
+    IDS_STATUS_FOUND        "Oscilloscope device found."
+    IDS_STATUS_CONNECTED    "Oscilloscope device connected."
+    IDS_STATUS_NO_DRIVER    "Oscilloscope device driver not installed!"
+    IDS_STATUS_CLOSING      "Shutting down..."
+    IDS_START               "Start"
+    IDS_STOP                "Stop"
+    IDS_RISING              "Rising"
+    IDS_FALLING             "Falling"
+    IDS_LEVEL               "Level"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_INDICATOR_STATUS     " "
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ALWAYS              "Always"
+    IDS_SAVEASCSV           "S&ave Spreadsheet..."
+    IDS_SAVEASBMP           "&Save Bitmap..."
+    IDS_DISPLAY_OPTS        "&Display Options..."
+    IDS_SHOWHELP            "LMScope &Help..."
+    IDS_DRIVER_MISSING      "The device driver for the oscilloscope device does not appear to be installed. Please attach the ek-lm3s3748 board running qs-scope to this PC via the ""USB Device"" connection and follow the prompts to install the driver then restart this application."
+    IDS_DRIVER_VERSION      "A problem was reported trying to load the oscilloscope device driver. Either the driver installed is the wrong version or it was incorrectly installed. Please try reinstalling the device driver then restart this application."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\lmscope.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

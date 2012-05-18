@@ -1,0 +1,89 @@
+<!-- Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved. -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=ISO-8869-1">
+<link href="./styles.css" rel="stylesheet" media="screen"></link>
+<title>Stellaris&reg; LM3S8962 Evaluation Kit Quick Start Control</title>
+<script language="JavaScript">
+<!--
+var state = 1;
+
+function setAutoRefresh()
+{
+    if(state == 0)
+    {
+        document.getElementById("refresh").value = "Auto Refresh Is On";
+    }
+    else
+    {
+        document.getElementById("refresh").value = "Auto Refresh Is Off";
+    }
+    state ^= 1;
+    document.lmimaze.autoRefresh(state);
+}
+
+function volume(url)
+{
+    var req = false;
+
+    function volumeComplete()
+    {
+        if(req.readyState == 4)
+        {
+            if(req.status == 200)
+            {
+                document.getElementById("volume").innerHTML = "<div>" + req.responseText + "</div>";
+            }
+        }
+    }
+
+    if(window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if(req)
+    {
+        req.open("GET", url + "?id=" + Math.random(), true);
+        req.onreadystatechange = volumeComplete;
+        req.send(null);
+    }
+}
+
+function volumeUp()
+{
+    volume("/volume_up.html");
+}
+
+function volumeDown()
+{
+    volume("/volume_down.html");
+}
+
+function volumeGet()
+{
+    volume("/volume_get.html");
+}
+//-->
+</script>
+</head>
+<body onLoad="volumeGet();">
+<form>
+<table>
+<tr>
+<td><input type="button" id="down" value="  -  " onClick="volumeDown()"></td>
+<td>Volume:<div align="center" id="volume">100</div></td>
+<td><input type="button" id="up" value="  +  " onClick="volumeUp()"></td>
+<td>&nbsp;</td>
+<td><input type="button" id="refresh" value="Auto Refresh Is On" onClick="setAutoRefresh()"></td>
+<td>&nbsp;</td>
+<td><input type="button" value="Refresh Now" onClick="document.lmimaze.refreshNow()"></td>
+</tr>
+</table>
+</form>
+<applet name="lmimaze" code="lmimaze.class" archive="lmimaze.class" width="639" height="474">Java is required to view the maze!</applet>
+</body>
+</html>

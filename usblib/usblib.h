@@ -2,7 +2,7 @@
 //
 // usblib.h - Main header file for the USB Library.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,12 +18,14 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #ifndef __USBLIB_H__
 #define __USBLIB_H__
+
+#include "usblib/usblibpriv.h"
 
 //*****************************************************************************
 //
@@ -34,6 +36,17 @@
 #ifdef __cplusplus
 extern "C"
 {
+#endif
+
+//*****************************************************************************
+//
+// This is the maximum number of devices we can support when in host mode and
+// using a hub.  By default, we support up to 4 devices (plus 1 internally for
+// the hub itself).
+//
+//*****************************************************************************
+#ifndef MAX_USB_DEVICES
+#define MAX_USB_DEVICES 5
 #endif
 
 //*****************************************************************************
@@ -274,6 +287,7 @@ PACKED tUSBRequest;
 #define USB_DTYPE_OTG           9
 #define USB_DTYPE_INTERFACE_ASC 11
 #define USB_DTYPE_CS_INTERFACE  36
+#define USB_DTYPE_HUB           41
 
 //*****************************************************************************
 //
@@ -1026,15 +1040,6 @@ tCustomHandlers;
 typedef struct
 {
     //
-    //! The multiplier to apply to an endpoint's maximum packet size when
-    //! configuring the FIFO for that endpoint.  For example, setting this
-    //! value to 2 will result in a 128 byte FIFO being configured if
-    //! bDoubleBuffer is false and the associated endpoint is set to use a 64
-    //! byte maximum packet size.
-    //
-    unsigned char cMultiplier;
-
-    //
     //! This field indicates whether to configure an endpoint's FIFO to be
     //! double- or single-buffered.  If true, a double-buffered FIFO is
     //! created and the amount of required FIFO storage is multiplied by two.
@@ -1094,7 +1099,7 @@ typedef struct
     //
     //! The number of bytes of descriptor data pointed to by pucData.
     //
-    unsigned char ucSize;
+    unsigned short usSize;
 
     //
     //! A pointer to a block of data containing an integral number of
@@ -1132,80 +1137,6 @@ typedef struct
     const tConfigSection * const *psSections;
 }
 tConfigHeader;
-
-//*****************************************************************************
-//
-//! This structure is passed to the USB library on a call to USBDCDInit and
-//! provides the library with information about the device that the
-//! application is implementing.  It contains functions pointers for the
-//! various USB event handlers and pointers to each of the standard device
-//! descriptors.
-//
-//*****************************************************************************
-typedef struct
-{
-    //
-    //! A pointer to a structure containing pointers to event handler functions
-    //! provided by the client to support the operation of this device.
-    //
-    tCustomHandlers sCallbacks;
-
-    //
-    //! A pointer to the device descriptor for this device.
-    //
-    const unsigned char *pDeviceDescriptor;
-
-    //
-    //! A pointer to an array of configuration descriptor pointers.  Each entry
-    //! in the array corresponds to one configuration that the device may be set
-    //! to use by the USB host.  The number of entries in the array must
-    //! match the bNumConfigurations value in the device descriptor
-    //! array, pDeviceDescriptor.
-    //
-    const tConfigHeader * const *ppConfigDescriptors;
-
-    //
-    //! A pointer to the string descriptor array for this device.  This array
-    //! must be arranged as follows:
-    //!
-    //!   - [0]   - Standard descriptor containing supported language codes.
-    //!   - [1]   - String 1 for the first language listed in descriptor 0.
-    //!   - [2]   - String 2 for the first language listed in descriptor 0.
-    //!   - ...
-    //!   - [n]   - String n for the first language listed in descriptor 0.
-    //!   - [n+1] - String 1 for the second language listed in descriptor 0.
-    //!   - ...
-    //!   - [2n]  - String n for the second language listed in descriptor 0.
-    //!   - [2n+1]- String 1 for the third language listed in descriptor 0.
-    //!   - ...
-    //!   - [3n]  - String n for the third language listed in descriptor 0.
-    //!
-    //! and so on.
-    //
-    const unsigned char * const *ppStringDescriptors;
-
-    //
-    //! The total number of descriptors provided in the ppStringDescriptors
-    //! array.
-    //
-    unsigned long ulNumStringDescriptors;
-
-    //
-    //! A structure defining how the USB controller FIFO is to be partitioned
-    //! between the various endpoints.  This member can be set to point to
-    //! g_sUSBDefaultFIFOConfig if the default FIFO configuration is acceptable
-    //! This configuration sets each endpoint FIFO to be single buffered and
-    //! sized to hold the maximum packet size for the endpoint.
-    //
-    const tFIFOConfig *psFIFOConfig;
-
-    //
-    //! This value will be passed back to all call back functions so that
-    //! they have access to individual instance data based on the this pointer.
-    //
-    void *pvInstance;
-}
-tDeviceInfo;
 
 //*****************************************************************************
 //
@@ -1282,7 +1213,19 @@ typedef enum
     //! A marker indicating that no USB mode has yet been set by the
     //! application.
     //
-    USB_MODE_NONE
+    USB_MODE_NONE,
+
+    //
+    //! The application is forcing host mode so that the VBUS and ID pins are
+    //! not used or seen by the USB controller.
+    //
+    USB_MODE_FORCE_HOST,
+
+    //
+    //! The application is forcing device mode so that the VBUS and ID pins are
+    //! not used or seen by the USB controller.
+    //
+    USB_MODE_FORCE_DEVICE,
 } tUSBMode;
 
 //*****************************************************************************
@@ -1533,6 +1476,17 @@ typedef unsigned long (* tUSBCallback)(void *pvCBData, unsigned long ulEvent,
 //! descriptor for the device instance.
 //
 #define USB_EVENT_COMP_CONFIG        (USB_EVENT_BASE + 17)
+
+//
+//! An unknown device is now attached to a USB host.  This value is only valid
+//! for the generic event handler and not other device handlers.  It is
+//! useful for applications that want to know when an unknown device is
+//! connected and what the class is of the unknown device.
+//!
+//! The \e ulInstance is actually the class of the unsupported
+//! device that was connected.
+//
+#define USB_EVENT_UNKNOWN_CONNECTED  (USB_EVENT_BASE + 18)
 
 //*****************************************************************************
 //

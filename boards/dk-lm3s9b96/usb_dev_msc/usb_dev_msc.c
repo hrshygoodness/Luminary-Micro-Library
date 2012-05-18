@@ -2,7 +2,7 @@
 //
 // usb_dev_msc.c - Main routines for the device mass storage class example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -198,21 +198,21 @@ UpdateStatus(char *pcString, tBoolean bClrBackground)
     tRectangle sRect;
 
     //
-    // Fill the bottom rows of the screen with blue to create the status area.
-    //
-    sRect.sXMin = 0;
-    sRect.sYMin = GrContextDpyHeightGet(&g_sContext) -
-                  DISPLAY_BANNER_HEIGHT - 1;
-    sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 1;
-    sRect.sYMax = sRect.sYMin + DISPLAY_BANNER_HEIGHT;
-
-    //
     //
     //
     GrContextBackgroundSet(&g_sContext, DISPLAY_BANNER_BG);
 
     if(bClrBackground)
     {
+        //
+        // Fill the bottom rows of the screen with blue to create the status area.
+        //
+        sRect.sXMin = 0;
+        sRect.sYMin = GrContextDpyHeightGet(&g_sContext) -
+                      DISPLAY_BANNER_HEIGHT - 1;
+        sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 1;
+        sRect.sYMax = sRect.sYMin + DISPLAY_BANNER_HEIGHT;
+    
         //
         // Draw the background of the banner.
         //
@@ -225,18 +225,40 @@ UpdateStatus(char *pcString, tBoolean bClrBackground)
         GrContextForegroundSet(&g_sContext, DISPLAY_BANNER_FG);
         GrRectDraw(&g_sContext, &sRect);
     }
+    else
+    {
+        //
+        // Fill the bottom rows of the screen with blue to create the status area.
+        //
+        sRect.sXMin = 1;
+        sRect.sYMin = GrContextDpyHeightGet(&g_sContext) -
+                      DISPLAY_BANNER_HEIGHT;
+        sRect.sXMax = GrContextDpyWidthGet(&g_sContext) - 2;
+        sRect.sYMax = sRect.sYMin + DISPLAY_BANNER_HEIGHT - 2;
+    
+        //
+        // Draw the background of the banner.
+        //
+        GrContextForegroundSet(&g_sContext, DISPLAY_BANNER_BG);
+        GrRectFill(&g_sContext, &sRect);
+
+        //
+        // White text in the banner.
+        //
+        GrContextForegroundSet(&g_sContext, DISPLAY_BANNER_FG);
+    }
 
     //
     // Write the current state to the left of the status area.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     //
     // Update the status on the screen.
     //
     if(pcString != 0)
     {
-        GrStringDraw(&g_sContext, pcString, -1, 4, sRect.sYMin + 8, 1);
+        GrStringDraw(&g_sContext, pcString, -1, 8, sRect.sYMin + 8, 1);
     }
 }
 
@@ -301,6 +323,35 @@ USBDMSCEventCallback(void *pvCBData, unsigned long ulEvent,
                 //
                 g_ulFlags |= FLAG_UPDATE_STATUS;
             }
+
+            break;
+        }
+        //
+        // The USB host has disconnected from the device.
+        //
+        case USB_EVENT_DISCONNECTED:
+        {
+            //
+            // Go to the disconnected state.
+            //
+            g_eMSCState = MSC_DEV_DISCONNECTED;
+
+            //
+            // Cause the main loop to update the screen.
+            //
+            g_ulFlags |= FLAG_UPDATE_STATUS;
+
+            break;
+        }
+        //
+        // The USB host has connected to the device.
+        //
+        case USB_EVENT_CONNECTED:
+        {
+            //
+            // Go to the idle state to wait for read/writes.
+            //
+            g_eMSCState = MSC_DEV_IDLE;
 
             break;
         }
@@ -401,7 +452,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-dev-msc", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -414,12 +465,17 @@ main(void)
     //
     // Initialize the state to idle.
     //
-    g_eMSCState = MSC_DEV_IDLE;
+    g_eMSCState = MSC_DEV_DISCONNECTED;
 
     //
     // Draw the status bar and set it to idle.
     //
-    UpdateStatus("Idle", 1);
+    UpdateStatus("Disconnected", 1);
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass our device information to the USB library and place the device
@@ -433,13 +489,13 @@ main(void)
     //
     ulRetcode = disk_initialize(0);
 
-    GrContextFontSet(&g_sContext, &g_sFontCmss24);
+    GrContextFontSet(&g_sContext, g_pFontCmss24);
     if(ulRetcode != RES_OK)
     {
         GrStringDrawCentered(&g_sContext, "No SDCard Found", -1,
                              GrContextDpyWidthGet(&g_sContext) / 2,
                              (GrContextDpyHeightGet(&g_sContext) / 2) - 20, 0);
-        GrContextFontSet(&g_sContext, &g_sFontCm20);
+        GrContextFontSet(&g_sContext, g_pFontCm20);
         GrStringDrawCentered(&g_sContext, "Please insert a card and restart.",
                              -1, GrContextDpyWidthGet(&g_sContext) / 2,
                              (GrContextDpyHeightGet(&g_sContext) / 2), 0);
@@ -477,7 +533,7 @@ main(void)
                 //
                 if(g_ulIdleTimeout == 0)
                 {
-                    UpdateStatus("Idle    ", 0);
+                    UpdateStatus("Idle", 0);
                     g_eMSCState = MSC_DEV_IDLE;
                 }
 
@@ -499,12 +555,27 @@ main(void)
                 //
                 if(g_ulIdleTimeout == 0)
                 {
-                    UpdateStatus("Idle    ", 0);
+                    UpdateStatus("Idle", 0);
                     g_eMSCState = MSC_DEV_IDLE;
                 }
                 break;
             }
+            case MSC_DEV_DISCONNECTED:
+            {
+                //
+                // Update the screen if necessary.
+                //
+                if(g_ulFlags & FLAG_UPDATE_STATUS)
+                {
+                    UpdateStatus("Disconnected", 0);
+                    g_ulFlags &= ~FLAG_UPDATE_STATUS;
+                }
+                break;
+            }
             case MSC_DEV_IDLE:
+            {
+                break;
+            }
             default:
             {
                 break;

@@ -1,0 +1,47 @@
+<Object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="1KHz">
+	<param name="Keyword" value="acceptable measurement range">
+	<param name="Keyword" value="channel 1">
+	<param name="Keyword" value="channel 2">
+	<param name="Keyword" value="click">
+	<param name="Keyword" value="connections">
+	<param name="Keyword" value="ground">
+	<param name="Keyword" value="measurement">
+	<param name="Keyword" value="PWM">
+	<param name="Keyword" value="range">
+	<param name="Keyword" value="signal">
+	<param name="Keyword" value="speaker">
+	<param name="Keyword" value="square wave">
+	<param name="Keyword" value="test">
+	<param name="Keyword" value="test point">
+	<param name="Keyword" value="voltage">
+</OBJECT><!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html><head>
+<link rel="stylesheet" type="text/css" href="luminary.css">
+<meta name="GENERATOR" content="Microsoft® HTML Help Workshop 4.1"><title>Oscilloscope Connections</title></head>
+<body>
+<h1>Oscilloscope Signal Connections</h1>
+<p>Signal connections for both the oscilloscope channels along
+with two test signals can be found on the 8 pin connector immediately
+above the CSTN display on your Stellaris evaluation. The pins are as
+shown below.</p><p style="text-align: center;"><img style="width: 400px; height: 331px;" alt="Oscilloscope signal connections" src="../images/scope_annotation.jpg"></p><p style="text-align: left;">Test
+Point 1 is connected to the speaker input on the EK board and allows
+the signal for the keyboard click to be viewed. Note that waveform
+capture is typically not taking place while the keyboard is being
+serviced so the click may not be seen on the waveform display for every
+keypress.</p><p style="text-align: left;">Test Point 2 is connected to the output of a PWM generator set to drive a 1KHz square wave.</p><p style="text-align: left;">In
+the absence of an external waveform, the test signals can be used to
+provide input to the oscilloscope channels by merely attaching leads
+between adjacent pins on the connector - pin 1 to pin 2, pin 3 to pin
+4, etc. This will provide the speaker output on channel 1 of the
+oscilloscope and a 1KHz square wave on channel 2.</p><h2>Acceptable Measurement Range</h2>The
+oscilloscope channels use the Stellaris Analog to Digital Converter in
+its differential mode allowing measurement of positive or negative
+voltage differences between the + and - inputs for a channel. The EK
+board uses 11:1 differential input voltage dividers allowing
+measurements of voltages in the range -16.5V to +16.5V with the
+additional constraint that the absolute voltage difference between the
+two inputs for a channel cannot exceed 16.5V.<br><br><div style="text-align: center;"><img style="width: 400px; height: 320px;" alt="Acceptable Measurement Range" src="../images/measurement_range.gif"><br></div>
+
+<p></p>
+</body></html>

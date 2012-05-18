@@ -2,7 +2,7 @@
 //
 // usb_dev_audio.c - Main routines for audio device example.
 //
-// Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //****************************************************************************
 
@@ -95,10 +95,12 @@ tDMAControlTable sDMAControlTable[64] __attribute__ ((aligned(1024)));
 
 //****************************************************************************
 //
-// Buffer management and flags.
+// Buffer management and flags.  The AUDIO_PACKET_SIZE is actually twice the
+// size of a singled packet to cause the DMA to span two frames and interrupt
+// half as often.
 //
 //****************************************************************************
-#define AUDIO_PACKET_SIZE       ((48000*4)/1000)
+#define AUDIO_PACKET_SIZE       (((48000*4)/1000) * 2)
 #define AUDIO_BUFFER_SIZE       (AUDIO_PACKET_SIZE*20)
 
 #define SBUFFER_FLAGS_PLAYING   0x00000001
@@ -420,7 +422,7 @@ USBBufferCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
             // adjusting the sample rate.
             //
             if((g_sBuffer.pucBuffer + AUDIO_BUFFER_SIZE -
-                (AUDIO_PACKET_SIZE * 2)) < g_sBuffer.pucPlay)
+                (AUDIO_PACKET_SIZE * 2)) > g_sBuffer.pucPlay)
             {
                 //
                 // Only allow an adjustment of at most one fractional bit.
@@ -632,7 +634,7 @@ UpdateStatus(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontFixed6x8);
+    GrContextFontSet(&g_sContext, g_pFontFixed6x8);
 
     GrContextBackgroundSet(&g_sContext, DISPLAY_BANNER_BG);
 
@@ -725,7 +727,7 @@ main(void)
     // Put the application name in the middle of the banner.
     //
     GrContextForegroundSet(&g_sContext, DISPLAY_TEXT_FG);
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "usb-dev-audio", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 
@@ -733,6 +735,11 @@ main(void)
     // Initialize to nothing set.
     //
     g_ulFlags = 0;
+
+    //
+    // Set the USB stack mode to Device mode with VBUS monitoring.
+    //
+    USBStackModeSet(0, USB_MODE_DEVICE, 0);
 
     //
     // Pass the USB library our device information, initialize the USB

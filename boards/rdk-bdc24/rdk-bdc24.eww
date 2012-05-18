@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\boot_can\boot_can.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\qs-bdc24\qs-bdc24.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>boot_can</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>qs-bdc24</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>

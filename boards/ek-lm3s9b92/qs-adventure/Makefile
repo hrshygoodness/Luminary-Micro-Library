@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the quickstart application.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+# This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B92
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -56,6 +61,7 @@ IPATH+=../../../third_party/lwip-1.3.2/src/include/ipv4
 IPATH+=../../../third_party
 IPATH+=../../../third_party/zip
 
+#
 # The default rule, which causes the quickstart application to be built.
 #
 all: ${COMPILER}
@@ -102,8 +108,8 @@ ${COMPILER}/qs-adventure.axf: ${COMPILER}/usb_if.o
 ${COMPILER}/qs-adventure.axf: ${COMPILER}/ustdlib.o
 ${COMPILER}/qs-adventure.axf: ${COMPILER}/variable.o
 ${COMPILER}/qs-adventure.axf: ${COMPILER}/zip.o
-${COMPILER}/qs-adventure.axf: ${ROOT}/usblib/${COMPILER}/libusb.a
-${COMPILER}/qs-adventure.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/qs-adventure.axf: ${ROOT}/usblib/${COMPILER}-cm3/libusb-cm3.a
+${COMPILER}/qs-adventure.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/qs-adventure.axf: qs-adventure.ld
 SCATTERgcc_qs-adventure=qs-adventure.ld
 ENTRY_qs-adventure=ResetISR

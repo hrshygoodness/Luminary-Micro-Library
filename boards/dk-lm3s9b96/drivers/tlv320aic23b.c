@@ -2,7 +2,7 @@
 //
 // tlv320aic23b.c - Driver for the TI TLV320AIC23B DAC
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -309,12 +309,12 @@ TLV320AIC23BWriteRegister(unsigned char ucRegister, unsigned long ulData)
 
 //*****************************************************************************
 //
-//! Initialize the TLV320AIC23B DAC.
-//!
-//! This function initializes the I2C interface and the TLV320AIC23B DAC.
-//!
-//! \return Returns \b true on success of \b false if the I2S daughter board
-//! is not present.
+// Initialize the TLV320AIC23B DAC.
+//
+// This function initializes the I2C interface and the TLV320AIC23B DAC.
+//
+// \return Returns \b true on success of \b false if the I2S daughter board
+// is not present.
 //
 //*****************************************************************************
 tBoolean
@@ -431,14 +431,14 @@ TLV320AIC23BInit(void)
 
 //*****************************************************************************
 //
-//! Sets the Line In volume.
-//!
-//! \param ucVolume is the volume to set for the line input.
-//!
-//! This function adjusts the audio output up by the specified percentage.  The
-//! TI_LEFT_LINEIN_* values should be used for the \e ucVolume parameter.
-//!
-//! \return None
+// Sets the Line In volume.
+//
+// \param ucVolume is the volume to set for the line input.
+//
+// This function adjusts the audio output up by the specified percentage.  The
+// TI_LEFT_LINEIN_* values should be used for the \e ucVolume parameter.
+//
+// \return None
 //
 //*****************************************************************************
 void
@@ -453,15 +453,15 @@ TLV320AIC23BLineInVolumeSet(unsigned char ucVolume)
 
 //*****************************************************************************
 //
-//! Sets the Headphone volume on the DAC.
-//!
-//! \param ulVolume is the volume to set, specified as a percentage between 0%
-//! (silence) and 100% (full volume), inclusive.
-//!
-//! This function adjusts the audio output up by the specified percentage.  The
-//! adjusted volume will not go above 100% (full volume).
-//!
-//! \return None
+// Sets the Headphone volume on the DAC.
+//
+// \param ulVolume is the volume to set, specified as a percentage between 0%
+// (silence) and 100% (full volume), inclusive.
+//
+// This function adjusts the audio output up by the specified percentage.  The
+// adjusted volume will not go above 100% (full volume).
+//
+// \return None
 //
 //*****************************************************************************
 void
@@ -493,12 +493,12 @@ TLV320AIC23BHeadPhoneVolumeSet(unsigned long ulVolume)
 
 //*****************************************************************************
 //
-//! Returns the Headphone volume on the DAC.
-//!
-//! This function returns the current volume, specified as a percentage between
-//! 0% (silence) and 100% (full volume), inclusive.
-//!
-//! \return Returns the current volume.
+// Returns the Headphone volume on the DAC.
+//
+// This function returns the current volume, specified as a percentage between
+// 0% (silence) and 100% (full volume), inclusive.
+//
+// \return Returns the current volume.
 //
 //*****************************************************************************
 unsigned long

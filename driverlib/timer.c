@@ -2,7 +2,7 @@
 //
 // timer.c - Driver for the timer module.
 //
-// Copyright (c) 2005-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Peripheral Driver Library.
+// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -39,6 +39,27 @@
 
 //*****************************************************************************
 //
+// A mapping of timer base address to interupt number.
+//
+//*****************************************************************************
+static const unsigned long g_ppulTimerIntMap[][2] =
+{
+    { TIMER0_BASE, INT_TIMER0A },
+    { TIMER1_BASE, INT_TIMER1A },
+    { TIMER2_BASE, INT_TIMER2A },
+    { TIMER3_BASE, INT_TIMER3A },
+    { TIMER4_BASE, INT_TIMER4A },
+    { TIMER5_BASE, INT_TIMER5A },
+    { WTIMER0_BASE, INT_WTIMER0A },
+    { WTIMER1_BASE, INT_WTIMER1A },
+    { WTIMER2_BASE, INT_WTIMER2A },
+    { WTIMER3_BASE, INT_WTIMER3A },
+    { WTIMER4_BASE, INT_WTIMER4A },
+    { WTIMER5_BASE, INT_WTIMER5A },
+};
+
+//*****************************************************************************
+//
 //! \internal
 //! Checks a timer base address.
 //!
@@ -55,9 +76,56 @@ static tBoolean
 TimerBaseValid(unsigned long ulBase)
 {
     return((ulBase == TIMER0_BASE) || (ulBase == TIMER1_BASE) ||
-           (ulBase == TIMER2_BASE) || (ulBase == TIMER3_BASE));
+           (ulBase == TIMER2_BASE) || (ulBase == TIMER3_BASE) ||
+           (ulBase == TIMER4_BASE) || (ulBase == TIMER5_BASE) ||
+           (ulBase == WTIMER0_BASE) || (ulBase == WTIMER1_BASE) ||
+           (ulBase == WTIMER2_BASE) || (ulBase == WTIMER3_BASE) ||
+           (ulBase == WTIMER4_BASE) || (ulBase == WTIMER5_BASE));
 }
 #endif
+
+//*****************************************************************************
+//
+//! \internal
+//! Gets the timer interrupt number.
+//!
+//! \param ulBase is the base address of the timer module.
+//!
+//! Given a timer base address, this function returns the corresponding 
+//! interrupt number.
+//!
+//! \return Returns a timer interrupt number, or -1 if \e ulBase is invalid.
+//
+//*****************************************************************************
+static long
+TimerIntNumberGet(unsigned long ulBase)
+{
+    unsigned long ulIdx;
+
+    //
+    // Loop through the table that maps timer base addresses to interrupt
+    // numbers.
+    //
+    for(ulIdx = 0; ulIdx < (sizeof(g_ppulTimerIntMap) /
+                            sizeof(g_ppulTimerIntMap[0])); ulIdx++)
+    {
+        //
+        // See if this base address matches.
+        //
+        if(g_ppulTimerIntMap[ulIdx][0] == ulBase)
+        {
+            //
+            // Return the corresponding interrupt number.
+            //
+            return(g_ppulTimerIntMap[ulIdx][1]);
+        }
+    }
+
+    //
+    // The base address could not be found, so return an error.
+    //
+    return(-1);
+}
 
 //*****************************************************************************
 //
@@ -127,37 +195,43 @@ TimerDisable(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulConfig is the configuration for the timer.
 //!
 //! This function configures the operating mode of the timer(s).  The timer
-//! module is disabled before being configured, and is left in the disabled
-//! state.  The configuration is specified in \e ulConfig as one of the
-//! following values:
+//! module is disabled before being configured and is left in the disabled
+//! state.  There are two types of timers; a 16/32-bit variety and a 32/64-bit
+//! variety.  The 16/32-bit variety is comprised of two 16-bit timers that can
+//! operate independently or be concatenated to form a 32-bit timer.
+//! Similarly, the 32/64-bit variety is comprised of two 32-bit timers that can
+//! operate independently or be concatenated to form a 64-bit timer.
 //!
-//! - \b TIMER_CFG_32_BIT_OS - 32-bit one-shot timer
-//! - \b TIMER_CFG_32_BIT_OS_UP - 32-bit one-shot timer that counts up instead
-//!   of down (not available on all parts)
-//! - \b TIMER_CFG_32_BIT_PER - 32-bit periodic timer
-//! - \b TIMER_CFG_32_BIT_PER_UP - 32-bit periodic timer that counts up instead
-//!   of down (not available on all parts)
-//! - \b TIMER_CFG_32_RTC - 32-bit real time clock timer
-//! - \b TIMER_CFG_16_BIT_PAIR - Two 16-bit timers
+//! The configuration is specified in \e ulConfig as one of the following
+//! values:
 //!
-//! When configured for a pair of 16-bit timers, each timer is separately
+//! - \b TIMER_CFG_ONE_SHOT - Full-width one-shot timer
+//! - \b TIMER_CFG_ONE_SHOT_UP - Full-width one-shot timer that counts up
+//!   instead of down (not available on all parts)
+//! - \b TIMER_CFG_PERIODIC - Full-width periodic timer
+//! - \b TIMER_CFG_PERIODIC_UP - Full-width periodic timer that counts up
+//!   instead of down (not available on all parts)
+//! - \b TIMER_CFG_RTC - Full-width real time clock timer
+//! - \b TIMER_CFG_SPLIT_PAIR - Two half-width timers
+//!
+//! When configured for a pair of half-width timers, each timer is separately
 //! configured.  The first timer is configured by setting \e ulConfig to
 //! the result of a logical OR operation between one of the following values
 //! and \e ulConfig:
 //!
-//! - \b TIMER_CFG_A_ONE_SHOT - 16-bit one-shot timer
-//! - \b TIMER_CFG_A_ONE_SHOT_UP - 16-bit one-shot timer that counts up instead
-//!   of down (not available on all parts)
-//! - \b TIMER_CFG_A_PERIODIC - 16-bit periodic timer
-//! - \b TIMER_CFG_A_PERIODIC_UP - 16-bit periodic timer that counts up instead
-//!   of down (not available on all parts)
-//! - \b TIMER_CFG_A_CAP_COUNT - 16-bit edge count capture
-//! - \b TIMER_CFG_A_CAP_COUNT_UP - 16-bit edge count capture that counts up
+//! - \b TIMER_CFG_A_ONE_SHOT - Half-width one-shot timer
+//! - \b TIMER_CFG_A_ONE_SHOT_UP - Half-width one-shot timer that counts up
 //!   instead of down (not available on all parts)
-//! - \b TIMER_CFG_A_CAP_TIME - 16-bit edge time capture
-//! - \b TIMER_CFG_A_CAP_TIME_UP - 16-bit edge time capture that counts up
+//! - \b TIMER_CFG_A_PERIODIC - Half-width periodic timer
+//! - \b TIMER_CFG_A_PERIODIC_UP - Half-width periodic timer that counts up
 //!   instead of down (not available on all parts)
-//! - \b TIMER_CFG_A_PWM - 16-bit PWM output
+//! - \b TIMER_CFG_A_CAP_COUNT - Half-width edge count capture
+//! - \b TIMER_CFG_A_CAP_COUNT_UP - Half-width edge count capture that counts
+//!   up instead of down (not available on all parts)
+//! - \b TIMER_CFG_A_CAP_TIME - Half-width edge time capture
+//! - \b TIMER_CFG_A_CAP_TIME_UP - Half-width edge time capture that counts up
+//!   instead of down (not available on all parts)
+//! - \b TIMER_CFG_A_PWM - Half-width PWM output
 //!
 //! Similarly, the second timer is configured by setting \e ulConfig to
 //! the result of a logical OR operation between one of the corresponding
@@ -173,13 +247,13 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
     // Check the arguments.
     //
     ASSERT(TimerBaseValid(ulBase));
-    ASSERT((ulConfig == TIMER_CFG_32_BIT_OS) ||
-           (ulConfig == TIMER_CFG_32_BIT_OS_UP) ||
-           (ulConfig == TIMER_CFG_32_BIT_PER) ||
-           (ulConfig == TIMER_CFG_32_BIT_PER_UP) ||
-           (ulConfig == TIMER_CFG_32_RTC) ||
-           ((ulConfig & 0xff000000) == TIMER_CFG_16_BIT_PAIR));
-    ASSERT(((ulConfig & 0xff000000) != TIMER_CFG_16_BIT_PAIR) ||
+    ASSERT((ulConfig == TIMER_CFG_ONE_SHOT) ||
+           (ulConfig == TIMER_CFG_ONE_SHOT_UP) ||
+           (ulConfig == TIMER_CFG_PERIODIC) ||
+           (ulConfig == TIMER_CFG_PERIODIC_UP) ||
+           (ulConfig == TIMER_CFG_RTC) ||
+           ((ulConfig & 0xff000000) == TIMER_CFG_SPLIT_PAIR));
+    ASSERT(((ulConfig & 0xff000000) != TIMER_CFG_SPLIT_PAIR) ||
            ((((ulConfig & 0x000000ff) == TIMER_CFG_A_ONE_SHOT) ||
              ((ulConfig & 0x000000ff) == TIMER_CFG_A_ONE_SHOT_UP) ||
              ((ulConfig & 0x000000ff) == TIMER_CFG_A_PERIODIC) ||
@@ -211,8 +285,9 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
     // Set the configuration of the A and B timers.  Note that the B timer
     // configuration is ignored by the hardware in 32-bit modes.
     //
-    HWREG(ulBase + TIMER_O_TAMR) = ulConfig & 255;
-    HWREG(ulBase + TIMER_O_TBMR) = (ulConfig >> 8) & 255;
+    HWREG(ulBase + TIMER_O_TAMR) = (ulConfig & 255) | TIMER_TAMR_TAPWMIE;
+    HWREG(ulBase + TIMER_O_TBMR) =
+        ((ulConfig >> 8) & 255) | TIMER_TBMR_TBPWMIE;
 }
 
 //*****************************************************************************
@@ -224,8 +299,8 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
 //! \b TIMER_B, or \b TIMER_BOTH.
 //! \param bInvert specifies the output level.
 //!
-//! This function sets the PWM output level for the specified timer.  If the
-//! \e bInvert parameter is \b true, then the timer's output is made active
+//! This function configures the PWM output level for the specified timer.  If 
+//! the \e bInvert parameter is \b true, then the timer's output is made active
 //! low; otherwise, it is made active high.
 //!
 //! \return None.
@@ -253,15 +328,15 @@ TimerControlLevel(unsigned long ulBase, unsigned long ulTimer,
 
 //*****************************************************************************
 //
-//! Enables or disables the trigger output.
+//! Enables or disables the ADC trigger output.
 //!
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer to adjust; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
-//! \param bEnable specifies the desired trigger state.
+//! \param bEnable specifies the desired ADC trigger state.
 //!
-//! This function controls the trigger output for the specified timer.  If the
-//! \e bEnable parameter is \b true, then the timer's output trigger is
+//! This function controls the ADC trigger output for the specified timer.  If 
+//! the \e bEnable parameter is \b true, then the timer's ADC output trigger is
 //! enabled; otherwise it is disabled.
 //!
 //! \return None.
@@ -280,6 +355,7 @@ TimerControlTrigger(unsigned long ulBase, unsigned long ulTimer,
 
     //
     // Set the trigger output as requested.
+    // Set the ADC trigger output as requested.
     //
     ulTimer &= TIMER_CTL_TAOTE | TIMER_CTL_TBOTE;
     HWREG(ulBase + TIMER_O_CTL) = (bEnable ?
@@ -298,8 +374,8 @@ TimerControlTrigger(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_EVENT_POS_EDGE, \b TIMER_EVENT_NEG_EDGE, or
 //! \b TIMER_EVENT_BOTH_EDGES.
 //!
-//! This function sets the signal edge(s) that triggers the timer when in
-//! capture mode.
+//! This function configures the signal edge(s) that triggers the timer when 
+//! in capture mode.
 //!
 //! \return None.
 //
@@ -374,7 +450,8 @@ TimerControlStall(unsigned long ulBase, unsigned long ulTimer,
 //! count to its timeout in order for this timer to start counting.  Refer to
 //! the part's data sheet for a description of the trigger chain.
 //!
-//! \note This functionality is not available on all parts.
+//! \note This functionality is not available on all parts. This function 
+//! should not be used for Timer 0A or Wide Timer 0A.
 //!
 //! \return None.
 //
@@ -479,12 +556,15 @@ TimerRTCDisable(unsigned long ulBase)
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer(s) to adjust; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
-//! \param ulValue is the timer prescale value; must be between 0 and 255,
-//! inclusive.
+//! \param ulValue is the timer prescale value which must be between 0 and 255
+//! (inclusive) for 16/32-bit timers and between 0 and 65535 (inclusive) for
+//! 32/64-bit timers.
 //!
-//! This function sets the value of the input clock prescaler.  The prescaler
-//! is only operational when in 16-bit mode and is used to extend the range of
-//! the 16-bit timer modes.
+//! This function configures the value of the input clock prescaler.  The 
+//! prescaler is only operational when in half-width mode and is used to extend 
+//! the range of the half-width timer modes. The prescaler provides the least
+//! significant bits when counting down in periodic and one-shot modes; in all
+//! other modes, the prescaler provides the most significant bits.
 //!
 //! \note The availability of the prescaler varies with the Stellaris part and
 //! timer mode in use.  Please consult the datasheet for the part you are using
@@ -531,8 +611,10 @@ TimerPrescaleSet(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_B.
 //!
 //! This function gets the value of the input clock prescaler.  The prescaler
-//! is only operational when in 16-bit mode and is used to extend the range of
-//! the 16-bit timer modes.
+//! is only operational when in half-width mode and is used to extend the range
+//! of the half-width timer modes. The prescaler provides the least significant
+//! bits when counting down in periodic and one-shot modes; in all other modes,
+//! the prescaler provides the most significant bits.
 //!
 //! \note The availability of the prescaler varies with the Stellaris part and
 //! timer mode in use.  Please consult the datasheet for the part you are using
@@ -565,12 +647,16 @@ TimerPrescaleGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer(s) to adjust; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
-//! \param ulValue is the timer prescale match value; must be between 0 and
-//! 255, inclusive.
+//! \param ulValue is the timer prescale match value which must be between 0
+//! and 255 (inclusive) for 16/32-bit timers and between 0 and 65535
+//! (inclusive) for 32/64-bit timers.
 //!
-//! This function sets the value of the input clock prescaler match value.
-//! When in a 16-bit mode that uses the counter match and the prescaler, the
-//! prescale match effectively extends the range of the counter to 24-bits.
+//! This function configures the value of the input clock prescaler match
+//! value. When in a half-width mode that uses the counter match and the
+//! prescaler, the prescale match effectively extends the range of the match.
+//! The prescaler provides the least significant bits when counting down in
+//! periodic and one-shot modes; in all other modes, the prescaler provides the  
+//! most significant bits.
 //!
 //! \note The availability of the prescaler match varies with the Stellaris
 //! part and timer mode in use.  Please consult the datasheet for the part you
@@ -617,8 +703,11 @@ TimerPrescaleMatchSet(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_B.
 //!
 //! This function gets the value of the input clock prescaler match value.
-//! When in a 16-bit mode that uses the counter match and prescaler, the
-//! prescale match effectively extends the range of the counter to 24-bits.
+//! When in a half-width mode that uses the counter match and prescaler, the
+//! prescale match effectively extends the range of the match. The prescaler 
+//! provides the least significant bits when counting down in periodic and 
+//! one-shot modes; in all other modes, the prescaler provides the most 
+//! significant bits.
 //!
 //! \note The availability of the prescaler match varies with the Stellaris
 //! part and timer mode in use.  Please consult the datasheet for the part you
@@ -651,11 +740,15 @@ TimerPrescaleMatchGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer(s) to adjust; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.  Only \b TIMER_A should be used when the
-//! timer is configured for 32-bit operation.
+//! timer is configured for full-width operation.
 //! \param ulValue is the load value.
 //!
-//! This function sets the timer load value; if the timer is running then the
-//! value will be immediately loaded into the timer.
+//! This function configures the timer load value; if the timer is running then 
+//! the value is immediately loaded into the timer.
+//!
+//! \note This function can be used for both full- and half-width modes of
+//! 16/32-bit timers and for half-width modes of 32/64-bit timers.  Use
+//! TimerLoadSet64() for full-width modes of 32/64-bit timers.
 //!
 //! \return None.
 //
@@ -695,10 +788,14 @@ TimerLoadSet(unsigned long ulBase, unsigned long ulTimer,
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer; must be one of \b TIMER_A or
 //! \b TIMER_B.  Only \b TIMER_A should be used when the timer is configured
-//! for 32-bit operation.
+//! for full-width operation.
 //!
 //! This function gets the currently programmed interval load value for the
 //! specified timer.
+//!
+//! \note This function can be used for both full- and half-width modes of
+//! 16/32-bit timers and for half-width modes of 32/64-bit timers.  Use
+//! TimerLoadGet64() for full-width modes of 32/64-bit timers.
 //!
 //! \return Returns the load value for the timer.
 //
@@ -721,14 +818,91 @@ TimerLoadGet(unsigned long ulBase, unsigned long ulTimer)
 
 //*****************************************************************************
 //
+//! Sets the timer load value for a 64-bit timer.
+//!
+//! \param ulBase is the base address of the timer module.
+//! \param ullValue is the load value.
+//!
+//! This function configures the timer load value for a 64-bit timer; if the 
+//! timer is running, then the value is immediately loaded into the timer.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TimerLoadSet64(unsigned long ulBase, unsigned long long ullValue)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TimerBaseValid(ulBase));
+
+    //
+    // Set the timer load value.  The upper 32-bits must be written before the
+    // lower 32-bits in order to adhere to the hardware interlocks on the
+    // 64-bit value.
+    //
+    HWREG(ulBase + TIMER_O_TBILR) = ullValue >> 32;
+    HWREG(ulBase + TIMER_O_TAILR) = ullValue & 0xffffffff;
+}
+
+//*****************************************************************************
+//
+//! Gets the timer load value for a 64-bit timer.
+//!
+//! \param ulBase is the base address of the timer module.
+//!
+//! This function gets the currently programmed interval load value for the
+//! specified 64-bit timer.
+//!
+//! \return Returns the load value for the timer.
+//
+//*****************************************************************************
+unsigned long long
+TimerLoadGet64(unsigned long ulBase)
+{
+    unsigned long ulHigh1, ulHigh2, ulLow;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(TimerBaseValid(ulBase));
+
+    //
+    // Read the 64-bit load value.  A read of the low 32-bits is performed
+    // between two reads of the upper 32-bits; if the upper 32-bit values match
+    // then the 64-bit value is consistent.  If they do not match, then the
+    // read is performed again until they do match (it should never execute the
+    // loop body more than twice).
+    //
+    do
+    {
+        ulHigh1 = HWREG(ulBase + TIMER_O_TBILR);
+        ulLow = HWREG(ulBase + TIMER_O_TAILR);
+        ulHigh2 = HWREG(ulBase + TIMER_O_TBILR);
+    }
+    while(ulHigh1 != ulHigh2);
+
+    //
+    // Return the load value.
+    //
+    return(((unsigned long long)ulHigh1 << 32) | (unsigned long long)ulLow);
+}
+
+//*****************************************************************************
+//
 //! Gets the current timer value.
 //!
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer; must be one of \b TIMER_A or
 //! \b TIMER_B.  Only \b TIMER_A should be used when the timer is configured
-//! for 32-bit operation.
+//! for full-width operation.
 //!
 //! This function reads the current value of the specified timer.
+//!
+//! \note This function can be used for both full- and half-width modes of
+//! 16/32-bit timers and for half-width modes of 32/64-bit timers.  Use
+//! TimerValueGet64() for full-width modes of 32/64-bit timers.
 //!
 //! \return Returns the current value of the timer.
 //
@@ -751,17 +925,65 @@ TimerValueGet(unsigned long ulBase, unsigned long ulTimer)
 
 //*****************************************************************************
 //
+//! Gets the current 64-bit timer value.
+//!
+//! \param ulBase is the base address of the timer module.
+//!
+//! This function reads the current value of the specified timer.
+//!
+//! \return Returns the current value of the timer.
+//
+//*****************************************************************************
+unsigned long long
+TimerValueGet64(unsigned long ulBase)
+{
+    unsigned long ulHigh1, ulHigh2, ulLow;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(TimerBaseValid(ulBase));
+
+    //
+    // Read the 64-bit timer value.  A read of the low 32-bits is performed
+    // between two reads of the upper 32-bits; if the upper 32-bit values match
+    // then the 64-bit value is consistent.  If they do not match, then the
+    // read is performed again until they do match (it should never execute the
+    // loop body more than twice).
+    //
+    do
+    {
+        ulHigh1 = HWREG(ulBase + TIMER_O_TBR);
+        ulLow = HWREG(ulBase + TIMER_O_TAR);
+        ulHigh2 = HWREG(ulBase + TIMER_O_TBR);
+    }
+    while(ulHigh1 != ulHigh2);
+
+    //
+    // Return the timer value.
+    //
+    return(((unsigned long long)ulHigh1 << 32) | (unsigned long long)ulLow);
+}
+
+//*****************************************************************************
+//
 //! Sets the timer match value.
 //!
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer(s) to adjust; must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.  Only \b TIMER_A should be used when the
-//! timer is configured for 32-bit operation.
+//! timer is configured for full-width operation.
 //! \param ulValue is the match value.
 //!
-//! This function sets the match value for a timer.  This is used in capture
-//! count mode to determine when to interrupt the processor and in PWM mode to
-//! determine the duty cycle of the output signal.
+//! This function configures the match value for a timer.  This value is used 
+//! in capture count mode to determine when to interrupt the processor and in 
+//! PWM mode to determine the duty cycle of the output signal. On some 
+//! Stellaris devices, match interrupts can also be generated in periodic and 
+//! one-shot modes.
+//!
+//! \note This function can be used for both full- and half-width modes of
+//! 16/32-bit timers and for half-width modes of 32/64-bit timers.  Use
+//! TimerMatchSet64() for full-width modes of 32/64-bit timers.
 //!
 //! \return None.
 //
@@ -801,9 +1023,13 @@ TimerMatchSet(unsigned long ulBase, unsigned long ulTimer,
 //! \param ulBase is the base address of the timer module.
 //! \param ulTimer specifies the timer; must be one of \b TIMER_A or
 //! \b TIMER_B.  Only \b TIMER_A should be used when the timer is configured
-//! for 32-bit operation.
+//! for full-width operation.
 //!
 //! This function gets the match value for the specified timer.
+//!
+//! \note This function can be used for both full- and half-width modes of
+//! 16/32-bit timers and for half-width modes of 32/64-bit timers.  Use
+//! TimerMatchGet64() for full-width modes of 32/64-bit timers.
 //!
 //! \return Returns the match value for the timer.
 //
@@ -826,6 +1052,79 @@ TimerMatchGet(unsigned long ulBase, unsigned long ulTimer)
 
 //*****************************************************************************
 //
+//! Sets the timer match value for a 64-bit timer.
+//!
+//! \param ulBase is the base address of the timer module.
+//! \param ullValue is the match value.
+//!
+//! This function configures the match value for a timer.  This value is used 
+//! in capture count mode to determine when to interrupt the processor and in 
+//! PWM mode to determine the duty cycle of the output signal.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TimerMatchSet64(unsigned long ulBase, unsigned long long ullValue)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TimerBaseValid(ulBase));
+
+    //
+    // Set the timer match value.  The upper 32-bits must be written before the
+    // lower 32-bits in order to adhere to the hardware interlocks on the
+    // 64-bit value.
+    //
+    HWREG(ulBase + TIMER_O_TBMATCHR) = ullValue >> 32;
+    HWREG(ulBase + TIMER_O_TAMATCHR) = ullValue & 0xffffffff;
+}
+
+//*****************************************************************************
+//
+//! Gets the timer match value for a 64-bit timer.
+//!
+//! \param ulBase is the base address of the timer module.
+//!
+//! This function gets the match value for the specified timer.
+//!
+//! \return Returns the match value for the timer.
+//
+//*****************************************************************************
+unsigned long long
+TimerMatchGet64(unsigned long ulBase)
+{
+    unsigned long ulHigh1, ulHigh2, ulLow;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(TimerBaseValid(ulBase));
+
+    //
+    // Read the 64-bit match value.  A read of the low 32-bits is performed
+    // between two reads of the upper 32-bits; if the upper 32-bit values match
+    // then the 64-bit value is consistent.  If they do not match, then the
+    // read is performed again until they do match (it should never execute the
+    // loop body more than twice).
+    //
+    do
+    {
+        ulHigh1 = HWREG(ulBase + TIMER_O_TBMATCHR);
+        ulLow = HWREG(ulBase + TIMER_O_TAMATCHR);
+        ulHigh2 = HWREG(ulBase + TIMER_O_TBMATCHR);
+    }
+    while(ulHigh1 != ulHigh2);
+
+    //
+    // Return the match value.
+    //
+    return(((unsigned long long)ulHigh1 << 32) | (unsigned long long)ulLow);
+}
+
+//*****************************************************************************
+//
 //! Registers an interrupt handler for the timer interrupt.
 //!
 //! \param ulBase is the base address of the timer module.
@@ -834,11 +1133,11 @@ TimerMatchGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param pfnHandler is a pointer to the function to be called when the timer
 //! interrupt occurs.
 //!
-//! This function sets the handler to be called when a timer interrupt occurs.
-//! In addition, this function enables the global interrupt in the interrupt
-//! controller; specific timer interrupts must be enabled via TimerIntEnable().
-//! It is the interrupt handler's responsibility to clear the interrupt source
-//! via TimerIntClear().
+//! This function registers the handler to be called when a timer interrupt 
+//! occurs. In addition, this function enables the global interrupt in the 
+//! interrupt controller; specific timer interrupts must be enabled via 
+//! TimerIntEnable(). It is the interrupt handler's responsibility to clear the 
+//! interrupt source via TimerIntClear().
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -860,9 +1159,7 @@ TimerIntRegister(unsigned long ulBase, unsigned long ulTimer,
     //
     // Get the interrupt number for this timer module.
     //
-    ulBase = ((ulBase == TIMER0_BASE) ? INT_TIMER0A :
-              ((ulBase == TIMER1_BASE) ? INT_TIMER1A :
-               ((ulBase == TIMER2_BASE) ? INT_TIMER2A : INT_TIMER3A)));
+    ulBase = TimerIntNumberGet(ulBase);
 
     //
     // Register an interrupt handler for timer A if requested.
@@ -905,9 +1202,9 @@ TimerIntRegister(unsigned long ulBase, unsigned long ulTimer,
 //! \param ulTimer specifies the timer(s); must be one of \b TIMER_A,
 //! \b TIMER_B, or \b TIMER_BOTH.
 //!
-//! This function clears the handler to be called when a timer interrupt
+//! This function unregisters the handler to be called when a timer interrupt
 //! occurs.  This function also masks off the interrupt in the interrupt
-//! controller so that the interrupt handler no longer is called.
+//! controller so that the interrupt handler is no longer called.
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -928,9 +1225,7 @@ TimerIntUnregister(unsigned long ulBase, unsigned long ulTimer)
     //
     // Get the interrupt number for this timer module.
     //
-    ulBase = ((ulBase == TIMER0_BASE) ? INT_TIMER0A :
-              ((ulBase == TIMER1_BASE) ? INT_TIMER1A :
-               ((ulBase == TIMER2_BASE) ? INT_TIMER2A : INT_TIMER3A)));
+    ulBase = TimerIntNumberGet(ulBase);
 
     //
     // Unregister the interrupt handler for timer A if requested.
@@ -972,9 +1267,9 @@ TimerIntUnregister(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be enabled.
 //!
-//! Enables the indicated timer interrupt sources.  Only the sources that are
-//! enabled can be reflected to the processor interrupt; disabled sources have
-//! no effect on the processor.
+//! This function enables the indicated timer interrupt sources.  Only the 
+//! sources that are enabled can be reflected to the processor interrupt; 
+//! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter must be the logical OR of any combination of
 //! the following:
@@ -1011,9 +1306,9 @@ TimerIntEnable(unsigned long ulBase, unsigned long ulIntFlags)
 //! \param ulBase is the base address of the timer module.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be disabled.
 //!
-//! Disables the indicated timer interrupt sources.  Only the sources that are
-//! enabled can be reflected to the processor interrupt; disabled sources have
-//! no effect on the processor.
+//! This function disables the indicated timer interrupt sources.  Only the 
+//! sources that are enabled can be reflected to the processor interrupt; 
+//! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to TimerIntEnable().
@@ -1081,7 +1376,7 @@ TimerIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
 //! parameter to TimerIntEnable().
 //!
-//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! \note Because there is a write buffer in the Cortex-M processor, it may
 //! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
@@ -1109,13 +1404,74 @@ TimerIntClear(unsigned long ulBase, unsigned long ulIntFlags)
 
 //*****************************************************************************
 //
+//! Synchronizes the counters in a set of timers.
+//!
+//! \param ulBase is the base address of the timer module.  This parameter must 
+//! be the base address of Timer0 (in other words, \b TIMER0_BASE).
+//! \param ulTimers is the set of timers to synchronize.
+//!
+//! This function synchronizes the counters in a specified set of timers.
+//! When a timer is running in half-width mode, each half can be included or
+//! excluded in the synchronization event.  When a timer is running in
+//! full-width mode, only the A timer can be synchronized (specifying the B
+//! timer has no effect).
+//!
+//! The \e ulTimers parameter is the logical OR of any of the following
+//! defines:
+//!
+//! - \b TIMER_0A_SYNC
+//! - \b TIMER_0B_SYNC
+//! - \b TIMER_1A_SYNC
+//! - \b TIMER_1B_SYNC
+//! - \b TIMER_2A_SYNC
+//! - \b TIMER_2B_SYNC
+//! - \b TIMER_3A_SYNC
+//! - \b TIMER_3B_SYNC
+//! - \b TIMER_4A_SYNC
+//! - \b TIMER_4B_SYNC
+//! - \b TIMER_5A_SYNC
+//! - \b TIMER_5B_SYNC
+//! - \b WTIMER_0A_SYNC
+//! - \b WTIMER_0B_SYNC
+//! - \b WTIMER_1A_SYNC
+//! - \b WTIMER_1B_SYNC
+//! - \b WTIMER_2A_SYNC
+//! - \b WTIMER_2B_SYNC
+//! - \b WTIMER_3A_SYNC
+//! - \b WTIMER_3B_SYNC
+//! - \b WTIMER_4A_SYNC
+//! - \b WTIMER_4B_SYNC
+//! - \b WTIMER_5A_SYNC
+//! - \b WTIMER_5B_SYNC
+//!
+//! \note This functionality is not available on all parts.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TimerSynchronize(unsigned long ulBase, unsigned long ulTimers)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(ulBase == TIMER0_BASE);
+
+    //
+    // Synchronize the specified timers.
+    //
+    HWREG(ulBase + TIMER_O_SYNC) = ulTimers;
+}
+
+//*****************************************************************************
+//
 // Puts the timer into its reset state.
 //
 // \param ulBase is the base address of the timer module.
 //
-// The specified timer is disabled, and all its interrupts are disabled,
-// cleared, and unregistered.  Then the timer registers are set to their reset
-// value.
+// This function disables the specified timer, and all its interrupts are 
+// disabled, cleared, and unregistered.  Then the timer registers are set to
+// their reset value.
 //
 // \return None.
 //
@@ -1145,7 +1501,7 @@ TimerQuiesce(unsigned long ulBase)
     HWREG(ulBase + TIMER_O_ICR) = 0xFFFFFFFF;
 
     //
-    // Unregister the interrupt handler.  This also disables interrupts to the
+    // Unregister the interrupt handler, which also disables interrupts to the
     // core.
     //
     TimerIntUnregister(ulBase, TIMER_BOTH);

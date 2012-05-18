@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="blinker.c"/>
+        <file name="blinker.h"/>
+        <file name="commands.h"/>
+        <file name="main.c"/>
+        <file name="main.h"/>
+        <file name="stepcfg.h"/>
+        <file name="stepctrl.c"/>
+        <file name="stepctrl.h"/>
+        <file name="stepper.c"/>
+        <file name="stepper.h"/>
+        <file name="stepseq.c"/>
+        <file name="stepseq.h"/>
+        <file name="ui.c"/>
+        <file name="ui.h"/>
+        <file name="uiparms.c"/>
+        <file name="uiparms.h"/>
+        <file name="ui_common.h"/>
+        <file name="ui_onboard.c"/>
+        <file name="ui_onboard.h"/>
+        <file name="ui_serial.c"/>
+        <file name="ui_serial.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

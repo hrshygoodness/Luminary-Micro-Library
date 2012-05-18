@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+ */
+
+body {
+  background-color: black;
+  font-family: Arial,Helvetica,sans-serif;
+  color: white;
+}
+address {
+  text-align: center;
+  font-size: x-small;
+  font-style: normal;
+}
+.bigtext {
+  color: red;
+  font-size: xx-large;
+}

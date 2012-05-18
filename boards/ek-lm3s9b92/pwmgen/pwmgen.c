@@ -2,7 +2,7 @@
 //
 // pwmgen.c - PWM signal generation example.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the EK-LM3S9B92 Firmware Package.
+// This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
 //
 //*****************************************************************************
 
@@ -26,6 +26,7 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/pwm.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
@@ -92,7 +93,7 @@ main(void)
     //
     // Enable the peripherals used by this example.
     //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 
     //
@@ -111,25 +112,25 @@ main(void)
     //
     // Set the PWM period to 440 (A) Hz.
     //
-    ROM_PWMGenConfigure(PWM_BASE, PWM_GEN_0,
+    ROM_PWMGenConfigure(PWM0_BASE, PWM_GEN_0,
                         PWM_GEN_MODE_UP_DOWN | PWM_GEN_MODE_NO_SYNC);
-    ROM_PWMGenPeriodSet(PWM_BASE, PWM_GEN_0, ulPeriod);
+    ROM_PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, ulPeriod);
 
     //
     // Set PWM0 to a duty cycle of 25% and PWM1 to a duty cycle of 75%.
     //
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, ulPeriod / 4);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, (ulPeriod * 3) / 4);
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ulPeriod / 4);
+    ROM_PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, (ulPeriod * 3) / 4);
 
     //
     // Enable the PWM0 and PWM1 output signals.
     //
-    ROM_PWMOutputState(PWM_BASE, PWM_OUT_0_BIT | PWM_OUT_1_BIT, true);
+    ROM_PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT | PWM_OUT_1_BIT, true);
 
     //
     // Enable the PWM generator.
     //
-    ROM_PWMGenEnable(PWM_BASE, PWM_GEN_0);
+    ROM_PWMGenEnable(PWM0_BASE, PWM_GEN_0);
 
     //
     // Loop forever while the PWM signals are generated.

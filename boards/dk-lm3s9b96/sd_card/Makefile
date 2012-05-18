@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the Sample SD Card Application.
 #
-# Copyright (c) 2008-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -52,6 +57,7 @@ IPATH=..
 IPATH+=../../..
 IPATH+=../../../third_party
 
+#
 # The default rule, which causes the Sample SD Card Application to be built.
 #
 all: ${COMPILER}
@@ -82,8 +88,8 @@ ${COMPILER}/sd_card.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/sd_card.axf: ${COMPILER}/touch.o
 ${COMPILER}/sd_card.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/sd_card.axf: ${COMPILER}/ustdlib.o
-${COMPILER}/sd_card.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/sd_card.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/sd_card.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/sd_card.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/sd_card.axf: sd_card.ld
 SCATTERgcc_sd_card=sd_card.ld
 ENTRY_sd_card=ResetISR

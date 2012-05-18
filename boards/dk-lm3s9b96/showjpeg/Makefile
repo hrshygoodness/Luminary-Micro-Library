@@ -2,7 +2,7 @@
 #
 # Makefile - Rules for building the JPEG Decompression and Display Application.
 #
-# Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+# This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 #
 #******************************************************************************
 
@@ -26,6 +26,11 @@
 # Defines the part type that this project uses.
 #
 PART=LM3S9B96
+
+#
+# Set the processor variant.
+#
+VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -54,6 +59,7 @@ IPATH+=../../../third_party/bget
 IPATH+=../../../third_party/jpeg
 IPATH+=../../../third_party
 
+#
 # The default rule, which causes the JPEG Decompression and Display Application to be built.
 #
 all: ${COMPILER}
@@ -109,8 +115,8 @@ ${COMPILER}/showjpeg.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/showjpeg.axf: ${COMPILER}/touch.o
 ${COMPILER}/showjpeg.axf: ${COMPILER}/uartstdio.o
 ${COMPILER}/showjpeg.axf: ${COMPILER}/ustdlib.o
-${COMPILER}/showjpeg.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
-${COMPILER}/showjpeg.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/showjpeg.axf: ${ROOT}/grlib/${COMPILER}-cm3/libgr-cm3.a
+${COMPILER}/showjpeg.axf: ${ROOT}/driverlib/${COMPILER}-cm3/libdriver-cm3.a
 ${COMPILER}/showjpeg.axf: showjpeg.ld
 SCATTERgcc_showjpeg=showjpeg.ld
 ENTRY_showjpeg=ResetISR

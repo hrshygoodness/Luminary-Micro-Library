@@ -3,7 +3,7 @@
 // converter.c - Program to convert 16-bit mono PCM files into C arrays for use
 //               by the Class-D audio driver.
 //
-// Copyright (c) 2007-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris Firmware Development Package.
+// This is part of revision 8555 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -242,7 +242,7 @@ Usage(char *pcFilename)
     fprintf(stderr, "If the output filename is not specified, standard output "
             "will be used.\n");
     fprintf(stderr, "\n");
-    fprintf(stderr, "Version 7611\n");
+    fprintf(stderr, "Version 8555\n");
     fprintf(stderr, "Report bugs to <support_lmi@ti.com>.\n");
 }
 

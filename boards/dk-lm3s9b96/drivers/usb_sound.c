@@ -2,7 +2,7 @@
 //
 // usb_sound.c - USB host audio handling functions.
 //
-// Copyright (c) 2010-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -216,19 +216,19 @@ AudioCallback(void *pvBuffer, unsigned long ulParam, unsigned long ulEvent)
 
 //*****************************************************************************
 //
-//! Initializes the sound output.
-//!
-//! \param ulFlags is unused as this point but is included for future
-//! functionality.
-//! \param pfnCallback is the event callback function for audio devices.
-//!
-//! This function prepares the sound driver to enumerate an audio device and
-//! prepares to play audio once a valid audio device is detected.  The
-//! \e pfnCallback function can be used to receive callbacks when there are
-//! changes related to the audio device.  The ulEvent parameter to the callback
-//! will be one of the SOUND_EVENT_* values.
-//!
-//! \return None
+// Initializes the sound output.
+//
+// \param ulFlags is unused as this point but is included for future
+// functionality.
+// \param pfnCallback is the event callback function for audio devices.
+//
+// This function prepares the sound driver to enumerate an audio device and
+// prepares to play audio once a valid audio device is detected.  The
+// \e pfnCallback function can be used to receive callbacks when there are
+// changes related to the audio device.  The ulEvent parameter to the callback
+// will be one of the SOUND_EVENT_* values.
+//
+// \return None
 //
 //*****************************************************************************
 void
@@ -286,15 +286,15 @@ USBSoundInit(unsigned long ulFlags, tEventCallback pfnCallback)
 
 //*****************************************************************************
 //
-//! Sets the volume of the audio device.
-//!
-//! \param ulPercent is the volume percentage, which must be between 0%
-//! (silence) and 100% (full volume), inclusive.
-//!
-//! This function sets the volume of the sound output to a value between
-//! silence (0%) and full volume (100%).
-//!
-//! \return None.
+// Sets the volume of the audio device.
+//
+// \param ulPercent is the volume percentage, which must be between 0%
+// (silence) and 100% (full volume), inclusive.
+//
+// This function sets the volume of the sound output to a value between
+// silence (0%) and full volume (100%).
+//
+// \return None.
 //
 //*****************************************************************************
 void
@@ -321,17 +321,17 @@ USBSoundVolumeSet(unsigned long ulPercent)
 
 //*****************************************************************************
 //
-//! Returns the current volume level.
-//!
-//! \param ulChannel is the 0 based channel number to query.
-//!
-//! This function returns the current volume, specified as a percentage between
-//! 0% (silence) and 100% (full volume), inclusive. The \e ulChannel value
-//! starts with 0 which is the master audio volume control interface.  The
-//! remaining \e ulChannel values provide access to various other audio
-//! channels, with 1 and 2 being left and right audio channels.
-//!
-//! \return Returns the current volume.
+// Returns the current volume level.
+//
+// \param ulChannel is the 0 based channel number to query.
+//
+// This function returns the current volume, specified as a percentage between
+// 0% (silence) and 100% (full volume), inclusive. The \e ulChannel value
+// starts with 0 which is the master audio volume control interface.  The
+// remaining \e ulChannel values provide access to various other audio
+// channels, with 1 and 2 being left and right audio channels.
+//
+// \return Returns the current volume.
 //
 //*****************************************************************************
 unsigned long
@@ -357,20 +357,20 @@ USBSoundVolumeGet(unsigned long ulChannel)
 
 //*****************************************************************************
 //
-//! This will set the current output audio format of the USB audio device.
-//!
-//! \param ulSampleRate is the sample rate.
-//! \param ulBitsPerSample is the number of bits per sample.
-//! \param ulChannels is the number of channels.
-//!
-//! This sets the current audio format for the USB device that is currently
-//! connected.  If there is no USB device connected or the format is not
-//! supported then the function will return a non-zero value.  The function
-//! will return zero if the USB audio device was successfully configured to the
-//! requested audio format.
-//!
-//! \return Returns zero if the format was successfully set or returns an
-//! non-zero value if the format was not able to be set.
+// This will set the current output audio format of the USB audio device.
+//
+// \param ulSampleRate is the sample rate.
+// \param ulBitsPerSample is the number of bits per sample.
+// \param ulChannels is the number of channels.
+//
+// This sets the current audio format for the USB device that is currently
+// connected.  If there is no USB device connected or the format is not
+// supported then the function will return a non-zero value.  The function
+// will return zero if the USB audio device was successfully configured to the
+// requested audio format.
+//
+// \return Returns zero if the format was successfully set or returns an
+// non-zero value if the format was not able to be set.
 //
 //*****************************************************************************
 unsigned long
@@ -395,19 +395,19 @@ USBSoundOutputFormatSet(unsigned long ulSampleRate,
 
 //*****************************************************************************
 //
-//! This will set the current input audio format of the USB audio device
-//!
-//! \param ulSampleRate is the sample rate.
-//! \param ulBitsPerSample is the number of bits per sample.
-//! \param ulChannels is the number of channels.
-//!
-//! This sets the current format for the USB device that is currently connect.
-//! If there is no USB device connected or the format is not supported then the
-//! function will return 0.  The function will return 1 if the USB audio device
-//! was successfully configured to the requested format.
-//!
-//! \return Returns 1 if the format was successfully set or returns 0 if the
-//!         format was not changed.
+// This will set the current input audio format of the USB audio device
+//
+// \param ulSampleRate is the sample rate.
+// \param ulBitsPerSample is the number of bits per sample.
+// \param ulChannels is the number of channels.
+//
+// This sets the current format for the USB device that is currently connect.
+// If there is no USB device connected or the format is not supported then the
+// function will return 0.  The function will return 1 if the USB audio device
+// was successfully configured to the requested format.
+//
+// \return Returns 1 if the format was successfully set or returns 0 if the
+//         format was not changed.
 //
 //*****************************************************************************
 unsigned long
@@ -513,7 +513,7 @@ USBHCDEvents(void *pvData)
         //
         // Unknown device detected.
         //
-        case USB_EVENT_CONNECTED:
+        case USB_EVENT_UNKNOWN_CONNECTED:
         {
             //
             // An unknown device was detected.
@@ -525,7 +525,7 @@ USBHCDEvents(void *pvData)
             //
             if(g_sAudioState.pfnCallbackEvent)
             {
-                g_sAudioState.pfnCallbackEvent(SOUND_EVENT_UNKNOWN_DEV, 0);
+                g_sAudioState.pfnCallbackEvent(SOUND_EVENT_UNKNOWN_DEV, 1);
             }
 
             break;
@@ -537,16 +537,29 @@ USBHCDEvents(void *pvData)
         case USB_EVENT_DISCONNECTED:
         {
             //
-            // Unknown device has been removed.
+            // Handle the case where an unknown device is disconnected.
             //
-            g_sAudioState.eState = STATE_NO_DEVICE;
-
-            //
-            // Call the general event handler if present.
-            //
-            if(g_sAudioState.pfnCallbackEvent)
+            if(g_sAudioState.eState == STATE_UNKNOWN_DEVICE)
             {
-                g_sAudioState.pfnCallbackEvent(SOUND_EVENT_DISCONNECT, 0);
+                g_sAudioState.eState = STATE_NO_DEVICE;
+
+                //
+                // Call the general event handler if present.
+                //
+                if(g_sAudioState.pfnCallbackEvent)
+                {
+                    g_sAudioState.pfnCallbackEvent(SOUND_EVENT_UNKNOWN_DEV, 0);
+                }
+            }
+            else
+            {
+                //
+                // Call the general event handler if present.
+                //
+                if(g_sAudioState.pfnCallbackEvent)
+                {
+                    g_sAudioState.pfnCallbackEvent(SOUND_EVENT_DISCONNECT, 0);
+                }
             }
 
             break;
@@ -600,16 +613,16 @@ USBHostAudioCallback(void *pvBuffer, unsigned long ulParam,
 
 //*****************************************************************************
 //
-//! Starts output of a block of PCM audio samples.
-//!
-//! \param pvBuffer is a pointer to the audio data to play.
-//! \param ulSize is the length of the data in bytes.
-//! \param pfnCallback is a function to call when this buffer has be played.
-//!
-//! This function starts the output of a block of PCM audio samples.
-//!
-//! \return This function returns a non-zero value if the buffer was accepted,
-//! and returns zero if the buffer was not accepted.
+// Starts output of a block of PCM audio samples.
+//
+// \param pvBuffer is a pointer to the audio data to play.
+// \param ulSize is the length of the data in bytes.
+// \param pfnCallback is a function to call when this buffer has be played.
+//
+// This function starts the output of a block of PCM audio samples.
+//
+// \return This function returns a non-zero value if the buffer was accepted,
+// and returns zero if the buffer was not accepted.
 //
 //*****************************************************************************
 unsigned long
@@ -639,17 +652,17 @@ USBSoundBufferOut(const void *pvBuffer, unsigned long ulSize,
 
 //*****************************************************************************
 //
-//! Requests a new block of PCM audio samples from a USB audio device.
-//!
-//! \param pvBuffer is a pointer to a location to store the audio data.
-//! \param ulSize is the size of the pvData buffer in bytes.
-//! \param pfnCallback is a function to call when this buffer has new data.
-//!
-//! This function request a new block of PCM audio samples from a USB audio
-//! device.
-//!
-//! \return This function returns a non-zero value if the buffer was accepted,
-//! and returns zero if the buffer was not accepted.
+// Requests a new block of PCM audio samples from a USB audio device.
+//
+// \param pvBuffer is a pointer to a location to store the audio data.
+// \param ulSize is the size of the pvData buffer in bytes.
+// \param pfnCallback is a function to call when this buffer has new data.
+//
+// This function request a new block of PCM audio samples from a USB audio
+// device.
+//
+// \return This function returns a non-zero value if the buffer was accepted,
+// and returns zero if the buffer was not accepted.
 //
 //*****************************************************************************
 unsigned long

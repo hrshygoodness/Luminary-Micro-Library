@@ -3,7 +3,7 @@
 // imageview.c - JPEG image viewer function for the Tempest checkout
 //               application
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -82,7 +82,7 @@ tJPEGInst g_sMainJPEGInst;
 JPEGCanvas(g_sMainImage, &g_sImageScreen, 0, 0,
            &g_sKitronix320x240x16_SSD2119, 0, 24, 320, 184,
            (JW_STYLE_OUTLINE | JW_STYLE_TEXT), ClrBlack, ClrWhite, ClrWhite,
-           &g_sFontCmss22b, "", 0, 0, 1, OnJPEGScroll, &g_sMainJPEGInst);
+           g_pFontCmss22b, "", 0, 0, 1, OnJPEGScroll, &g_sMainJPEGInst);
 
 //*****************************************************************************
 //
@@ -92,7 +92,7 @@ JPEGCanvas(g_sMainImage, &g_sImageScreen, 0, 0,
 RectangularButton(g_sImageNextBtn, &g_sImageScreen, &g_sMainImage, 0,
                   &g_sKitronix320x240x16_SSD2119, 220, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
-                   0, 0, 0, CLR_TEXT, &g_sFontCmss18b, "Next",
+                   0, 0, 0, CLR_TEXT, g_pFontCmss18b, "Next",
                    g_pucRedButton_90x24_Up, g_pucRedButton_90x24_Down, 0, 0,
                    OnBtnImageNext);
 
@@ -104,7 +104,7 @@ RectangularButton(g_sImageNextBtn, &g_sImageScreen, &g_sMainImage, 0,
 RectangularButton(g_sImagePreviousBtn, &g_sImageScreen, &g_sImageNextBtn, 0,
                   &g_sKitronix320x240x16_SSD2119, 10, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
-                   0, 0, 0, CLR_TEXT, &g_sFontCmss18b, "Previous",
+                   0, 0, 0, CLR_TEXT, g_pFontCmss18b, "Previous",
                    g_pucRedButton_90x24_Up, g_pucRedButton_90x24_Down, 0, 0,
                    OnBtnImagePrevious);
 
@@ -116,7 +116,7 @@ RectangularButton(g_sImagePreviousBtn, &g_sImageScreen, &g_sImageNextBtn, 0,
 RectangularButton(g_sImageHomeBtn, &g_sImageScreen, &g_sImagePreviousBtn, 0,
                   &g_sKitronix320x240x16_SSD2119, 115, 210, 90, 24,
                   ( PB_STYLE_TEXT | PB_STYLE_IMG | PB_STYLE_RELEASE_NOTIFY),
-                   0, 0, 0, CLR_TEXT, &g_sFontCmss18b, "Home",
+                   0, 0, 0, CLR_TEXT, g_pFontCmss18b, "Home",
                    g_pucRedButton_90x24_Up, g_pucRedButton_90x24_Down, 0, 0,
                    OnBtnImageToHome);
 

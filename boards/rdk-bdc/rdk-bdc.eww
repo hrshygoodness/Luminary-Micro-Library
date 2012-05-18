@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\grlib\grlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\bdc-ui\bdc-ui.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\boot_can\boot_can.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\qs-bdc\qs-bdc.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>grlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>bdc-ui</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>boot_can</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>qs-bdc</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>

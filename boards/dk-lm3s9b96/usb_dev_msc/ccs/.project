@@ -3,9 +3,9 @@
 	<name>usb_dev_msc</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib</project>
-		<project>grlib</project>
-		<project>usblib</project>
+		<project>driverlib-cm3</project>
+		<project>grlib-cm3</project>
+		<project>usblib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

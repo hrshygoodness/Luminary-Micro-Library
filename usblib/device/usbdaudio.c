@@ -2,7 +2,7 @@
 //
 // usbdaudio.c - USB audio device class driver.
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the Stellaris USB Library.
+// This is part of revision 8555 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -33,7 +33,6 @@
 #include "usblib/usbaudio.h"
 #include "usblib/device/usbdevice.h"
 #include "usblib/device/usbdaudio.h"
-#include "usblib/usblibpriv.h"
 
 //*****************************************************************************
 //
@@ -428,42 +427,42 @@ const tFIFOConfig g_sUSBAudioFIFOConfig =
     // IN endpoints.
     //
     {
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN },
-        { 1, false, USB_EP_DEV_IN }
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN },
+        { false, USB_EP_DEV_IN }
     },
 
     //
     // OUT endpoints.
     //
     {
-        { 1, false, USB_EP_DEV_OUT | USB_EP_DMA_MODE_1 | USB_EP_AUTO_CLEAR },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT },
-        { 1, false, USB_EP_DEV_OUT }
+        { false, USB_EP_DEV_OUT | USB_EP_DMA_MODE_1 | USB_EP_AUTO_CLEAR },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT },
+        { false, USB_EP_DEV_OUT }
     },
 };
 
@@ -723,7 +722,7 @@ HandleDevice(void *pvInstance, unsigned long ulRequest, void *pvRequestData)
             if((pucData[0] & USB_EP_DESC_IN) == 0)
             {
                 //
-                // Extract the new endpoint number.
+                // Extract the new endpoint number without the DIR bit.
                 //
                 psInst->ucOUTEndpoint = INDEX_TO_USB_EP(pucData[1] & 0x7f);
 

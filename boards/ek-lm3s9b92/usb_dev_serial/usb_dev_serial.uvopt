@@ -203,7 +203,7 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>usb_dev_serial.c</PathWithFileName>
+      <PathWithFileName>.\usb_dev_serial.c</PathWithFileName>
       <FilenameWithoutPath>usb_dev_serial.c</FilenameWithoutPath>
     </File>
     <File>
@@ -217,7 +217,7 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>usb_serial_structs.c</PathWithFileName>
+      <PathWithFileName>.\usb_serial_structs.c</PathWithFileName>
       <FilenameWithoutPath>usb_serial_structs.c</FilenameWithoutPath>
     </File>
   </Group>
@@ -238,8 +238,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\driverlib\rvmdk\driverlib.lib</PathWithFileName>
-      <FilenameWithoutPath>driverlib.lib</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\driverlib\rvmdk-cm3\driverlib-cm3.lib</PathWithFileName>
+      <FilenameWithoutPath>driverlib-cm3.lib</FilenameWithoutPath>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
@@ -252,8 +252,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\usblib\rvmdk\usblib.lib</PathWithFileName>
-      <FilenameWithoutPath>usblib.lib</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\usblib\rvmdk-cm3\usblib-cm3.lib</PathWithFileName>
+      <FilenameWithoutPath>usblib-cm3.lib</FilenameWithoutPath>
     </File>
   </Group>
 

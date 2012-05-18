@@ -228,6 +228,7 @@ httpd_appcall(void)
                 //
                 hs->state = HTTP_NOGET;
                 hs->count = 0;
+                hs->bufcount = 0;
                 return;
             }
             else if(uip_poll())
@@ -279,23 +280,23 @@ httpd_appcall(void)
                 {
                     uip_send(page_not_found,
                             sizeof(page_not_found) - 1);
-                    hs->count = 3;
+                    hs->bufcount = 3;
                 }
             }
             else if(uip_acked())
             {
-                hs->count++;
-                if(hs->count == 1)
+                hs->bufcount++;
+                if(hs->bufcount == 1)
                 {
                     uip_send(default_page_buf2of3,
                             sizeof(default_page_buf2of3) - 1);
                 }
-                else if(hs->count == 2)
+                else if(hs->bufcount == 2)
                 {
                     uip_send(default_page_buf3of3,
                             sizeof(default_page_buf3of3) - 1);
                 }
-                else if(hs->count == 3)
+                else if(hs->bufcount == 3)
                 {
                     httpd_inc_page_count();
                     uip_close();

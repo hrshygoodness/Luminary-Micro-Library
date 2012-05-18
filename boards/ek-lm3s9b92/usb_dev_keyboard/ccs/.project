@@ -3,8 +3,8 @@
 	<name>usb_dev_keyboard</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib</project>
-		<project>usblib</project>
+		<project>driverlib-cm3</project>
+		<project>usblib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -21,12 +21,12 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>usb_dev_keyboard.c/usb_dev_keyboard.c</name>
+			<name>usb_dev_keyboard.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_keyboard/usb_dev_keyboard.c</locationURI>
 		</link>
 		<link>
-			<name>usb_keyb_structs.c/usb_keyb_structs.c</name>
+			<name>usb_keyb_structs.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s9b92/usb_dev_keyboard/usb_keyb_structs.c</locationURI>
 		</link>

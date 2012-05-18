@@ -2,7 +2,7 @@
 //
 // enet_uip.c - Sample WebServer Application for Ethernet Demo
 //
-// Copyright (c) 2009-2011 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 7611 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -32,6 +32,7 @@
 #include "driverlib/flash.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
@@ -234,7 +235,7 @@ ShowIPAddress(const uip_ipaddr_t sIPAddr)
     usprintf(pcBuffer, "IP: %d.%d.%d.%d", sIPAddr[0] & 0xff,
              sIPAddr[0] >> 8, sIPAddr[1] & 0xff, sIPAddr[1] >> 8);
     UARTprintf("%s\n", pcBuffer);
-    GrContextFontSet(&g_sContext, &g_sFontCmss18b);
+    GrContextFontSet(&g_sContext, g_pFontCmss18b);
     GrStringDrawCentered(&g_sContext, pcBuffer, -1,
                  GrContextDpyWidthGet(&g_sContext) / 2,
                  GrContextDpyHeightGet(&g_sContext) - 20, true);
@@ -269,7 +270,7 @@ UpdateStatus(char *pcStatus)
     //
     // Display the new status string.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCmss20);
+    GrContextFontSet(&g_sContext, g_pFontCmss20);
     GrContextForegroundSet(&g_sContext, ClrWhite);
     GrStringDrawCentered(&g_sContext, pcStatus, -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, STATUS_Y, 0);
@@ -277,10 +278,10 @@ UpdateStatus(char *pcStatus)
 
 //*****************************************************************************
 //
-//! When using the timer module in UIP, this function is required to return
-//! the number of ticks.  Note that the file "clock-arch.h" must be provided
-//! by the application, and define CLOCK_CONF_SECONDS as the number of ticks
-//! per second, and must also define the typedef "clock_time_t".
+// When using the timer module in UIP, this function is required to return
+// the number of ticks.  Note that the file "clock-arch.h" must be provided
+// by the application, and define CLOCK_CONF_SECONDS as the number of ticks
+// per second, and must also define the typedef "clock_time_t".
 //
 //*****************************************************************************
 clock_time_t
@@ -678,7 +679,7 @@ main(void)
     //
     // Put the application name in the middle of the banner.
     //
-    GrContextFontSet(&g_sContext, &g_sFontCm20);
+    GrContextFontSet(&g_sContext, g_pFontCm20);
     GrStringDrawCentered(&g_sContext, "enet-uip", -1,
                          GrContextDpyWidthGet(&g_sContext) / 2, 10, 0);
 

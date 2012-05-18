@@ -418,7 +418,7 @@
             <File>
               <FileName>usb_host_audio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>usb_host_audio.c</FilePath>
+              <FilePath>.\usb_host_audio.c</FilePath>
             </File>
             <File>
               <FileName>usb_sound.c</FileName>
