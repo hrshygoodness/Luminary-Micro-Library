@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<importSpec>
+    <source root="..">
+        <file name="bt_a2dp.c"/>
+        <file name="bluetooth.c"/>
+        <file name="bluetooth.h"/>
+        <file name="bt_ucfg.h"/>
+        <file name="dac32sound.c"/>
+        <file name="dac32sound.h"/>
+        <file name="graphics.c"/>
+        <file name="graphics.h"/>
+        <file name="images.c"/>
+        <file name="images.h"/>
+        <file name="widgets.c"/>
+        <file name="widgets.h"/>
+        <file regex=".*_ccs\.cmd"/>
+        <file name="startup_ccs.c"/>
+    </source>
+</importSpec>

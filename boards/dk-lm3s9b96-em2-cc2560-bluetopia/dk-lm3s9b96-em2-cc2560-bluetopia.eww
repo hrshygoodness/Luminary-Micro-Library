@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<workspace>
+  <project>
+    <path>$WS_DIR$\..\..\driverlib\driverlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\..\..\grlib\grlib-cm3.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\bt_a2dp_safertos\bt_a2dp_safertos.ewp</path>
+  </project>
+  <project>
+    <path>$WS_DIR$\bt_spp\bt_spp.ewp</path>
+  </project>
+  <batchBuild>
+    <batchDefinition>
+      <name>All Examples</name>
+      <member>
+        <project>driverlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>grlib-cm3</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>bt_a2dp_safertos</project>
+        <configuration>Debug</configuration>
+      </member>
+      <member>
+        <project>bt_spp</project>
+        <configuration>Debug</configuration>
+      </member>
+    </batchDefinition>
+  </batchBuild>
+</workspace>
