@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -307,64 +307,29 @@ UARTPrimeTransmit(unsigned long ulBase)
 
 //*****************************************************************************
 //
-//! Initializes the UART console.
-//!
-//! \param ulPortNum is the number of UART port to use for the serial console
-//! (0-2)
-//!
-//! This function will initialize the specified serial port to be used as a
-//! serial console.  The serial parameters will be set to 115200, 8-N-1.
-//! An application wishing to use a different baud rate may call
-//! UARTStdioInitExpClk() instead of this function.
-//!
-//! This function or UARTStdioInitExpClk() must be called prior to using any
-//! of the other UART console functions: UARTprintf() or UARTgets().  In order
-//! for this function to work correctly, SysCtlClockSet() must be called prior
-//! to calling this function.
-//!
-//! It is assumed that the caller has previously configured the relevant UART
-//! pins for operation as a UART rather than as GPIOs.
-//!
-//! \return None.
-//
-//*****************************************************************************
-void
-UARTStdioInit(unsigned long ulPortNum)
-{
-    //
-    // Pass this call on to the version of the function allowing the baud rate
-    // to be specified.
-    //
-    UARTStdioInitExpClk(ulPortNum, 115200);
-}
-
-//*****************************************************************************
-//
-//! Initializes the UART console and allows the baud rate to be selected.
+//! Configures the UART console.
 //!
 //! \param ulPortNum is the number of UART port to use for the serial console
 //! (0-2)
 //! \param ulBaud is the bit rate that the UART is to be configured to use.
+//! \param ulSrcClock is the frequency of the source clock for the UART module.
 //!
-//! This function will initialize the specified serial port to be used as a
-//! serial console.  The serial parameters will be set to 8-N-1 and the bit
-//! rate set according to the value of the \e ulBaud parameter.
+//! This function will configure the specified serial port to be used as a
+//! serial console.  The serial parameters are set to the baud rate
+//! specified by the \e ulBaud parameter and use 8 bit, no parity, and 1 stop
+//! bit.
 //!
-//! This function or UARTStdioInit() must be called prior to using any of the
-//! other UART console functions: UARTprintf() or UARTgets().  In order for
-//! this function to work correctly, SysCtlClockSet() must be called prior to
-//! calling this function.  An application wishing to use 115,200 baud may call
-//! UARTStdioInit() instead of this function but should not call both
-//! functions.
-//!
-//! It is assumed that the caller has previously configured the relevant UART
-//! pins for operation as a UART rather than as GPIOs.
+//! This function must be called prior to using any of the other UART console
+//! functions: UARTprintf() or UARTgets().  This function assumes that the
+//! caller has previously configured the relevant UART pins for operation as a
+//! UART rather than as GPIOs.
 //!
 //! \return None.
 //
 //*****************************************************************************
 void
-UARTStdioInitExpClk(unsigned long ulPortNum, unsigned long ulBaud)
+UARTStdioConfig(unsigned long ulPortNum, unsigned long ulBaud,
+                unsigned long ulSrcClock)
 {
     //
     // Check the arguments.
@@ -400,7 +365,7 @@ UARTStdioInitExpClk(unsigned long ulPortNum, unsigned long ulBaud)
     //
     // Configure the UART for 115200, n, 8, 1
     //
-    MAP_UARTConfigSetExpClk(g_ulBase, MAP_SysCtlClockGet(), ulBaud,
+    MAP_UARTConfigSetExpClk(g_ulBase, ulSrcClock, ulBaud,
                             (UART_CONFIG_PAR_NONE | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_WLEN_8));
 
@@ -437,6 +402,70 @@ UARTStdioInitExpClk(unsigned long ulPortNum, unsigned long ulBaud)
     // Enable the UART operation.
     //
     MAP_UARTEnable(g_ulBase);
+}
+
+//*****************************************************************************
+//
+//! Initializes the UART console.
+//!
+//! \param ulPortNum is the number of UART port to use for the serial console
+//! (0-2)
+//!
+//! This function will initialize the specified serial port to be used as a
+//! serial console.  The serial parameters will be set to 115200, 8-N-1.
+//! An application wishing to use a different baud rate may call
+//! UARTStdioInitExpClk() instead of this function.
+//!
+//! This function or UARTStdioInitExpClk() must be called prior to using any
+//! of the other UART console functions: UARTprintf() or UARTgets().  In order
+//! for this function to work correctly, SysCtlClockSet() must be called prior
+//! to calling this function.
+//!
+//! It is assumed that the caller has previously configured the relevant UART
+//! pins for operation as a UART rather than as GPIOs.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+UARTStdioInit(unsigned long ulPortNum)
+{
+    //
+    // Pass this call on to the version of the function allowing the baud rate
+    // to be specified.
+    //
+    UARTStdioConfig(ulPortNum, 115200, MAP_SysCtlClockGet());
+}
+
+//*****************************************************************************
+//
+//! Initializes the UART console and allows the baud rate to be selected.
+//!
+//! \param ulPortNum is the number of UART port to use for the serial console
+//! (0-2)
+//! \param ulBaud is the bit rate that the UART is to be configured to use.
+//!
+//! This function will initialize the specified serial port to be used as a
+//! serial console.  The serial parameters will be set to 8-N-1 and the bit
+//! rate set according to the value of the \e ulBaud parameter.
+//!
+//! This function or UARTStdioInit() must be called prior to using any of the
+//! other UART console functions: UARTprintf() or UARTgets().  In order for
+//! this function to work correctly, SysCtlClockSet() must be called prior to
+//! calling this function.  An application wishing to use 115,200 baud may call
+//! UARTStdioInit() instead of this function but should not call both
+//! functions.
+//!
+//! It is assumed that the caller has previously configured the relevant UART
+//! pins for operation as a UART rather than as GPIOs.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+UARTStdioInitExpClk(unsigned long ulPortNum, unsigned long ulBaud)
+{
+    UARTStdioConfig(ulPortNum, ulBaud, MAP_SysCtlClockGet());
 }
 
 //*****************************************************************************
@@ -865,7 +894,7 @@ UARTgetc(void)
 //! characters are supported:
 //!
 //! - \%c to print a character
-//! - \%d to print a decimal value
+//! - \%d or \%i to print a decimal value
 //! - \%s to print a string
 //! - \%u to print an unsigned decimal value
 //! - \%x to print a hexadecimal value using lower case letters
@@ -874,7 +903,7 @@ UARTgetc(void)
 //! - \%p to print a pointer as a hexadecimal value
 //! - \%\% to print out a \% character
 //!
-//! For \%s, \%d, \%u, \%p, \%x, and \%X, an optional number may reside
+//! For \%s, \%d, \%i, \%u, \%p, \%x, and \%X, an optional number may reside
 //! between the \% and the format character, which specifies the minimum number
 //! of characters to use for that value; if preceded by a 0 then the extra
 //! characters will be filled with zeros instead of spaces.  For example,
@@ -1015,9 +1044,10 @@ again:
                 }
 
                 //
-                // Handle the %d command.
+                // Handle the %d and %i commands.
                 //
                 case 'd':
+                case 'i':
                 {
                     //
                     // Get the value from the varargs.

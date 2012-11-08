@@ -18,16 +18,14 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 8555 of the EK-LM3S3748 Firmware Package.
+# This is part of revision 9453 of the EK-LM3S3748 Firmware Package.
 #
 #******************************************************************************
 
 #
 # A list of the directories containing the examples.
 #
-DIRS=aes_expanded_key  \
-     aes_set_key       \
-     audio             \
+DIRS=audio             \
      bitband           \
      blinky            \
      boot_demo1        \

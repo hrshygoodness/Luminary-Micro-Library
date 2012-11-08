@@ -95,6 +95,9 @@ typedef struct {
   void (*thread)(void *arg);
   void *arg;
   struct sys_timeouts timeouts;
+#if RTOS_FREERTOS
+  xTaskHandle taskhandle;
+#endif /* RTOS_FREERTOS */
 } thread_t;
 
 /* Provide a default maximum number of threads. */
@@ -140,7 +143,7 @@ sys_init(void)
     sems[i].queue = 0;
   }
 
-  /* Clear out hte threads. */
+  /* Clear out the threads. */
   for(i = 0; i < SYS_THREAD_MAX; i++) {
     threads[i].stackstart = NULL;
     threads[i].stackend = NULL;
@@ -160,12 +163,20 @@ sys_arch_timeouts(void)
 
   /* Find the thread that corresponds to the current task.  The match is done
      by finding the stack where are automatic variable is stored. */
+#if RTOS_SAFERTOS
   for(i = 0; i < SYS_THREAD_MAX; i++) {
     if((threads[i].stackstart <= (void *)&i) &&
        (threads[i].stackend > (void *)&i)) {
       return &(threads[i].timeouts);
     }
   }
+#elif RTOS_FREERTOS
+  for(i = 0; i < SYS_THREAD_MAX; i++) {
+    if(threads[i].taskhandle == xTaskGetCurrentTaskHandle()) {
+      return &(threads[i].timeouts);
+    }
+  }
+#endif /* RTOS_SAFERTOS */
 
   /* This thread could not be found. */
   return NULL;
@@ -198,8 +209,14 @@ sys_sem_new(u8_t count)
   }
 
   /* Create a single-entry queue to act as a semaphore. */
+#if RTOS_SAFERTOS
   if(xQueueCreate(sems[i].buffer, sizeof(sems[0].buffer), 1, sizeof(void *),
                   &sem) != pdPASS) {
+#elif RTOS_FREERTOS
+  sem = xQueueCreate(1, sizeof(void *));
+  if(sem == NULL) {              
+#endif /* RTOS_SAFERTOS */
+
 #if SYS_STATS
     STATS_INC(sys.sem.err);
 #endif /* SYS_STATS */
@@ -336,8 +353,14 @@ sys_mbox_new(int size)
   datasize = (sizeof(void *) * size) + portQUEUE_OVERHEAD_BYTES;
 
   /* Create a queue for this mailbox. */
+#if RTOS_SAFERTOS
   if(xQueueCreate(mboxes[i].buffer, datasize, size, sizeof(void *),
                   &mbox) != pdPASS) {
+#elif RTOS_FREERTOS
+  mbox = xQueueCreate(size, sizeof(void *));
+  if(mbox == NULL) {
+#endif /* RTOS_SAFERTOS */
+
 #if SYS_STATS
     STATS_INC(sys.mbox.err);
 #endif /* SYS_STATS */
@@ -485,7 +508,12 @@ sys_mbox_free(sys_mbox_t mbox)
 
   /* There should not be any messages waiting (if there are it is a bug).  If
      any are waiting, increment the mailbox error count. */
+#if RTOS_SAFERTOS
   if((xQueueMessagesWaiting(mbox->queue, &count) != pdPASS) || (count != 0)) {
+#elif RTOS_FREERTOS
+  if(uxQueueMessagesWaiting(mbox->queue) != 0) {
+#endif /* RTOS_SAFERTOS */
+
 #if SYS_STATS
     STATS_INC(sys.mbox.err);
 #endif /* SYS_STATS */
@@ -525,7 +553,11 @@ sys_arch_thread(void *arg)
   threads[i].stackend = NULL;
 
   /* Delete this task. */
+#if RTOS_SAFERTOS
   xTaskDelete(NULL);
+#elif RTOS_FREERTOS
+  vTaskDelete(NULL);
+#endif
 }
 
 /**
@@ -570,12 +602,23 @@ sys_thread_new(char *name, void (*thread)(void *arg), void *arg, int stacksize,
   threads[i].timeouts.next = NULL;
 
   /* Create a new thread. */
+#if RTOS_SAFERTOS
   if(xTaskCreate(sys_arch_thread, (signed portCHAR *)name, data, stacksize,
                  (void *)i, prio, &created_thread) != pdPASS) {
     threads[i].stackstart = NULL;
     threads[i].stackend = NULL;
     return NULL;
   }
+#elif RTOS_FREERTOS
+  if(xTaskCreate(sys_arch_thread, (signed portCHAR *)name,
+                 stacksize/sizeof(int), (void *)i, tskIDLE_PRIORITY+prio,
+                 &threads[i].taskhandle) != pdTRUE){
+    threads[i].stackstart = NULL;
+    threads[i].stackend = NULL;
+    return NULL;
+  }
+  created_thread = threads[i].taskhandle;
+#endif /* RTOS_SAFERTOS */
 
   /* Return this thread. */
   return created_thread;
@@ -589,7 +632,12 @@ sys_thread_new(char *name, void (*thread)(void *arg), void *arg, int stacksize,
 sys_prot_t
 sys_arch_protect(void)
 {
+#if RTOS_SAFERTOS
   vPortEnterCritical();
+#elif RTOS_FREERTOS
+  taskENTER_CRITICAL();
+#endif
+
   return 1;
 }
 
@@ -601,7 +649,11 @@ sys_arch_protect(void)
 void
 sys_arch_unprotect(sys_prot_t val)
 {
+#if RTOS_SAFERTOS
   vPortExitCritical();
+#elif RTOS_FREERTOS
+  taskEXIT_CRITICAL();
+#endif
 }
 
 #endif /* NO_SYS */

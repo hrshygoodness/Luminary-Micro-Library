@@ -5,20 +5,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -32,7 +47,6 @@
 //*****************************************************************************
 #define PECI_O_CTL              0x00000000  // PECI Control
 #define PECI_O_DIV              0x00000004  // PECI Poll-Rate Divider
-#define PECI_O_CMP              0x00000008  // PECI Comparator
 #define PECI_O_M0D0C            0x00000010  // PECI Microprocessor 0 / Domain 0
                                             // Control
 #define PECI_O_M0D1C            0x00000014  // PECI Microprocessor 0 / Domain 1
@@ -68,7 +82,7 @@
 //*****************************************************************************
 #define PECI_CTL_OFFSET_M       0xFFFF0000  // Offset Value
 #define PECI_CTL_CRETRY_M       0x00007000  // Number of Controller Retries
-#define PECI_CTL_BYERR          0x00000800  // Number of Retries
+#define PECI_CTL_BYERR          0x00000800  // Timing Negotiation Error Bypass
 #define PECI_CTL_RXINV          0x00000400  // Invert PECI RX Input
 #define PECI_CTL_M1D1EN         0x00000008  // Enable Microprocessor 1 and
                                             // Domain 1
@@ -86,25 +100,10 @@
 // The following are defines for the bit fields in the PECI_O_DIV register.
 //
 //*****************************************************************************
-#define PECI_DIV_BAUD_M         0xFFFF0000  // Initial Baud Rate
+#define PECI_DIV_BAUD_M         0xFFFF0000  // Baud Rate
 #define PECI_DIV_POLL_M         0x0000FFFF  // Counter for Inter-Poll Delay
 #define PECI_DIV_BAUD_S         16
 #define PECI_DIV_POLL_S         0
-
-//*****************************************************************************
-//
-// The following are defines for the bit fields in the PECI_O_CMP register.
-//
-//*****************************************************************************
-#define PECI_CMP_VREF_M         0x00000007  // Resistor Ladder Voltage Ref
-#define PECI_CMP_VREF_0_5000V   0x00000000  // 0.5000
-#define PECI_CMP_VREF_0_5125V   0x00000001  // 0.5125
-#define PECI_CMP_VREF_0_5250V   0x00000002  // 0.5250
-#define PECI_CMP_VREF_0_5375V   0x00000003  // 0.5375
-#define PECI_CMP_VREF_0_5500V   0x00000004  // 0.5500
-#define PECI_CMP_VREF_0_5625V   0x00000005  // 0.5625
-#define PECI_CMP_VREF_0_6000V   0x00000006  // 0.6000
-#define PECI_CMP_VREF_0_6625V   0x00000007  // 0.6625
 
 //*****************************************************************************
 //
@@ -213,7 +212,7 @@
 //*****************************************************************************
 #define PECI_IM_M1D1IM_M        0x00C00000  // Microprocessor 1 and Domain 1
                                             // Interrupt Mask
-#define PECI_IM_M1D1IM_HIGH     0x00400000  // Interrupt when value is above
+#define PECI_IM_M1D1IM_HIGH     0x00400000  // Interrupt when crossing above
                                             // high threshold
 #define PECI_IM_M1D1IM_CROSSUP  0x00800000  // Interrupt when crossing above
                                             // either threshold
@@ -226,7 +225,8 @@
 #define PECI_IM_M0D0IM_M        0x00030000  // Microprocessor 0 and Domain 0
                                             // Interrupt Mask
 #define PECI_IM_ACIM            0x00000004  // Advanced Command Interrupt Mask
-#define PECI_IM_ERRIM           0x00000002  // Error Detected Interrupt Mask
+#define PECI_IM_ERRIM           0x00000002  // Polling Error Detected Interrupt
+                                            // Mask
 #define PECI_IM_POLLIM          0x00000001  // Poll Completed Interrupt Mask
 #define PECI_IM_M1D0IM_S        20
 #define PECI_IM_M0D1IM_S        18
@@ -247,8 +247,8 @@
                                             // Raw Interrupt Status
 #define PECI_RIS_ACRIS          0x00000004  // Advanced Command Raw Interrupt
                                             // Status
-#define PECI_RIS_ERRRIS         0x00000002  // Error Detected Raw Interrupt
-                                            // Status
+#define PECI_RIS_ERRRIS         0x00000002  // Polling Error Detected Raw
+                                            // Interrupt Status
 #define PECI_RIS_POLLRIS        0x00000001  // Poll Completed Raw Interrupt
                                             // Status
 #define PECI_RIS_M1D1RIS_S      22
@@ -271,8 +271,8 @@
                                             // Masked Interrupt Status
 #define PECI_MIS_ACMIS          0x00000004  // Advanced Command Masked
                                             // Interrupt Status
-#define PECI_MIS_ERRMIS         0x00000002  // Error Detected Masked Interrupt
-                                            // Status
+#define PECI_MIS_ERRMIS         0x00000002  // Polling Error Detected Masked
+                                            // Interrupt Status
 #define PECI_MIS_POLLMIS        0x00000001  // Poll Completed Masked Interrupt
                                             // Status
 #define PECI_MIS_M1D1MIS_S      22
@@ -294,7 +294,8 @@
 #define PECI_IC_M0D0IC_M        0x00030000  // Microprocessor 0 and Domain 0
                                             // Interrupt Clear
 #define PECI_IC_ACIC            0x00000004  // Advanced Command Interrupt Clear
-#define PECI_IC_ERRIC           0x00000002  // Error Detected Interrupt Clear
+#define PECI_IC_ERRIC           0x00000002  // Polling Error Detected Interrupt
+                                            // Clear
 #define PECI_IC_POLLIC          0x00000001  // Poll Completed Interrupt Clear
 #define PECI_IC_M1D1IC_S        22
 #define PECI_IC_M1D0IC_S        20
@@ -307,7 +308,7 @@
 //
 //*****************************************************************************
 #define PECI_ACADDR_HIDRE_M     0xFF000000  // HostID and Retry
-#define PECI_ACADDR_SIZE_M      0x00FF0000  // Size Override
+#define PECI_ACADDR_SIZE_M      0x00FF0000  // Data Size
 #define PECI_ACADDR_DOMAIN_M    0x0000FF00  // Domain Select
 #define PECI_ACADDR_PROCADD_M   0x000000FF  // Processor Address
 #define PECI_ACADDR_HIDRE_S     24

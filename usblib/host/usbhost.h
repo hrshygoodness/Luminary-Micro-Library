@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -111,21 +111,6 @@ const tUSBHostClassDriver VarName =                                         \
     0,                                                                      \
     pfnEvent                                                                \
 }
-
-//*****************************************************************************
-//
-//! This structure is used to return generic event based information to an
-//! application.  The following events are currently supported:
-//! USB_EVENT_CONNECTED, USB_EVENT_DISCONNECTED, and USB_EVENT_POWER_FAULT.
-//
-//*****************************************************************************
-typedef struct
-{
-    unsigned long ulEvent;
-
-    unsigned long ulInstance;
-}
-tEventInfo;
 
 //*****************************************************************************
 //
@@ -262,6 +247,10 @@ void USBHCDEvents(void *pvData);
 //
 //*****************************************************************************
 extern void USBHCDMain(void);
+extern long USBHCDEventEnable(unsigned long ulIndex, void *pvEventDriver,
+                              unsigned long ulEvent);
+extern long USBHCDEventDisable(unsigned long ulIndex, void *pvEventDriver,
+                               unsigned long ulEvent);
 extern void USBHCDInit(unsigned long ulIndex, void *pData,
                        unsigned long ulSize);
 extern void USBHCDPowerConfigInit(unsigned long ulIndex,

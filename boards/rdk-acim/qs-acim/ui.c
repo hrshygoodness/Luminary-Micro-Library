@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-ACIM Firmware Package.
+// This is part of revision 9453 of the RDK-ACIM Firmware Package.
 //
 //*****************************************************************************
 
@@ -577,7 +577,7 @@ const unsigned long g_ulUITargetType = RESP_ID_TARGET_ACIM;
 //! careful consideration.
 //
 //*****************************************************************************
-const unsigned short g_usFirmwareVersion = 8555;
+const unsigned short g_usFirmwareVersion = 9453;
 
 //*****************************************************************************
 //

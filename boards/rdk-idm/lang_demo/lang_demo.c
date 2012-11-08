@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-IDM Firmware Package.
+// This is part of revision 9453 of the RDK-IDM Firmware Package.
 //
 //*****************************************************************************
 
@@ -88,9 +88,9 @@
 //!
 //! By default, the application builds to use the custom codepage version of
 //! the string table and its matching custom font.  To build using the UTF8
-//! string table and Unicode-indexed custom font, ensure that the line
-//! #define USE_REMAPPED_STRINGS is commented out at the top of the lang_demo.c
-//! source file.
+//! string table and Unicode-indexed custom font, ensure that the definition of
+//! \b USE_REMAPPED_STRINGS at the top of the lang_demo.c source file is
+//! commented out.
 //
 //*****************************************************************************
 

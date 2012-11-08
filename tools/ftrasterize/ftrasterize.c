@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -81,6 +81,7 @@ typedef struct
     int bVerbose;
     int bBinary;
     int bRemap;
+    int bShow;
     int iFirst;
     int iLast;
     int iSpaceChar;
@@ -304,6 +305,7 @@ struct option g_pCmdLineOptions[] =
     { "start", required_argument, 0, 'p' },
     { "relocatable", no_argument, 0, 'r' },
     { "size", required_argument, 0, 's' },
+    { "show", no_argument, 0, 'l' },
     { "translate_source", required_argument, 0, 't' },
     { "unicode", no_argument, 0, 'u' },
     { "verbose", no_argument, 0, 'v' },
@@ -313,7 +315,7 @@ struct option g_pCmdLineOptions[] =
     { 0, 0, 0, 0 }
 };
 
-const char * g_pcCmdLineArgs = "a:bc:de:f:g:himno:p:rs:t:uvw:yz:";
+const char * g_pcCmdLineArgs = "a:bc:de:f:g:hilmno:p:rs:t:uvw:yz:";
 
 //*****************************************************************************
 //
@@ -433,7 +435,7 @@ void Usage(char *argv, int bError)
             "                a custom codepage with the glyphs identified by the characters\n"
             "                listed in the file indexed sequentially. (only valid with -r).\n");
     fprintf(fhOut,
-            "  -a            Specifies the index of the font character map to use in\n");
+            "  -a <num>      Specifies the index of the font character map to use in\n");
     fprintf(
             fhOut,
             "                the conversion.  If absent, Unicode is assumed for relocatable,\n");
@@ -445,6 +447,9 @@ void Usage(char *argv, int bError)
     fprintf(fhOut,
             "  -d            Display details of the font provided. All other options are\n"
             "                ignored if this switch is provided.\n");
+    fprintf(fhOut,
+            "  -l            Show the chosen glyphs on the terminal (but don't write any other\n"
+            "                output).\n");
     fprintf(fhOut,
             "  -z <num>      Set the output font's codepage to the supplied value.  This is\n"
             "                used to specify a custom codepage identifier when performing\n"
@@ -677,7 +682,8 @@ int DisplayFontInfo(tConversionParameters *pParams)
         {
             for(iLoop = 0; iLoop < pFace->num_fixed_sizes; iLoop++)
             {
-                printf("    %d x %d\n", pFace->available_sizes[iLoop].width,
+                printf("    %2d: %2d x %2d\n", iLoop,
+                        pFace->available_sizes[iLoop].width,
                         pFace->available_sizes[iLoop].height);
             }
         }
@@ -1417,6 +1423,86 @@ tBoolean RenderGlyph(tConversionParameters *pParams, FT_Face pFace,
     }
 
     return (bRendered);
+}
+
+//*****************************************************************************
+//
+// Display the glyph bitmap using ASCII "X" and " " characters on the terminal.
+//
+//*****************************************************************************
+tBoolean
+DisplayGlyph(tConversionParameters *pParams, tGlyph *pGlyph,
+             int iWidth, int iYMin, int iYMax)
+{
+    int iX, iY, iPixel, iBytesPerLine, iMaxPix;
+    unsigned char ucPixel;
+    unsigned char *pucRow;
+
+    printf("Character 0x%x, %dx%d, pitch %d bytes:\n", pGlyph->ulCodePoint,
+            pGlyph->iWidth, pGlyph->iRows, pGlyph->iPitch);
+
+    //
+    // If this glyph has no bitmap attached to it and no width defined, bomb
+    // out now since it's obviously an undefined character that we can skip.
+    // If it has a width but no data, it's a space so continue.
+    //
+    if(!pGlyph->pucData && !pGlyph->iMaxX)
+    {
+        printf("No data - glyph absent.\n");
+        return (false);
+    }
+
+    //
+    // Run through the rows and columns of the glyph bitmap outputing pixels
+    // one by one.
+    //
+    for(iY = 0; iY < pGlyph->iRows; iY++)
+    {
+        //
+        // Print the row number.
+        //
+        printf("\n %3d - ", iY);
+
+        //
+        // Get a pointer to the start of the row's data.
+        //
+        pucRow = &pGlyph->pucData[iY * pGlyph->iPitch];
+
+        //
+        // Loop through each byte in this row.
+        //
+        for(iX = 0; iX < pGlyph->iPitch; iX++)
+        {
+            //
+            // Get this group of 8 pixels.
+            //
+            ucPixel = pucRow[iX];
+
+            //
+            // How many pixels do we still have to draw?
+            //
+            iMaxPix = pGlyph->iWidth - (iX * 8);
+            if(iMaxPix >= 8)
+            {
+                iMaxPix = 8;
+            }
+
+            //
+            // Dump each pixel as an ASCII character.
+            //
+            for(iPixel = 0; iPixel < iMaxPix; iPixel++)
+            {
+                printf("%c", ucPixel & (1 << (7 - iPixel)) ? 'X' : '.');
+            }
+        }
+    }
+
+    //
+    // Leave a blank line after this glyph's pattern.
+    //
+    printf("\n\n");
+
+    return(true);
 }
 
 //*****************************************************************************
@@ -3523,6 +3609,405 @@ int ConvertWideFont(tConversionParameters *pParams)
     return (bRetcode ? 0 : 1);
 }
 
+
+//*****************************************************************************
+//
+// Show each of the requested glyphs by dumping them using ASCII "X" and " "
+// characters on the terminal.
+//
+//*****************************************************************************
+int ShowFontCharacters(tConversionParameters *pParams)
+{
+    tCodepointBlock sBlockListHead;
+    tCodepointBlock *pBlock;
+    unsigned long ulGlyphIndex, ulCodePoint;
+    int iRetcode, iXMin, iXMax, iLoop;
+    tBoolean bRendered, bRetcode;
+    FT_Library pLibrary;
+    FT_GlyphSlot pSlot;
+    FT_Bitmap *ppMap;
+    FT_Encoding eEncoding;
+    tGlyph *pGlyph;
+    FT_Face ppFace[MAX_FONTS];
+    tFontInfo sFontInfo;
+
+    if(pParams->bVerbose)
+    {
+        printf("Generating wide format output.\n");
+    }
+
+    sFontInfo.iWidth = 0;
+    sFontInfo.iYMin = 0;
+    sFontInfo.iYMax = 0;
+    sFontInfo.ulNumGlyphs = 0;
+    sFontInfo.usCodePage = CODEPAGE_UNICODE;
+    sFontInfo.usNumBlocks = 0;
+
+    //
+    // If we were passed a character map file, parse it and set up the
+    // block list.
+    //
+    if(pParams->pcCharFile)
+    {
+        //
+        // Build the linked list of blocks and determine the number of
+        // codepoint blocks that we will need to read and encode.
+        //
+        if(pParams->bVerbose)
+        {
+            printf("Parsing character map from %s\n", pParams->pcCharFile);
+        }
+
+        sFontInfo.usNumBlocks = ParseCharMapFile(pParams, &sBlockListHead);
+
+        if(pParams->bVerbose)
+        {
+            tCodepointBlock *pBlock;
+
+            pBlock = &sBlockListHead;
+            while(pBlock)
+            {
+                printf("    0x%06x - 0x%06x\n", pBlock->ulStart, pBlock->ulEnd);
+                pBlock = pBlock->pNext;
+            }
+        }
+    }
+    else
+    {
+        //
+        // We've not been passed a character map file so initialize the
+        // codepoint list with the first and last codepoints as provided on
+        // the command line (or the defaults).
+        //
+        sBlockListHead.pNext = (tCodepointBlock *) 0;
+        sBlockListHead.ulStart = (unsigned long) pParams->iFirst;
+        sBlockListHead.ulEnd = (unsigned long) pParams->iLast;
+
+        //
+        // Make sure we've been passed sensible values.
+        //
+        if((pParams->iFirst < 0) || (pParams->iFirst > pParams->iLast))
+        {
+            //
+            // Someone passed a bogus start or end codepoint number.
+            //
+            fprintf(stderr, "%s: Start and end character numbers are invalid!");
+            sFontInfo.usNumBlocks = 0;
+        }
+        else
+        {
+            //
+            // All is well.
+            //
+            sFontInfo.usNumBlocks = 1;
+        }
+    }
+
+    //
+    // If something was wrong with the character map we were asked to encode,
+    // return at this point.
+    //
+    if(!sFontInfo.usNumBlocks)
+    {
+        return (1);
+    }
+
+    //
+    // Provide some information if we've been asked for verbose output.
+    //
+    if(pParams->bVerbose)
+    {
+        printf("Processing %d blocks of characters from font.\n",
+                sFontInfo.usNumBlocks);
+    }
+
+    //
+    // We have the character map read.  Now calculate the number of glyphs we
+    // need to read.
+    //
+    pBlock = &sBlockListHead;
+    while(pBlock)
+    {
+        //
+        // Add the number of glyphs in this block to our running total.
+        //
+        sFontInfo.ulNumGlyphs += (pBlock->ulEnd - pBlock->ulStart) + 1;
+        pBlock = pBlock->pNext;
+    }
+
+    if(pParams->bVerbose)
+    {
+        fprintf(stdout, "Encoding %d characters.\n", sFontInfo.ulNumGlyphs);
+    }
+
+    //
+    // Initialize the FreeType library.
+    //
+    if(FT_Init_FreeType(&pLibrary) != 0)
+    {
+        fprintf(stderr, "%s: Unable to initialize the FreeType library.\n",
+                pParams->pcAppName);
+        return (1);
+    }
+
+    //
+    // Load the font files we've been asked use into the FreeType library.
+    //
+    for(iLoop = 0; iLoop < pParams->iNumFonts; iLoop++)
+    {
+        //
+        // Load the font, set the character size and codepage.  Note that we
+        // record the codepage only if this is the first font opened (the main
+        // one).
+        //
+        ppFace[iLoop] = InitializeFont(pParams,
+                                       pParams->pcFontInputName[iLoop],
+                                       pLibrary,
+                                       (iLoop == 0 ? &sFontInfo.usCodePage : 0));
+    }
+
+    //
+    // Make sure the main font opened.  If any of the fallback fonts didn't
+    // open for some reason, just dump a warning.
+    //
+    if(!ppFace[0])
+    {
+        fprintf(stderr, "%s: Unable to open main font file '%s'\n",
+                pParams->pcAppName, pParams->pcFontInputName[0]);
+        FT_Done_FreeType(pLibrary);
+        FreeCharMapList(&sBlockListHead);
+        return(1);
+    }
+
+    //
+    // Check and warn if any of the fallback fonts couldn't be opened.
+    //
+    for(iLoop = 1; iLoop < pParams->iNumFonts; iLoop++)
+    {
+        if(!ppFace[iLoop])
+        {
+            fprintf(stderr, "%s: Warning - fallback font '%s' could not be "
+                    "initialized.!\n", pParams->pcFontInputName[iLoop]);
+        }
+    }
+
+    //
+    // If the user has provided a custom output codepage identifier, set it
+    // here.
+    //
+    if(pParams->iOutputCodePage != -1)
+    {
+        sFontInfo.usCodePage = (unsigned short)pParams->iOutputCodePage;
+    }
+
+    //
+    // Did we find a supported codepage for the font?
+    //
+    if(sFontInfo.usCodePage == 0xFFFF)
+    {
+        //
+        // We couldn't find a matching output codepage for the character map
+        // chosen.  This is considered a fatal error since we have no way to
+        // tie up the
+        //
+        fprintf(stderr, "%s: Error - the chosen font character map doesn't "
+            "match any supported\nGrLib font codepage!\n", pParams->pcAppName);
+
+        //
+        // Clean up and return.
+        //
+        FT_Done_Face(ppFace[0]);
+        FT_Done_FreeType(pLibrary);
+        FreeCharMapList(&sBlockListHead);
+        return (1);
+    }
+
+    if(pParams->bVerbose)
+    {
+        printf("Rendering individual character glyphs...\n");
+    }
+
+    //
+    // Initialize our minimum and maximum Y values for our font.
+    //
+    sFontInfo.iYMin = 0;
+    sFontInfo.iYMax = 0;
+
+    //
+    // Allocate storage for all the glyphs we need to render.
+    //
+    pGlyph = malloc(sizeof(tGlyph) * sFontInfo.ulNumGlyphs);
+    if(!pGlyph)
+    {
+        fprintf(stderr, "%s: Error - can't allocate storage for %d glyphs!\n",
+                pParams->pcAppName, sFontInfo.ulNumGlyphs);
+    }
+    else
+    {
+        //
+        // We allocated storage for all the glyphs we need to render so start
+        // rendering them.
+        //
+        pBlock = &sBlockListHead;
+        ulGlyphIndex = 0;
+
+        //
+        // Loop through each block of contiguous characters.
+        //
+        while(pBlock)
+        {
+            //
+            // Loop through each character in the block.
+            //
+            for(ulCodePoint = pBlock->ulStart; ulCodePoint <= pBlock->ulEnd;
+                ulCodePoint++)
+            {
+                //
+                // Render the glyph.  We start by looking in the main font
+                // then fall back on the other fonts until we find one which
+                // contains the character (assuming any do).
+                //
+                for(iLoop = 0; iLoop < pParams->iNumFonts; iLoop++)
+                {
+                    //
+                    // If we opened this font successfully...
+                    //
+                    if(ppFace[iLoop])
+                    {
+                        //
+                        // Try to render the character.
+                        //
+                        bRendered = RenderGlyph(pParams, ppFace[iLoop],
+                                                ulCodePoint,
+                                                &pGlyph[ulGlyphIndex], true);
+
+                        //
+                        // If we found and rendered the character...
+                        //
+                        if(bRendered)
+                        {
+                            //
+                            // Exit the loop.
+                            //
+                            break;
+                        }
+                    }
+                }
+
+                //
+                // Did we manage to find and render the glyph?
+                //
+                if(!bRendered)
+                {
+                    //
+                    // No. Tell the user we failed to find the glyph.
+                    //
+                    fprintf(stderr, "%s: Warning - can't find a glyph for "
+                            "codepoint 0x%x!\n", pParams->pcAppName,
+                            ulCodePoint);
+                }
+
+                //
+                // If this glyph is wider than any previously encountered
+                // glyph, then remember its width as the maximum width in
+                // this font.
+                //
+                if((pGlyph[ulGlyphIndex].iMaxX - pGlyph[ulGlyphIndex].iMinX)
+                        > sFontInfo.iWidth)
+                {
+                    sFontInfo.iWidth = (pGlyph[ulGlyphIndex].iMaxX
+                            - pGlyph[ulGlyphIndex].iMinX);
+                }
+
+                //
+                // Update our rolling minimum and maximum Y values for the
+                // rendered glyphs.
+                //
+                //
+                // Adjust the minimum Y value if necessary.
+                //
+                if(pGlyph[ulGlyphIndex].iBitmapTop > sFontInfo.iYMin)
+                {
+                    sFontInfo.iYMin = pGlyph[ulGlyphIndex].iBitmapTop;
+                }
+
+                //
+                // Adjust the maximum Y value if necessary.
+                //
+                if((pGlyph[ulGlyphIndex].iBitmapTop
+                        - pGlyph[ulGlyphIndex].iRows + 1) < sFontInfo.iYMax)
+                {
+                    sFontInfo.iYMax = pGlyph[ulGlyphIndex].iBitmapTop
+                            - pGlyph[ulGlyphIndex].iRows + 1;
+                }
+
+                //
+                // Move on to the next glyph.
+                //
+                ulGlyphIndex++;
+            }
+
+            //
+            // Move on to the next block of characters.
+            //
+            pBlock = pBlock->pNext;
+        }
+    }
+
+    //
+    // We're finished with our fonts and FreeType now so clean up.
+    //
+    for(iLoop = 0; iLoop < pParams->iNumFonts; iLoop++)
+    {
+        //
+        // If this font slot is occupied...
+        //
+        if(ppFace[iLoop])
+        {
+            //
+            // Free the font.
+            //
+            FT_Done_Face(ppFace[iLoop]);
+        }
+    }
+    FT_Done_FreeType(pLibrary);
+
+    if(pParams->bVerbose)
+    {
+        printf("Displaying glyphs...\n");
+    }
+
+    //
+    // Loop through each glyph and display it.
+    //
+    for(ulCodePoint = 0; ulCodePoint < sFontInfo.ulNumGlyphs; ulCodePoint++)
+    {
+        DisplayGlyph(pParams, &pGlyph[ulCodePoint], sFontInfo.iWidth,
+                sFontInfo.iYMin, sFontInfo.iYMax);
+    }
+
+    if(pParams->bVerbose)
+    {
+        printf("Finished displaying glyphs.\n");
+    }
+
+    //
+    // Free our glyph memory.
+    //
+    FreeGlyphs(pGlyph, sFontInfo.ulNumGlyphs);
+    free(pGlyph);
+
+    //
+    // Free the character map list.
+    //
+    FreeCharMapList(&sBlockListHead);
+
+    //
+    // If we get here, all is well so report this to the caller.
+    //
+    return (1);
+}
+
 //*****************************************************************************
 //
 // Generate a font file containing an 8 bit character set (e.g. an ISO8859
@@ -4175,6 +4660,7 @@ int main(int argc, char *argv[])
     sParams.bItalic = 0;
     sParams.bMono = 0;
     sParams.bRemap = 0;
+    sParams.bShow = 0;
     sParams.iFirst = 32;
     sParams.iLast = 126;
     sParams.iSpaceChar = 32;
@@ -4185,7 +4671,7 @@ int main(int argc, char *argv[])
     sParams.bVerbose = 0;
 
     printf("FTRasterize: Generate a StellarisWare GrLib-compatible font.\n");
-    printf("Copyright 2008-2011 Texas Instruments Incorporated.\n");
+    printf("Copyright 2008-2011 Texas Instruments Incorporated.\n\n");
 
     //
     // Set the defaults for the translated block of character such that no
@@ -4351,6 +4837,22 @@ int main(int argc, char *argv[])
                 // Indicate that this is an italic font.
                 //
                 sParams.bItalic = 1;
+
+                //
+                // This switch has been handled.
+                //
+                break;
+            }
+
+            //
+            // The "-l" switch was found.
+            //
+            case 'l':
+            {
+                //
+                // Remember that we need to show the glyphs.
+                //
+                sParams.bShow = 1;
 
                 //
                 // This switch has been handled.
@@ -4650,6 +5152,14 @@ int main(int argc, char *argv[])
         // Display information on the font whose name is passed then exit.
         //
         return (DisplayFontInfo(&sParams));
+    }
+
+    //
+    // Were we asked to show the selected glyphs?
+    //
+    if(sParams.bShow)
+    {
+        return(ShowFontCharacters(&sParams));
     }
 
     //

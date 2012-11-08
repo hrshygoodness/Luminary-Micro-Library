@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -63,7 +78,7 @@ static const unsigned long g_pulRegs[] =
     NVIC_PRI14, NVIC_PRI15, NVIC_PRI16, NVIC_PRI17, NVIC_PRI18, NVIC_PRI19,
     NVIC_PRI20, NVIC_PRI21, NVIC_PRI22, NVIC_PRI23, NVIC_PRI24, NVIC_PRI25,
     NVIC_PRI26, NVIC_PRI27, NVIC_PRI28, NVIC_PRI29, NVIC_PRI30, NVIC_PRI31,
-    NVIC_PRI32
+    NVIC_PRI32, NVIC_PRI33, NVIC_PRI34
 };
 
 //*****************************************************************************
@@ -324,7 +339,7 @@ IntUnregister(unsigned long ulInterrupt)
 //! \param ulBits specifies the number of bits of preemptable priority.
 //!
 //! This function specifies the split between preemptable priority levels and
-//! subpriority levels in the interrupt priority specification.  The range of
+//! sub-priority levels in the interrupt priority specification.  The range of
 //! the grouping values are dependent upon the hardware implementation; on
 //! the Stellaris family, three bits are available for hardware interrupt
 //! prioritization and therefore priority grouping values of three through
@@ -352,7 +367,7 @@ IntPriorityGroupingSet(unsigned long ulBits)
 //! Gets the priority grouping of the interrupt controller.
 //!
 //! This function returns the split between preemptable priority levels and
-//! subpriority levels in the interrupt priority specification.
+//! sub-priority levels in the interrupt priority specification.
 //!
 //! \return The number of bits of preemptable priority.
 //
@@ -712,14 +727,14 @@ IntPendSet(unsigned long ulInterrupt)
 
 //*****************************************************************************
 //
-//! Unpends an interrupt.
+//! Un-pends an interrupt.
 //!
-//! \param ulInterrupt specifies the interrupt to be unpended.
+//! \param ulInterrupt specifies the interrupt to be un-pended.
 //!
-//! The specified interrupt is unpended in the interrupt controller.  Unpending
-//! an interrupt causes any previously generated interrupts that have not been
-//! handled yet (due to higher priority interrupts or the interrupt not having
-//! been enabled yet) to be discarded.
+//! The specified interrupt is un-pended in the interrupt controller.  This
+//! will cause any previously generated interrupts that have not been handled
+//! yet (due to higher priority interrupts or the interrupt no having been
+//! enabled yet) to be discarded.
 //!
 //! \return None.
 //

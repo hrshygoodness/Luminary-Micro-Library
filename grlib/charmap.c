@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Graphics Library.
+// This is part of revision 9453 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -1517,6 +1517,193 @@ GrMapUTF8_Unicode(const char *pcSrcChar, unsigned long ulCount,
     // Return the Unicode character code.
     //
     return(ulUnicode);
+}
+
+//*****************************************************************************
+//
+// Maps a UTF-16LE or UTF-16BE encoded character to its Unicode equivalent.
+//
+// \param pcSrcChar is a pointer to a string containing UTF-16LE encoded text.
+// \param ulCount is the number of bytes in the buffer pointed to by
+//        pcSrcChar.
+// \param pulSkip points to storage that will be written with the number of
+//        bytes to skip in pcSrcChar to get to the next character in the
+//        buffer.
+// \param bLE is \b true if the \e pcSrcChar points to a UTF-16LE encoded
+//        string or \b false if it points to a UTF-16BE string.
+//
+// This internal function is used to support GrMapUTF16LE_Unicode and
+// GrMapUTF16BE_Unicode.
+//
+// \return Returns the Unicode character code for the first character in the
+// \e pcSrcChar string passed.
+//
+//*****************************************************************************
+static unsigned long
+GrMapUTF16_Unicode(const char *pcSrcChar, unsigned long ulCount,
+                   unsigned long *pulSkip, tBoolean bLE)
+{
+    unsigned short usChar, usCharToo;
+    unsigned long ulCode;
+    const char *pcChar;
+
+    //
+    // Parameter sanity check.
+    //
+    ASSERT(pulSkip);
+    ASSERT(pcSrcChar);
+
+    //
+    // Walk the string until we find something valid that we can decode.
+    //
+    ulCode = 0;
+    pcChar = pcSrcChar;
+
+    while(ulCount >= 2)
+    {
+        //
+        // Get a word from the string.
+        //
+        usChar = bLE ? (pcChar[0] + 256 * pcChar[1]) :
+                       (pcChar[1] + 256 * pcChar[0]);
+
+        //
+        // Move to the next word and update our count.
+        //
+        ulCount -= 2;
+        pcChar += 2;
+
+        //
+        // Is this a valid single-word encoding?
+        //
+        if((usChar <= 0xD7FF) || (usChar >= 0xE000))
+        {
+            //
+            // Yes - return the value and tell the caller to skip the
+            // appropriate number of bytes to get to the end of this character.
+            //
+            ulCode = (unsigned long)usChar;
+            break;
+        }
+        else
+        {
+            //
+            // Is this a valid first word for a high surrogate (first word in a
+            // 2 word encoding)?
+            //
+            if((usChar >= 0xD800) && (usChar < 0xDC00))
+            {
+                //
+                // Yes - this is valid. Now look ahead and see if the next
+                // word is valid as a low surrogate, assuming there are at
+                // least 2 more bytes for us to look at.
+                //
+                if(ulCount >= 2)
+                {
+                    //
+                    // Get the next word in the string.
+                    //
+                    usCharToo = bLE ? (pcChar[0] + 256 * pcChar[1]) :
+                                      (pcChar[1] + 256 * pcChar[0]);
+
+                    //
+                    // Is this a valid low surrogate?
+                    //
+                    if((usCharToo >= 0xDC00) && (usCharToo < 0xE000))
+                    {
+                        //
+                        // Yes, it's valid. Update our skip count and parse
+                        // the Unicode codepoint from the two words we've read.
+                        //
+                        pcChar += 2;
+                        ulCount -= 2;
+                        ulCode = 0x10000 +
+                                 ((unsigned long)(usChar - 0xD800) << 10) +
+                                 ((unsigned long)usCharToo - 0xDC00);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    //
+    // Set the number of bytes to skip in the string to get past the
+    // character we just parsed and return the character codepoint if we
+    // found one.
+    //
+    *pulSkip = (unsigned long)(pcChar - pcSrcChar);
+    return(ulCode);
+}
+
+//*****************************************************************************
+//
+//! Maps a UTF-16LE encoded character to its Unicode equivalent.
+//!
+//! \param pcSrcChar is a pointer to a string containing UTF-16LE encoded text.
+//! \param ulCount is the number of bytes in the buffer pointed to by
+//!        pcSrcChar.
+//! \param pulSkip points to storage that will be written with the number of
+//!        bytes to skip in pcSrcChar to get to the next character in the
+//!        buffer.
+//!
+//! This function may be passed to GrCodepageMapTableSet() in a tCodePointMap
+//! structure to map source text in UTF-16LE format into 32 bit Unicode
+//! typically used by wide character fonts.  This conversion will read bytes
+//! from the buffer and decode the first full UTF-16LE character found,
+//! returning the Unicode code for that character and the number of bytes to
+//! advance \e pcSrcChar by to point to the end of the decoded character.  If
+//! no valid UTF-16LE character is found, 0 is returned.
+//!
+//! See http://en.wikipedia.org/wiki/UTF-16 for more information.
+//!
+//! \return Returns the Unicode character code for the first character in the
+//! \e pcSrcChar string passed.
+//
+//*****************************************************************************
+unsigned long
+GrMapUTF16LE_Unicode(const char *pcSrcChar, unsigned long ulCount,
+                     unsigned long *pulSkip)
+{
+    //
+    // Call the low level UTF parsing function and return the result.
+    //
+    return(GrMapUTF16_Unicode(pcSrcChar, ulCount, pulSkip, true));
+}
+
+//*****************************************************************************
+//
+//! Maps a UTF-16BE encoded character to its Unicode equivalent.
+//!
+//! \param pcSrcChar is a pointer to a string containing UTF-16BE encoded text.
+//! \param ulCount is the number of bytes in the buffer pointed to by
+//!        pcSrcChar.
+//! \param pulSkip points to storage that will be written with the number of
+//!        bytes to skip in pcSrcChar to get to the next character in the
+//!        buffer.
+//!
+//! This function may be passed to GrCodepageMapTableSet() in a tCodePointMap
+//! structure to map source text in UTF-16BE format into 32 bit Unicode
+//! typically used by wide character fonts.  This conversion will read bytes
+//! from the buffer and decode the first full UTF-16BE character found,
+//! returning the Unicode code for that character and the number of bytes to
+//! advance \e pcSrcChar by to point to the end of the decoded character.  If
+//! no valid UTF-16BE character is found, 0 is returned.
+//!
+//! See http://en.wikipedia.org/wiki/UTF-16 for more information.
+//!
+//! \return Returns the Unicode character code for the first character in the
+//! \e pcSrcChar string passed.
+//
+//*****************************************************************************
+unsigned long
+GrMapUTF16BE_Unicode(const char *pcSrcChar, unsigned long ulCount,
+                     unsigned long *pulSkip)
+{
+    //
+    // Call the low level UTF parsing function and return the result.
+    //
+    return(GrMapUTF16_Unicode(pcSrcChar, ulCount, pulSkip, false));
 }
 
 //*****************************************************************************

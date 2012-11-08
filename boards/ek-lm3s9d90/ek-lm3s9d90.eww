@@ -8,12 +8,6 @@
     <path>$WS_DIR$\..\..\usblib\usblib-cm3.ewp</path>
   </project>
   <project>
-    <path>$WS_DIR$\aes_expanded_key\aes_expanded_key.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\aes_set_key\aes_set_key.ewp</path>
-  </project>
-  <project>
     <path>$WS_DIR$\bitband\bitband.ewp</path>
   </project>
   <project>
@@ -109,14 +103,6 @@
       </member>
       <member>
         <project>usblib-cm3</project>
-        <configuration>Debug</configuration>
-      </member>
-      <member>
-        <project>aes_expanded_key</project>
-        <configuration>Debug</configuration>
-      </member>
-      <member>
-        <project>aes_set_key</project>
         <configuration>Debug</configuration>
       </member>
       <member>

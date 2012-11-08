@@ -15,7 +15,7 @@ ClassGuid={BDF4A2F9-552C-437b-892D-7CF600016A3F}
 Provider = %ProviderName%
 CatalogFile.NTx86=boot_usb_x86.cat
 CatalogFile.NTamd64=boot_usb_amd64.cat
-DriverVer=01/28/2012,1.3.8555
+DriverVer=09/05/2012,1.3.9453
 
 ; ========== Manufacturer/Models sections ===========
 

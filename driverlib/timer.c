@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -39,7 +54,7 @@
 
 //*****************************************************************************
 //
-// A mapping of timer base address to interupt number.
+// A mapping of timer base address to interrupt number.
 //
 //*****************************************************************************
 static const unsigned long g_ppulTimerIntMap[][2] =
@@ -91,7 +106,7 @@ TimerBaseValid(unsigned long ulBase)
 //!
 //! \param ulBase is the base address of the timer module.
 //!
-//! Given a timer base address, this function returns the corresponding 
+//! Given a timer base address, this function returns the corresponding
 //! interrupt number.
 //!
 //! \return Returns a timer interrupt number, or -1 if \e ulBase is invalid.
@@ -196,11 +211,10 @@ TimerDisable(unsigned long ulBase, unsigned long ulTimer)
 //!
 //! This function configures the operating mode of the timer(s).  The timer
 //! module is disabled before being configured and is left in the disabled
-//! state.  There are two types of timers; a 16/32-bit variety and a 32/64-bit
-//! variety.  The 16/32-bit variety is comprised of two 16-bit timers that can
-//! operate independently or be concatenated to form a 32-bit timer.
-//! Similarly, the 32/64-bit variety is comprised of two 32-bit timers that can
-//! operate independently or be concatenated to form a 64-bit timer.
+//! state.  The timer can be configured to be a single full-width timer
+//! by using the \b TIMER_CFG_* values or a pair of half-width timers using the
+//! \b TIMER_CFG_A_* and \b TIMER_CFG_B_* values passed in the \e ulConfig
+//! parameter.
 //!
 //! The configuration is specified in \e ulConfig as one of the following
 //! values:
@@ -299,7 +313,7 @@ TimerConfigure(unsigned long ulBase, unsigned long ulConfig)
 //! \b TIMER_B, or \b TIMER_BOTH.
 //! \param bInvert specifies the output level.
 //!
-//! This function configures the PWM output level for the specified timer.  If 
+//! This function configures the PWM output level for the specified timer.  If
 //! the \e bInvert parameter is \b true, then the timer's output is made active
 //! low; otherwise, it is made active high.
 //!
@@ -335,7 +349,7 @@ TimerControlLevel(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_B, or \b TIMER_BOTH.
 //! \param bEnable specifies the desired ADC trigger state.
 //!
-//! This function controls the ADC trigger output for the specified timer.  If 
+//! This function controls the ADC trigger output for the specified timer.  If
 //! the \e bEnable parameter is \b true, then the timer's ADC output trigger is
 //! enabled; otherwise it is disabled.
 //!
@@ -374,7 +388,7 @@ TimerControlTrigger(unsigned long ulBase, unsigned long ulTimer,
 //! \b TIMER_EVENT_POS_EDGE, \b TIMER_EVENT_NEG_EDGE, or
 //! \b TIMER_EVENT_BOTH_EDGES.
 //!
-//! This function configures the signal edge(s) that triggers the timer when 
+//! This function configures the signal edge(s) that triggers the timer when
 //! in capture mode.
 //!
 //! \return None.
@@ -450,7 +464,7 @@ TimerControlStall(unsigned long ulBase, unsigned long ulTimer,
 //! count to its timeout in order for this timer to start counting.  Refer to
 //! the part's data sheet for a description of the trigger chain.
 //!
-//! \note This functionality is not available on all parts. This function 
+//! \note This functionality is not available on all parts.  This function
 //! should not be used for Timer 0A or Wide Timer 0A.
 //!
 //! \return None.
@@ -560,8 +574,8 @@ TimerRTCDisable(unsigned long ulBase)
 //! (inclusive) for 16/32-bit timers and between 0 and 65535 (inclusive) for
 //! 32/64-bit timers.
 //!
-//! This function configures the value of the input clock prescaler.  The 
-//! prescaler is only operational when in half-width mode and is used to extend 
+//! This function configures the value of the input clock prescaler.  The
+//! prescaler is only operational when in half-width mode and is used to extend
 //! the range of the half-width timer modes. The prescaler provides the least
 //! significant bits when counting down in periodic and one-shot modes; in all
 //! other modes, the prescaler provides the most significant bits.
@@ -655,7 +669,7 @@ TimerPrescaleGet(unsigned long ulBase, unsigned long ulTimer)
 //! value. When in a half-width mode that uses the counter match and the
 //! prescaler, the prescale match effectively extends the range of the match.
 //! The prescaler provides the least significant bits when counting down in
-//! periodic and one-shot modes; in all other modes, the prescaler provides the  
+//! periodic and one-shot modes; in all other modes, the prescaler provides the
 //! most significant bits.
 //!
 //! \note The availability of the prescaler match varies with the Stellaris
@@ -704,9 +718,9 @@ TimerPrescaleMatchSet(unsigned long ulBase, unsigned long ulTimer,
 //!
 //! This function gets the value of the input clock prescaler match value.
 //! When in a half-width mode that uses the counter match and prescaler, the
-//! prescale match effectively extends the range of the match. The prescaler 
-//! provides the least significant bits when counting down in periodic and 
-//! one-shot modes; in all other modes, the prescaler provides the most 
+//! prescale match effectively extends the range of the match. The prescaler
+//! provides the least significant bits when counting down in periodic and
+//! one-shot modes; in all other modes, the prescaler provides the most
 //! significant bits.
 //!
 //! \note The availability of the prescaler match varies with the Stellaris
@@ -743,7 +757,7 @@ TimerPrescaleMatchGet(unsigned long ulBase, unsigned long ulTimer)
 //! timer is configured for full-width operation.
 //! \param ulValue is the load value.
 //!
-//! This function configures the timer load value; if the timer is running then 
+//! This function configures the timer load value; if the timer is running then
 //! the value is immediately loaded into the timer.
 //!
 //! \note This function can be used for both full- and half-width modes of
@@ -823,7 +837,7 @@ TimerLoadGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ullValue is the load value.
 //!
-//! This function configures the timer load value for a 64-bit timer; if the 
+//! This function configures the timer load value for a 64-bit timer; if the
 //! timer is running, then the value is immediately loaded into the timer.
 //!
 //! \return None.
@@ -975,10 +989,10 @@ TimerValueGet64(unsigned long ulBase)
 //! timer is configured for full-width operation.
 //! \param ulValue is the match value.
 //!
-//! This function configures the match value for a timer.  This value is used 
-//! in capture count mode to determine when to interrupt the processor and in 
-//! PWM mode to determine the duty cycle of the output signal. On some 
-//! Stellaris devices, match interrupts can also be generated in periodic and 
+//! This function configures the match value for a timer.  This value is used
+//! in capture count mode to determine when to interrupt the processor and in
+//! PWM mode to determine the duty cycle of the output signal. On some
+//! Stellaris devices, match interrupts can also be generated in periodic and
 //! one-shot modes.
 //!
 //! \note This function can be used for both full- and half-width modes of
@@ -1057,8 +1071,8 @@ TimerMatchGet(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ullValue is the match value.
 //!
-//! This function configures the match value for a timer.  This value is used 
-//! in capture count mode to determine when to interrupt the processor and in 
+//! This function configures the match value for a timer.  This value is used
+//! in capture count mode to determine when to interrupt the processor and in
 //! PWM mode to determine the duty cycle of the output signal.
 //!
 //! \return None.
@@ -1133,10 +1147,10 @@ TimerMatchGet64(unsigned long ulBase)
 //! \param pfnHandler is a pointer to the function to be called when the timer
 //! interrupt occurs.
 //!
-//! This function registers the handler to be called when a timer interrupt 
-//! occurs. In addition, this function enables the global interrupt in the 
-//! interrupt controller; specific timer interrupts must be enabled via 
-//! TimerIntEnable(). It is the interrupt handler's responsibility to clear the 
+//! This function registers the handler to be called when a timer interrupt
+//! occurs. In addition, this function enables the global interrupt in the
+//! interrupt controller; specific timer interrupts must be enabled via
+//! TimerIntEnable(). It is the interrupt handler's responsibility to clear the
 //! interrupt source via TimerIntClear().
 //!
 //! \sa IntRegister() for important information about registering interrupt
@@ -1267,8 +1281,8 @@ TimerIntUnregister(unsigned long ulBase, unsigned long ulTimer)
 //! \param ulBase is the base address of the timer module.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be enabled.
 //!
-//! This function enables the indicated timer interrupt sources.  Only the 
-//! sources that are enabled can be reflected to the processor interrupt; 
+//! This function enables the indicated timer interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
 //! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter must be the logical OR of any combination of
@@ -1306,8 +1320,8 @@ TimerIntEnable(unsigned long ulBase, unsigned long ulIntFlags)
 //! \param ulBase is the base address of the timer module.
 //! \param ulIntFlags is the bit mask of the interrupt sources to be disabled.
 //!
-//! This function disables the indicated timer interrupt sources.  Only the 
-//! sources that are enabled can be reflected to the processor interrupt; 
+//! This function disables the indicated timer interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
 //! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter has the same definition as the \e ulIntFlags
@@ -1406,7 +1420,7 @@ TimerIntClear(unsigned long ulBase, unsigned long ulIntFlags)
 //
 //! Synchronizes the counters in a set of timers.
 //!
-//! \param ulBase is the base address of the timer module.  This parameter must 
+//! \param ulBase is the base address of the timer module.  This parameter must
 //! be the base address of Timer0 (in other words, \b TIMER0_BASE).
 //! \param ulTimers is the set of timers to synchronize.
 //!
@@ -1469,7 +1483,7 @@ TimerSynchronize(unsigned long ulBase, unsigned long ulTimers)
 //
 // \param ulBase is the base address of the timer module.
 //
-// This function disables the specified timer, and all its interrupts are 
+// This function disables the specified timer, and all its interrupts are
 // disabled, cleared, and unregistered.  Then the timer registers are set to
 // their reset value.
 //

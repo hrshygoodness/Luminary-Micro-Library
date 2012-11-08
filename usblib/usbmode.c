@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -32,6 +32,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/usb.h"
+#include "driverlib/rtos_bindings.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
 #include "usblib/host/usbhost.h"
@@ -145,7 +146,7 @@ static tUSBModeCallback g_pfnUSBModeCallback;
 // /param eUSBMode is one of USB_MODE_HOST, USB_MODE_DEVICE, or USB_MODE_NONE.
 //
 // Based on the current state held in g_eDualMode variable this function will
-// handle the transistion of the mode of operation in OTG mode and calling
+// handle the transition of the mode of operation in OTG mode and calling
 // the callback function if it is present.
 //
 // /return None.
@@ -180,7 +181,7 @@ USBOTGSetMode(tUSBMode eUSBMode)
         }
 
         //
-        // Reset the delay whenever returning ot USB_MODE_NONE.
+        // Reset the delay whenever returning to USB_MODE_NONE.
         //
         if(eUSBMode == USB_MODE_NONE)
         {
@@ -386,6 +387,7 @@ USB0DualModeIntHandler(void)
 
         default:
         {
+            break;
         }
     }
 }
@@ -446,7 +448,7 @@ USBDualModeInit(unsigned long ulIndex)
     //
     // Enable the USB interrupt.
     //
-    MAP_IntEnable(INT_USB0);
+    OS_INT_ENABLE(INT_USB0);
 
     //
     // Turn on session request to enable ID pin checking.
@@ -497,7 +499,7 @@ USBDualModeTerm(unsigned long ulIndex)
     //
     // Disable the USB interrupt.
     //
-    MAP_IntDisable(INT_USB0);
+    OS_INT_DISABLE(INT_USB0);
 
     MAP_USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
 
@@ -541,7 +543,7 @@ USBOTGModeTerm(unsigned long ulIndex)
     //
     // Disable the USB interrupt.
     //
-    MAP_IntDisable(INT_USB0);
+    OS_INT_DISABLE(INT_USB0);
 
     //
     // Disable all control interrupts.
@@ -686,7 +688,7 @@ USBOTGModeInit(unsigned long ulIndex, unsigned long ulPollingRate,
     //
     // Enable the USB interrupt.
     //
-    MAP_IntEnable(INT_USB0);
+    OS_INT_ENABLE(INT_USB0);
 }
 
 //*****************************************************************************
@@ -705,6 +707,8 @@ USBOTGModeInit(unsigned long ulIndex, unsigned long ulPollingRate,
 static void
 USBOTGRemovePower(unsigned long ulIndex)
 {
+    tEventInfo sEvent;
+
     //
     // Do suspend signaling.
     //
@@ -723,7 +727,9 @@ USBOTGRemovePower(unsigned long ulIndex)
         //
         // Call the registered event driver to allow it to disable power.
         //
-        InternalUSBHCDSendEvent(USB_EVENT_POWER_DISABLE, ulIndex , 0);
+        sEvent.ulEvent = USB_EVENT_POWER_DISABLE;
+        sEvent.ulInstance = 0;
+        InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_PWRDIS);
     }
 }
 
@@ -786,6 +792,7 @@ void
 USB0OTGModeIntHandler(void)
 {
     unsigned long ulStatus;
+    tEventInfo sEvent;
 
     //
     // Read the USB interrupt status.
@@ -818,7 +825,9 @@ USB0OTGModeIntHandler(void)
                 // registered event handler to allow the application to turn
                 // on power.
                 //
-                InternalUSBHCDSendEvent(USB_EVENT_POWER_ENABLE, 0, 0);
+                sEvent.ulEvent = USB_EVENT_POWER_ENABLE;
+                sEvent.ulInstance = 0;
+                InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_PWREN);
 
                 break;
             }
@@ -1018,6 +1027,8 @@ OTGDeviceDisconnect(unsigned long ulIndex)
 void
 USBOTGMain(unsigned long ulMsTicks)
 {
+    tEventInfo sEvent;
+
     if(ulMsTicks > g_ulWaitTicks)
     {
         g_ulWaitTicks = 0;
@@ -1067,7 +1078,9 @@ USBOTGMain(unsigned long ulMsTicks)
                     // Call the registered event driver to allow it to disable
                     // power.
                     //
-                    InternalUSBHCDSendEvent(USB_EVENT_POWER_DISABLE, 0, 0);
+                    sEvent.ulEvent = USB_EVENT_POWER_DISABLE;
+                    sEvent.ulInstance = 0;
+                    InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_PWRDIS);
                 }
 
                 //

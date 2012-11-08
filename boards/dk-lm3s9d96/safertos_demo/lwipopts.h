@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the DK-LM3S9D96 Firmware Package.
+// This is part of revision 9453 of the DK-LM3S9D96 Firmware Package.
 //
 //*****************************************************************************
 //
@@ -52,6 +52,10 @@
 //*****************************************************************************
 #define SYS_LIGHTWEIGHT_PROT            1           // default is 0
 #define NO_SYS                          0           // default is 0
+#if !NO_SYS
+#define RTOS_SAFERTOS                   1
+#define RTOS_FREERTOS                   0
+#endif /* !NO_SYS */
 //#define MEMCPY(dst,src,len)             memcpy(dst,src,len)
 //#define SMEMCPY(dst,src,len)            memcpy(dst,src,len)
 

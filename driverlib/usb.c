@@ -5,20 +5,35 @@
 // Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -220,7 +235,7 @@ USBIndexRead(unsigned long ulBase, unsigned long ulEndpoint,
 //! When used in host mode, this function puts the USB bus in the suspended
 //! state.
 //!
-//! \note This function should only be called in host mode.
+//! \note This function must only be called in host mode.
 //!
 //! \return None.
 //
@@ -249,10 +264,10 @@ USBHostSuspend(unsigned long ulBase)
 //!
 //! When this function is called with the \e bStart parameter set to \b true,
 //! this function causes the start of a reset condition on the USB bus.
-//! The caller should then delay at least 20ms before calling this function
+//! The caller must then delay at least 20ms before calling this function
 //! again with the \e bStart parameter set to \b false.
 //!
-//! \note This function should only be called in host mode.
+//! \note This function must only be called in host mode.
 //!
 //! \return None.
 //
@@ -287,14 +302,14 @@ USBHostReset(unsigned long ulBase, tBoolean bStart)
 //! resume signaling state.
 //!
 //! When in device mode, this function brings the USB controller out of the
-//! suspend state.  This call should first be made with the \e bStart parameter
-//! set to \b true to start resume signaling.  The device application should
+//! suspend state.  This call must first be made with the \e bStart parameter
+//! set to \b true to start resume signaling.  The device application must
 //! then delay at least 10ms but not more than 15ms before calling this
 //! function with the \e bStart parameter set to \b false.
 //!
 //! When in host mode, this function signals devices to leave the suspend
-//! state.  This call should first be made with the \e bStart parameter set to
-//! \b true to start resume signaling.  The host application should then delay
+//! state.  This call must first be made with the \e bStart parameter set to
+//! \b true to start resume signaling.  The host application must then delay
 //! at least 20ms before calling this function with the \e bStart parameter set
 //! to \b false.  This action causes the controller to complete the resume
 //! signaling on the USB bus.
@@ -331,7 +346,7 @@ USBHostResume(unsigned long ulBase, tBoolean bStart)
 //!
 //! This function returns the current speed of the USB bus.
 //!
-//! \note This function should only be called in host mode.
+//! \note This function must only be called in host mode.
 //!
 //! \return Returns either \b USB_LOW_SPEED, \b USB_FULL_SPEED, or
 //! \b USB_UNDEF_SPEED.
@@ -2311,8 +2326,8 @@ USBDevEndpointConfigGet(unsigned long ulBase, unsigned long ulEndpoint,
 //!
 //! This function configures the starting FIFO RAM address and size of the FIFO
 //! for a given endpoint.  Endpoint zero does not have a dynamically
-//! configurable FIFO, so this function should not be called for endpoint zero.
-//! The \e ulFIFOSize parameter should be one of the values in the
+//! configurable FIFO, so this function must not be called for endpoint zero.
+//! The \e ulFIFOSize parameter must be one of the values in the
 //! \b USB_FIFO_SZ_ values.  If the endpoint is going to use double buffering,
 //! it should use the values with the \b _DB at the end of the value.  For
 //! example, use \b USB_FIFO_SZ_16_DB to configure an endpoint to have a 16-
@@ -2663,7 +2678,7 @@ USBEndpointDataGet(unsigned long ulBase, unsigned long ulEndpoint,
     ulByteCount = HWREGH(ulBase + USB_O_COUNT0 + ulEndpoint);
 
     //
-    // Determine how many bytes we will actually copy.
+    // Determine how many bytes are copied.
     //
     ulByteCount = (ulByteCount < *pulSize) ? ulByteCount : *pulSize;
 
@@ -2928,19 +2943,27 @@ USBEndpointDataSend(unsigned long ulBase, unsigned long ulEndpoint,
     //
     if(ulEndpoint == USB_EP_0)
     {
+        //
+        // Don't allow transmit of data if the TxPktRdy bit is already set.
+        //
+        if(HWREGB(ulBase + USB_O_CSRL0) & USB_CSRL0_TXRDY)
+        {
+            return(-1);
+        }
+
         ulTxPktRdy = ulTransType & 0xff;
     }
     else
     {
-        ulTxPktRdy = (ulTransType >> 8) & 0xff;
-    }
+        //
+        // Don't allow transmit of data if the TxPktRdy bit is already set.
+        //
+        if(HWREGB(ulBase + USB_O_CSRL0 + ulEndpoint) & USB_TXCSRL1_TXRDY)
+        {
+            return(-1);
+        }
 
-    //
-    // Don't allow transmit of data if the TxPktRdy bit is already set.
-    //
-    if(HWREGB(ulBase + USB_O_CSRL0 + ulEndpoint) & USB_CSRL0_TXRDY)
-    {
-        return(-1);
+        ulTxPktRdy = (ulTransType >> 8) & 0xff;
     }
 
     //

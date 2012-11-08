@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -1441,7 +1441,7 @@ HandleRequest(void *pvInstance, tUSBRequest *pUSBRequest)
                 // occur if you acknowledge before setting up to receive the
                 // request data.
                 //
-                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, true);
+                MAP_USBDevEndpointDataAck(psInst->ulUSBBase, USB_EP_0, false);
             }
 
             break;
@@ -1916,7 +1916,6 @@ USBDHIDInit(unsigned long ulIndex, const tUSBDHIDDevice *psDevice)
     ASSERT(psDevice->ppClassDescriptors);
     ASSERT(psDevice->psHIDDescriptor);
     ASSERT((psDevice->ucNumInputReports == 0) || psDevice->psReportIdle);
-
 
     USBDHIDCompositeInit(ulIndex, psDevice);
 

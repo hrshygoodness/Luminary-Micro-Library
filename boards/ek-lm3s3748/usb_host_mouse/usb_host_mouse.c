@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the EK-LM3S3748 Firmware Package.
+// This is part of revision 9453 of the EK-LM3S3748 Firmware Package.
 //
 //*****************************************************************************
 
@@ -527,6 +527,8 @@ USBHCDEvents(void *pvData)
             // Reset the button state.
             //
             g_ulButtons = 0;
+
+            UpdateStatus();
 
             break;
         }

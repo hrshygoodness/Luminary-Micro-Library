@@ -19,7 +19,7 @@
 ; CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 ; DAMAGES, FOR ANY REASON WHATSOEVER.
 ; 
-; This is part of revision 8555 of the EK-LM3S3748 Firmware Package.
+; This is part of revision 9453 of the EK-LM3S3748 Firmware Package.
 ;
 ;******************************************************************************
 
@@ -28,7 +28,7 @@
 ; <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ;
 ;******************************************************************************
-Stack   EQU     0x00000200
+Stack   EQU     0x00000400
 
 ;******************************************************************************
 ;

@@ -18,14 +18,12 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
 #ifndef __USBLIB_H__
 #define __USBLIB_H__
-
-#include "usblib/usblibpriv.h"
 
 //*****************************************************************************
 //
@@ -1280,6 +1278,23 @@ typedef unsigned long (* tUSBCallback)(void *pvCBData, unsigned long ulEvent,
 
 //*****************************************************************************
 //
+//! This structure is used to return generic event based information to an
+//! application.  The following events are currently supported:
+//! USB_EVENT_CONNECTED, USB_EVENT_DISCONNECTED, USB_EVENT_POWER_FAULT,
+//! USB_EVENT_POWER_FAULT, USB_EVENT_POWER_ENABLE,
+//! USB_EVENT_POWER_DISABLE and USB_EVENT_SOF.
+//
+//*****************************************************************************
+typedef struct
+{
+    unsigned long ulEvent;
+
+    unsigned long ulInstance;
+}
+tEventInfo;
+
+//*****************************************************************************
+//
 // Base identifiers for groups of USB events.  These are used by both the
 // device class drivers and host layer.
 //
@@ -1488,6 +1503,12 @@ typedef unsigned long (* tUSBCallback)(void *pvCBData, unsigned long ulEvent,
 //
 #define USB_EVENT_UNKNOWN_CONNECTED  (USB_EVENT_BASE + 18)
 
+//
+//! A start of frame event has occurred.  This event is disabled by default
+//! and must be enabled via a call from the application to USBHCDEventEnable().
+//
+#define USB_EVENT_SOF                (USB_EVENT_BASE + 19)
+
 //*****************************************************************************
 //
 // Error sources reported via USB_EVENT_ERROR.
@@ -1619,7 +1640,7 @@ typedef unsigned long (* tUSBPacketAvailable)(void *pvHandle);
 //! the \e pvWorkspace field of the \e tUSBBuffer structure.
 //
 //*****************************************************************************
-#define USB_BUFFER_WORKSPACE_SIZE 16
+#define USB_BUFFER_WORKSPACE_SIZE 24
 
 //*****************************************************************************
 //
@@ -1728,6 +1749,8 @@ tUSBRingBufObject;
 //
 //*****************************************************************************
 extern const tUSBBuffer *USBBufferInit(const tUSBBuffer *psBuffer);
+extern void USBBufferZeroLengthPacketInsert(const tUSBBuffer *psBuffer,
+                                            tBoolean bSendZLP);
 extern void USBBufferInfoGet(const tUSBBuffer *psBuffer,
                              tUSBRingBufObject *psRingBuf);
 extern void *USBBufferCallbackDataSet(tUSBBuffer *psBuffer, void *pvCBData);

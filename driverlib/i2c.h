@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -62,7 +77,7 @@ extern "C"
 #define I2C_MASTER_CMD_BURST_SEND_START                                       \
                                 0x00000003
 #define I2C_MASTER_CMD_BURST_SEND_CONT                                        \
-                                0x00000001
+                                0x00000001                                
 #define I2C_MASTER_CMD_BURST_SEND_FINISH                                      \
                                 0x00000005
 #define I2C_MASTER_CMD_BURST_SEND_STOP                                        \
@@ -91,6 +106,7 @@ extern "C"
 #define I2C_MASTER_ERR_ADDR_ACK 0x00000004
 #define I2C_MASTER_ERR_DATA_ACK 0x00000008
 #define I2C_MASTER_ERR_ARB_LOST 0x00000010
+#define I2C_MASTER_ERR_CLK_TOUT 0x00000080
 
 //*****************************************************************************
 //
@@ -104,7 +120,7 @@ extern "C"
 #define I2C_SLAVE_ACT_OWN2SEL   0x00000008  // Master requested secondary slave
 #define I2C_SLAVE_ACT_QCMD      0x00000010  // Master has sent a Quick Command
 #define I2C_SLAVE_ACT_QCMD_DATA 0x00000020  // Master Quick Command value
-
+                                
 //*****************************************************************************
 //
 // Miscellaneous I2C driver definitions.
@@ -117,17 +133,17 @@ extern "C"
 // I2C Master interrupts.
 //
 //*****************************************************************************
-#define I2C_MASTER_INT_TIMEOUT   0x00000002  // Clock Timeout Interrupt.
-#define I2C_MASTER_INT_DATA      0x00000001  // Data Interrupt.
+#define I2C_MASTER_INT_TIMEOUT          0x00000002  // Clock Timeout Interrupt.
+#define I2C_MASTER_INT_DATA             0x00000001  // Data Interrupt.
 
 //*****************************************************************************
 //
 // I2C Slave interrupts.
 //
 //*****************************************************************************
-#define I2C_SLAVE_INT_STOP      0x00000004  // Stop Condition Interrupt.
-#define I2C_SLAVE_INT_START     0x00000002  // Start Condition Interrupt.
-#define I2C_SLAVE_INT_DATA      0x00000001  // Data Interrupt.
+#define I2C_SLAVE_INT_STOP          0x00000004  // Stop Condition Interrupt.
+#define I2C_SLAVE_INT_START         0x00000002  // Start Condition Interrupt.
+#define I2C_SLAVE_INT_DATA          0x00000001  // Data Interrupt.
 
 //*****************************************************************************
 //

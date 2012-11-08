@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -496,7 +496,7 @@ typedef struct
     unsigned char bAssocTerminal;
 
     //
-    //! Number of logical output channels in the Terminal’s output audio
+    //! Number of logical output channels in the Terminal's output audio
     //! channel cluster.
     //
     unsigned char bNrChannels;

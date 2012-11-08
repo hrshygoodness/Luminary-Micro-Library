@@ -18,41 +18,39 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 8555 of the EK-LM3S8962 Firmware Package.
+# This is part of revision 9453 of the EK-LM3S8962 Firmware Package.
 #
 #******************************************************************************
 
 #
 # A list of the directories containing the examples.
 #
-DIRS=aes_expanded_key \
-     aes_set_key      \
-     bitband          \
-     blinky           \
-     boot_demo1       \
-     boot_demo2       \
-     boot_demo_eth    \
-     boot_eth         \
-     boot_serial      \
-     can_device_fifo  \
-     can_device_led   \
-     can_device_qs    \
-     can_fifo         \
-     enet_io          \
-     enet_lwip        \
-     enet_ptpd        \
-     enet_uip         \
-     gpio_jtag        \
-     graphics         \
-     hello            \
-     interrupts       \
-     mpu_fault        \
-     pwmgen           \
-     qs_ek-lm3s8962   \
-     sd_card          \
-     timers           \
-     uart_echo        \
-     watchdog        
+DIRS=bitband         \
+     blinky          \
+     boot_demo1      \
+     boot_demo2      \
+     boot_demo_eth   \
+     boot_eth        \
+     boot_serial     \
+     can_device_fifo \
+     can_device_led  \
+     can_device_qs   \
+     can_fifo        \
+     enet_io         \
+     enet_lwip       \
+     enet_ptpd       \
+     enet_uip        \
+     gpio_jtag       \
+     graphics        \
+     hello           \
+     interrupts      \
+     mpu_fault       \
+     pwmgen          \
+     qs_ek-lm3s8962  \
+     sd_card         \
+     timers          \
+     uart_echo       \
+     watchdog       
 
 #
 # The default rule, which causes the examples to be built.

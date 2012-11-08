@@ -13,16 +13,6 @@
   </project>
 
   <project>
-    <PathAndName>.\aes_expanded_key\aes_expanded_key.uvproj</PathAndName>
-    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
-  </project>
-
-  <project>
-    <PathAndName>.\aes_set_key\aes_set_key.uvproj</PathAndName>
-    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
-  </project>
-
-  <project>
     <PathAndName>.\bitband\bitband.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>

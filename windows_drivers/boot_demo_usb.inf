@@ -30,7 +30,7 @@ ClassGuid={0D42186B-31A8-4800-B875-1A5525A407B9}
 Provider = %ProviderName%
 CatalogFile.NTx86=boot_demo_usb_x86.cat
 CatalogFile.NTamd64=boot_demo_usb_amd64.cat
-DriverVer=01/28/2012,1.3.8555
+DriverVer=09/05/2012,1.3.9453
 
 ; ========== Manufacturer/Models sections ===========
 

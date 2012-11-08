@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-BDC Firmware Package.
+// This is part of revision 9453 of the RDK-BDC Firmware Package.
 //
 //*****************************************************************************
 
@@ -55,7 +55,7 @@ extern void CallBootloader(void);
 // The firmware version.
 //
 //*****************************************************************************
-const unsigned long g_ulFirmwareVersion = 8555;
+const unsigned long g_ulFirmwareVersion = 9453;
 
 //*****************************************************************************
 //
@@ -1883,14 +1883,13 @@ static unsigned long
 PStatusHandler(unsigned long ulID, unsigned char *pucData,
                unsigned long ulMsgLen)
 {
-    unsigned long ulIdx, *pulData;
+    unsigned long ulIdx;
     unsigned short *pusData;
 
     //
     // Create local pointers of different types to the message data to avoid
     // later type casting.
     //
-    pulData = (unsigned long *)pucData;
     pusData = (unsigned short *)pucData;
 
     //

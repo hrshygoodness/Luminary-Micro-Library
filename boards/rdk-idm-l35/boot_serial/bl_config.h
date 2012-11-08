@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-IDM-L35 Firmware Package.
+// This is part of revision 9453 of the RDK-IDM-L35 Firmware Package.
 //
 //*****************************************************************************
 
@@ -605,6 +605,206 @@
 //
 //*****************************************************************************
 //#define USB_MUX_DEVICE          1
+
+//*****************************************************************************
+//
+// Specifies whether the target board requires configuration of the pin used
+// for VBUS.  This applies to Blizzard class and later devices.
+//
+// Depends on: USB_ENABLE_UPDATE
+// Exclusive of: None
+// Requires: USB_VBUS_PERIPH, USB_VBUS_PORT, USB_VBUS_PIN
+//
+//*****************************************************************************
+//#define USB_VBUS_CONFIG
+
+//*****************************************************************************
+//
+// Specifies the GPIO peripheral containing the pin which is used for VBUS.
+// The value is of the form SYSCTL_RCGCGPIO_Rx, where the Rx represents
+// the required GPIO port.  This applies to Blizzard class and later 
+// devices.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_VBUS_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_VBUS_PERIPH          SYSCTL_RCGCGPIO_R1
+
+//*****************************************************************************
+//
+// Specifies the GPIO port containing the pin which is used for VBUS.  The value
+// is of the form GPIO_PORTx_BASE, where PORTx represents the required GPIO
+// port.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_VBUS_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_VBUS_PORT            GPIO_PORTB_BASE
+
+//*****************************************************************************
+//
+// Specifies the GPIO pin number used for VBUS.  Valid values are 0 through 7.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_VBUS_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_VBUS_PIN             1
+
+//*****************************************************************************
+//
+// Specifies whether the target board requires configuration of the pin used
+// for ID.  This applies to Blizzard class and later devices.
+//
+// Depends on: USB_ENABLE_UPDATE
+// Exclusive of: None
+// Requires: USB_ID_PERIPH, USB_ID_PORT, USB_ID_PIN
+//
+//*****************************************************************************
+//#define USB_ID_CONFIG
+
+//*****************************************************************************
+//
+// Specifies the GPIO peripheral containing the pin which is used for ID.
+// The value is of the form SYSCTL_RCGCGPIO_Rx, where the Rx represents
+// the required GPIO port.  This applies to Blizzard class and later 
+// devices.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_ID_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_ID_PERIPH          SYSCTL_RCGCGPIO_R1
+
+//*****************************************************************************
+//
+// Specifies the GPIO port containing the pin which is used for ID.  The value
+// is of the form GPIO_PORTx_BASE, where PORTx represents the required GPIO
+// port.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_ID_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_ID_PORT            GPIO_PORTB_BASE
+
+//*****************************************************************************
+//
+// Specifies the GPIO pin number used for ID.  Valid values are 0 through 7.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_ID_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_ID_PIN             0
+
+//*****************************************************************************
+//
+// Specifies whether the target board requires configuration of the pin used
+// for DP.  This applies to Blizzard class and later devices.
+//
+// Depends on: USB_ENABLE_UPDATE
+// Exclusive of: None
+// Requires: USB_DP_PERIPH, USB_DP_PORT, USB_DP_PIN
+//
+//*****************************************************************************
+//#define USB_DP_CONFIG
+
+//*****************************************************************************
+//
+// Specifies the GPIO peripheral containing the pin which is used for DP.
+// The value is of the form SYSCTL_RCGCGPIO_Rx, where the Rx represents
+// the required GPIO port.  This applies to Blizzard class and later 
+// devices.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DP_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DP_PERIPH          SYSCTL_RCGCGPIO_R10
+
+//*****************************************************************************
+//
+// Specifies the GPIO port containing the pin which is used for DP.  The value
+// is of the form GPIO_PORTx_BASE, where PORTx represents the required GPIO
+// port.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DP_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DP_PORT            GPIO_PORTL_BASE
+
+//*****************************************************************************
+//
+// Specifies the GPIO pin number used for DP.  Valid values are 0 through 7.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DP_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DP_PIN             6
+
+//*****************************************************************************
+//
+// Specifies whether the target board requires configuration of the pin used
+// for DM.  This applies to Blizzard class and later devices.
+//
+// Depends on: USB_ENABLE_UPDATE
+// Exclusive of: None
+// Requires: USB_DM_PERIPH, USB_DM_PORT, USB_DM_PIN
+//
+//*****************************************************************************
+//#define USB_DM_CONFIG
+
+//*****************************************************************************
+//
+// Specifies the GPIO peripheral containing the pin which is used for DM.
+// The value is of the form SYSCTL_RCGCGPIO_Rx, where the Rx represents
+// the required GPIO port.  This applies to Blizzard class and later 
+// devices.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DM_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DM_PERIPH          SYSCTL_RCGCGPIO_R10
+
+//*****************************************************************************
+//
+// Specifies the GPIO port containing the pin which is used for DM.  The value
+// is of the form GPIO_PORTx_BASE, where PORTx represents the required GPIO
+// port.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DM_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DM_PORT            GPIO_PORTL_BASE
+
+//*****************************************************************************
+//
+// Specifies the GPIO pin number used for DM.  Valid values are 0 through 7.
+//
+// Depends on: USB_ENABLE_UPDATE, USB_DM_CONFIG
+// Exclusive of: None
+// Requires: None
+//
+//*****************************************************************************
+//#define USB_DM_PIN             7
 
 //*****************************************************************************
 //

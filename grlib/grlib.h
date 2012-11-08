@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Graphics Library.
+// This is part of revision 9453 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -702,7 +702,9 @@ tFontWrapper;
 // different encoding methods for Unicode.
 //
 #define CODEPAGE_UTF_8         0x4000
-#define CODEPAGE_UTF_16        0x4001
+#define CODEPAGE_UTF_16LE      0x4001
+#define CODEPAGE_UTF_16BE      0x4002
+#define CODEPAGE_UTF_16        CODEPAGE_UTF_16BE
 
 //
 // Applications wishing to use custom fonts with, for example, application-
@@ -2036,15 +2038,15 @@ extern const tFont g_sFontFixed6x8;
 
 //*****************************************************************************
 //
-//! Counts the number of zeros at the start of a word.
-//!
-//! \param x is the word whose leading zeros are to be counted.
-//!
-//! This macro uses compiler-specific constructs to perform an inline
-//! insertion of the "clz" instruction, which counts the leading zeros
-//! directly.
-//!
-//! \return Returns the number of leading 0 bits in the word provided.
+// Counts the number of zeros at the start of a word.
+//
+// \param x is the word whose leading zeros are to be counted.
+//
+// This macro uses compiler-specific constructs to perform an inline
+// insertion of the "clz" instruction, which counts the leading zeros
+// directly.
+//
+// \return Returns the number of leading 0 bits in the word provided.
 //
 //*****************************************************************************
 #if defined(ewarm)
@@ -2076,7 +2078,7 @@ extern const tFont g_sFontFixed6x8;
 //
 //*****************************************************************************
 #ifndef GRLIB_REMOVE_WIDE_FONT_SUPPORT
-extern void GrLibInit(const tGrLibDefaults *pInit);
+extern void GrLibInit(const tGrLibDefaults *pDefaults);
 #endif
 extern void GrCircleDraw(const tContext *pContext, long lX, long lY,
                          long lRadius);
@@ -2180,6 +2182,12 @@ extern unsigned long GrMapUnicode_Unicode(const char *pcSrcChar,
 extern unsigned long GrMapUTF8_Unicode(const char *pcSrcChar,
                                        unsigned long ulCount,
                                        unsigned long *pulSkip);
+extern unsigned long GrMapUTF16LE_Unicode(const char *pcSrcChar,
+                                          unsigned long ulCount,
+                                          unsigned long *pulSkip);
+extern unsigned long GrMapUTF16BE_Unicode(const char *pcSrcChar,
+                                          unsigned long ulCount,
+                                          unsigned long *pulSkip);
 extern unsigned long GrMapISO8859_1_Unicode(const char *pcSrcChar,
                                             unsigned long ulCount,
                                             unsigned long *pulSkip);

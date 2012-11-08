@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -37,6 +52,13 @@
 #include "driverlib/debug.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
+
+//*****************************************************************************
+//
+// A macro used to determine whether the target part uses the new SysCtl
+// register layout.
+//
+//*****************************************************************************
 
 //*****************************************************************************
 //
@@ -270,7 +292,7 @@ SysCtlPeripheralValid(unsigned long ulPeripheral)
 //*****************************************************************************
 //
 // A map of old peripheral defines to new peripheral defines.  Note that the
-// new peripheral defines will not work on parts that precede Blizzard class.
+// new peripheral defines do not work on parts that precede Blizzard class.
 //
 //*****************************************************************************
 static const unsigned long g_ppulPeripheralMap[][2] =
@@ -292,6 +314,7 @@ static const unsigned long g_ppulPeripheralMap[][2] =
     { SYSCTL_PERIPH_GPIOG, SYSCTL_PERIPH2_GPIOG },
     { SYSCTL_PERIPH_GPIOH, SYSCTL_PERIPH2_GPIOH },
     { SYSCTL_PERIPH_GPIOJ, SYSCTL_PERIPH2_GPIOJ },
+    { SYSCTL_PERIPH_HIBERNATE, SYSCTL_PERIPH2_HIBERNATE },
     { SYSCTL_PERIPH_I2C0, SYSCTL_PERIPH2_I2C0 },
     { SYSCTL_PERIPH_I2C1, SYSCTL_PERIPH2_I2C1 },
     { SYSCTL_PERIPH_PWM0, SYSCTL_PERIPH2_PWM0 },
@@ -625,7 +648,7 @@ SysCtlPeripheralReady(unsigned long ulPeripheral)
 //! This function turns on the power to a peripheral.  The peripheral continues
 //! to receive power even when its clock is not enabled.
 //!
-//! The \e ulPeripheral paramter must be only one of the following values:
+//! The \e ulPeripheral parameter must be only one of the following values:
 //! \b SYSCTL_PERIPH_ADC0, \b SYSCTL_PERIPH_ADC1, \b SYSCTL_PERIPH_CAN0,
 //! \b SYSCTL_PERIPH_CAN1, \b SYSCTL_PERIPH_CAN2, \b SYSCTL_PERIPH_COMP0,
 //! \b SYSCTL_PERIPH_COMP1, \b SYSCTL_PERIPH_COMP2, \b SYSCTL_PERIPH_EEPROM0,
@@ -689,7 +712,7 @@ SysCtlPeripheralPowerOn(unsigned long ulPeripheral)
 //! peripheral continues to receive power when its clock is enabled, but
 //! the power is removed when its clock is disabled.
 //!
-//! The \e ulPeripheral paramter must be only one of the following values:
+//! The \e ulPeripheral parameter must be only one of the following values:
 //! \b SYSCTL_PERIPH_ADC0, \b SYSCTL_PERIPH_ADC1, \b SYSCTL_PERIPH_CAN0,
 //! \b SYSCTL_PERIPH_CAN1, \b SYSCTL_PERIPH_CAN2, \b SYSCTL_PERIPH_COMP0,
 //! \b SYSCTL_PERIPH_COMP1, \b SYSCTL_PERIPH_COMP2, \b SYSCTL_PERIPH_EEPROM0,
@@ -751,7 +774,7 @@ SysCtlPeripheralPowerOff(unsigned long ulPeripheral)
 //!
 //! This function performs a software reset of the specified peripheral.  An
 //! individual peripheral reset signal is asserted for a brief period and then
-//! deasserted, returning the internal state of the peripheral to its reset
+//! de-asserted, returning the internal state of the peripheral to its reset
 //! condition.
 //!
 //! The \e ulPeripheral parameter must be only one of the following values:
@@ -1532,16 +1555,18 @@ SysCtlIntStatus(tBoolean bMasked)
 //
 //! Sets the output voltage of the LDO.
 //!
-//! \param ulVoltage is the required output voltage from the LDO.  Must be one
-//! of \b SYSCTL_LDO_2_25V, \b SYSCTL_LDO_2_30V, \b SYSCTL_LDO_2_35V,
+//! \param ulVoltage is the required output voltage from the LDO.
+//!
+//! This function sets the output voltage of the LDO.  The \e ulVoltage
+//! parameter specifies the LDO voltage and must be one of the following
+//! values:
+//! \b SYSCTL_LDO_2_25V, \b SYSCTL_LDO_2_30V, \b SYSCTL_LDO_2_35V,
 //! \b SYSCTL_LDO_2_40V, \b SYSCTL_LDO_2_45V, \b SYSCTL_LDO_2_50V,
 //! \b SYSCTL_LDO_2_55V, \b SYSCTL_LDO_2_60V, \b SYSCTL_LDO_2_65V,
 //! \b SYSCTL_LDO_2_70V, or \b SYSCTL_LDO_2_75V.
 //!
-//! This function sets the output voltage of the LDO.
-//!
 //! \note The default LDO voltage and the adjustment range varies with the
-//! Stellaris part in use.  Please consult the datasheet for the part you are
+//! Stellaris part in use.  Please consult the data sheet for the part you are
 //! using to determine the default voltage and range available.
 //!
 //! \return None.
@@ -1578,7 +1603,7 @@ SysCtlLDOSet(unsigned long ulVoltage)
 //! This function determines the output voltage of the LDO, as specified by the
 //! control register.
 //!
-//! \return Returns the current voltage of the LDO; is one of
+//! \return Returns the current voltage of the LDO and is one of:
 //! \b SYSCTL_LDO_2_25V, \b SYSCTL_LDO_2_30V, \b SYSCTL_LDO_2_35V,
 //! \b SYSCTL_LDO_2_40V, \b SYSCTL_LDO_2_45V, \b SYSCTL_LDO_2_50V,
 //! \b SYSCTL_LDO_2_55V, \b SYSCTL_LDO_2_60V, \b SYSCTL_LDO_2_65V,
@@ -1706,7 +1731,7 @@ SysCtlDeepSleep(void)
     CPUwfi();
 
     //
-    // Disable deep-sleep so that a future sleep will work correctly.
+    // Disable deep-sleep so that a future sleep works correctly.
     //
     HWREG(NVIC_SYS_CTRL) &= ~(NVIC_SYS_CTRL_SLEEPDEEP);
 }
@@ -1779,7 +1804,7 @@ SysCtlResetCauseClear(unsigned long ulCauses)
 //! generate a processor interrupt.
 //!
 //! \note The availability of the resample feature is only available on
-//! Sandstorm-class devices. Please consult the datasheet for the part you
+//! Sandstorm-class devices. Please consult the data sheet for the part you
 //! are using to determine whether this feature is available.
 //!
 //! \return None.
@@ -1915,7 +1940,7 @@ SysCtlMOSCConfigSet(unsigned long ulConfig)
 //!   perfect, 0x40 provides exactly 16 MHz).  Values larger than 0x40
 //!   slow down PIOSC, and values smaller than 0x40 speed up PIOSC.
 //!
-//! \return None.
+//! \return Returns 1 if the calibration was successful and 0 if it failed.
 //
 //*****************************************************************************
 unsigned long
@@ -1962,6 +1987,9 @@ SysCtlPIOSCCalibrate(unsigned long ulType)
     //
     return(1);
 }
+    unsigned long ulSysDiv, ulOsc, ulOscSelect;
+    tBoolean bNewPLL;
+
 
 //*****************************************************************************
 //
@@ -2357,7 +2385,8 @@ SysCtlClockGet(void)
         }
 
         //
-        // The 4.194304-MHz clock from the hibernate module is the clock source.
+        // The 4.194304-MHz clock from the hibernate module is the clock
+        // source.
         //
         case SYSCTL_RCC2_OSCSRC2_419:
         {
@@ -2535,23 +2564,23 @@ SysCtlClockGet(void)
 //!
 //! The \e ulConfig parameter is the logical OR of the following values:
 //!
-//! The system clock divider is chosen with one of the following values:
+//! The system clock divider is chosen from one of the following values:
 //! \b SYSCTL_DSLP_DIV_1, \b SYSCTL_DSLP_DIV_2, \b SYSCTL_DSLP_DIV_3, ...
 //! \b SYSCTL_DSLP_DIV_64.
 //!
-//! The oscillator source is chosen with one of the following values:
+//! The oscillator source is chosen from one of the following values:
 //! \b SYSCTL_DSLP_OSC_MAIN, \b SYSCTL_DSLP_OSC_INT, \b SYSCTL_DSLP_OSC_INT30,
 //! or \b SYSCTL_DSLP_OSC_EXT32.  \b SYSCTL_OSC_EXT32 is only available on
-//! devices with the hibernate module, and then only when the hibernate module
-//! has been enabled.
+//! devices with the hibernation module, and then only when the hibernation
+//! module has been enabled.
 //!
 //! The precision internal oscillator can be powered down in deep-sleep mode by
-//! specifying \b SYSCTL_DSLP_PIOSC_PD.  If it is required for operation while
-//! in deep-sleep (based on other configuration settings), it will not be
-//! powered down.
+//! specifying \b SYSCTL_DSLP_PIOSC_PD.  The precision internal oscillator is
+//! not powered down if it is required for operation while in deep-sleep
+//! (based on other configuration settings.)
 //!
 //! \note The availability of deep-sleep clocking configuration varies with the
-//! Stellaris part in use.  Please consult the datasheet for the part you are
+//! Stellaris part in use.  Please consult the data sheet for the part you are
 //! using to determine whether this support is available.
 //!
 //! \return None.
@@ -2682,11 +2711,6 @@ SysCtlADCSpeedSet(unsigned long ulSpeed)
            (ulSpeed == SYSCTL_ADCSPEED_125KSPS));
 
     //
-    // Check that there is an ADC block on this part.
-    //
-    ASSERT(HWREG(SYSCTL_DC1) & SYSCTL_DC1_ADC0);
-
-    //
     // Set the ADC speed in run and sleep mode.
     //
     HWREG(SYSCTL_RCGC0) = ((HWREG(SYSCTL_RCGC0) & ~(SYSCTL_RCGC0_ADCSPD_M)) |
@@ -2709,11 +2733,6 @@ SysCtlADCSpeedSet(unsigned long ulSpeed)
 unsigned long
 SysCtlADCSpeedGet(void)
 {
-    //
-    // Check that there is an ADC block on this part.
-    //
-    ASSERT(HWREG(SYSCTL_DC1) & SYSCTL_DC1_ADC0);
-
     //
     // Return the current ADC speed.
     //
@@ -2990,7 +3009,7 @@ SysCtlUSBPLLDisable(void)
 //! \param ulMClk is the desired MCLK frequency.  If this value is zero, MCLK
 //! output is disabled.
 //!
-//! This function confgiures the dividers to provide MCLK to the I2S module.  A
+//! This function configures the dividers to provide MCLK to the I2S module.  A
 //! MCLK divider is chosen that produces the MCLK frequency that is the closest
 //! possible to the requested frequency, which may be above or below the
 //! requested frequency.
@@ -3101,7 +3120,7 @@ SysCtlI2SMClkSet(unsigned long ulInputClock, unsigned long ulMClk)
     }
 
     //
-    // Set the divisor for the Tx and Rx MCLK generators and enable the clocks.
+    // Set the divisor for the TX and RX MCLK generators and enable the clocks.
     //
     HWREG(SYSCTL_I2SMCLKCFG) = (SYSCTL_I2SMCLKCFG_RXEN |
                                 (ulDivInt << SYSCTL_I2SMCLKCFG_RXI_S) |

@@ -1,10 +1,18 @@
 Ethernet with lwIP
 
 This example application demonstrates the operation of the Stellaris
-Ethernet controller using the lwIP TCP/IP Stack.  DHCP is used to obtain
-an Ethernet address.  If DHCP times out without obtaining an address,
-AutoIP will be used to obtain a link-local address.  The address that is
-selected will be shown on the UART.
+Ethernet controller using the lwIP TCP/IP Stack configured to operate as
+an HTTP (web) server.  DHCP is used to obtain an Ethernet address.  If DHCP
+times out without obtaining an address, AutoIP will be used to obtain a
+link-local address.  The address that is selected will be shown on the
+UART.
+
+Source files for the internal file system image can be found in the ``fs''
+directory.  If any of these files are changed, the file system image
+(lmi-fsdata.h) should be rebuilt by running the following command from the
+enet_lwip directory:
+
+./../../tools/bin/makefsfile -i fs -o lmi-fsdata.h -r -h -q
 
 UART0, connected to the FTDI virtual COM port and running at 115,200,
 8-N-1, is used to display messages from this application.
@@ -30,4 +38,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
+This is part of revision 9107 of the EK-LM3S9B92 Firmware Package.

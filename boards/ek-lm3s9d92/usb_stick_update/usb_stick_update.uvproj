@@ -388,7 +388,7 @@
             <File>
               <FileName>simple_fs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>simple_fs.c</FilePath>
+              <FilePath>.\simple_fs.c</FilePath>
             </File>
             <File>
               <FileName>startup_rvmdk.S</FileName>

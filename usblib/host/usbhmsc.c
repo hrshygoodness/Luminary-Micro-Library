@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -231,6 +231,9 @@ USBHMSCOpen(tUSBHostDevice *pDevice)
         g_USBHMSCDevice.pfnCallback((unsigned long)&g_USBHMSCDevice,
                                     MSC_EVENT_OPEN, 0);
     }
+    
+    
+    g_USBHMSCDevice.ulMaxLUN = 0xffffffff;
 
     //
     // Return the only instance of this device.
@@ -386,16 +389,22 @@ USBHMSCDriveReady(unsigned long ulInstance)
     }
 
     //
-    // Get the Maximum LUNs on this device.
+    // Only request the maximum number of LUNs once.
     //
-    USBHMSCGetMaxLUN(g_USBHMSCDevice.pDevice,
-                     g_USBHMSCDevice.pDevice->ulInterface, &ucMaxLUN);
+    if(g_USBHMSCDevice.ulMaxLUN == 0xffffffff)
+    {
+        //
+        // Get the Maximum LUNs on this device.
+        //
+        USBHMSCGetMaxLUN(g_USBHMSCDevice.pDevice,
+                         g_USBHMSCDevice.pDevice->ulInterface, &ucMaxLUN);
 
-    //
-    // Save the Maximum number of LUNs on this device.
-    //
-    g_USBHMSCDevice.ulMaxLUN = ucMaxLUN;
-
+        //
+        // Save the Maximum number of LUNs on this device.
+        //
+        g_USBHMSCDevice.ulMaxLUN = ucMaxLUN;
+    }
+    
     //
     // Just return if the device is returning not present.
     //

@@ -62,22 +62,21 @@ follows and then rebuild the application.
 
 For 915 MHz operation (as used in the USA):
 
-<tt>\#define ISM_US
-\#undef ISM_LF
-\#undef ISM_EU</tt>
+#define ISM_US
+#undef ISM_LF
+#undef ISM_EU
 
 For 868 MHz operation (as used in Europe):
 
-<tt>\#undef ISM_US
-\#undef ISM_LF
-\#define ISM_EU</tt>
+#undef ISM_US
+#undef ISM_LF
+#define ISM_EU
 
 For 433 MHz operation (as used in Japan):
 
-<tt>\#undef ISM_US
-\#define ISM_LF
-\#undef ISM_EU</tt>
-
+#undef ISM_US
+#define ISM_LF
+#undef ISM_EU
 
 -------------------------------------------------------------------------------
 
@@ -97,4 +96,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 8555 of the Stellaris Firmware Development Package.
+This is part of revision 9453 of the Stellaris Firmware Development Package.

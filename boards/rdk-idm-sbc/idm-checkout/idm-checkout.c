@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-IDM-SBC Firmware Package.
+// This is part of revision 9453 of the RDK-IDM-SBC Firmware Package.
 //
 //*****************************************************************************
 
@@ -242,7 +242,7 @@ OnCheckLED(tWidget *pWidget, unsigned long bSelected)
     // Set the state of the user LED on the board to follow the checkbox
     // selection.
     //
-    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, bSelected ? GPIO_PIN_2 : 0);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, bSelected ? 0 : GPIO_PIN_2);
 
     //
     // Play the key click sound.
@@ -763,9 +763,9 @@ main(void)
     ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE,GPIO_PIN_2);
 
     //
-    // Initialize LED to OFF (0)
+    // Initialize LED to OFF (set the GPIO to 1)
     //
-    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, 0);
+    ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
 
     //
     // Get the MAC address from the UART0 and UART1 registers in NV ram.

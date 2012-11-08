@@ -5,20 +5,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -82,7 +97,7 @@
 #define LPC_CTL_SCICNT_8        0x00000C00  // The pulse on the LPC0SCI pin is
                                             // 8 LPC0CLK periods
 #define LPC_CTL_SCI             0x00000200  // Start SCI Pulse
-#define LPC_CTL_WAKE            0x00000100  // Restart the LPC Bus
+#define LPC_CTL_WAKE            0x00000100  // Wake or Keep Awake the LPC Bus
 #define LPC_CTL_CE7             0x00000080  // Enable Channel 7
 #define LPC_CTL_CE6             0x00000040  // Enable Channel 6
 #define LPC_CTL_CE5             0x00000020  // Enable Channel 5
@@ -98,12 +113,12 @@
 //
 //*****************************************************************************
 #define LPC_STS_CHCNT_M         0x00700000  // Number of Channels
-#define LPC_STS_POOLSZ_M        0x000F0000  // Register Pool Size
+#define LPC_STS_POOLSZ_M        0x00070000  // Register Pool Size
 #define LPC_STS_POOLSZ_256      0x00010000  // 256 bytes
 #define LPC_STS_POOLSZ_512      0x00020000  // 512 bytes
 #define LPC_STS_POOLSZ_768      0x00030000  // 768 bytes
 #define LPC_STS_POOLSZ_1024     0x00040000  // 1024 bytes
-#define LPC_STS_RST             0x00000400  // LPC is in Reset
+#define LPC_STS_RST             0x00000400  // LPC Bus is in Reset
 #define LPC_STS_BUSY            0x00000200  // LPC is Busy
 #define LPC_STS_SLEEP           0x00000100  // LPC is in Sleep Mode
 #define LPC_STS_CA7             0x00000080  // Channel 7 Active
@@ -182,26 +197,16 @@
 #define LPC_CH0CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH0CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH0CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH0CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH0CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH0CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH0CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH0CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH0CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH0CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH0CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH0CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH0CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH0CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH0CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH0CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH0CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH0CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH0CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH0CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH0CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH0CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH0CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH0CTL_IRQSEL2_S    28
 #define LPC_CH0CTL_IRQSEL1_S    24
@@ -215,9 +220,9 @@
 //*****************************************************************************
 #define LPC_CH0ST_USER_M        0x00001F00  // User Data
 #define LPC_CH0ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH0ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH0ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH0ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH0ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH0ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH0ST_CMD           0x00000008  // Command or Data
 #define LPC_CH0ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH0ST_TOH           0x00000001  // To-Host Transaction
@@ -251,26 +256,16 @@
 #define LPC_CH1CTL_IRQEN0_TRGI2 0x00020000  // Trigger 2
 #define LPC_CH1CTL_IRQEN0_TRGI3 0x00030000  // Trigger 3
 #define LPC_CH1CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH1CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH1CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH1CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH1CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH1CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH1CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH1CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH1CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH1CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH1CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH1CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH1CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH1CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH1CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH1CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH1CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH1CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH1CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH1CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH1CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH1CTL_IRQSEL2_S    28
 #define LPC_CH1CTL_IRQSEL1_S    24
@@ -284,9 +279,9 @@
 //*****************************************************************************
 #define LPC_CH1ST_USER_M        0x00001F00  // User Data
 #define LPC_CH1ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH1ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH1ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH1ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH1ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH1ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH1ST_CMD           0x00000008  // Command or Data
 #define LPC_CH1ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH1ST_TOH           0x00000001  // To-Host Transaction
@@ -320,26 +315,16 @@
 #define LPC_CH2CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH2CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH2CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH2CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH2CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH2CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH2CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH2CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH2CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH2CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH2CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH2CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH2CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH2CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH2CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH2CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH2CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH2CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH2CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH2CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH2CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH2CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH2CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH2CTL_IRQSEL2_S    28
 #define LPC_CH2CTL_IRQSEL1_S    24
@@ -353,9 +338,9 @@
 //*****************************************************************************
 #define LPC_CH2ST_USER_M        0x00001F00  // User Data
 #define LPC_CH2ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH2ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH2ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH2ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH2ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH2ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH2ST_CMD           0x00000008  // Command or Data
 #define LPC_CH2ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH2ST_TOH           0x00000001  // To-Host Transaction
@@ -389,26 +374,16 @@
 #define LPC_CH3CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH3CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH3CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH3CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH3CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH3CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH3CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH3CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH3CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH3CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH3CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH3CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH3CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH3CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH3CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH3CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH3CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH3CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH3CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH3CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH3CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH3CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH3CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH3CTL_IRQSEL2_S    28
 #define LPC_CH3CTL_IRQSEL1_S    24
@@ -422,9 +397,9 @@
 //*****************************************************************************
 #define LPC_CH3ST_USER_M        0x00001F00  // User Data
 #define LPC_CH3ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH3ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH3ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH3ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH3ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH3ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH3ST_CMD           0x00000008  // Command or Data
 #define LPC_CH3ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH3ST_TOH           0x00000001  // To-Host Transaction
@@ -458,26 +433,16 @@
 #define LPC_CH4CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH4CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH4CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH4CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH4CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH4CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH4CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH4CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH4CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH4CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH4CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH4CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH4CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH4CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH4CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH4CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH4CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH4CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH4CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH4CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH4CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH4CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH4CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH4CTL_IRQSEL2_S    28
 #define LPC_CH4CTL_IRQSEL1_S    24
@@ -491,9 +456,9 @@
 //*****************************************************************************
 #define LPC_CH4ST_USER_M        0x00001F00  // User Data
 #define LPC_CH4ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH4ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH4ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH4ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH4ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH4ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH4ST_CMD           0x00000008  // Command or Data
 #define LPC_CH4ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH4ST_TOH           0x00000001  // To-Host Transaction
@@ -526,26 +491,16 @@
 #define LPC_CH5CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH5CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH5CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH5CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH5CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH5CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH5CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH5CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH5CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH5CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH5CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH5CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH5CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH5CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH5CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH5CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH5CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH5CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH5CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH5CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH5CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH5CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH5CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH5CTL_IRQSEL2_S    28
 #define LPC_CH5CTL_IRQSEL1_S    24
@@ -559,9 +514,9 @@
 //*****************************************************************************
 #define LPC_CH5ST_USER_M        0x00001F00  // User Data
 #define LPC_CH5ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH5ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH5ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH5ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH5ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH5ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH5ST_CMD           0x00000008  // Command or Data
 #define LPC_CH5ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH5ST_TOH           0x00000001  // To-Host Transaction
@@ -594,26 +549,16 @@
 #define LPC_CH6CTL_IRQEN0_TRIG2 0x00020000  // Trigger 2
 #define LPC_CH6CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH6CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH6CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH6CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH6CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH6CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH6CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH6CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH6CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH6CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH6CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH6CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH6CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH6CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH6CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH6CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH6CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH6CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH6CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH6CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH6CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH6CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH6CTL_IRQSEL2_S    28
 #define LPC_CH6CTL_IRQSEL1_S    24
@@ -627,9 +572,9 @@
 //*****************************************************************************
 #define LPC_CH6ST_USER_M        0x00001F00  // User Data
 #define LPC_CH6ST_LASTHW        0x00000080  // Last Host Write
-#define LPC_CH6ST_HW1ST         0x00000040  // First Host Write
+#define LPC_CH6ST_HW1ST         0x00000040  // Host Wrote First
 #define LPC_CH6ST_LASTSW        0x00000020  // Last Slave Write
-#define LPC_CH6ST_SW1ST         0x00000010  // First Slave Write
+#define LPC_CH6ST_SW1ST         0x00000010  // Slave Wrote First
 #define LPC_CH6ST_CMD           0x00000008  // Command or Data
 #define LPC_CH6ST_FRMH          0x00000002  // From-Host Transaction
 #define LPC_CH6ST_TOH           0x00000001  // To-Host Transaction
@@ -669,26 +614,16 @@
                                             // SW1ST bit is set)
 #define LPC_CH7CTL_IRQEN0_TRIG3 0x00030000  // Trigger 3
 #define LPC_CH7CTL_ARBDIS       0x00008000  // Arbitration Disabled
-#define LPC_CH7CTL_OFFSET_M     0x00007FE0  // Base Offset in Register Pool
+#define LPC_CH7CTL_OFFSET_M     0x00003FE0  // Base Offset in Register Pool
 #define LPC_CH7CTL_AMASK_M      0x0000001C  // Address Mask for Ranges
-#define LPC_CH7CTL_AMASK_4      0x00000000  // Address mask of 0x3; mailbox
-                                            // size of 4 bytes for an endpoint
-                                            // range or used for single
-                                            // endpoints
-#define LPC_CH7CTL_AMASK_8      0x00000004  // Address mask of 0x7; mailbox
-                                            // size of 8 bytes
-#define LPC_CH7CTL_AMASK_16     0x00000008  // Address mask of 0xF; mailbox
-                                            // size of 16 bytes
-#define LPC_CH7CTL_AMASK_32     0x0000000C  // Address mask of 0x1F; mailbox
-                                            // size of 32 bytes
-#define LPC_CH7CTL_AMASK_64     0x00000010  // Address mask of 0x3F; mailbox
-                                            // size of 64 bytes
-#define LPC_CH7CTL_AMASK_128    0x00000014  // Address mask of 0x7F; mailbox
-                                            // size of 128 bytes
-#define LPC_CH7CTL_AMASK_256    0x00000018  // Address mask of 0xFF; mailbox
-                                            // size of 256 bytes
-#define LPC_CH7CTL_AMASK_512    0x0000001C  // Address mask of 0x1FF; mailbox
-                                            // size of 512 bytes
+#define LPC_CH7CTL_AMASK_4      0x00000000  // 4 bytes
+#define LPC_CH7CTL_AMASK_8      0x00000004  // 8 bytes
+#define LPC_CH7CTL_AMASK_16     0x00000008  // 16 bytes
+#define LPC_CH7CTL_AMASK_32     0x0000000C  // 32 bytes
+#define LPC_CH7CTL_AMASK_64     0x00000010  // 64 bytes
+#define LPC_CH7CTL_AMASK_128    0x00000014  // 128 bytes
+#define LPC_CH7CTL_AMASK_256    0x00000018  // 256 bytes
+#define LPC_CH7CTL_AMASK_512    0x0000001C  // 512 bytes
 #define LPC_CH7CTL_TYPE         0x00000001  // Channel Type
 #define LPC_CH7CTL_IRQSEL2_S    28
 #define LPC_CH7CTL_IRQSEL1_S    24
@@ -938,14 +873,14 @@
                                             // memory)
 #define LPC_DMACX_CXACT_UARTDMA 0x00060000  // COMx DMA model with UART
 #define LPC_DMACX_COMX          0x00010000  // COMx Handling
-#define LPC_DMACX_C3W           0x00000080  // Write Control for Channel 3
-#define LPC_DMACX_C3R           0x00000040  // Read Control for Channel 3
-#define LPC_DMACX_C2W           0x00000020  // Write Control for Channel 2
-#define LPC_DMACX_C2R           0x00000010  // Read Control for Channel 2
-#define LPC_DMACX_C1W           0x00000008  // Write Control for Channel 1
-#define LPC_DMACX_C1R           0x00000004  // Read Control for Channel 1
-#define LPC_DMACX_C0W           0x00000002  // Write Control for Channel 0
-#define LPC_DMACX_C0R           0x00000001  // Read Control for Channel 0
+#define LPC_DMACX_C3W           0x00000080  // Channel 3 Write Control
+#define LPC_DMACX_C3R           0x00000040  // Channel 3 Read Control
+#define LPC_DMACX_C2W           0x00000020  // Channel 2 Write Control
+#define LPC_DMACX_C2R           0x00000010  // Channel 2 Read Control
+#define LPC_DMACX_C1W           0x00000008  // Channel 1 Write Control
+#define LPC_DMACX_C1R           0x00000004  // Channel 1 Read Control
+#define LPC_DMACX_C0W           0x00000002  // Channel 0 Write Control
+#define LPC_DMACX_C0R           0x00000001  // Channel 0 Read Control
 
 //*****************************************************************************
 //

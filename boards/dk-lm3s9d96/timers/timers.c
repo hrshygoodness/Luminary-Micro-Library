@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the DK-LM3S9D96 Firmware Package.
+// This is part of revision 9453 of the DK-LM3S9D96 Firmware Package.
 //
 //*****************************************************************************
 
@@ -96,7 +96,7 @@ Timer0IntHandler(void)
     //
     ROM_IntMasterDisable();
     GrStringDraw(&g_sContext, (HWREGBITW(&g_ulFlags, 0) ? "1" : "0"), -1, 195,
-                 150, 1);
+                 120, 1);
     ROM_IntMasterEnable();
 }
 
@@ -123,7 +123,7 @@ Timer1IntHandler(void)
     //
     ROM_IntMasterDisable();
     GrStringDraw(&g_sContext, (HWREGBITW(&g_ulFlags, 1) ? "1" : "0"), -1, 195,
-                 120, 1);
+                 150, 1);
     ROM_IntMasterEnable();
 }
 

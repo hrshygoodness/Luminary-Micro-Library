@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
+This is part of revision 9107 of the DK-LM3S9B96 Firmware Package.
 -->
 
 <workspace>
@@ -29,8 +29,6 @@ This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
   <project description="../../driverlib/driverlib-cm3.sgxx" />
   <project description="../../grlib/grlib-cm3.sgxx" />
   <project description="../../usblib/usblib-cm3.sgxx" />
-  <project description="aes_expanded_key/aes_expanded_key.sgxx" />
-  <project description="aes_set_key/aes_set_key.sgxx" />
   <project description="bitband/bitband.sgxx" />
   <project description="blinky/blinky.sgxx" />
   <project description="boot_demo1/boot_demo1.sgxx" />

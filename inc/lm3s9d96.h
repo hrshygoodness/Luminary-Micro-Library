@@ -5,20 +5,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -2908,8 +2923,8 @@
 #define I2C_MCS_DATACK          0x00000008  // Acknowledge Data
 #define I2C_MCS_ADRACK          0x00000004  // Acknowledge Address
 #define I2C_MCS_STOP            0x00000004  // Generate STOP
-#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_ERROR           0x00000002  // Error
+#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_RUN             0x00000001  // I2C Master Enable
 #define I2C_MCS_BUSY            0x00000001  // I2C Busy
 
@@ -2962,14 +2977,14 @@
 // The following are defines for the bit fields in the I2C_O_MIMR register.
 //
 //*****************************************************************************
-#define I2C_MIMR_IM             0x00000001  // Interrupt Mask
+#define I2C_MIMR_IM             0x00000001  // Master Interrupt Mask
 
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the I2C_O_MRIS register.
 //
 //*****************************************************************************
-#define I2C_MRIS_RIS            0x00000001  // Raw Interrupt Status
+#define I2C_MRIS_RIS            0x00000001  // Master Raw Interrupt Status
 
 //*****************************************************************************
 //
@@ -3003,7 +3018,7 @@
 // The following are defines for the bit fields in the I2C_O_MICR register.
 //
 //*****************************************************************************
-#define I2C_MICR_IC             0x00000001  // Interrupt Clear
+#define I2C_MICR_IC             0x00000001  // Master Interrupt Clear
 
 //*****************************************************************************
 //
@@ -4584,7 +4599,7 @@
 #define TIMER_CTL_TAPWML        0x00000040  // GPTM Timer A PWM Output Level
 #define TIMER_CTL_TAOTE         0x00000020  // GPTM Timer A Output Trigger
                                             // Enable
-#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Enable
+#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Stall Enable
 #define TIMER_CTL_TAEVENT_M     0x0000000C  // GPTM Timer A Event Mode
 #define TIMER_CTL_TAEVENT_POS   0x00000000  // Positive edge
 #define TIMER_CTL_TAEVENT_NEG   0x00000004  // Negative edge
@@ -4597,21 +4612,21 @@
 // The following are defines for the bit fields in the TIMER_O_IMR register.
 //
 //*****************************************************************************
-#define TIMER_IMR_TBMIM         0x00000800  // GPTM Timer B Mode Match
+#define TIMER_IMR_TBMIM         0x00000800  // GPTM Timer B Match Interrupt
+                                            // Mask
+#define TIMER_IMR_CBEIM         0x00000400  // GPTM Timer B Capture Mode Event
                                             // Interrupt Mask
-#define TIMER_IMR_CBEIM         0x00000400  // GPTM Capture B Event Interrupt
-                                            // Mask
-#define TIMER_IMR_CBMIM         0x00000200  // GPTM Capture B Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CBMIM         0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TBTOIM        0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Mask
-#define TIMER_IMR_TAMIM         0x00000010  // GPTM Timer A Mode Match
-                                            // Interrupt Mask
+#define TIMER_IMR_TAMIM         0x00000010  // GPTM Timer A Match Interrupt
+                                            // Mask
 #define TIMER_IMR_RTCIM         0x00000008  // GPTM RTC Interrupt Mask
-#define TIMER_IMR_CAEIM         0x00000004  // GPTM Capture A Event Interrupt
-                                            // Mask
-#define TIMER_IMR_CAMIM         0x00000002  // GPTM Capture A Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CAEIM         0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Mask
+#define TIMER_IMR_CAMIM         0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TATOIM        0x00000001  // GPTM Timer A Time-Out Interrupt
                                             // Mask
 
@@ -4620,21 +4635,19 @@
 // The following are defines for the bit fields in the TIMER_O_RIS register.
 //
 //*****************************************************************************
-#define TIMER_RIS_TBMRIS        0x00000800  // GPTM Timer B Mode Match Raw
-                                            // Interrupt
-#define TIMER_RIS_CBERIS        0x00000400  // GPTM Capture B Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Capture B Match Raw
-                                            // Interrupt
+#define TIMER_RIS_TBMRIS        0x00000800  // GPTM Timer B Match Raw Interrupt
+#define TIMER_RIS_CBERIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TBTORIS       0x00000100  // GPTM Timer B Time-Out Raw
                                             // Interrupt
-#define TIMER_RIS_TAMRIS        0x00000010  // GPTM Timer A Mode Match Raw
-                                            // Interrupt
+#define TIMER_RIS_TAMRIS        0x00000010  // GPTM Timer A Match Raw Interrupt
 #define TIMER_RIS_RTCRIS        0x00000008  // GPTM RTC Raw Interrupt
-#define TIMER_RIS_CAERIS        0x00000004  // GPTM Capture A Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Capture A Match Raw
-                                            // Interrupt
+#define TIMER_RIS_CAERIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TATORIS       0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 
@@ -4643,21 +4656,21 @@
 // The following are defines for the bit fields in the TIMER_O_MIS register.
 //
 //*****************************************************************************
-#define TIMER_MIS_TBMMIS        0x00000800  // GPTM Timer B Mode Match Masked
+#define TIMER_MIS_TBMMIS        0x00000800  // GPTM Timer B Match Masked
                                             // Interrupt
-#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Capture B Event Masked
-                                            // Interrupt
-#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Capture B Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TBTOMIS       0x00000100  // GPTM Timer B Time-Out Masked
                                             // Interrupt
-#define TIMER_MIS_TAMMIS        0x00000010  // GPTM Timer A Mode Match Masked
+#define TIMER_MIS_TAMMIS        0x00000010  // GPTM Timer A Match Masked
                                             // Interrupt
 #define TIMER_MIS_RTCMIS        0x00000008  // GPTM RTC Masked Interrupt
-#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Capture A Event Masked
-                                            // Interrupt
-#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Capture A Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TATOMIS       0x00000001  // GPTM Timer A Time-Out Masked
                                             // Interrupt
 
@@ -4666,21 +4679,21 @@
 // The following are defines for the bit fields in the TIMER_O_ICR register.
 //
 //*****************************************************************************
-#define TIMER_ICR_TBMCINT       0x00000800  // GPTM Timer B Mode Match
+#define TIMER_ICR_TBMCINT       0x00000800  // GPTM Timer B Match Interrupt
+                                            // Clear
+#define TIMER_ICR_CBECINT       0x00000400  // GPTM Timer B Capture Mode Event
                                             // Interrupt Clear
-#define TIMER_ICR_CBECINT       0x00000400  // GPTM Capture B Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Capture B Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TBTOCINT      0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Clear
-#define TIMER_ICR_TAMCINT       0x00000010  // GPTM Timer A Mode Match
-                                            // Interrupt Clear
+#define TIMER_ICR_TAMCINT       0x00000010  // GPTM Timer A Match Interrupt
+                                            // Clear
 #define TIMER_ICR_RTCCINT       0x00000008  // GPTM RTC Interrupt Clear
-#define TIMER_ICR_CAECINT       0x00000004  // GPTM Capture A Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Capture A Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CAECINT       0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Clear
+#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TATOCINT      0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 
@@ -5786,7 +5799,6 @@
 #define COMP_ACCTL0_ASRCP_PIN   0x00000000  // Pin value of Cn+
 #define COMP_ACCTL0_ASRCP_PIN0  0x00000200  // Pin value of C0+
 #define COMP_ACCTL0_ASRCP_REF   0x00000400  // Internal voltage reference
-                                            // (VIREF)
 #define COMP_ACCTL0_TSLVAL      0x00000080  // Trigger Sense Level Value
 #define COMP_ACCTL0_TSEN_M      0x00000060  // Trigger Sense
 #define COMP_ACCTL0_TSEN_LEVEL  0x00000000  // Level sense, see TSLVAL
@@ -6987,7 +6999,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR0_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR0_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR0_ADDR_S   0
 
@@ -7015,7 +7026,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR1_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR1_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR1_ADDR_S   0
 
@@ -7043,7 +7053,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR1_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR1_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR1_ADDR_S   0
 
@@ -7071,7 +7080,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR2_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR2_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR2_ADDR_S   0
 
@@ -7099,7 +7107,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR2_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR2_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR2_ADDR_S   0
 
@@ -7127,7 +7134,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR3_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR3_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR3_ADDR_S   0
 
@@ -7155,7 +7161,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR3_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR3_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR3_ADDR_S   0
 
@@ -7183,7 +7188,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR4_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR4_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR4_ADDR_S   0
 
@@ -7211,7 +7215,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR4_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR4_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR4_ADDR_S   0
 
@@ -7239,7 +7242,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR5_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR5_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR5_ADDR_S   0
 
@@ -7267,7 +7269,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR5_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR5_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR5_ADDR_S   0
 
@@ -7295,7 +7296,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR6_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR6_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR6_ADDR_S   0
 
@@ -7323,7 +7323,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR6_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR6_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR6_ADDR_S   0
 
@@ -7351,7 +7350,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR7_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR7_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR7_ADDR_S   0
 
@@ -7379,7 +7377,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR7_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR7_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR7_ADDR_S   0
 
@@ -7407,7 +7404,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR8_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR8_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR8_ADDR_S   0
 
@@ -7435,7 +7431,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR8_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR8_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR8_ADDR_S   0
 
@@ -7463,7 +7458,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR9_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR9_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR9_ADDR_S   0
 
@@ -7491,7 +7485,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR9_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR9_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR9_ADDR_S   0
 
@@ -7519,8 +7512,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR10_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR10_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR10_ADDR_S  0
 
@@ -7548,8 +7539,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR10_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR10_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR10_ADDR_S  0
 
@@ -7577,8 +7566,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR11_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR11_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR11_ADDR_S  0
 
@@ -7606,8 +7593,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR11_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR11_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR11_ADDR_S  0
 
@@ -7635,8 +7620,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR12_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR12_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR12_ADDR_S  0
 
@@ -7664,8 +7647,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR12_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR12_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR12_ADDR_S  0
 
@@ -7693,8 +7674,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR13_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR13_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR13_ADDR_S  0
 
@@ -7722,8 +7701,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR13_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR13_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR13_ADDR_S  0
 
@@ -7751,8 +7728,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR14_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR14_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR14_ADDR_S  0
 
@@ -7780,8 +7755,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR14_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR14_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR14_ADDR_S  0
 
@@ -7809,8 +7782,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR15_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR15_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR15_ADDR_S  0
 
@@ -7838,8 +7809,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR15_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR15_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR15_ADDR_S  0
 
@@ -10726,12 +10695,12 @@
 #define EPI_HB16CFG_WRHIGH      0x00200000  // WRITE Strobe Polarity
 #define EPI_HB16CFG_RDHIGH      0x00100000  // READ Strobe Polarity
 #define EPI_HB16CFG_MAXWAIT_M   0x0000FF00  // Maximum Wait
-#define EPI_HB16CFG_WRWS_M      0x000000C0  // CS0n Write Wait States
+#define EPI_HB16CFG_WRWS_M      0x000000C0  // Write Wait States
 #define EPI_HB16CFG_WRWS_0      0x00000000  // No wait states
 #define EPI_HB16CFG_WRWS_1      0x00000040  // 1 wait state
 #define EPI_HB16CFG_WRWS_2      0x00000080  // 2 wait states
 #define EPI_HB16CFG_WRWS_3      0x000000C0  // 3 wait states
-#define EPI_HB16CFG_RDWS_M      0x00000030  // CS0n Read Wait States
+#define EPI_HB16CFG_RDWS_M      0x00000030  // Read Wait States
 #define EPI_HB16CFG_RDWS_0      0x00000000  // No wait states
 #define EPI_HB16CFG_RDWS_1      0x00000010  // 1 wait state
 #define EPI_HB16CFG_RDWS_2      0x00000020  // 2 wait states
@@ -10780,11 +10749,10 @@
 // The following are defines for the bit fields in the EPI_O_SDRAMCFG register.
 //
 //*****************************************************************************
-#define EPI_SDRAMCFG_FREQ_M     0xC0000000  // Frequency Range
+#define EPI_SDRAMCFG_FREQ_M     0xC0000000  // EPI Frequency Range
 #define EPI_SDRAMCFG_FREQ_NONE  0x00000000  // 0 - 15 MHz
 #define EPI_SDRAMCFG_FREQ_15MHZ 0x40000000  // 15 - 30 MHz
 #define EPI_SDRAMCFG_FREQ_30MHZ 0x80000000  // 30 - 50 MHz
-#define EPI_SDRAMCFG_FREQ_50MHZ 0xC0000000  // 50 - 100 MHz
 #define EPI_SDRAMCFG_RFSH_M     0x07FF0000  // Refresh Counter
 #define EPI_SDRAMCFG_SLEEP      0x00000200  // Sleep Mode
 #define EPI_SDRAMCFG_SIZE_M     0x00000003  // Size of SDRAM
@@ -10801,8 +10769,8 @@
 //*****************************************************************************
 #define EPI_HB8CFG_XFFEN        0x00800000  // External FIFO FULL Enable
 #define EPI_HB8CFG_XFEEN        0x00400000  // External FIFO EMPTY Enable
-#define EPI_HB8CFG_WRHIGH       0x00200000  // CS0n WRITE Strobe Polarity
-#define EPI_HB8CFG_RDHIGH       0x00100000  // CS0n READ Strobe Polarity
+#define EPI_HB8CFG_WRHIGH       0x00200000  // WRITE Strobe Polarity
+#define EPI_HB8CFG_RDHIGH       0x00100000  // READ Strobe Polarity
 #define EPI_HB8CFG_MAXWAIT_M    0x0000FF00  // Maximum Wait
 #define EPI_HB8CFG_WRWS_M       0x000000C0  // Write Wait States
 #define EPI_HB8CFG_WRWS_0       0x00000000  // No wait states
@@ -10890,8 +10858,8 @@
                                             // 0x0000 to 0xFFFF
 #define EPI_ADDRMAP_EPSZ_16MB   0x00000080  // 16 MB; lower address range:
                                             // 0x00.0000 to 0xFF.FFFF
-#define EPI_ADDRMAP_EPSZ_256MB  0x000000C0  // 256 MB; lower address range:
-                                            // 0x000.0000 to 0xFFF.FFFF
+#define EPI_ADDRMAP_EPSZ_512MB  0x000000C0  // 512 MB; lower address range:
+                                            // 0x000.0000 to 0x1FFF.FFFF
 #define EPI_ADDRMAP_EPADR_M     0x00000030  // External Peripheral Address
 #define EPI_ADDRMAP_EPADR_NONE  0x00000000  // Not mapped
 #define EPI_ADDRMAP_EPADR_A000  0x00000010  // At 0xA000.0000
@@ -10903,8 +10871,8 @@
                                             // 0x0000 to 0xFFFF
 #define EPI_ADDRMAP_ERSZ_16MB   0x00000008  // 16 MB; lower address range:
                                             // 0x00.0000 to 0xFF.FFFF
-#define EPI_ADDRMAP_ERSZ_256MB  0x0000000C  // 256 MB; lower address range:
-                                            // 0x000.0000 to 0xFFF.FFFF
+#define EPI_ADDRMAP_ERSZ_512MB  0x0000000C  // 512 MB; lower address range:
+                                            // 0x000.0000 to 0x1FFF.FFFF
 #define EPI_ADDRMAP_ERADR_M     0x00000003  // External RAM Address
 #define EPI_ADDRMAP_ERADR_NONE  0x00000000  // Not mapped
 #define EPI_ADDRMAP_ERADR_6000  0x00000001  // At 0x6000.0000
@@ -10980,7 +10948,7 @@
 // The following are defines for the bit fields in the EPI_O_RFIFOCNT register.
 //
 //*****************************************************************************
-#define EPI_RFIFOCNT_COUNT_M    0x00000007  // FIFO Count
+#define EPI_RFIFOCNT_COUNT_M    0x0000000F  // FIFO Count
 #define EPI_RFIFOCNT_COUNT_S    0
 
 //*****************************************************************************
@@ -11062,11 +11030,11 @@
 #define EPI_FIFOLVL_WFERR       0x00020000  // Write Full Error
 #define EPI_FIFOLVL_RSERR       0x00010000  // Read Stall Error
 #define EPI_FIFOLVL_WRFIFO_M    0x00000070  // Write FIFO
-#define EPI_FIFOLVL_WRFIFO_EMPT 0x00000000  // Trigger when there are 1 to 4
+#define EPI_FIFOLVL_WRFIFO_EMPT 0x00000000  // Trigger when there are any
                                             // spaces available in the WFIFO
-#define EPI_FIFOLVL_WRFIFO_1_4  0x00000020  // Trigger when there are 1 to 3
+#define EPI_FIFOLVL_WRFIFO_1_4  0x00000020  // Trigger when there are up to 3
                                             // spaces available in the WFIFO
-#define EPI_FIFOLVL_WRFIFO_1_2  0x00000030  // Trigger when there are 1 to 2
+#define EPI_FIFOLVL_WRFIFO_1_2  0x00000030  // Trigger when there are up to 2
                                             // spaces available in the WFIFO
 #define EPI_FIFOLVL_WRFIFO_3_4  0x00000040  // Trigger when there is 1 space
                                             // available in the WFIFO
@@ -11098,8 +11066,8 @@
 // The following are defines for the bit fields in the EPI_O_IM register.
 //
 //*****************************************************************************
-#define EPI_IM_WRIM             0x00000004  // Write Interrupt Mask
-#define EPI_IM_RDIM             0x00000002  // Read Interrupt Mask
+#define EPI_IM_WRIM             0x00000004  // Write FIFO Empty Interrupt Mask
+#define EPI_IM_RDIM             0x00000002  // Read FIFO Full Interrupt Mask
 #define EPI_IM_ERRIM            0x00000001  // Error Interrupt Mask
 
 //*****************************************************************************

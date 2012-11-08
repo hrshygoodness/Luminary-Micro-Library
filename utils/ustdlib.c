@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -116,7 +116,7 @@ ustrncpy (char *pcDst, const char *pcSrc, int iNum)
 //! function.  Only the following formatting characters are supported:
 //!
 //! - \%c to print a character
-//! - \%d to print a decimal value
+//! - \%d or \%i to print a decimal value
 //! - \%s to print a string
 //! - \%u to print an unsigned decimal value
 //! - \%x to print a hexadecimal value using lower case letters
@@ -125,9 +125,9 @@ ustrncpy (char *pcDst, const char *pcSrc, int iNum)
 //! - \%p to print a pointer as a hexadecimal value
 //! - \%\% to print out a \% character
 //!
-//! For \%d, \%p, \%s, \%u, \%x, and \%X, an optional number may reside between
-//! the \% and the format character, which specifies the minimum number of
-//! characters to use for that value; if preceded by a 0 then the extra
+//! For \%d, \%i, \%p, \%s, \%u, \%x, and \%X, an optional number may reside
+//! between the \% and the format character, which specifies the minimum number
+//! of characters to use for that value; if preceded by a 0 then the extra
 //! characters will be filled with zeros instead of spaces.  For example,
 //! ``\%8d'' will use eight characters to print the decimal value with spaces
 //! added to reach eight; ``\%08d'' will use eight characters as well but will
@@ -319,9 +319,10 @@ again:
                 }
 
                 //
-                // Handle the %d command.
+                // Handle the %d and %i commands.
                 //
                 case 'd':
+                case 'i':
                 {
                     //
                     // Get the value from the varargs.
@@ -696,7 +697,7 @@ convert:
 //! Only the following formatting characters are supported:
 //!
 //! - \%c to print a character
-//! - \%d to print a decimal value
+//! - \%d or \%i to print a decimal value
 //! - \%s to print a string
 //! - \%u to print an unsigned decimal value
 //! - \%x to print a hexadecimal value using lower case letters
@@ -705,9 +706,9 @@ convert:
 //! - \%p to print a pointer as a hexadecimal value
 //! - \%\% to print out a \% character
 //!
-//! For \%d, \%p, \%s, \%u, \%x, and \%X, an optional number may reside between
-//! the \% and the format character, which specifies the minimum number of
-//! characters to use for that value; if preceded by a 0 then the extra
+//! For \%d, \%i, \%p, \%s, \%u, \%x, and \%X, an optional number may reside
+//! between the \% and the format character, which specifies the minimum number
+//! of characters to use for that value; if preceded by a 0 then the extra
 //! characters will be filled with zeros instead of spaces.  For example,
 //! ``\%8d'' will use eight characters to print the decimal value with spaces
 //! added to reach eight; ``\%08d'' will use eight characters as well but will
@@ -767,7 +768,7 @@ usprintf(char *pcBuf, const char *pcString, ...)
 //! Only the following formatting characters are supported:
 //!
 //! - \%c to print a character
-//! - \%d to print a decimal value
+//! - \%d or \%i to print a decimal value
 //! - \%s to print a string
 //! - \%u to print an unsigned decimal value
 //! - \%x to print a hexadecimal value using lower case letters
@@ -776,9 +777,9 @@ usprintf(char *pcBuf, const char *pcString, ...)
 //! - \%p to print a pointer as a hexadecimal value
 //! - \%\% to print out a \% character
 //!
-//! For \%d, \%p, \%s, \%u, \%x, and \%X, an optional number may reside between
-//! the \% and the format character, which specifies the minimum number of
-//! characters to use for that value; if preceded by a 0 then the extra
+//! For \%d, \%i, \%p, \%s, \%u, \%x, and \%X, an optional number may reside
+//! between the \% and the format character, which specifies the minimum number
+//! of characters to use for that value; if preceded by a 0 then the extra
 //! characters will be filled with zeros instead of spaces.  For example,
 //! ``\%8d'' will use eight characters to print the decimal value with spaces
 //! added to reach eight; ``\%08d'' will use eight characters as well but will

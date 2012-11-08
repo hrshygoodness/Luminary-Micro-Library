@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -86,7 +101,7 @@
 #define SYSCTL_LDOARST          0x400FE160  // Allow Unregulated LDO to Reset
                                             // the Part
 #define SYSCTL_PLLFREQ0         0x400FE160  // PLL Frequency 0
-#define SYSCTL_PLLFREQ1         0x400FE164  // PLL Frequency
+#define SYSCTL_PLLFREQ1         0x400FE164  // PLL Frequency 1
 #define SYSCTL_PLLSTAT          0x400FE168  // PLL Status
 #define SYSCTL_I2SMCLKCFG       0x400FE170  // I2S MCLK Configuration
 #define SYSCTL_DC9              0x400FE190  // Device Capabilities 9 ADC
@@ -123,7 +138,7 @@
                                             // Peripheral Present
 #define SYSCTL_PPPECI           0x400FE350  // Platform Environment Control
                                             // Interface Peripheral Present
-#define SYSCTL_PPFAN            0x400FE354  // FAN Peripheral Present
+#define SYSCTL_PPFAN            0x400FE354  // Fan Control Peripheral Present
 #define SYSCTL_PPEEPROM         0x400FE358  // EEPROM Peripheral Present
 #define SYSCTL_PPWTIMER         0x400FE35C  // Wide Timer Peripheral Present
 #define SYSCTL_SRWD             0x400FE500  // Watchdog Timer Software Reset
@@ -155,7 +170,7 @@
                                             // Reset
 #define SYSCTL_SRPECI           0x400FE550  // Platform Environment Control
                                             // Interface Software Reset
-#define SYSCTL_SRFAN            0x400FE554  // FAN Software Reset
+#define SYSCTL_SRFAN            0x400FE554  // Fan Software Reset
 #define SYSCTL_SREEPROM         0x400FE558  // EEPROM Software Reset
 #define SYSCTL_SRWTIMER         0x400FE55C  // Wide Timer Software Reset
 #define SYSCTL_RCGCWD           0x400FE600  // Watchdog Timer Run Mode Clock
@@ -192,7 +207,7 @@
 #define SYSCTL_RCGCPECI         0x400FE650  // Platform Environment Control
                                             // Interface Run Mode Clock Gating
                                             // Control
-#define SYSCTL_RCGCFAN          0x400FE654  // FAN Run Mode Clock Gating
+#define SYSCTL_RCGCFAN          0x400FE654  // Fan Run Mode Clock Gating
                                             // Control
 #define SYSCTL_RCGCEEPROM       0x400FE658  // EEPROM Run Mode Clock Gating
                                             // Control
@@ -232,7 +247,7 @@
 #define SYSCTL_SCGCPECI         0x400FE750  // Platform Environment Control
                                             // Interface Sleep Mode Clock
                                             // Gating Control
-#define SYSCTL_SCGCFAN          0x400FE754  // FAN Sleep Mode Clock Gating
+#define SYSCTL_SCGCFAN          0x400FE754  // Fan Sleep Mode Clock Gating
                                             // Control
 #define SYSCTL_SCGCEEPROM       0x400FE758  // EEPROM Sleep Mode Clock Gating
                                             // Control
@@ -280,7 +295,7 @@
 #define SYSCTL_DCGCPECI         0x400FE850  // Platform Environment Control
                                             // Interface Deep-Sleep Mode Clock
                                             // Gating Control
-#define SYSCTL_DCGCFAN          0x400FE854  // FAN Deep-Sleep Mode Clock Gating
+#define SYSCTL_DCGCFAN          0x400FE854  // Fan Deep-Sleep Mode Clock Gating
                                             // Control
 #define SYSCTL_DCGCEEPROM       0x400FE858  // EEPROM Deep-Sleep Mode Clock
                                             // Gating Control
@@ -348,7 +363,7 @@
                                             // Peripheral Ready
 #define SYSCTL_PRPECI           0x400FEA50  // Platform Environment Control
                                             // Interface Peripheral Ready
-#define SYSCTL_PRFAN            0x400FEA54  // FAN Peripheral Ready
+#define SYSCTL_PRFAN            0x400FEA54  // Fan Peripheral Ready
 #define SYSCTL_PREEPROM         0x400FEA58  // EEPROM Peripheral Ready
 #define SYSCTL_PRWTIMER         0x400FEA5C  // Wide Timer Peripheral Ready
 
@@ -717,6 +732,20 @@
                                 0x00610000  // LM4F132H5QC
 #define SYSCTL_DID1_PRTNO_LM4F132H5QD \
                                 0x00650000  // LM4F132H5QD
+#define SYSCTL_DID1_PRTNO_LM4F210E5QR \
+                                0x00700000  // LM4F210E5QR
+#define SYSCTL_DID1_PRTNO_LM4F210H5QR \
+                                0x00730000  // LM4F210H5QR
+#define SYSCTL_DID1_PRTNO_LM4F211E5QR \
+                                0x00800000  // LM4F211E5QR
+#define SYSCTL_DID1_PRTNO_LM4F211H5QR \
+                                0x00830000  // LM4F211H5QR
+#define SYSCTL_DID1_PRTNO_LM4F212H5BB \
+                                0x00E90000  // LM4F212H5BB
+#define SYSCTL_DID1_PRTNO_LM4F212H5QC \
+                                0x00C40000  // LM4F212H5QC
+#define SYSCTL_DID1_PRTNO_LM4F212H5QD \
+                                0x00C60000  // LM4F212H5QD
 #define SYSCTL_DID1_PRTNO_LM4F230E5QR \
                                 0x00A00000  // LM4F230E5QR
 #define SYSCTL_DID1_PRTNO_LM4F230H5QR \
@@ -735,12 +764,16 @@
                                 0x00C50000  // LM4F232H5QD
 #define SYSCTL_DID1_PRTNO_LM4FS1AH5BB \
                                 0x00E50000  // LM4FS1AH5BB
+#define SYSCTL_DID1_PRTNO_LM4FS1GH5BB \
+                                0x00EA0000  // LM4FS1GH5BB
 #define SYSCTL_DID1_PRTNO_LM4FS99H5BB \
                                 0x00E40000  // LM4FS99H5BB
 #define SYSCTL_DID1_PRTNO_LM4FSXAH5BB \
                                 0x00E00000  // LM4FSXAH5BB
+#define SYSCTL_DID1_PRTNO_LM4FSXLH5BB \
+                                0x00E10000  // LM4FSXLH5BB
 #define SYSCTL_DID1_PINCNT_M    0x0000E000  // Package Pin Count
-#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28 pin package
+#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28-pin package
 #define SYSCTL_DID1_PINCNT_48   0x00002000  // 48-pin package
 #define SYSCTL_DID1_PINCNT_100  0x00004000  // 100-pin package
 #define SYSCTL_DID1_PINCNT_64   0x00006000  // 64-pin package
@@ -2146,7 +2179,7 @@
 // The following are defines for the bit fields in the SYSCTL_SRACMP register.
 //
 //*****************************************************************************
-#define SYSCTL_SRACMP_R0        0x00000001  // Analog Comparator Module
+#define SYSCTL_SRACMP_R0        0x00000001  // Analog Comparator Module 0
                                             // Software Reset
 
 //*****************************************************************************
@@ -2378,7 +2411,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_RCGCACMP_R0      0x00000001  // Analog Comparator Module Run
+#define SYSCTL_RCGCACMP_R0      0x00000001  // Analog Comparator Module 0 Run
                                             // Mode Clock Gating Control
 
 //*****************************************************************************
@@ -2625,7 +2658,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_SCGCACMP_S0      0x00000001  // Analog Comparator Module Sleep
+#define SYSCTL_SCGCACMP_S0      0x00000001  // Analog Comparator Module 0 Sleep
                                             // Mode Clock Gating Control
 
 //*****************************************************************************
@@ -2750,7 +2783,8 @@
                                             // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D8      0x00000100  // GPIO Port J Deep-Sleep Mode
                                             // Clock Gating Control
-#define SYSCTL_DCGCGPIO_D7      0x00000080  // 0Mode Clock Gating Control
+#define SYSCTL_DCGCGPIO_D7      0x00000080  // GPIO Port H Deep-Sleep Mode
+                                            // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D6      0x00000040  // GPIO Port G Deep-Sleep Mode
                                             // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D5      0x00000020  // GPIO Port F Deep-Sleep Mode
@@ -2871,7 +2905,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_DCGCACMP_D0      0x00000001  // Analog Comparator Module
+#define SYSCTL_DCGCACMP_D0      0x00000001  // Analog Comparator Module 0
                                             // Deep-Sleep Mode Clock Gating
                                             // Control
 
@@ -3250,7 +3284,7 @@
 // The following are defines for the bit fields in the SYSCTL_PRACMP register.
 //
 //*****************************************************************************
-#define SYSCTL_PRACMP_R0        0x00000001  // Analog Comparator Module
+#define SYSCTL_PRACMP_R0        0x00000001  // Analog Comparator Module 0
                                             // Peripheral Ready
 
 //*****************************************************************************

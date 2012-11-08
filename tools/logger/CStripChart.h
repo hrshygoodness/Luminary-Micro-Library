@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 #ifndef _CSTRIPCHART_H_
@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
-#include <FL/fl_draw.h>
+#include <FL/fl_draw.H>
 
 //*****************************************************************************
 //

@@ -5,20 +5,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -32,7 +47,7 @@
 //*****************************************************************************
 #define FAN_O_STS               0x00000000  // FAN Status
 #define FAN_O_CTL               0x00000004  // FAN Control
-#define FAN_O_CH0               0x00000010  // FAN Channel Command
+#define FAN_O_CH0               0x00000010  // FAN Channel Setup
 #define FAN_O_CMD0              0x00000014  // FAN Channel Command
 #define FAN_O_CST0              0x00000018  // FAN Channel Status
 #define FAN_O_CH1               0x00000020  // FAN Channel Setup
@@ -72,18 +87,33 @@
 #define FAN_STS_ST5_STALLED     0x00000000  // Stalled
 #define FAN_STS_ST5_CHANGING    0x00000400  // Changing
 #define FAN_STS_ST5_LOCKED      0x00000800  // Locked
-#define FAN_STS_ST5_UNBALANCED  0x00000C00  // Unbalanced Spin
+#define FAN_STS_ST5_NOATTAIN    0x00000C00  // No Attain
 #define FAN_STS_ST4_M           0x00000300  // Fan 4 Status
+#define FAN_STS_ST4_STALLED     0x00000000  // Stalled
+#define FAN_STS_ST4_CHANGING    0x00000100  // Changing
+#define FAN_STS_ST4_LOCKED      0x00000200  // Locked
+#define FAN_STS_ST4_NOATTAIN    0x00000300  // No Attain
 #define FAN_STS_ST3_M           0x000000C0  // Fan 3 Status
+#define FAN_STS_ST3_STALLED     0x00000000  // Stalled
+#define FAN_STS_ST3_CHANGING    0x00000040  // Changing
+#define FAN_STS_ST3_LOCKED      0x00000080  // Locked
+#define FAN_STS_ST3_NOATTAIN    0x000000C0  // No Attain
 #define FAN_STS_ST2_M           0x00000030  // Fan 2 Status
+#define FAN_STS_ST2_STALLED     0x00000000  // Stalled
+#define FAN_STS_ST2_CHANGING    0x00000010  // Changing
+#define FAN_STS_ST2_LOCKED      0x00000020  // Locked
+#define FAN_STS_ST2_NOATTAIN    0x00000030  // No Attain
 #define FAN_STS_ST1_M           0x0000000C  // Fan 1 Status
+#define FAN_STS_ST1_STALLED     0x00000000  // Stalled
+#define FAN_STS_ST1_CHANGING    0x00000004  // Changing
+#define FAN_STS_ST1_LOCKED      0x00000008  // Locked
+#define FAN_STS_ST1_NOATTAIN    0x0000000C  // No Attain
 #define FAN_STS_ST0_M           0x00000003  // Fan 0 Status
+#define FAN_STS_ST0_STALLED     0x00000000  // Stalled
+#define FAN_STS_ST0_CHANGING    0x00000001  // Changing
+#define FAN_STS_ST0_LOCKED      0x00000002  // Locked
+#define FAN_STS_ST0_NOATTAIN    0x00000003  // No Attain
 #define FAN_STS_FANCNT_S        16
-#define FAN_STS_ST4_S           8
-#define FAN_STS_ST3_S           6
-#define FAN_STS_ST2_S           4
-#define FAN_STS_ST1_S           2
-#define FAN_STS_ST0_S           0
 
 //*****************************************************************************
 //
@@ -544,19 +574,19 @@
                                             // Status
 #define FAN_RIS_C3INT1RIS       0x00004000  // Channel 3 Raw Interrupt 1 Status
 #define FAN_RIS_C3INT0RIS       0x00002000  // Channel 3 Raw Interrupt 0 Status
-#define FAN_RIS_C3STALLRIS      0x00001000  // Channel 3 Raw Stall Interrupt
+#define FAN_RIS_C3STALLRIS      0x00001000  // Channel 3 Stall Raw Interrupt
                                             // Status
 #define FAN_RIS_C2INT1RIS       0x00000400  // Channel 2 Raw Interrupt 1 Status
 #define FAN_RIS_C2INT0RIS       0x00000200  // Channel 2 Raw Interrupt 0 Status
-#define FAN_RIS_C2STALLRIS      0x00000100  // Channel 2 Raw Stall Interrupt
+#define FAN_RIS_C2STALLRIS      0x00000100  // Channel 2 Stall Raw Interrupt
                                             // Status
 #define FAN_RIS_C1INT1RIS       0x00000040  // Channel 1 Raw Interrupt 1 Status
 #define FAN_RIS_C1INT0RIS       0x00000020  // Channel 1 Raw Interrupt 0 Status
-#define FAN_RIS_C1STALLRIS      0x00000010  // Channel 1 Raw Stall Interrupt
+#define FAN_RIS_C1STALLRIS      0x00000010  // Channel 1 Stall Raw Interrupt
                                             // Status
 #define FAN_RIS_C0INT1RIS       0x00000004  // Channel 0 Raw Interrupt 1 Status
 #define FAN_RIS_C0INT0RIS       0x00000002  // Channel 0 Raw Interrupt 0 Status
-#define FAN_RIS_C0STALLRIS      0x00000001  // Channel 0 Raw Stall Interrupt
+#define FAN_RIS_C0STALLRIS      0x00000001  // Channel 0 Stall Raw Interrupt
                                             // Status
 
 //*****************************************************************************
@@ -570,7 +600,7 @@
                                             // Status
 #define FAN_MIS_C5STALLMIS      0x00100000  // Channel 5 Masked Stall Interrupt
                                             // Status
-#define FAN_MIS_C54NT1MIS       0x00040000  // Channel 4 Masked Interrupt 1
+#define FAN_MIS_C4NT1MIS        0x00040000  // Channel 4 Masked Interrupt 1
                                             // Status
 #define FAN_MIS_C4INT0MIS       0x00020000  // Channel 4 Masked Interrupt 0
                                             // Status
@@ -580,25 +610,25 @@
                                             // Status
 #define FAN_MIS_C3INT0MIS       0x00002000  // Channel 3 Masked Interrupt 0
                                             // Status
-#define FAN_MIS_C3STALLMIS      0x00001000  // Channel 3 Masked Stall Interrupt
+#define FAN_MIS_C3STALLMIS      0x00001000  // Channel 3 Stall Masked Interrupt
                                             // Status
 #define FAN_MIS_C2INT1MIS       0x00000400  // Channel 2 Masked Interrupt 1
                                             // Status
 #define FAN_MIS_C2INT0MIS       0x00000200  // Channel 2 Masked Interrupt 0
                                             // Status
-#define FAN_MIS_C2STALLMIS      0x00000100  // Channel 2 Masked Stall Interrupt
+#define FAN_MIS_C2STALLMIS      0x00000100  // Channel 2 Stall Masked Interrupt
                                             // Status
 #define FAN_MIS_C1INT1MIS       0x00000040  // Channel 1 Masked Interrupt 1
                                             // Status
 #define FAN_MIS_C1INT0MIS       0x00000020  // Channel 1 Masked Interrupt 0
                                             // Status
-#define FAN_MIS_C1STALLMIS      0x00000010  // Channel 1 Masked Stall Interrupt
+#define FAN_MIS_C1STALLMIS      0x00000010  // Channel 1 Stall Masked Interrupt
                                             // Status
 #define FAN_MIS_C0INT1MIS       0x00000004  // Channel 0 Masked Interrupt 1
                                             // Status
 #define FAN_MIS_C0INT0MIS       0x00000002  // Channel 0 Masked Interrupt 0
                                             // Status
-#define FAN_MIS_C0STALLMIS      0x00000001  // Channel 0 Masked Stall Interrupt
+#define FAN_MIS_C0STALLMIS      0x00000001  // Channel 0 Stall Masked Interrupt
                                             // Status
 
 //*****************************************************************************
@@ -632,5 +662,27 @@
 //*****************************************************************************
 #define FAN_PP_CHAN_M           0x0000000F  // Channel Count
 #define FAN_PP_CHAN_S           0
+
+//*****************************************************************************
+//
+// The following definitions are deprecated.
+//
+//*****************************************************************************
+#ifndef DEPRECATED
+
+//*****************************************************************************
+//
+// The following are deprecated defines for the bit fields in the FAN_O_STS
+// register.
+//
+//*****************************************************************************
+#define FAN_STS_ST5_UNBALANCED  0x00000C00  // Unbalanced Spin
+#define FAN_STS_ST4_S           8
+#define FAN_STS_ST3_S           6
+#define FAN_STS_ST2_S           4
+#define FAN_STS_ST1_S           2
+#define FAN_STS_ST0_S           0
+
+#endif
 
 #endif // __HW_FAN_H__

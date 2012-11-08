@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-BDC24 Firmware Package.
+// This is part of revision 9453 of the RDK-BDC24 Firmware Package.
 //
 //*****************************************************************************
 
@@ -32,7 +32,7 @@
 // The firmware version.
 //
 //*****************************************************************************
-const unsigned long g_ulFirmwareVersion = 8555;
+const unsigned long g_ulFirmwareVersion = 9453;
 
 //*****************************************************************************
 //

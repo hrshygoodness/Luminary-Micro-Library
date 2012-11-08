@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //****************************************************************************
 
@@ -29,7 +29,6 @@
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
 #include "driverlib/usb.h"
-#include "usblib/usblibpriv.h"
 #include "usblib/usblib.h"
 #include "usblib/usb-ids.h"
 #include "usblib/usbcdc.h"

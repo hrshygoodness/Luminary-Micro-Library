@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 8555 of the EK-LM3S9B92 Firmware Package.
+ * This is part of revision 9107 of the EK-LM3S9B92 Firmware Package.
  *
  *****************************************************************************/
 
@@ -28,7 +28,7 @@
  * stack space.
  *
  *****************************************************************************/
-__cs3_heap_end = __cs3_region_end_ram - 512;
+__cs3_heap_end = __cs3_region_end_ram - 1024;
 
 /******************************************************************************
  *

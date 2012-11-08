@@ -344,7 +344,7 @@
             <uThumb>0</uThumb>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>rvmdk</Define>
+              <Define>rvmdk </Define>
               <Undefine></Undefine>
               <IncludePath>..;</IncludePath>
             </VariousControls>

@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -50,6 +50,8 @@ extern unsigned short Crc16Array(unsigned long ulWordLen,
                                  const unsigned long *pulData);
 extern void Crc16Array3(unsigned long ulWordLen, const unsigned long *pulData,
                         unsigned short *pusCrc3);
+extern unsigned long Crc32(unsigned long ulCrc, const unsigned char *pucData,
+                           unsigned long ulCount);
 
 //*****************************************************************************
 //

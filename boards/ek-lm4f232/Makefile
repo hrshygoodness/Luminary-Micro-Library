@@ -18,32 +18,41 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 8555 of the EK-LM4F232 Firmware Package.
+# This is part of revision 9453 of the EK-LM4F232 Firmware Package.
 #
 #******************************************************************************
 
 #
 # A list of the directories containing the examples.
 #
-DIRS=aes_expanded_key \
-     aes_set_key      \
-     bitband          \
-     blinky           \
-     hello            \
-     hibernate        \
-     interrupts       \
-     mpu_fault        \
-     qs-logger        \
-     sd_card          \
-     sine_demo        \
-     timers           \
-     uart_echo        \
-     udma_demo        \
-     usb_dev_bulk     \
-     usb_dev_keyboard \
-     usb_dev_serial   \
-     usb_host_msc     \
-     watchdog        
+DIRS=bitband           \
+     blinky            \
+     boot_demo1        \
+     boot_demo2        \
+     boot_serial       \
+     boot_usb          \
+     hello             \
+     hibernate         \
+     interrupts        \
+     mpu_fault         \
+     qs-logger         \
+     sd_card           \
+     sine_demo         \
+     softuart_echo     \
+     timers            \
+     uart_echo         \
+     udma_demo         \
+     usb_dev_bulk      \
+     usb_dev_keyboard  \
+     usb_dev_msc       \
+     usb_dev_serial    \
+     usb_host_audio    \
+     usb_host_msc      \
+     usb_host_keyboard \
+     usb_host_mouse    \
+     usb_stick_demo    \
+     usb_stick_update  \
+     watchdog         
 
 #
 # The default rule, which causes the examples to be built.

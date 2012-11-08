@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //****************************************************************************
 
@@ -89,22 +89,27 @@
 //!
 //! For 915 MHz operation (as used in the USA):
 //!
-//! <tt>\#define ISM_US
-//! \#undef ISM_LF
-//! \#undef ISM_EU</tt>
+//! \verbatim
+//! #define ISM_US
+//! #undef ISM_LF
+//! #undef ISM_EU
+//! \endverbatim
 //!
 //! For 868 MHz operation (as used in Europe):
 //!
-//! <tt>\#undef ISM_US
-//! \#undef ISM_LF
-//! \#define ISM_EU</tt>
+//! \verbatim
+//! #undef ISM_US
+//! #undef ISM_LF
+//! #define ISM_EU
+//! \endverbatim
 //!
 //! For 433 MHz operation (as used in Japan):
 //!
-//! <tt>\#undef ISM_US
-//! \#define ISM_LF
-//! \#undef ISM_EU</tt>
-//!
+//! \verbatim
+//! #undef ISM_US
+//! #define ISM_LF
+//! #undef ISM_EU
+//! \endverbatim
 //
 //*****************************************************************************
 

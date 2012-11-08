@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 8555 of the DK-LM3S9D96-EM2-CC2500-SIMPLICITI Firmware Package.
+ * This is part of revision 9453 of the DK-LM3S9D96-EM2-CC2500-SIMPLICITI Firmware Package.
  *
  *****************************************************************************/
 

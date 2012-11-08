@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -56,6 +56,20 @@ extern "C"
 //
 //*****************************************************************************
 #define CMDLINE_TOO_MANY_ARGS   (-2)
+
+//*****************************************************************************
+//
+//! Defines the value that is returned if there are too few arguments.
+//
+//*****************************************************************************
+#define CMDLINE_TOO_FEW_ARGS   (-3)
+
+//*****************************************************************************
+//
+//! Defines the value that is returned if an argument is invalid.
+//
+//*****************************************************************************
+#define CMDLINE_INVALID_ARG   (-4)
 
 //*****************************************************************************
 //

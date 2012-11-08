@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -61,6 +61,12 @@ typedef enum
     PORT_RESET_ACTIVE,
 
     //
+    // The Port reset has completed but now the hub is waiting the required
+    // 10ms before accessing the device.
+    //
+    PORT_RESET_WAIT,
+
+    //
     // A device is connected and the port has been reset.  Control has been
     // passed to the main host handling portion of USBLib to enumerate the
     // device.
@@ -78,6 +84,20 @@ typedef enum
     PORT_ERROR
 }
 tHubPortState;
+
+//*****************************************************************************
+//
+// The list of valid event flags in the g_sUSBHCD.ulEventEnables member
+// variable.
+//
+//*****************************************************************************
+#define USBHCD_EVFLAG_SOF       0x00000001
+#define USBHCD_EVFLAG_CONNECT   0x00000002
+#define USBHCD_EVFLAG_UNKCNCT   0x00000004
+#define USBHCD_EVFLAG_DISCNCT   0x00000008
+#define USBHCD_EVFLAG_PWRFAULT  0x00000010
+#define USBHCD_EVFLAG_PWRDIS    0x00000020
+#define USBHCD_EVFLAG_PWREN     0x00000040
 
 //*****************************************************************************
 //
@@ -106,6 +126,11 @@ typedef struct
     // The current state of the port.
     //
     volatile tHubPortState sState;
+
+    //
+    // General counter used in various states.
+    //
+    volatile unsigned long ulCount;
 
     //
     // A flag used to indicate that the downstream device is a low speed
@@ -215,6 +240,7 @@ extern void USBHCDHubDeviceDisconnected(unsigned long ulIndex,
 //
 //*****************************************************************************
 extern void USBHHubMain(void);
+extern void USBHHubInit(void);
 extern void USBHHubEnumerationComplete(unsigned char ucHub,
                                        unsigned char ucPort);
 extern void USBHHubEnumerationError(unsigned char ucHub, unsigned char ucPort);

@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -171,7 +171,20 @@ extern void lwIPHostTimerHandler(void);
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #if !NO_SYS
+#if RTOS_SAFERTOS
 #include "SafeRTOS/SafeRTOS_API.h"
+#elif RTOS_FREERTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#endif
+#if ((RTOS_SAFERTOS + RTOS_FREERTOS) < 1)
+    #error No RTOS is defined. Please define an RTOS.
+#endif
+#if ((RTOS_SAFERTOS + RTOS_FREERTOS) > 1)
+    #error Two RTOS defined. Please define only one RTOS at a time.
+#endif
 #endif
 
 //*****************************************************************************
@@ -376,14 +389,10 @@ lwIPInterruptTask(void *pvArg)
 
 //*****************************************************************************
 //
-//! Service the lwIP timers.
-//!
-//! This function services all of the lwIP periodic timers, including TCP and
-//! Host timers.  This should be called from the lwIP context, which may be
-//! the Ethernet interrupt (in the case of a non-RTOS system) or the lwIP
-//! thread, in the event that an RTOS is used.
-//!
-//! \return None.
+// This function services all of the lwIP periodic timers, including TCP and
+// Host timers.  This should be called from the lwIP context, which may be
+// the Ethernet interrupt (in the case of a non-RTOS system) or the lwIP
+// thread, in the event that an RTOS is used.
 //
 //*****************************************************************************
 #if NO_SYS
@@ -618,16 +627,25 @@ lwIPPrivateInit(void *pvArg)
     // the Ethernet interrupt task from the Ethernet interrupt handler.
     //
 #if !NO_SYS
+#if RTOS_SAFERTOS
     xQueueCreate(g_pcQueueMem, sizeof(g_pcQueueMem), 1, sizeof(void *),
                  &g_pInterrupt);
+#elif RTOS_FREERTOS
+    g_pInterrupt = xQueueCreate(1,sizeof(void *));
+#endif
 #endif
 
     //
     // If using a RTOS, create the Ethernet interrupt task.
     //
 #if !NO_SYS
+#if RTOS_SAFERTOS
     xTaskCreate(lwIPInterruptTask, (signed portCHAR *)"eth_int",
                 (signed portCHAR *)g_pulStack, sizeof(g_pulStack), 0, 1, 0);
+#elif RTOS_FREERTOS
+    xTaskCreate(lwIPInterruptTask, (signed portCHAR *)"eth_int",
+                 sizeof(g_pulStack)/sizeof(int), 0, tskIDLE_PRIORITY+1, 0);
+#endif
 #endif
 
     //
@@ -877,7 +895,14 @@ lwIPEthernetIntHandler(void)
     //
     // Potentially task switch as a result of the above queue write.
     //
+#if RTOS_SAFERTOS
     taskYIELD_FROM_ISR(xWake);
+#elif RTOS_FREERTOS
+    if(xWake == pdTRUE)
+    {
+        vPortYieldFromISR();
+    }
+#endif
 #endif
 }
 

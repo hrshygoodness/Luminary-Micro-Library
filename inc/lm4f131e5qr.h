@@ -5,20 +5,35 @@
 // Copyright (c) 2011-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1695,6 +1710,28 @@
 
 //*****************************************************************************
 //
+// EEPROM registers (EEPROM)
+//
+//*****************************************************************************
+#define EEPROM_EESIZE_R         (*((volatile unsigned long *)0x400AF000))
+#define EEPROM_EEBLOCK_R        (*((volatile unsigned long *)0x400AF004))
+#define EEPROM_EEOFFSET_R       (*((volatile unsigned long *)0x400AF008))
+#define EEPROM_EERDWR_R         (*((volatile unsigned long *)0x400AF010))
+#define EEPROM_EERDWRINC_R      (*((volatile unsigned long *)0x400AF014))
+#define EEPROM_EEDONE_R         (*((volatile unsigned long *)0x400AF018))
+#define EEPROM_EESUPP_R         (*((volatile unsigned long *)0x400AF01C))
+#define EEPROM_EEUNLOCK_R       (*((volatile unsigned long *)0x400AF020))
+#define EEPROM_EEPROT_R         (*((volatile unsigned long *)0x400AF030))
+#define EEPROM_EEPASS0_R        (*((volatile unsigned long *)0x400AF034))
+#define EEPROM_EEPASS1_R        (*((volatile unsigned long *)0x400AF038))
+#define EEPROM_EEPASS2_R        (*((volatile unsigned long *)0x400AF03C))
+#define EEPROM_EEINT_R          (*((volatile unsigned long *)0x400AF040))
+#define EEPROM_EEHIDE_R         (*((volatile unsigned long *)0x400AF050))
+#define EEPROM_EEDBGME_R        (*((volatile unsigned long *)0x400AF080))
+#define EEPROM_PP_R             (*((volatile unsigned long *)0x400AFFC0))
+
+//*****************************************************************************
+//
 // I2C registers (I2C4 MASTER)
 //
 //*****************************************************************************
@@ -2044,6 +2081,8 @@
 #define NVIC_PRI30_R            (*((volatile unsigned long *)0xE000E478))
 #define NVIC_PRI31_R            (*((volatile unsigned long *)0xE000E47C))
 #define NVIC_PRI32_R            (*((volatile unsigned long *)0xE000E480))
+#define NVIC_PRI33_R            (*((volatile unsigned long *)0xE000E484))
+#define NVIC_PRI34_R            (*((volatile unsigned long *)0xE000E488))
 #define NVIC_CPUID_R            (*((volatile unsigned long *)0xE000ED00))
 #define NVIC_INT_CTRL_R         (*((volatile unsigned long *)0xE000ED04))
 #define NVIC_VTABLE_R           (*((volatile unsigned long *)0xE000ED08))
@@ -2344,6 +2383,8 @@
 #define GPIO_PCTL_PE4_U5RX      0x00010000  // U5RX on PE4
 #define GPIO_PCTL_PE4_I2C2SCL   0x00030000  // I2C2SCL on PE4
 #define GPIO_PCTL_PE4_CAN0RX    0x00080000  // CAN0RX on PE4
+#define GPIO_PCTL_PE3_M         0x0000F000  // PE3 mask
+#define GPIO_PCTL_PE2_M         0x00000F00  // PE2 mask
 #define GPIO_PCTL_PE1_M         0x000000F0  // PE1 mask
 #define GPIO_PCTL_PE1_U7TX      0x00000010  // U7TX on PE1
 #define GPIO_PCTL_PE0_M         0x0000000F  // PE0 mask
@@ -2546,7 +2587,7 @@
 #define SSI_CC_CS_SYSPLL        0x00000000  // Either the system clock (if the
                                             // PLL bypass is in effect) or the
                                             // PLL output (default)
-#define SSI_CC_CS_PIOSC         0x00000001  // PIOSC
+#define SSI_CC_CS_PIOSC         0x00000005  // PIOSC
 
 //*****************************************************************************
 //
@@ -2823,10 +2864,7 @@
 // register.
 //
 //*****************************************************************************
-#define UART_9BITAMASK_RANGE_M  0x0000FF00  // Self Address Range for 9-Bit
-                                            // Mode
 #define UART_9BITAMASK_MASK_M   0x000000FF  // Self Address Mask for 9-Bit Mode
-#define UART_9BITAMASK_RANGE_S  8
 #define UART_9BITAMASK_MASK_S   0
 
 //*****************************************************************************
@@ -2844,7 +2882,7 @@
 //*****************************************************************************
 #define UART_CC_CS_M            0x0000000F  // UART Baud Clock Source
 #define UART_CC_CS_SYSCLK       0x00000000  // The system clock (default)
-#define UART_CC_CS_PIOSC        0x00000001  // PIOSC
+#define UART_CC_CS_PIOSC        0x00000005  // PIOSC
 
 //*****************************************************************************
 //
@@ -2888,8 +2926,8 @@
 #define I2C_MCS_DATACK          0x00000008  // Acknowledge Data
 #define I2C_MCS_ADRACK          0x00000004  // Acknowledge Address
 #define I2C_MCS_STOP            0x00000004  // Generate STOP
-#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_ERROR           0x00000002  // Error
+#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_RUN             0x00000001  // I2C Master Enable
 #define I2C_MCS_BUSY            0x00000001  // I2C Busy
 
@@ -2944,7 +2982,7 @@
 //
 //*****************************************************************************
 #define I2C_MIMR_CLKIM          0x00000002  // Clock Timeout Interrupt Mask
-#define I2C_MIMR_IM             0x00000001  // Interrupt Mask
+#define I2C_MIMR_IM             0x00000001  // Master Interrupt Mask
 
 //*****************************************************************************
 //
@@ -2953,7 +2991,7 @@
 //*****************************************************************************
 #define I2C_MRIS_CLKRIS         0x00000002  // Clock Timeout Raw Interrupt
                                             // Status
-#define I2C_MRIS_RIS            0x00000001  // Raw Interrupt Status
+#define I2C_MRIS_RIS            0x00000001  // Master Raw Interrupt Status
 
 //*****************************************************************************
 //
@@ -2990,7 +3028,7 @@
 //
 //*****************************************************************************
 #define I2C_MICR_CLKIC          0x00000002  // Clock Timeout Interrupt Clear
-#define I2C_MICR_IC             0x00000001  // Interrupt Clear
+#define I2C_MICR_IC             0x00000001  // Master Interrupt Clear
 
 //*****************************************************************************
 //
@@ -3040,6 +3078,13 @@
 //
 //*****************************************************************************
 #define I2C_PP_HS               0x00000001  // High-Speed Capable
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the I2C_O_PC register.
+//
+//*****************************************************************************
+#define I2C_PC_HS               0x00000001  // High-Speed Capable
 
 //*****************************************************************************
 //
@@ -3121,7 +3166,7 @@
 #define TIMER_CTL_TAPWML        0x00000040  // GPTM Timer A PWM Output Level
 #define TIMER_CTL_TAOTE         0x00000020  // GPTM Timer A Output Trigger
                                             // Enable
-#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Enable
+#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Stall Enable
 #define TIMER_CTL_TAEVENT_M     0x0000000C  // GPTM Timer A Event Mode
 #define TIMER_CTL_TAEVENT_POS   0x00000000  // Positive edge
 #define TIMER_CTL_TAEVENT_NEG   0x00000004  // Negative edge
@@ -3296,23 +3341,23 @@
 // The following are defines for the bit fields in the TIMER_O_IMR register.
 //
 //*****************************************************************************
-#define TIMER_IMR_WUEIM         0x00010000  // 32/64-Bit GPTM Write Update
-                                            // Error Interrupt Mask
-#define TIMER_IMR_TBMIM         0x00000800  // GPTM Timer B Mode Match
+#define TIMER_IMR_WUEIM         0x00010000  // GPTM Write Update Error
                                             // Interrupt Mask
-#define TIMER_IMR_CBEIM         0x00000400  // GPTM Capture B Event Interrupt
+#define TIMER_IMR_TBMIM         0x00000800  // GPTM Timer B Match Interrupt
                                             // Mask
-#define TIMER_IMR_CBMIM         0x00000200  // GPTM Capture B Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CBEIM         0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Interrupt Mask
+#define TIMER_IMR_CBMIM         0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TBTOIM        0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Mask
-#define TIMER_IMR_TAMIM         0x00000010  // GPTM Timer A Mode Match
-                                            // Interrupt Mask
+#define TIMER_IMR_TAMIM         0x00000010  // GPTM Timer A Match Interrupt
+                                            // Mask
 #define TIMER_IMR_RTCIM         0x00000008  // GPTM RTC Interrupt Mask
-#define TIMER_IMR_CAEIM         0x00000004  // GPTM Capture A Event Interrupt
-                                            // Mask
-#define TIMER_IMR_CAMIM         0x00000002  // GPTM Capture A Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CAEIM         0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Mask
+#define TIMER_IMR_CAMIM         0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TATOIM        0x00000001  // GPTM Timer A Time-Out Interrupt
                                             // Mask
 
@@ -3321,23 +3366,21 @@
 // The following are defines for the bit fields in the TIMER_O_RIS register.
 //
 //*****************************************************************************
-#define TIMER_RIS_WUERIS        0x00010000  // 32/64-Bit GPTM Write Update
-                                            // Error Raw Interrupt Status
-#define TIMER_RIS_TBMRIS        0x00000800  // GPTM Timer B Mode Match Raw
+#define TIMER_RIS_WUERIS        0x00010000  // GPTM Write Update Error Raw
                                             // Interrupt
-#define TIMER_RIS_CBERIS        0x00000400  // GPTM Capture B Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Capture B Match Raw
-                                            // Interrupt
+#define TIMER_RIS_TBMRIS        0x00000800  // GPTM Timer B Match Raw Interrupt
+#define TIMER_RIS_CBERIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TBTORIS       0x00000100  // GPTM Timer B Time-Out Raw
                                             // Interrupt
-#define TIMER_RIS_TAMRIS        0x00000010  // GPTM Timer A Mode Match Raw
-                                            // Interrupt
+#define TIMER_RIS_TAMRIS        0x00000010  // GPTM Timer A Match Raw Interrupt
 #define TIMER_RIS_RTCRIS        0x00000008  // GPTM RTC Raw Interrupt
-#define TIMER_RIS_CAERIS        0x00000004  // GPTM Capture A Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Capture A Match Raw
-                                            // Interrupt
+#define TIMER_RIS_CAERIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TATORIS       0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 
@@ -3346,23 +3389,23 @@
 // The following are defines for the bit fields in the TIMER_O_MIS register.
 //
 //*****************************************************************************
-#define TIMER_MIS_WUEMIS        0x00010000  // 32/64-Bit GPTM Write Update
-                                            // Error Masked Interrupt Status
-#define TIMER_MIS_TBMMIS        0x00000800  // GPTM Timer B Mode Match Masked
+#define TIMER_MIS_WUEMIS        0x00010000  // GPTM Write Update Error Masked
                                             // Interrupt
-#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Capture B Event Masked
+#define TIMER_MIS_TBMMIS        0x00000800  // GPTM Timer B Match Masked
                                             // Interrupt
-#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Capture B Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TBTOMIS       0x00000100  // GPTM Timer B Time-Out Masked
                                             // Interrupt
-#define TIMER_MIS_TAMMIS        0x00000010  // GPTM Timer A Mode Match Masked
+#define TIMER_MIS_TAMMIS        0x00000010  // GPTM Timer A Match Masked
                                             // Interrupt
 #define TIMER_MIS_RTCMIS        0x00000008  // GPTM RTC Masked Interrupt
-#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Capture A Event Masked
-                                            // Interrupt
-#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Capture A Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TATOMIS       0x00000001  // GPTM Timer A Time-Out Masked
                                             // Interrupt
 
@@ -3373,21 +3416,21 @@
 //*****************************************************************************
 #define TIMER_ICR_WUECINT       0x00010000  // 32/64-Bit GPTM Write Update
                                             // Error Interrupt Clear
-#define TIMER_ICR_TBMCINT       0x00000800  // GPTM Timer B Mode Match
+#define TIMER_ICR_TBMCINT       0x00000800  // GPTM Timer B Match Interrupt
+                                            // Clear
+#define TIMER_ICR_CBECINT       0x00000400  // GPTM Timer B Capture Mode Event
                                             // Interrupt Clear
-#define TIMER_ICR_CBECINT       0x00000400  // GPTM Capture B Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Capture B Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TBTOCINT      0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Clear
-#define TIMER_ICR_TAMCINT       0x00000010  // GPTM Timer A Mode Match
-                                            // Interrupt Clear
+#define TIMER_ICR_TAMCINT       0x00000010  // GPTM Timer A Match Interrupt
+                                            // Clear
 #define TIMER_ICR_RTCCINT       0x00000008  // GPTM RTC Interrupt Clear
-#define TIMER_ICR_CAECINT       0x00000004  // GPTM Capture A Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Capture A Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CAECINT       0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Clear
+#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TATOCINT      0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 
@@ -4449,7 +4492,6 @@
 #define COMP_ACCTL0_ASRCP_PIN   0x00000000  // Pin value of Cn+
 #define COMP_ACCTL0_ASRCP_PIN0  0x00000200  // Pin value of C0+
 #define COMP_ACCTL0_ASRCP_REF   0x00000400  // Internal voltage reference
-                                            // (VIREF)
 #define COMP_ACCTL0_TSLVAL      0x00000080  // Trigger Sense Level Value
 #define COMP_ACCTL0_TSEN_M      0x00000060  // Trigger Sense
 #define COMP_ACCTL0_TSEN_LEVEL  0x00000000  // Level sense, see TSLVAL
@@ -6954,6 +6996,160 @@
 
 //*****************************************************************************
 //
+// The following are defines for the bit fields in the EEPROM_EESIZE register.
+//
+//*****************************************************************************
+#define EEPROM_EESIZE_BLKCNT_M  0x07FF0000  // Number of 16-Word Blocks
+#define EEPROM_EESIZE_WORDCNT_M 0x0000FFFF  // Number of 32-Bit Words
+#define EEPROM_EESIZE_BLKCNT_S  16
+#define EEPROM_EESIZE_WORDCNT_S 0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEBLOCK register.
+//
+//*****************************************************************************
+#define EEPROM_EEBLOCK_BLOCK_M  0x0000FFFF  // Current Block
+#define EEPROM_EEBLOCK_BLOCK_S  0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEOFFSET
+// register.
+//
+//*****************************************************************************
+#define EEPROM_EEOFFSET_OFFSET_M \
+                                0x0000000F  // Current Address Offset
+#define EEPROM_EEOFFSET_OFFSET_S \
+                                0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EERDWR register.
+//
+//*****************************************************************************
+#define EEPROM_EERDWR_VALUE_M   0xFFFFFFFF  // EEPROM Read or Write Data
+#define EEPROM_EERDWR_VALUE_S   0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EERDWRINC
+// register.
+//
+//*****************************************************************************
+#define EEPROM_EERDWRINC_VALUE_M \
+                                0xFFFFFFFF  // EEPROM Read or Write Data with
+                                            // Increment
+#define EEPROM_EERDWRINC_VALUE_S \
+                                0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEDONE register.
+//
+//*****************************************************************************
+#define EEPROM_EEDONE_INVPL     0x00000100  // Invalid Program Voltage Level
+#define EEPROM_EEDONE_WRBUSY    0x00000020  // Write Busy
+#define EEPROM_EEDONE_NOPERM    0x00000010  // Write Without Permission
+#define EEPROM_EEDONE_WKCOPY    0x00000008  // Working on a Copy
+#define EEPROM_EEDONE_WKERASE   0x00000004  // Working on an Erase
+#define EEPROM_EEDONE_WORKING   0x00000001  // EEPROM Working
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EESUPP register.
+//
+//*****************************************************************************
+#define EEPROM_EESUPP_PRETRY    0x00000008  // Programming Must Be Retried
+#define EEPROM_EESUPP_ERETRY    0x00000004  // Erase Must Be Retried
+#define EEPROM_EESUPP_EREQ      0x00000002  // Erase Required
+#define EEPROM_EESUPP_START     0x00000001  // Start Erase
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEUNLOCK
+// register.
+//
+//*****************************************************************************
+#define EEPROM_EEUNLOCK_UNLOCK_M \
+                                0xFFFFFFFF  // EEPROM Unlock
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEPROT register.
+//
+//*****************************************************************************
+#define EEPROM_EEPROT_ACC       0x00000008  // Access Control
+#define EEPROM_EEPROT_PROT_M    0x00000007  // Protection Control
+#define EEPROM_EEPROT_PROT_RWNPW \
+                                0x00000000  // This setting is the default. If
+                                            // there is no password, the block
+                                            // is not protected and is readable
+                                            // and writable
+#define EEPROM_EEPROT_PROT_RWPW 0x00000001  // If there is a password, the
+                                            // block is readable or writable
+                                            // only when unlocked
+#define EEPROM_EEPROT_PROT_RONPW \
+                                0x00000002  // If there is no password, the
+                                            // block is readable, not writable
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEPASS0 register.
+//
+//*****************************************************************************
+#define EEPROM_EEPASS0_PASS_M   0xFFFFFFFF  // Password
+#define EEPROM_EEPASS0_PASS_S   0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEPASS1 register.
+//
+//*****************************************************************************
+#define EEPROM_EEPASS1_PASS_M   0xFFFFFFFF  // Password
+#define EEPROM_EEPASS1_PASS_S   0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEPASS2 register.
+//
+//*****************************************************************************
+#define EEPROM_EEPASS2_PASS_M   0xFFFFFFFF  // Password
+#define EEPROM_EEPASS2_PASS_S   0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEINT register.
+//
+//*****************************************************************************
+#define EEPROM_EEINT_INT        0x00000001  // Interrupt Enable
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEHIDE register.
+//
+//*****************************************************************************
+#define EEPROM_EEHIDE_HN_M      0xFFFFFFFE  // Hide Block
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_EEDBGME register.
+//
+//*****************************************************************************
+#define EEPROM_EEDBGME_KEY_M    0xFFFF0000  // Erase Key
+#define EEPROM_EEDBGME_ME       0x00000001  // Mass Erase
+#define EEPROM_EEDBGME_KEY_S    16
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EEPROM_PP register.
+//
+//*****************************************************************************
+#define EEPROM_PP_SIZE_M        0x0000001F  // EEPROM Size
+#define EEPROM_PP_SIZE_S        0
+
+//*****************************************************************************
+//
 // The following are defines for the bit fields in the SYSEXC_RIS register.
 //
 //*****************************************************************************
@@ -7275,7 +7471,7 @@
 #define SYSCTL_DID1_PRTNO_LM4F131E5QR \
                                 0x00500000  // LM4F131E5QR
 #define SYSCTL_DID1_PINCNT_M    0x0000E000  // Package Pin Count
-#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28 pin package
+#define SYSCTL_DID1_PINCNT_28   0x00000000  // 28-pin package
 #define SYSCTL_DID1_PINCNT_48   0x00002000  // 48-pin package
 #define SYSCTL_DID1_PINCNT_100  0x00004000  // 100-pin package
 #define SYSCTL_DID1_PINCNT_64   0x00006000  // 64-pin package
@@ -8369,7 +8565,7 @@
 // The following are defines for the bit fields in the SYSCTL_SRACMP register.
 //
 //*****************************************************************************
-#define SYSCTL_SRACMP_R0        0x00000001  // Analog Comparator Module
+#define SYSCTL_SRACMP_R0        0x00000001  // Analog Comparator Module 0
                                             // Software Reset
 
 //*****************************************************************************
@@ -8556,7 +8752,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_RCGCACMP_R0      0x00000001  // Analog Comparator Module Run
+#define SYSCTL_RCGCACMP_R0      0x00000001  // Analog Comparator Module 0 Run
                                             // Mode Clock Gating Control
 
 //*****************************************************************************
@@ -8750,7 +8946,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_SCGCACMP_S0      0x00000001  // Analog Comparator Module Sleep
+#define SYSCTL_SCGCACMP_S0      0x00000001  // Analog Comparator Module 0 Sleep
                                             // Mode Clock Gating Control
 
 //*****************************************************************************
@@ -8830,7 +9026,8 @@
                                             // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D8      0x00000100  // GPIO Port J Deep-Sleep Mode
                                             // Clock Gating Control
-#define SYSCTL_DCGCGPIO_D7      0x00000080  // 0Mode Clock Gating Control
+#define SYSCTL_DCGCGPIO_D7      0x00000080  // GPIO Port H Deep-Sleep Mode
+                                            // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D6      0x00000040  // GPIO Port G Deep-Sleep Mode
                                             // Clock Gating Control
 #define SYSCTL_DCGCGPIO_D5      0x00000020  // GPIO Port F Deep-Sleep Mode
@@ -8943,7 +9140,7 @@
 // register.
 //
 //*****************************************************************************
-#define SYSCTL_DCGCACMP_D0      0x00000001  // Analog Comparator Module
+#define SYSCTL_DCGCACMP_D0      0x00000001  // Analog Comparator Module 0
                                             // Deep-Sleep Mode Clock Gating
                                             // Control
 
@@ -9225,7 +9422,7 @@
 // The following are defines for the bit fields in the SYSCTL_PRACMP register.
 //
 //*****************************************************************************
-#define SYSCTL_PRACMP_R0        0x00000001  // Analog Comparator Module
+#define SYSCTL_PRACMP_R0        0x00000001  // Analog Comparator Module 0
                                             // Peripheral Ready
 
 //*****************************************************************************
@@ -9696,7 +9893,7 @@
 // The following are defines for the bit fields in the NVIC_EN4 register.
 //
 //*****************************************************************************
-#define NVIC_EN4_INT_M          0x0000000F  // Interrupt Enable
+#define NVIC_EN4_INT_M          0x000007FF  // Interrupt Enable
 
 //*****************************************************************************
 //
@@ -9763,7 +9960,7 @@
 // The following are defines for the bit fields in the NVIC_DIS4 register.
 //
 //*****************************************************************************
-#define NVIC_DIS4_INT_M         0x0000000F  // Interrupt Disable
+#define NVIC_DIS4_INT_M         0x000007FF  // Interrupt Disable
 
 //*****************************************************************************
 //
@@ -9830,7 +10027,7 @@
 // The following are defines for the bit fields in the NVIC_PEND4 register.
 //
 //*****************************************************************************
-#define NVIC_PEND4_INT_M        0x0000000F  // Interrupt Set Pending
+#define NVIC_PEND4_INT_M        0x000007FF  // Interrupt Set Pending
 
 //*****************************************************************************
 //
@@ -9921,7 +10118,7 @@
 // The following are defines for the bit fields in the NVIC_UNPEND4 register.
 //
 //*****************************************************************************
-#define NVIC_UNPEND4_INT_M      0x0000000F  // Interrupt Clear Pending
+#define NVIC_UNPEND4_INT_M      0x000007FF  // Interrupt Clear Pending
 
 //*****************************************************************************
 //
@@ -9988,7 +10185,7 @@
 // The following are defines for the bit fields in the NVIC_ACTIVE4 register.
 //
 //*****************************************************************************
-#define NVIC_ACTIVE4_INT_M      0x0000000F  // Interrupt Active
+#define NVIC_ACTIVE4_INT_M      0x000007FF  // Interrupt Active
 
 //*****************************************************************************
 //
@@ -10451,6 +10648,42 @@
 #define NVIC_PRI32_INTC_S       21
 #define NVIC_PRI32_INTB_S       13
 #define NVIC_PRI32_INTA_S       5
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the NVIC_PRI33 register.
+//
+//*****************************************************************************
+#define NVIC_PRI33_INTD_M       0xE0000000  // Interrupt Priority for Interrupt
+                                            // [4n+3]
+#define NVIC_PRI33_INTC_M       0x00E00000  // Interrupt Priority for Interrupt
+                                            // [4n+2]
+#define NVIC_PRI33_INTB_M       0x0000E000  // Interrupt Priority for Interrupt
+                                            // [4n+1]
+#define NVIC_PRI33_INTA_M       0x000000E0  // Interrupt Priority for Interrupt
+                                            // [4n]
+#define NVIC_PRI33_INTD_S       29
+#define NVIC_PRI33_INTC_S       21
+#define NVIC_PRI33_INTB_S       13
+#define NVIC_PRI33_INTA_S       5
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the NVIC_PRI34 register.
+//
+//*****************************************************************************
+#define NVIC_PRI34_INTD_M       0xE0000000  // Interrupt Priority for Interrupt
+                                            // [4n+3]
+#define NVIC_PRI34_INTC_M       0x00E00000  // Interrupt Priority for Interrupt
+                                            // [4n+2]
+#define NVIC_PRI34_INTB_M       0x0000E000  // Interrupt Priority for Interrupt
+                                            // [4n+1]
+#define NVIC_PRI34_INTA_M       0x000000E0  // Interrupt Priority for Interrupt
+                                            // [4n]
+#define NVIC_PRI34_INTD_S       29
+#define NVIC_PRI34_INTC_S       21
+#define NVIC_PRI34_INTB_S       13
+#define NVIC_PRI34_INTA_S       5
 
 //*****************************************************************************
 //
@@ -10957,5 +11190,29 @@
 #define NVIC_FPDSC_RMODE_RM     0x00800000  // Round towards Minus Infinity
                                             // (RM) mode
 #define NVIC_FPDSC_RMODE_RZ     0x00C00000  // Round towards Zero (RZ) mode
+
+//*****************************************************************************
+//
+// The following definitions are deprecated.
+//
+//*****************************************************************************
+#ifndef DEPRECATED
+
+//*****************************************************************************
+//
+// Deprecated defines for the EEPROM register offsets.
+//
+//*****************************************************************************
+#define EEPROM_EEPROMPP_R       (*((volatile unsigned long *)0x400AFFC0))
+
+//*****************************************************************************
+//
+// Deprecated defines for the bit fields in the EEPROM_EEPROMPP register.
+//
+//*****************************************************************************
+#define EEPROM_EEPROMPP_SIZE_M  0x0000001F  // EEPROM Size
+#define EEPROM_EEPROMPP_SIZE_S  0
+
+#endif
 
 #endif // __LM4F131E5QR_H__

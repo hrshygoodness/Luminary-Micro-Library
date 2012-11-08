@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -33,7 +33,9 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/udma.h"
 #include "driverlib/usb.h"
+#include "driverlib/rtos_bindings.h"
 #include "usblib/usblib.h"
+#include "usblib/usblibpriv.h"
 #include "usblib/host/usbhost.h"
 #include "usblib/host/usbhostpriv.h"
 #include "usblib/host/usbhhub.h"
@@ -473,9 +475,9 @@ typedef struct
     long lEventDriver;
 
     //
-    // This is the generic event information used by the event driver.
+    // These are the generic event information used by the event driver.
     //
-    tEventInfo EventInfo;
+    unsigned long ulEventEnables;
 
     unsigned long ulClass;
 }
@@ -515,28 +517,214 @@ HCDInstanceToDevIndex(unsigned long ulInstance)
     return(ulDevIndex);
 }
 
+//=============================================================================
+//
+// This is the internal function that will map an event to a valid event flag.
+//
+// \param ulEvent specifies which event flag to retrieve.
+//
+// \return The event flag or 0 if there is no support event flag for the
+// event specified by the \e ulEvent parameter.
+//
+//=============================================================================
+static unsigned long
+GetEventFlag(unsigned long ulEvent)
+{
+    unsigned long ulEventFlag;
+
+    ulEventFlag = 0;
+
+    //
+    // Search for a valid event flag for the requested event.
+    //
+    switch(ulEvent)
+    {
+        case USB_EVENT_SOF:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_SOF;
+            break;
+        }
+        case USB_EVENT_CONNECTED:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_CONNECT;
+            break;
+        }
+        case USB_EVENT_DISCONNECTED:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_DISCNCT;
+            break;
+        }
+        case USB_EVENT_UNKNOWN_CONNECTED:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_UNKCNCT;
+            break;
+        }
+        case USB_EVENT_POWER_FAULT:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_PWRFAULT;
+            break;
+        }
+        case USB_EVENT_POWER_DISABLE:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_PWRDIS;
+            break;
+        }
+        case USB_EVENT_POWER_ENABLE:
+        {
+            ulEventFlag |= USBHCD_EVFLAG_PWREN;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+    return(ulEventFlag);
+}
+
+//=============================================================================
+//
+//! This function is called to enable a specific USB HCD event notification.
+//!
+//! \param ulIndex specifies which USB controller to use.
+//! \param pvEventDriver is the event driver structure that was passed into
+//! the USBHCDRegisterDrivers() function as part of the array of
+//! tUSBHostClassDriver structures.
+//! \param ulEvent is the event to enable.
+//!
+//! This function is called to enable event callbacks for a specific USB HCD
+//! event.  The requested event is passed in the \e ulEvent parameter.  Not
+//! all events can be enables so the function will return zero if the event
+//! provided cannot be enabled.  The \e pvEventDriver is a pointer to the
+//! event driver structure that the caller passed into the
+//! USBHCDRegisterDrivers() function.  This structure is typically declared
+//! with the DECLARE_EVENT_DRIVER() macro and included as part of the array
+//! of pointers to tUSBHostClassDriver structures that is passed to the
+//! USBHCDRegisterDrivers() function.
+//!
+//! \return This function returns a non-zero number if the event was
+//! successfully enabled and returns zero if the event cannot be enabled.
+//
+//=============================================================================
+long
+USBHCDEventEnable(unsigned long ulIndex, void *pvEventDriver,
+                  unsigned long ulEvent)
+{
+    long lRet;
+    unsigned long ulEventFlag;
+
+    ASSERT(ulIndex == 0);
+
+    //
+    // Default the return to fail the call unless a valid event is found.
+    //
+    lRet = 0;
+
+    //
+    // Get the event flag for this event.
+    //
+    ulEventFlag = GetEventFlag(ulEvent);
+
+    //
+    // Check if there was an event flag for the corresponding event.
+    //
+    if(ulEventFlag)
+    {
+        //
+        // Set the enable for this event.
+        //
+        g_sUSBHCD.ulEventEnables |= ulEventFlag;
+
+        //
+        // Indicate that the event was valid and is now enabled.
+        //
+        lRet = 1;
+    }
+
+    return(lRet);
+}
+
+//=============================================================================
+//
+//! This function is called to disable a specific USB HCD event notification.
+//!
+//! \param ulIndex specifies which USB controller to use.
+//! \param pvEventDriver is the event driver structure that was passed into
+//! the USBHCDRegisterDrivers() function as part of the array of
+//! tUSBHostClassDriver structures.
+//! \param ulEvent is the event to disable.
+//!
+//! This function is called to disable event callbacks for a specific USB HCD
+//! event.  The requested event is passed in the \e ulEvent parameter.  Not
+//! all events can be enables so the function will return zero if the event
+//! provided cannot be enabled.  The \e pvEventDriver is a pointer to the
+//! event driver structure that the caller passed into the
+//! USBHCDRegisterDrivers() function.  This structure is typically declared
+//! with the DECLARE_EVENT_DRIVER() macro and included as part of the array
+//! of pointers to tUSBHostClassDriver structures that is passed to the
+//! USBHCDRegisterDrivers() function.
+//!
+//! \return This function returns a non-zero number if the event was
+//! successfully disabled and returns zero if the event cannot be disabled.
+//
+//=============================================================================
+long
+USBHCDEventDisable(unsigned long ulIndex, void *pvEventDriver,
+                   unsigned long ulEvent)
+{
+    long lRet;
+    unsigned long ulEventFlag;
+
+    ASSERT(ulIndex == 0);
+
+    //
+    // Default the return to fail the call unless a valid event is found.
+    //
+    lRet = 0;
+
+    //
+    // Get the event flag for this event.
+    //
+    ulEventFlag = GetEventFlag(ulEvent);
+
+    //
+    // Check if there was an event flag for the corresponding event.
+    //
+    if(ulEventFlag)
+    {
+        //
+        // Clear the enable for this event.
+        //
+        g_sUSBHCD.ulEventEnables &= ~ulEventFlag;
+
+        //
+        // Indicate that the event was valid and is now disabled.
+        //
+        lRet = 1;
+    }
+
+    return(lRet);
+}
+
 //*****************************************************************************
 //
 // If there is an event driver this function will send out a generic connection
-// event USB_EVENT_CONNECTED indicating that an unknown connection event has
-// occurred.
+// event USB_EVENT_UNKNOWN_CONNECTED indicating that an unknown connection
+// event has occurred.
 //
 //*****************************************************************************
 static void
 SendUnknownConnect(unsigned long ulIndex, unsigned long ulClass)
 {
-    if((g_sUSBHCD.lEventDriver != -1) &&
-       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
-    {
-        //
-        // Send the unknown device connected event.
-        //
-        g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_UNKNOWN_CONNECTED;
-        g_sUSBHCD.EventInfo.ulInstance = ulClass;
+    tEventInfo sEvent;
 
-        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
-           &g_sUSBHCD.EventInfo);
-    }
+    //
+    // If there is an event driver registered and it has a event handler and
+    // the USBHCD_EVFLAG_UNKCNCT is enabled then call the function.
+    //
+    sEvent.ulEvent = USB_EVENT_UNKNOWN_CONNECTED;
+    sEvent.ulInstance = ulClass;
+    InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_UNKCNCT);
 }
 
 //*****************************************************************************
@@ -1445,7 +1633,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable the USB interrupt.
             //
-            MAP_IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
 
             //
             // Set pending transmit DMA flag
@@ -1460,7 +1648,7 @@ USBHCDPipeWrite(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the USB interrupt.
             //
-            MAP_IntEnable(INT_USB0);
+            OS_INT_ENABLE(INT_USB0);
         }
 
         //
@@ -1635,7 +1823,7 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable the USB interrupt.
             //
-            MAP_IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
 
             //
             // Set pending transmit DMA flag
@@ -1650,7 +1838,7 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the USB interrupt.
             //
-            MAP_IntEnable(INT_USB0);
+            OS_INT_ENABLE(INT_USB0);
         }
         else
         {
@@ -1706,7 +1894,7 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable the USB interrupt.
             //
-            MAP_IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
 
             //
             // Set pending DMA flag
@@ -1721,7 +1909,7 @@ USBHCDPipeSchedule(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the USB interrupt.
             //
-            MAP_IntEnable(INT_USB0);
+            OS_INT_ENABLE(INT_USB0);
         }
 
         //
@@ -1925,7 +2113,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             //
             // Disable the USB interrupt.
             //
-            MAP_IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
 
             //
             // Set pending DMA flag
@@ -1940,7 +2128,7 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
             //
             // Enable the USB interrupt.
             //
-            MAP_IntEnable(INT_USB0);
+            OS_INT_ENABLE(INT_USB0);
         }
 
         //
@@ -2009,9 +2197,9 @@ USBHCDPipeRead(unsigned long ulPipe, unsigned char *pucData,
                 (g_bUseDMAWA && (ulRemainingBytes < 64)))
             {
                 //
-                // Request all of the remaining bytes.
+                // Compute bytes to transfer and set up transfer
                 //
-                ulBytesRead = ulRemainingBytes;
+                ulBytesRead = ulRemainingBytes > 64 ? 64 : ulRemainingBytes;
 
                 //
                 // Acknowledge that the data was read from the endpoint.
@@ -2297,6 +2485,12 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     }
 
     //
+    // Make sure that the hub driver is initialized since it is called even
+    // if it is not present in the system.
+    //
+    USBHHubInit();
+
+    //
     // All DMA channels are unused at start.
     //
     for(lIdx = 0; lIdx < MAX_NUM_DMA_CHANNELS; lIdx++)
@@ -2350,6 +2544,14 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
     g_sUSBHCD.ulClass = USB_CLASS_EVENTS;
 
     //
+    // Default enable connect, disconnect, unknown device and power fault
+    // event notifications.
+    //
+    g_sUSBHCD.ulEventEnables = USBHCD_EVFLAG_CONNECT | USBHCD_EVFLAG_UNKCNCT |
+                               USBHCD_EVFLAG_DISCNCT | USBHCD_EVFLAG_PWRFAULT |
+                               USBHCD_EVFLAG_PWREN   | USBHCD_EVFLAG_PWRDIS;
+
+    //
     // Initialize the USB tick module.
     //
     InternalUSBTickInit();
@@ -2387,7 +2589,7 @@ USBHCDInitInternal(unsigned long ulIndex, void *pvPool,
         //
         // Enable the USB interrupt.
         //
-        MAP_IntEnable(INT_USB0);
+        OS_INT_ENABLE(INT_USB0);
 
         //
         // There is no automatic power in pure host mode.
@@ -2808,7 +3010,7 @@ USBHCDTerm(unsigned long ulIndex)
     //
     // Disable USB interrupts.
     //
-    MAP_IntDisable(INT_USB0);
+    OS_INT_DISABLE(INT_USB0);
 
     MAP_USBIntDisableControl(USB0_BASE, USB_INTCTRL_ALL);
 
@@ -2860,7 +3062,7 @@ USBHCDReset(unsigned long ulIndex)
     //
     // Wait 20ms
     //
-    MAP_SysCtlDelay(g_ulTickms * 20);
+    OS_DELAY(g_ulTickms * 20);
 
     //
     // End reset signaling on the bus.
@@ -2872,7 +3074,7 @@ USBHCDReset(unsigned long ulIndex)
     // the reset.  This is the delay specified in the USB 2.0 spec.
     // We will hold the reset for 20ms.
     //
-    MAP_SysCtlDelay(g_ulTickms * 20);
+    OS_DELAY(g_ulTickms * 20);
 }
 
 //*****************************************************************************
@@ -2925,7 +3127,7 @@ USBHCDResume(unsigned long ulIndex)
     //
     // Wait 100ms
     //
-    MAP_SysCtlDelay(g_ulTickms * 100);
+    OS_DELAY(g_ulTickms * 100);
 
     //
     // End reset signaling on the bus.
@@ -3185,7 +3387,7 @@ USBHCDSetAddress(unsigned long ulDevIndex, unsigned long ulDevAddress)
     //
     // Must delay 2ms after setting the address.
     //
-    MAP_SysCtlDelay(g_ulTickms * 2);
+    OS_DELAY(g_ulTickms * 2);
 }
 
 //*****************************************************************************
@@ -3276,7 +3478,7 @@ USBHCDClearFeature(unsigned long ulDevAddress, unsigned long ulPipe,
     //
     // Must delay 2ms after clearing the feature.
     //
-    MAP_SysCtlDelay(g_ulTickms * 2);
+    OS_DELAY(g_ulTickms * 2);
 }
 
 //*****************************************************************************
@@ -3524,7 +3726,7 @@ USBHostIntHandlerInternal(unsigned long ulIndex, unsigned long ulStatus)
         //
         // Disable USB interrupts.
         //
-        MAP_IntDisable(INT_USB0);
+        OS_INT_DISABLE(INT_USB0);
 
         return;
     }
@@ -4017,6 +4219,7 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
     long lDriver;
     unsigned long ulClass;
     tInterfaceDescriptor *pInterface;
+    tEventInfo sEvent;
 
     ASSERT(ulIndex == 0);
 
@@ -4080,9 +4283,11 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
     }
 
     //
-    // Send an unknown connection event.
+    // If the connect event is enabled then send the event.
     //
-    InternalUSBHCDSendEvent(USB_EVENT_CONNECTED, ulIndex, ulDeviceNum);
+    sEvent.ulEvent = USB_EVENT_CONNECTED;
+    sEvent.ulInstance = (ulIndex << 16) | ulDeviceNum;
+    InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_CONNECT);
 
     return(lDriver);
 }
@@ -4091,7 +4296,8 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
 //
 // This function will send an event to a registered event driver.
 //
-// \param ulIndex is one of the USB_EVENT_* values.
+// \param ulIndex specifies which USB controller to use.
+// \param psEvent is a pointer to the event structure to send.
 //
 // This function is only used internally to the USB library and will check
 // if an event driver is registered and send on the event.
@@ -4102,30 +4308,19 @@ USBHCDOpenDriver(unsigned long ulIndex, unsigned long ulDeviceNum)
 //
 //*****************************************************************************
 void
-InternalUSBHCDSendEvent(unsigned long ulEvent, unsigned long ulIndex,
-                        unsigned long ulDevIndex)
+InternalUSBHCDSendEvent(unsigned long ulIndex, tEventInfo *psEvent,
+                        unsigned long ulEvFlag)
 {
     //
     // Make sure that an event driver has been registered.
     //
     if((g_sUSBHCD.lEventDriver != -1) &&
-       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
+       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler) &&
+       (g_sUSBHCD.ulEventEnables & ulEvFlag))
     {
-        //
-        // Send an event to the application.
-        //
-        g_sUSBHCD.EventInfo.ulEvent = ulEvent;
-
-        //
-        // Save the class for later in case and application needs it.
-        //
-        g_sUSBHCD.EventInfo.ulInstance = (ulIndex << 16) | ulDevIndex;
-
-        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
-           &g_sUSBHCD.EventInfo);
+        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(psEvent);
     }
 }
-
 
 //*****************************************************************************
 //
@@ -4143,31 +4338,23 @@ InternalUSBHCDSendEvent(unsigned long ulEvent, unsigned long ulIndex,
 static void
 USBHCDDeviceDisconnected(unsigned long ulIndex, unsigned long ulDevIndex)
 {
+    tEventInfo sEvent;
+
     ASSERT(ulIndex == 0);
     ASSERT(ulDevIndex <= MAX_USB_DEVICES);
 
-    if((g_sUSBHCD.lEventDriver != -1) &&
-       (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
-    {
-        //
-        // Send the generic disconnect event.
-        //
-        g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_DISCONNECTED;
+    //
+    // If there is an event driver with a valid event handler and the
+    // USBHCD_EVFLAG_DISCNCT is enabled, then call the registered event handler.
+    //
+    sEvent.ulEvent = USB_EVENT_DISCONNECTED;
+    sEvent.ulInstance = (ulIndex << 16) | ulDevIndex;
+    InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_DISCNCT);
 
-        //
-        // Sent the instance value to the application.
-        //
-        g_sUSBHCD.EventInfo.ulInstance = (ulIndex << 16) | ulDevIndex;
-
-        g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
-           &g_sUSBHCD.EventInfo);
-
-        //
-        // Reset the class and the instance.
-        //
-        g_sUSBHCD.ulClass = USB_CLASS_EVENTS;
-        g_sUSBHCD.EventInfo.ulInstance = 0;
-    }
+    //
+    // Reset the class.
+    //
+    g_sUSBHCD.ulClass = USB_CLASS_EVENTS;
 
     if(g_sUSBHCD.USBDevice[ulDevIndex].pConfigDescriptor)
     {
@@ -4246,12 +4433,7 @@ USBHCDMain(void)
 {
     tUSBHDeviceState eOldState;
     unsigned long ulLoop;
-
-    //
-    // Call the hub driver to have it perform any necessary processing to
-    // handle downstream devices.
-    //
-    USBHHubMain();
+    tEventInfo sEvent;
 
     //
     // Save the old state to detect changes properly.
@@ -4266,24 +4448,17 @@ USBHCDMain(void)
         //
         // Disable the USB interrupt.
         //
-        MAP_IntDisable(INT_USB0);
+        OS_INT_DISABLE(INT_USB0);
 
         if(g_ulUSBHIntEvents & INT_EVENT_POWER_FAULT)
         {
             //
-            // A power fault has occurred so notify the application.
+            // A power fault has occurred so notify the application if there
+            // is an event handler and the event has been enabled.
             //
-            if((g_sUSBHCD.lEventDriver != -1) &&
-               (g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler))
-            {
-                //
-                // Send the generic power fault event.
-                //
-                g_sUSBHCD.EventInfo.ulEvent = USB_EVENT_POWER_FAULT;
-
-                g_sUSBHCD.pClassDrivers[g_sUSBHCD.lEventDriver]->pfnIntHandler(
-                   &g_sUSBHCD.EventInfo);
-            }
+            sEvent.ulEvent = USB_EVENT_POWER_FAULT;
+            sEvent.ulInstance = 0;
+            InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_PWRFAULT);
 
             g_sUSBHCD.eDeviceState[0] = HCD_POWER_FAULT;
         }
@@ -4322,7 +4497,20 @@ USBHCDMain(void)
             //
             if(g_ulUSBHIntEvents & INT_EVENT_SOF)
             {
+                //
+                // If the connect event is enabled then send the event.
+                //
+                sEvent.ulEvent = USB_EVENT_SOF;
+                sEvent.ulInstance = 0;
+                InternalUSBHCDSendEvent(0, &sEvent, USBHCD_EVFLAG_SOF);
+
                 USBHostCheckPipes();
+
+                //
+                // Call the hub driver to have it perform any necessary processing to
+                // handle downstream devices.
+                //
+                USBHHubMain();
             }
         }
 
@@ -4334,7 +4522,7 @@ USBHCDMain(void)
         //
         // Enable the USB interrupt.
         //
-        MAP_IntEnable(INT_USB0);
+        OS_INT_ENABLE(INT_USB0);
     }
 
     //
@@ -4384,7 +4572,7 @@ ProcessUSBDeviceStateMachine(tUSBHDeviceState eOldState,
             //
             // Disable USB interrupts.
             //
-            MAP_IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
 
             //
             // If there was a device in any state of connection then indicate
@@ -4406,7 +4594,7 @@ ProcessUSBDeviceStateMachine(tUSBHDeviceState eOldState,
             //
             // Wait for 100ms before trying to re-power the device.
             //
-            MAP_SysCtlDelay(g_ulTickms * 100);
+            OS_DELAY(g_ulTickms * 100);
 
             //
             // Re-initialize the HCD.
@@ -4788,7 +4976,7 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
     //
     while(g_sUSBHEP0State.eState != EP0_STATE_IDLE)
     {
-        MAP_IntDisable(INT_USB0);
+        OS_INT_DISABLE(INT_USB0);
 
         if((g_ulUSBHIntEvents & (INT_EVENT_ENUM | INT_EVENT_SOF)) == (INT_EVENT_ENUM | INT_EVENT_SOF))
         {
@@ -4797,7 +4985,7 @@ USBHCDControlTransfer(unsigned long ulIndex, tUSBRequest *pSetupPacket,
             USBHCDEnumHandler();
         }
 
-        MAP_IntEnable(INT_USB0);
+        OS_INT_ENABLE(INT_USB0);
 
         if(g_sUSBHEP0State.eState == EP0_STATE_ERROR)
         {

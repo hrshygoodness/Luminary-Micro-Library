@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -296,8 +296,10 @@ typedef enum
     SMBUS_SLAVE_ADDR_SECONDARY, // Secondary address was detected
     SMBUS_TRANSFER_IN_PROGRESS, // A transfer is currently in progress
     SMBUS_TRANSFER_COMPLETE,    // The last active transfer is complete
-	SMBUS_SLAVE_NOT_READY,		// A slave transmit has been requested, but is 
-								// not ready (TX buffer not set).
+    SMBUS_SLAVE_NOT_READY,        // A slave transmit has been requested, but is
+                                // not ready (TX buffer not set).
+    SMBUS_FIFO_ERROR,           // A master receive operation did not receive
+                                // enough data from the slave.
 }
 tSMBusStatus;
 
@@ -313,10 +315,10 @@ tSMBusStatus;
 // ARP Commands
 //
 //*****************************************************************************
-#define SMBUS_CMD_PREPARE_TO_ARP        	0x01
-#define SMBUS_CMD_ARP_RESET_DEVICE      	0x02
-#define SMBUS_CMD_ARP_GET_UDID          	0x03
-#define SMBUS_CMD_ARP_ASSIGN_ADDRESS    	0x04
+#define SMBUS_CMD_PREPARE_TO_ARP            0x01
+#define SMBUS_CMD_ARP_RESET_DEVICE          0x02
+#define SMBUS_CMD_ARP_GET_UDID              0x03
+#define SMBUS_CMD_ARP_ASSIGN_ADDRESS        0x04
 
 //*****************************************************************************
 //

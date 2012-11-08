@@ -5,20 +5,35 @@
 // Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1225,8 +1240,8 @@
 #define I2C_MCS_DATACK          0x00000008  // Acknowledge Data
 #define I2C_MCS_ADRACK          0x00000004  // Acknowledge Address
 #define I2C_MCS_STOP            0x00000004  // Generate STOP
-#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_ERROR           0x00000002  // Error
+#define I2C_MCS_START           0x00000002  // Generate START
 #define I2C_MCS_RUN             0x00000001  // I2C Master Enable
 #define I2C_MCS_BUSY            0x00000001  // I2C Busy
 
@@ -1273,14 +1288,14 @@
 // The following are defines for the bit fields in the I2C_O_MIMR register.
 //
 //*****************************************************************************
-#define I2C_MIMR_IM             0x00000001  // Interrupt Mask
+#define I2C_MIMR_IM             0x00000001  // Master Interrupt Mask
 
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the I2C_O_MRIS register.
 //
 //*****************************************************************************
-#define I2C_MRIS_RIS            0x00000001  // Raw Interrupt Status
+#define I2C_MRIS_RIS            0x00000001  // Master Raw Interrupt Status
 
 //*****************************************************************************
 //
@@ -1308,7 +1323,7 @@
 // The following are defines for the bit fields in the I2C_O_MICR register.
 //
 //*****************************************************************************
-#define I2C_MICR_IC             0x00000001  // Interrupt Clear
+#define I2C_MICR_IC             0x00000001  // Master Interrupt Clear
 
 //*****************************************************************************
 //
@@ -1375,7 +1390,7 @@
 #define TIMER_CTL_TAPWML        0x00000040  // GPTM Timer A PWM Output Level
 #define TIMER_CTL_TAOTE         0x00000020  // GPTM Timer A Output Trigger
                                             // Enable
-#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Enable
+#define TIMER_CTL_RTCEN         0x00000010  // GPTM RTC Stall Enable
 #define TIMER_CTL_TAEVENT_M     0x0000000C  // GPTM Timer A Event Mode
 #define TIMER_CTL_TAEVENT_POS   0x00000000  // Positive edge
 #define TIMER_CTL_TAEVENT_NEG   0x00000004  // Negative edge
@@ -1388,17 +1403,17 @@
 // The following are defines for the bit fields in the TIMER_O_IMR register.
 //
 //*****************************************************************************
-#define TIMER_IMR_CBEIM         0x00000400  // GPTM Capture B Event Interrupt
-                                            // Mask
-#define TIMER_IMR_CBMIM         0x00000200  // GPTM Capture B Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CBEIM         0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Interrupt Mask
+#define TIMER_IMR_CBMIM         0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TBTOIM        0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Mask
 #define TIMER_IMR_RTCIM         0x00000008  // GPTM RTC Interrupt Mask
-#define TIMER_IMR_CAEIM         0x00000004  // GPTM Capture A Event Interrupt
-                                            // Mask
-#define TIMER_IMR_CAMIM         0x00000002  // GPTM Capture A Match Interrupt
-                                            // Mask
+#define TIMER_IMR_CAEIM         0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Mask
+#define TIMER_IMR_CAMIM         0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Mask
 #define TIMER_IMR_TATOIM        0x00000001  // GPTM Timer A Time-Out Interrupt
                                             // Mask
 
@@ -1407,17 +1422,17 @@
 // The following are defines for the bit fields in the TIMER_O_RIS register.
 //
 //*****************************************************************************
-#define TIMER_RIS_CBERIS        0x00000400  // GPTM Capture B Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Capture B Match Raw
-                                            // Interrupt
+#define TIMER_RIS_CBERIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CBMRIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TBTORIS       0x00000100  // GPTM Timer B Time-Out Raw
                                             // Interrupt
 #define TIMER_RIS_RTCRIS        0x00000008  // GPTM RTC Raw Interrupt
-#define TIMER_RIS_CAERIS        0x00000004  // GPTM Capture A Event Raw
-                                            // Interrupt
-#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Capture A Match Raw
-                                            // Interrupt
+#define TIMER_RIS_CAERIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Raw Interrupt
+#define TIMER_RIS_CAMRIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Raw Interrupt
 #define TIMER_RIS_TATORIS       0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 
@@ -1426,17 +1441,17 @@
 // The following are defines for the bit fields in the TIMER_O_MIS register.
 //
 //*****************************************************************************
-#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Capture B Event Masked
-                                            // Interrupt
-#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Capture B Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CBEMIS        0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CBMMIS        0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TBTOMIS       0x00000100  // GPTM Timer B Time-Out Masked
                                             // Interrupt
 #define TIMER_MIS_RTCMIS        0x00000008  // GPTM RTC Masked Interrupt
-#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Capture A Event Masked
-                                            // Interrupt
-#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Capture A Match Masked
-                                            // Interrupt
+#define TIMER_MIS_CAEMIS        0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Masked Interrupt
+#define TIMER_MIS_CAMMIS        0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Masked Interrupt
 #define TIMER_MIS_TATOMIS       0x00000001  // GPTM Timer A Time-Out Masked
                                             // Interrupt
 
@@ -1445,17 +1460,17 @@
 // The following are defines for the bit fields in the TIMER_O_ICR register.
 //
 //*****************************************************************************
-#define TIMER_ICR_CBECINT       0x00000400  // GPTM Capture B Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Capture B Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CBECINT       0x00000400  // GPTM Timer B Capture Mode Event
+                                            // Interrupt Clear
+#define TIMER_ICR_CBMCINT       0x00000200  // GPTM Timer B Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TBTOCINT      0x00000100  // GPTM Timer B Time-Out Interrupt
                                             // Clear
 #define TIMER_ICR_RTCCINT       0x00000008  // GPTM RTC Interrupt Clear
-#define TIMER_ICR_CAECINT       0x00000004  // GPTM Capture A Event Interrupt
-                                            // Clear
-#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Capture A Match Interrupt
-                                            // Clear
+#define TIMER_ICR_CAECINT       0x00000004  // GPTM Timer A Capture Mode Event
+                                            // Interrupt Clear
+#define TIMER_ICR_CAMCINT       0x00000002  // GPTM Timer A Capture Mode Match
+                                            // Interrupt Clear
 #define TIMER_ICR_TATOCINT      0x00000001  // GPTM Timer A Time-Out Raw
                                             // Interrupt
 

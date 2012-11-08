@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -56,6 +56,8 @@ extern "C"
 // Prototypes for the APIs.
 //
 //*****************************************************************************
+extern void UARTStdioConfig(unsigned long ulPort, unsigned long ulBaud,
+                            unsigned long ulSrcClock);
 extern void UARTStdioInit(unsigned long ulPort);
 extern void UARTStdioInitExpClk(unsigned long ulPort, unsigned long ulBaud);
 extern int UARTgets(char *pcBuf, unsigned long ulLen);

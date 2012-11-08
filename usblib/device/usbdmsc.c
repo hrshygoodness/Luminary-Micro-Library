@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -1338,7 +1338,7 @@ USBDSCSIInquiry(const tUSBDMSCDevice *psDevice)
     //
     // Copy the Version string.
     //
-    for(lIdx = 0; lIdx < 16; lIdx++)
+    for(lIdx = 0; lIdx < 4; lIdx++)
     {
         g_pucCommand[lIdx + 32] = psDevice->pucVersion[lIdx];
     }

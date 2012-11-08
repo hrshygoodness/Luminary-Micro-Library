@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -463,6 +478,9 @@ GPIOIntTypeGet(unsigned long ulPort, unsigned char ucPin)
 //! strength, and \b GPIO_OUT_STRENGTH_8MA_SC specifies 8 mA output drive with
 //! slew control.
 //!
+//! Some Stellaris devices also support output drive strengths of 6, 10, and 12
+//! mA.
+//!
 //! The parameter \e ulPinType can be one of the following values:
 //!
 //! - \b GPIO_PIN_TYPE_STD
@@ -475,8 +493,8 @@ GPIOIntTypeGet(unsigned long ulPort, unsigned char ucPin)
 //!
 //! where \b GPIO_PIN_TYPE_STD* specifies a push-pull pin, \b GPIO_PIN_TYPE_OD*
 //! specifies an open-drain pin, \b *_WPU specifies a weak pull-up, \b *_WPD
-//! specifies a weak pull-down, and \b GPIO_PIN_TYPE_ANALOG specifies an
-//! analog input.
+//! specifies a weak pull-down, and \b GPIO_PIN_TYPE_ANALOG specifies an analog
+//! input.
 //!
 //! The pin(s) are specified using a bit-packed byte, where each bit that is
 //! set identifies the pin to be accessed, and where bit 0 of the byte
@@ -503,7 +521,7 @@ GPIOPadConfigSet(unsigned long ulPort, unsigned char ucPins,
            (ulPinType == GPIO_PIN_TYPE_OD) ||
            (ulPinType == GPIO_PIN_TYPE_OD_WPU) ||
            (ulPinType == GPIO_PIN_TYPE_OD_WPD) ||
-           (ulPinType == GPIO_PIN_TYPE_ANALOG))
+           (ulPinType == GPIO_PIN_TYPE_ANALOG));
 
     //
     // Set the output drive strength.
@@ -571,7 +589,7 @@ void
 GPIOPadConfigGet(unsigned long ulPort, unsigned char ucPin,
                  unsigned long *pulStrength, unsigned long *pulPinType)
 {
-    unsigned long ulTemp1, ulTemp2, ulTemp3, ulTemp4;
+    unsigned long ulPinType, ulStrength;
 
     //
     // Check the arguments.
@@ -587,22 +605,20 @@ GPIOPadConfigGet(unsigned long ulPort, unsigned char ucPin,
     //
     // Get the drive strength for this pin.
     //
-    ulTemp1 = HWREG(ulPort + GPIO_O_DR2R);
-    ulTemp2 = HWREG(ulPort + GPIO_O_DR4R);
-    ulTemp3 = HWREG(ulPort + GPIO_O_DR8R);
-    ulTemp4 = HWREG(ulPort + GPIO_O_SLR);
-    *pulStrength = (((ulTemp1 & ucPin) ? 1 : 0) | ((ulTemp2 & ucPin) ? 2 : 0) |
-                    ((ulTemp3 & ucPin) ? 4 : 0) | ((ulTemp4 & ucPin) ? 8 : 0));
+    ulStrength = ((HWREG(ulPort + GPIO_O_DR2R) & ucPin) ? 1 : 0);
+    ulStrength |= ((HWREG(ulPort + GPIO_O_DR4R) & ucPin) ? 2 : 0);
+    ulStrength |= ((HWREG(ulPort + GPIO_O_DR8R) & ucPin) ? 4 : 0);
+    ulStrength |= ((HWREG(ulPort + GPIO_O_SLR) & ucPin) ? 8 : 0);
+    *pulStrength = ulStrength;
 
     //
     // Get the pin type.
     //
-    ulTemp1 = HWREG(ulPort + GPIO_O_ODR);
-    ulTemp2 = HWREG(ulPort + GPIO_O_PUR);
-    ulTemp3 = HWREG(ulPort + GPIO_O_PDR);
-    ulTemp4 = HWREG(ulPort + GPIO_O_DEN);
-    *pulPinType = (((ulTemp1 & ucPin) ? 1 : 0) | ((ulTemp2 & ucPin) ? 2 : 0) |
-                   ((ulTemp3 & ucPin) ? 4 : 0) | ((ulTemp4 & ucPin) ? 8 : 0));
+    ulPinType = ((HWREG(ulPort + GPIO_O_ODR) & ucPin) ? 1 : 0);
+    ulPinType |= ((HWREG(ulPort + GPIO_O_PUR) & ucPin) ? 2 : 0);
+    ulPinType |= ((HWREG(ulPort + GPIO_O_PDR) & ucPin) ? 4 : 0);
+    ulPinType |= ((HWREG(ulPort + GPIO_O_DEN) & ucPin) ? 8 : 0);
+    *pulPinType = ulPinType;
 }
 
 //*****************************************************************************
@@ -716,7 +732,7 @@ GPIOPinIntStatus(unsigned long ulPort, tBoolean bMasked)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note Because there is a write buffer in the Cortex-M3 processor, it may
+//! \note Because there is a write buffer in the Cortex-M processor, it may
 //! take several clock cycles before the interrupt source is actually cleared.
 //! Therefore, it is recommended that the interrupt source be cleared early in
 //! the interrupt handler (as opposed to the very last action) to avoid
@@ -910,7 +926,7 @@ GPIOPinWrite(unsigned long ulPort, unsigned char ucPins, unsigned char ucVal)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into an ADC input; it
-//! only configures an ADC input pin for proper operation. Devices with
+//! only configures an ADC input pin for proper operation.  Devices with
 //! flexible pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -952,7 +968,7 @@ GPIOPinTypeADC(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a CAN pin; it only
-//! configures a CAN pin for proper operation. Devices with flexible pin
+//! configures a CAN pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1038,7 +1054,7 @@ GPIOPinTypeComparator(unsigned long ulPort, unsigned char ucPins)
 //!
 //! \note This function cannot be used to turn any pin into an external
 //! peripheral interface pin; it only configures an external peripheral
-//! interface pin for proper operation. Devices with flexible pin muxing also
+//! interface pin for proper operation.  Devices with flexible pin muxing also
 //! require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1078,9 +1094,9 @@ GPIOPinTypeEPI(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This function cannot be used to turn any pin into an Ethernet LED pin;
-//! it only configures an Ethernet LED pin for proper operation. Devices with
-//! flexible pin muxing also require a GPIOPinConfigure() function call.
+//! \note This function cannot be used to turn any pin into an Ethernet LED
+//! pin; it only configures an Ethernet LED pin for proper operation.  Devices
+//! with flexible pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
 //
@@ -1119,9 +1135,9 @@ GPIOPinTypeEthernetLED(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This function cannot be used to turn any pin into an Ethernet MII pin;
-//! it only configures an Ethernet MII pin for proper operation. Devices with
-//! flexible pin muxing also require a GPIOPinConfigure() function call.
+//! \note This function cannot be used to turn any pin into an Ethernet MII
+//! pin; it only configures an Ethernet MII pin for proper operation.  Devices
+//! with flexible pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
 //
@@ -1162,7 +1178,7 @@ GPIOPinTypeEthernetMII(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a fan pin; it only
-//! configures a fan pin for proper operation. Devices with flexible pin
+//! configures a fan pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1203,9 +1219,6 @@ GPIOPinTypeFan(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note Devices with flexible pin muxing also require a GPIOPinConfigure()
-//! function call.
-//!
 //! \return None.
 //
 //*****************************************************************************
@@ -1243,9 +1256,6 @@ GPIOPinTypeGPIOInput(unsigned long ulPort, unsigned char ucPins)
 //! The pin(s) are specified using a bit-packed byte, where each bit that is
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
-//!
-//! \note Devices with flexible pin muxing also require a GPIOPinConfigure()
-//! function call.
 //!
 //! \return None.
 //
@@ -1285,9 +1295,6 @@ GPIOPinTypeGPIOOutput(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note Devices with flexible pin muxing also require a GPIOPinConfigure()
-//! function call.
-//!
 //! \return None.
 //
 //*****************************************************************************
@@ -1326,7 +1333,7 @@ GPIOPinTypeGPIOOutputOD(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into an I2C pin; it
-//! only configures an I2C pin for proper operation. Devices with flexible pin
+//! only configures an I2C pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1366,9 +1373,9 @@ GPIOPinTypeI2C(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This function should only be used for Blizzard-class devices. It
+//! \note This function should only be used for Blizzard-class devices.  It
 //! cannot be used to turn any pin into an I2C SCL pin; it only configures an
-//! I2C SCL pin for proper operation. Devices with flexible pin muxing also
+//! I2C SCL pin for proper operation.  Devices with flexible pin muxing also
 //! require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1390,13 +1397,14 @@ GPIOPinTypeI2CSCL(unsigned long ulPort, unsigned char ucPins)
     //
     // Set the pad(s) for open-drain operation with a weak pull-up.
     //
-    if(CLASS_IS_BLIZZARD)
+    if(CLASS_IS_SANDSTORM || CLASS_IS_FURY || CLASS_IS_DUSTDEVIL ||
+       CLASS_IS_TEMPEST || CLASS_IS_FIRESTORM)
     {
-        GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+        GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
     }
     else
     {
-        GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
+        GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
     }
 }
 
@@ -1417,7 +1425,7 @@ GPIOPinTypeI2CSCL(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a I2S pin; it only
-//! configures a I2S pin for proper operation. Devices with flexible pin
+//! configures a I2S pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1458,8 +1466,8 @@ GPIOPinTypeI2S(unsigned long ulPort, unsigned char ucPins)
 //! set identifies the pin to be accessed, and where bit 0 of the byte
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This function cannot be used to turn any pin into a LPC pin; it only
-//! configures a LPC pin for proper operation. Devices with flexible pin
+//! \note This function cannot be used to turn any pin into an LPC pin; it only
+//! configures an LPC pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1500,7 +1508,7 @@ GPIOPinTypeLPC(unsigned long ulPort, unsigned char ucPins)
 //! GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a PECI receive pin;
-//! it only configures a PECI receive pin for proper operation. Devices with
+//! it only configures a PECI receive pin for proper operation.  Devices with
 //! flexible pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1540,9 +1548,9 @@ GPIOPinTypePECIRx(unsigned long ulPort, unsigned char ucPins)
 //! identifies the pin to be accessed, and where bit 0 of the byte represents
 //! GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
-//! \note This function cannot be used to turn any pin into a PECI transmit pin;
-//! it only configures a PECI transmit pin for proper operation. Devices with
-//! flexible pin muxing also require a GPIOPinConfigure() function call.
+//! \note This function cannot be used to turn any pin into a PECI transmit
+//! pin; it only configures a PECI transmit pin for proper operation.  Devices
+//! with flexible pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
 //
@@ -1583,7 +1591,7 @@ GPIOPinTypePECITx(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a PWM pin; it only
-//! configures a PWM pin for proper operation. Devices wtih flexible pin
+//! configures a PWM pin for proper operation.  Devices wtih flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1625,7 +1633,7 @@ GPIOPinTypePWM(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a QEI pin; it only
-//! configures a QEI pin for proper operation. Devices with flexible pin
+//! configures a QEI pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1667,7 +1675,7 @@ GPIOPinTypeQEI(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a SSI pin; it only
-//! configures a SSI pin for proper operation. Devices with flexible pin
+//! configures a SSI pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1709,7 +1717,7 @@ GPIOPinTypeSSI(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a timer pin; it
-//! only configures a timer pin for proper operation. Devices with flexible
+//! only configures a timer pin for proper operation.  Devices with flexible
 //! pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1751,7 +1759,7 @@ GPIOPinTypeTimer(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a UART pin; it
-//! only configures a UART pin for proper operation. Devices with flexible
+//! only configures a UART pin for proper operation.  Devices with flexible
 //! pin muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1793,7 +1801,7 @@ GPIOPinTypeUART(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a USB pin; it only
-//! configures a USB pin for proper operation. Devices with flexible pin
+//! configures a USB pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1839,7 +1847,7 @@ GPIOPinTypeUSBAnalog(unsigned long ulPort, unsigned char ucPins)
 //! represents GPIO port pin 0, bit 1 represents GPIO port pin 1, and so on.
 //!
 //! \note This function cannot be used to turn any pin into a USB pin; it only
-//! configures a USB pin for proper operation. Devices with flexible pin
+//! configures a USB pin for proper operation.  Devices with flexible pin
 //! muxing also require a GPIOPinConfigure() function call.
 //!
 //! \return None.
@@ -1930,7 +1938,6 @@ GPIOPinConfigure(unsigned long ulPinConfig)
     HWREG(ulBase + GPIO_O_PCTL) = ((HWREG(ulBase + GPIO_O_PCTL) &
                                     ~(0xf << ulShift)) |
                                    ((ulPinConfig & 0xf) << ulShift));
-
 }
 
 //*****************************************************************************

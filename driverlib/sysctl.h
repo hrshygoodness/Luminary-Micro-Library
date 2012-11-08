@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -101,7 +116,7 @@ extern "C"
 #define SYSCTL_PERIPH_GPIOJ     0x20000100  // GPIO J
 #define SYSCTL_PERIPH_UDMA      0x20002000  // uDMA
 #define SYSCTL_PERIPH_USB0      0x20100001  // USB0
-#define SYSCTL_PERIPH_ETH       0x20105000  // ETH
+#define SYSCTL_PERIPH_ETH       0x20105000  // Ethernet
 #define SYSCTL_PERIPH_IEEE1588  0x20100100  // IEEE1588
 #define SYSCTL_PERIPH_PLL       0x30000010  // PLL
 #define SYSCTL_PERIPH_TEMP      0x30000020  // Temperature sensor
@@ -112,9 +127,9 @@ extern "C"
 #define SYSCTL_PERIPH2_CAN1     0xf0003401  // CAN 1
 #define SYSCTL_PERIPH2_CAN2     0xf0003402  // CAN 2
 #define SYSCTL_PERIPH2_COMP0    0xf0003c00  // Analog comparator 0
-#define SYSCTL_PERIPH2_COMP1    0xf0003c01  // Analog comparator 1
-#define SYSCTL_PERIPH2_COMP2    0xf0003c02  // Analog comparator 2
 #define SYSCTL_PERIPH_EEPROM0   0xf0005800  // EEPROM 0
+#define SYSCTL_PERIPH2_EPI0     0xf0001000  // EPI0
+#define SYSCTL_PERIPH2_ETH      0xf0002c00  // ETH
 #define SYSCTL_PERIPH_FAN0      0xf0005400  // FAN 0
 #define SYSCTL_PERIPH2_GPIOA    0xf0000800  // GPIO A
 #define SYSCTL_PERIPH2_GPIOB    0xf0000801  // GPIO B
@@ -140,6 +155,7 @@ extern "C"
 #define SYSCTL_PERIPH_I2C3      0xf0002003  // I2C 3
 #define SYSCTL_PERIPH_I2C4      0xf0002004  // I2C 4
 #define SYSCTL_PERIPH_I2C5      0xf0002005  // I2C 5
+#define SYSCTL_PERIPH2_I2S0     0xf0002400  // I2S0
 #define SYSCTL_PERIPH_LPC0      0xf0004800  // LPC 0
 #define SYSCTL_PERIPH_PECI0     0xf0005000  // PECI 0
 #define SYSCTL_PERIPH2_PWM0     0xf0004000  // PWM 0
@@ -174,6 +190,8 @@ extern "C"
 #define SYSCTL_PERIPH2_USB0     0xf0002800  // USB 0
 #define SYSCTL_PERIPH2_WDOG0    0xf0000000  // Watchdog 0
 #define SYSCTL_PERIPH2_WDOG1    0xf0000001  // Watchdog 1
+#define SYSCTL_PERIPH2_HIBERNATE \
+                                0xf0001400  // Hibernate
 
 //*****************************************************************************
 //
@@ -265,8 +283,9 @@ extern "C"
 //
 //*****************************************************************************
 #define SYSCTL_CAUSE_LDO        0x00000020  // LDO power not OK reset
-#define SYSCTL_CAUSE_WDOG1      0x00000020  // Watchdog1 reset
+#define SYSCTL_CAUSE_WDOG1      0x00000020  // Watchdog 1 reset
 #define SYSCTL_CAUSE_SW         0x00000010  // Software reset
+#define SYSCTL_CAUSE_WDOG0      0x00000008  // Watchdog 0 reset
 #define SYSCTL_CAUSE_WDOG       0x00000008  // Watchdog reset
 #define SYSCTL_CAUSE_BOR        0x00000004  // Brown-out reset
 #define SYSCTL_CAUSE_POR        0x00000002  // Power on reset
@@ -553,26 +572,6 @@ extern "C"
 #define SYSCTL_DSLP_OSC_INT30   0x00000030  // Osc source is int. 30 KHz
 #define SYSCTL_DSLP_OSC_EXT32   0x00000070  // Osc source is ext. 32 KHz
 #define SYSCTL_DSLP_PIOSC_PD    0x00000002  // Power down PIOSC in deep-sleep
-
-//*****************************************************************************
-//
-// The following are values that can be passed to the SysCtlPIOSCCalibrate()
-// API as the ulType parameter.
-//
-//*****************************************************************************
-#define SYSCTL_PIOSC_CAL_AUTO   0x00000200  // Automatic calibration
-#define SYSCTL_PIOSC_CAL_FACT   0x00000100  // Factory calibration
-#define SYSCTL_PIOSC_CAL_USER   0x80000100  // User-supplied calibration
-
-//*****************************************************************************
-//
-// The following are values that can be passed to the SysCtlMOSCConfigSet() API
-// as the ulConfig parameter.
-//
-//*****************************************************************************
-#define SYSCTL_MOSC_VALIDATE    0x00000001  // Enable MOSC validation
-#define SYSCTL_MOSC_INTERRUPT   0x00000002  // Generate interrupt on MOSC fail
-#define SYSCTL_MOSC_NO_XTAL     0x00000004  // No crystal is attached to MOSC
 
 //*****************************************************************************
 //

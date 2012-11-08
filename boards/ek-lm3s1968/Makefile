@@ -18,32 +18,30 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 8555 of the EK-LM3S1968 Firmware Package.
+# This is part of revision 9453 of the EK-LM3S1968 Firmware Package.
 #
 #******************************************************************************
 
 #
 # A list of the directories containing the examples.
 #
-DIRS=aes_expanded_key \
-     aes_set_key      \
-     audio            \
-     bitband          \
-     blinky           \
-     boot_demo1       \
-     boot_demo2       \
-     boot_serial      \
-     gpio_jtag        \
-     graphics         \
-     hello            \
-     hibernate        \
-     interrupts       \
-     mpu_fault        \
-     pwmgen           \
-     qs_ek-lm3s1968   \
-     timers           \
-     uart_echo        \
-     watchdog        
+DIRS=audio          \
+     bitband        \
+     blinky         \
+     boot_demo1     \
+     boot_demo2     \
+     boot_serial    \
+     gpio_jtag      \
+     graphics       \
+     hello          \
+     hibernate      \
+     interrupts     \
+     mpu_fault      \
+     pwmgen         \
+     qs_ek-lm3s1968 \
+     timers         \
+     uart_echo      \
+     watchdog      
 
 #
 # The default rule, which causes the examples to be built.

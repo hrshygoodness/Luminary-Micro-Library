@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -51,7 +51,7 @@ extern void USBHostIntHandlerInternal(unsigned long ulIndex,
 
 //*****************************************************************************
 //
-// The maximum nuber of tick handlers that can be registered in a system.
+// The maximum number of tick handlers that can be registered in a system.
 //
 //*****************************************************************************
 #define MAX_USB_TICK_HANDLERS       6
@@ -84,9 +84,9 @@ extern void InternalUSBTickReset(void);
 extern long InternalUSBRegisterTickHandler(tUSBTickHandler pfHandler,
                                            void *pvInstance);
 extern void InternalUSBStartOfFrameTick(unsigned long ulTicksmS);
-extern void InternalUSBHCDSendEvent(unsigned long ulEvent,
-                                    unsigned long ulIndex,
-                                    unsigned long ulDevIndex);
+extern void InternalUSBHCDSendEvent(unsigned long ulIndex,
+                                    tEventInfo *psEvent,
+                                    unsigned long ulEvFlag);
 
 //*****************************************************************************
 //

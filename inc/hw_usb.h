@@ -5,20 +5,35 @@
 // Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1039,7 +1054,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR0_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR0_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR0_ADDR_S   0
 
@@ -1067,7 +1081,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR1_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR1_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR1_ADDR_S   0
 
@@ -1095,7 +1108,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR1_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR1_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR1_ADDR_S   0
 
@@ -1123,7 +1135,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR2_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR2_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR2_ADDR_S   0
 
@@ -1151,7 +1162,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR2_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR2_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR2_ADDR_S   0
 
@@ -1179,7 +1189,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR3_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR3_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR3_ADDR_S   0
 
@@ -1207,7 +1216,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR3_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR3_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR3_ADDR_S   0
 
@@ -1235,7 +1243,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR4_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR4_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR4_ADDR_S   0
 
@@ -1263,7 +1270,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR4_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR4_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR4_ADDR_S   0
 
@@ -1291,7 +1297,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR5_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR5_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR5_ADDR_S   0
 
@@ -1319,7 +1324,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR5_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR5_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR5_ADDR_S   0
 
@@ -1347,7 +1351,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR6_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR6_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR6_ADDR_S   0
 
@@ -1375,7 +1378,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR6_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR6_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR6_ADDR_S   0
 
@@ -1403,7 +1405,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR7_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR7_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR7_ADDR_S   0
 
@@ -1431,7 +1432,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR7_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR7_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR7_ADDR_S   0
 
@@ -1459,7 +1459,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR8_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR8_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR8_ADDR_S   0
 
@@ -1487,7 +1486,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR8_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR8_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR8_ADDR_S   0
 
@@ -1515,7 +1513,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR9_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_TXHUBADDR9_ADDR_M   0x0000007F  // Hub Address
 #define USB_TXHUBADDR9_ADDR_S   0
 
@@ -1543,7 +1540,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR9_MULTTRAN 0x00000080  // Multiple Translators
 #define USB_RXHUBADDR9_ADDR_M   0x0000007F  // Hub Address
 #define USB_RXHUBADDR9_ADDR_S   0
 
@@ -1571,8 +1567,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR10_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR10_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR10_ADDR_S  0
 
@@ -1600,8 +1594,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR10_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR10_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR10_ADDR_S  0
 
@@ -1629,8 +1621,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR11_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR11_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR11_ADDR_S  0
 
@@ -1658,8 +1648,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR11_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR11_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR11_ADDR_S  0
 
@@ -1687,8 +1675,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR12_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR12_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR12_ADDR_S  0
 
@@ -1716,8 +1702,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR12_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR12_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR12_ADDR_S  0
 
@@ -1745,8 +1729,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR13_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR13_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR13_ADDR_S  0
 
@@ -1774,8 +1756,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR13_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR13_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR13_ADDR_S  0
 
@@ -1803,8 +1783,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR14_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR14_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR14_ADDR_S  0
 
@@ -1832,8 +1810,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR14_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR14_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR14_ADDR_S  0
 
@@ -1861,8 +1837,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_TXHUBADDR15_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_TXHUBADDR15_ADDR_M  0x0000007F  // Hub Address
 #define USB_TXHUBADDR15_ADDR_S  0
 
@@ -1890,8 +1864,6 @@
 // register.
 //
 //*****************************************************************************
-#define USB_RXHUBADDR15_MULTTRAN \
-                                0x00000080  // Multiple Translators
 #define USB_RXHUBADDR15_ADDR_M  0x0000007F  // Hub Address
 #define USB_RXHUBADDR15_ADDR_S  0
 

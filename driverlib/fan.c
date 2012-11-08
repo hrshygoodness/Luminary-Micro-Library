@@ -5,20 +5,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -56,7 +71,7 @@ FanChannelEnable(unsigned long ulBase, unsigned long ulChannel)
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Enable the requested channel
@@ -66,7 +81,7 @@ FanChannelEnable(unsigned long ulBase, unsigned long ulChannel)
 
 //*****************************************************************************
 //
-//! Disables a FAN channel for operation.
+//! Disables a FAN channel.
 //!
 //! \param ulBase is the base address of the FAN module.
 //! \param ulChannel is the FAN channel to disable.
@@ -83,7 +98,7 @@ FanChannelDisable(unsigned long ulBase, unsigned long ulChannel)
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Disable the requested channel
@@ -116,7 +131,7 @@ FanChannelStatus(unsigned long ulBase, unsigned long ulChannel)
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Read and return the status for the specified fan channel
@@ -162,7 +177,7 @@ FanChannelConfigManual(unsigned long ulBase, unsigned long ulChannel,
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Program the fan channel for manual mode with parameters.
@@ -239,7 +254,7 @@ FanChannelConfigAuto(unsigned long ulBase, unsigned long ulChannel,
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Program the fan channel for automatic mode with parameters.
@@ -257,7 +272,7 @@ FanChannelConfigAuto(unsigned long ulBase, unsigned long ulChannel,
 //!
 //! This function sets the duty cycle of a FAN channel if the channel is
 //! configured for manual mode.  The duty cycle is specified in clocks from
-//! 0-511 out of a 512 clock PWM period.
+//! 0-511 out of a 512-clock PWM period.
 //!
 //! \return None.
 //
@@ -270,7 +285,7 @@ FanChannelDutySet(unsigned long ulBase, unsigned long ulChannel,
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
     ASSERT(ulDuty < 512);
 
     //
@@ -287,13 +302,13 @@ FanChannelDutySet(unsigned long ulBase, unsigned long ulChannel,
 //! \param ulBase is the base address of the FAN module.
 //! \param ulChannel is the FAN channel to query for duty cycle.
 //!
-//! This function gets the duty cycle of a FAN channel.  If the channel is in
+//! This function reads the duty cycle of a FAN channel.  If the channel is in
 //! manual mode, then this is the value that was programmed.  If the FAN
 //! channel is configured for automatic mode, then this is the value that is
 //! calculated by the Fan Control peripheral.
 //!
 //! \return Returns the FAN channel duty cycle as a number of clocks from
-//! 0-511, out of a 512 clock PWM period.
+//! 0-511, out of a 512-clock PWM period.
 //
 //*****************************************************************************
 unsigned long
@@ -305,7 +320,7 @@ FanChannelDutyGet(unsigned long ulBase, unsigned long ulChannel)
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
 
     //
     // Read the duty cycle field from the command register and shift to
@@ -343,7 +358,7 @@ FanChannelRPMSet(unsigned long ulBase, unsigned long ulChannel,
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
     ASSERT(ulRPM < 8192);
 
     //
@@ -359,7 +374,7 @@ FanChannelRPMSet(unsigned long ulBase, unsigned long ulChannel,
 //! \param ulBase is the base address of the FAN module.
 //! \param ulChannel is the FAN channel to query for RPM.
 //!
-//! This function gets the RPM of a FAN channel.
+//! This function reads the RPM of a FAN channel.
 //!
 //! \return Returns the FAN channel RPM as a number from 0-4095.
 //
@@ -371,7 +386,8 @@ FanChannelRPMGet(unsigned long ulBase, unsigned long ulChannel)
     // Check the arguments.
     //
     ASSERT(ulBase == FAN0_BASE);
-    ASSERT(ulChannel <= 5);
+    ASSERT(ulChannel < 6);
+
 
     //
     // Read and return the RPM for the specified channel.
@@ -386,9 +402,9 @@ FanChannelRPMGet(unsigned long ulBase, unsigned long ulChannel)
 //! \param ulBase is the base address of the FAN module.
 //! \param ulFlags is the logical OR of all the interrupts to be enabled.
 //!
-//! This function enables one or more interrupts from the FAN module.  The 
-//! \e ulFlags parameter is the logical OR of all the possible interrupts that 
-//! can be enabled.  For each channel, the following interrupt flags are 
+//! This function enables one or more interrupts from the FAN module.  The
+//! \e ulFlags parameter is the logical OR of all the possible interrupts that
+//! can be enabled.  For each channel, the following interrupt flags are
 //! available:
 //!
 //! - \b FAN_CHn_INT_STALL means that a stall was detected (in either mode).
@@ -396,9 +412,6 @@ FanChannelRPMGet(unsigned long ulBase, unsigned long ulChannel)
 //! fan cannot attain the commanded speed.
 //! - \b FAN_CHn_INT_AUTO_SPEED_OK means that in automatic mode, the cooling
 //! fan has attained the commanded speed.
-//!
-//! In the above flag names, the \b CHn placeholder should be replaced with
-//! the actual channel number, 0-5 (for example, CH1).
 //!
 //! The interrupt flags have a different meaning if the FAN channel is
 //! configured for manual mode.  The following alternate set of flag names is
@@ -408,6 +421,9 @@ FanChannelRPMGet(unsigned long ulBase, unsigned long ulChannel)
 //! was calculated.
 //! - \b FAN_CHn_INT_MANUAL_SPEED_CHANGE means that in manual mode, the speed
 //! changed.
+//!
+//! In the above flag names, the \b CHn placeholder should be replaced with
+//! the actual channel number, 0-5 (for example, CH1).
 //!
 //! Note that even though the names are different for manual mode, the values
 //! are the same.  For example \b _AUTO_SPEED_ERROR is the same value as
@@ -465,7 +481,7 @@ FanIntDisable(unsigned long ulBase, unsigned long ulFlags)
 //! Gets the FAN module interrupt status.
 //!
 //! \param ulBase is the base address of the FAN module.
-//! \param bMasked is set \b true to get the masked interrupt status, or
+//! \param bMasked is \b true to get the masked interrupt status, or
 //! \b false to get the raw interrupt status.
 //!
 //! This function returns the interrupt status of the FAN module.  It can
@@ -505,8 +521,8 @@ FanIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! \param ulBase is the base address of the FAN module.
 //! \param ulFlags is the logical OR of all the interrupts to be cleared.
 //!
-//! This function clears one or more interrupts from the FAN module.  The 
-//! \e ulFlags parameter is the logical OR of all the possible interrupts that 
+//! This function clears one or more interrupts from the FAN module.  The
+//! \e ulFlags parameter is the logical OR of all the possible interrupts that
 //! can be cleared.  For a list of possible interrupt flags, refer to the
 //! documentation for the function FanIntEnable().
 //!
@@ -535,9 +551,9 @@ FanIntClear(unsigned long ulBase, unsigned long ulFlags)
 //! \param pfnHandler is a pointer to the function to be called when the
 //! interrupt is activated.
 //!
-//! This function sets and enables the handler to be called when the FAN module
-//! generates an interrupt.  Specific FAN interrupts must still be enabled
-//! with the FanIntEnable() function.
+//! This function registers and enables the handler to be called when the FAN
+//! module generates an interrupt.  Specific FAN interrupts must still be
+//! enabled with the FanIntEnable() function.
 //!
 //! \sa IntRegister() for important information about registering interrupt
 //! handlers.
@@ -571,7 +587,7 @@ FanIntRegister(unsigned long ulBase, void (*pfnHandler)(void))
 //!
 //! \param ulBase is the base address of the FAN module.
 //!
-//! This function disables and clears the handler to be called when the
+//! This function unregisters and clears the handler to be called when the
 //! FAN module interrupt occurs.
 //!
 //! \sa IntRegister() for important information about registering interrupt

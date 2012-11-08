@@ -189,7 +189,7 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>simple_fs.c</PathWithFileName>
+      <PathWithFileName>.\simple_fs.c</PathWithFileName>
       <FilenameWithoutPath>simple_fs.c</FilenameWithoutPath>
     </File>
     <File>

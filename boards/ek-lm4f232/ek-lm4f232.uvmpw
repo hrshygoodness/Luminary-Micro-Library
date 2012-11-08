@@ -23,22 +23,32 @@
   </project>
 
   <project>
-    <PathAndName>.\aes_expanded_key\aes_expanded_key.uvproj</PathAndName>
-    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
-  </project>
-
-  <project>
-    <PathAndName>.\aes_set_key\aes_set_key.uvproj</PathAndName>
-    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
-  </project>
-
-  <project>
     <PathAndName>.\bitband\bitband.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
     <PathAndName>.\blinky\blinky.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\boot_demo1\boot_demo1.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\boot_demo2\boot_demo2.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\boot_serial\boot_serial.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\boot_usb\boot_usb.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
@@ -78,6 +88,11 @@
   </project>
 
   <project>
+    <PathAndName>.\softuart_echo\softuart_echo.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
     <PathAndName>.\timers\timers.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
@@ -103,12 +118,42 @@
   </project>
 
   <project>
+    <PathAndName>.\usb_dev_msc\usb_dev_msc.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
     <PathAndName>.\usb_dev_serial\usb_dev_serial.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 
   <project>
+    <PathAndName>.\usb_host_audio\usb_host_audio.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
     <PathAndName>.\usb_host_msc\usb_host_msc.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\usb_host_keyboard\usb_host_keyboard.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\usb_host_mouse\usb_host_mouse.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\usb_stick_demo\usb_stick_demo.uvproj</PathAndName>
+    <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
+  </project>
+
+  <project>
+    <PathAndName>.\usb_stick_update\usb_stick_update.uvproj</PathAndName>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

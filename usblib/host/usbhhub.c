@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -26,6 +26,8 @@
 #include "inc/hw_ints.h"
 #include "driverlib/usb.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/rom_map.h"
+#include "driverlib/rtos_bindings.h"
 #include "usblib/usblib.h"
 #include "usblib/host/usbhost.h"
 #include "usblib/host/usbhostpriv.h"
@@ -613,6 +615,7 @@ HubDriverClose(void *pvInstance)
         // reported to the host control layer?
         //
         if((g_pRootHub->psPorts[ulLoop].sState == PORT_ACTIVE) ||
+           (g_pRootHub->psPorts[ulLoop].sState == PORT_RESET_WAIT) ||
            (g_pRootHub->psPorts[ulLoop].sState == PORT_ENUMERATED) ||
            (g_pRootHub->psPorts[ulLoop].sState == PORT_ERROR))
         {
@@ -680,21 +683,15 @@ HubDriverReset(unsigned char ucPort, tBoolean bResetActive)
     if(!bResetActive)
     {
         //
-        // The reset ended.  We can now signal to the USB enumeration code that a
-        // new device is waiting to be enumerated.
+        // The reset ended.  Now wait for at least 10ms before signaling
+        // USB enumeration code that a new device is waiting to be enumerated.
         //
-        g_pRootHub->psPorts[ucPort].sState = PORT_ACTIVE;
+        g_pRootHub->psPorts[ucPort].sState = PORT_RESET_WAIT;
 
         //
-        // Call the main host controller layer to have it enumerate the newly
-        // connected device.
+        // Set the wait to 10ms (10 frames) from now.
         //
-        g_pRootHub->psPorts[ucPort].ulDevHandle =
-                    USBHCDHubDeviceConnected(0, 1, ucPort,
-                                 g_pRootHub->psPorts[ucPort].bLowSpeed,
-                                 g_pRootHub->psPorts[ucPort].pucConfigDesc,
-                                 g_pRootHub->psPorts[ucPort].ulConfigSize);
-
+        g_pRootHub->psPorts[ucPort].ulCount = 10;
     }
     else
     {
@@ -768,24 +765,15 @@ HubDriverDeviceConnect(unsigned char ucPort, tBoolean bLowSpeed)
     g_pRootHub->psPorts[ucPort].bLowSpeed = bLowSpeed;
 
     //
-    // If another device is currently being enumerated, mark this port as
-    // needing serviced later, otherwise start enumeration.
+    // Mark the port as having a device present but not enumerated.
     //
-    if(g_pRootHub->bEnumerationBusy)
-    {
-        //
-        // Mark the port as having a device present but not enumerated.
-        //
-        DEBUG_OUTPUT("Deferring enumeration for port %d\n", ucPort);
-        g_pRootHub->psPorts[ucPort].sState = PORT_CONNECTED;
-    }
-    else
-    {
-        //
-        // Start enumerating the device.
-        //
-        HubDriverDeviceReset(ucPort);
-    }
+    DEBUG_OUTPUT("Deferring enumeration for port %d\n", ucPort);
+    g_pRootHub->psPorts[ucPort].sState = PORT_CONNECTED;
+
+    //
+    // Wait 100ms to reset the device.
+    //
+    g_pRootHub->psPorts[ucPort].ulCount = 100;
 }
 
 //*****************************************************************************
@@ -802,6 +790,7 @@ HubDriverDeviceDisconnect(unsigned char ucPort)
     // the host controller that it is present?
     //
     if((g_pRootHub->psPorts[ucPort].sState == PORT_ACTIVE) ||
+       (g_pRootHub->psPorts[ucPort].sState == PORT_RESET_WAIT) ||
        (g_pRootHub->psPorts[ucPort].sState == PORT_ENUMERATED) ||
        (g_pRootHub->psPorts[ucPort].sState == PORT_ERROR))
     {
@@ -817,6 +806,7 @@ HubDriverDeviceDisconnect(unsigned char ucPort)
     // indicating that an enumeration is still ongoing.
     //
     if((g_pRootHub->psPorts[ucPort].sState == PORT_RESET_ACTIVE) ||
+       (g_pRootHub->psPorts[ucPort].sState == PORT_RESET_WAIT) ||
        (g_pRootHub->psPorts[ucPort].sState == PORT_ACTIVE))
     {
         g_pRootHub->bEnumerationBusy = false;
@@ -844,7 +834,7 @@ USBHHubMain(void)
     //
     // If the hub isn't present, just return.
     //
-    if(!g_pRootHub->bHubActive)
+    if((g_pRootHub == 0) || (!g_pRootHub->bHubActive))
     {
         return;
     }
@@ -862,16 +852,49 @@ USBHHubMain(void)
     for(ucPort = 0; ucPort <= g_pRootHub->ucNumPortsInUse; ucPort++)
     {
         //
+        // Decrement any wait counter if there is one present.
+        //
+        if(g_pRootHub->psPorts[ucPort].ulCount != 0)
+        {
+            g_pRootHub->psPorts[ucPort].ulCount--;
+        }
+
+        //
         // Is this port waiting to be enumerated and is the last device
         // enumeration finished?
         //
         if((g_pRootHub->psPorts[ucPort].sState == PORT_CONNECTED) &&
-           !g_pRootHub->bEnumerationBusy)
+           (!g_pRootHub->bEnumerationBusy) &&
+           (g_pRootHub->psPorts[ucPort].ulCount == 0))
         {
             //
             // Yes - start the enumeration processing for this device.
             //
             HubDriverDeviceReset(ucPort);
+        }
+
+        //
+        // If the state is PORT_RESET_WAIT then the hub is waiting before
+        // accessing device as the USB 2.0 specification requires.
+        //
+        if((g_pRootHub->psPorts[ucPort].sState == PORT_RESET_WAIT) &&
+           (g_pRootHub->psPorts[ucPort].ulCount == 0))
+        {
+            //
+            // Start the enumeration process if the timeout has passed and
+            // the hub is waiting to start enumerating the device.
+            //
+            g_pRootHub->psPorts[ucPort].sState = PORT_ACTIVE;
+
+            //
+            // Call the main host controller layer to have it enumerate the newly
+            // connected device.
+            //
+            g_pRootHub->psPorts[ucPort].ulDevHandle =
+                        USBHCDHubDeviceConnected(0, 1, ucPort,
+                                     g_pRootHub->psPorts[ucPort].bLowSpeed,
+                                     g_pRootHub->psPorts[ucPort].pucConfigDesc,
+                                     g_pRootHub->psPorts[ucPort].ulConfigSize);
         }
 
         //
@@ -899,9 +922,9 @@ USBHHubMain(void)
             // ensure that we do not clear a flag that the interrupt routine
             // has just set.
             //
-            IntDisable(INT_USB0);
+            OS_INT_DISABLE(INT_USB0);
             g_ulChangeFlags &= ~(1 << ucPort);
-            IntEnable(INT_USB0);
+            OS_INT_ENABLE(INT_USB0);
 
             //
             // If there was an error, go on and look at the next bit.
@@ -1202,6 +1225,23 @@ USBHHubClose(unsigned long ulInstance)
     g_pRootHub = 0;
 
     DEBUG_OUTPUT("USBHHubClose completed.\n");
+}
+
+//*****************************************************************************
+//
+// This function is used to initialize the Hub driver.  This is an internal
+// function that should not be called by the application.
+//
+//*****************************************************************************
+void
+USBHHubInit(void)
+{
+    //
+    // Initialize Hub state.
+    //
+    g_pRootHub = 0;
+    g_ulChangeFlags = 0;
+    g_ulHubChanges = 0;
 }
 
 //*****************************************************************************

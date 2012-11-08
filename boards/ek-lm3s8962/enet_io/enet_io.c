@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the EK-LM3S8962 Firmware Package.
+// This is part of revision 9453 of the EK-LM3S8962 Firmware Package.
 //
 //*****************************************************************************
 
@@ -87,6 +87,13 @@
 //! CGI support along with the ability to have the server automatically insert
 //! the HTTP headers rather than having these built in to the files in the
 //! file system image.
+//!
+//! Source files for the internal file system image can be found in the ``fs''
+//! directory.  If any of these files are changed, the file system image
+//! (io_fsdata.h) should be rebuilt by running the following command from the
+//! enet_io directory:
+//!
+//! ../../../tools/bin/makefsfile -i fs -o io_fsdata.h -r -h -q
 //!
 //! For additional details on lwIP, refer to the lwIP web page at:
 //! http://savannah.nongnu.org/projects/lwip/

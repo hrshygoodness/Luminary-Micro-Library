@@ -5,20 +5,35 @@
 // Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -302,7 +317,7 @@ void
 ADCIntClear(unsigned long ulBase, unsigned long ulSequenceNum)
 {
     //
-    // Check the arugments.
+    // Check the arguments.
     //
     ASSERT((ulBase == ADC0_BASE) || (ulBase == ADC1_BASE));
     ASSERT(ulSequenceNum < 4);
@@ -330,7 +345,7 @@ void
 ADCSequenceEnable(unsigned long ulBase, unsigned long ulSequenceNum)
 {
     //
-    // Check the arugments.
+    // Check the arguments.
     //
     ASSERT((ulBase == ADC0_BASE) || (ulBase == ADC1_BASE));
     ASSERT(ulSequenceNum < 4);
@@ -358,7 +373,7 @@ void
 ADCSequenceDisable(unsigned long ulBase, unsigned long ulSequenceNum)
 {
     //
-    // Check the arugments.
+    // Check the arguments.
     //
     ASSERT((ulBase == ADC0_BASE) || (ulBase == ADC1_BASE));
     ASSERT(ulSequenceNum < 4);
@@ -494,7 +509,7 @@ ADCSequenceConfigure(unsigned long ulBase, unsigned long ulSequenceNum,
 //! is used by the ADC at the appropriate time when the trigger for
 //! this sequence occurs.
 //!
-//! \note If the Digitial Comparator is present and enabled using the
+//! \note If the Digital Comparator is present and enabled using the
 //! \b ADC_CTL_CMP0 through \b ADC_CTL_CMP7 selects, the ADC sample is NOT
 //! written into the ADC sequence data FIFO.
 //!
@@ -525,7 +540,7 @@ ADCSequenceStepConfigure(unsigned long ulBase, unsigned long ulSequenceNum,
     unsigned long ulTemp;
 
     //
-    // Check the arugments.
+    // Check the arguments.
     //
     ASSERT((ulBase == ADC0_BASE) || (ulBase == ADC1_BASE));
     ASSERT(ulSequenceNum < 4);
@@ -853,7 +868,7 @@ ADCSoftwareOversampleConfigure(unsigned long ulBase,
     }
 
     //
-    // Save the sfiht factor.
+    // Save the shift factor.
     //
     g_pucOversampleFactor[ulSequenceNum] = ulValue;
 }
@@ -1025,7 +1040,7 @@ ADCSoftwareOversampleDataGet(unsigned long ulBase, unsigned long ulSequenceNum,
 //!
 //! Enabling hardware averaging increases the precision of the ADC at the cost
 //! of throughput.  For example, enabling 4x oversampling reduces the
-//! throughput of a 250 Ksps ADC to 62.5 Ksps.
+//! throughput of a 250 K samples/second ADC to 62.5 K samples/second.
 //!
 //! \return None.
 //
@@ -1285,7 +1300,7 @@ ADCComparatorIntEnable(unsigned long ulBase, unsigned long ulSequenceNum)
 //!
 //! \param ulBase is the base address of the ADC module.
 //!
-//! This function returns the digitial comparator interrupt status bits.  This
+//! This function returns the digital comparator interrupt status bits.  This
 //! status is sequence agnostic.
 //!
 //! \return The current comparator interrupt status.
@@ -1300,7 +1315,7 @@ ADCComparatorIntStatus(unsigned long ulBase)
     ASSERT((ulBase == ADC0_BASE) || (ulBase == ADC1_BASE));
 
     //
-    // Return the digitial comparator interrupt status.
+    // Return the digital comparator interrupt status.
     //
     return(HWREG(ulBase + ADC_O_DCISC));
 }
@@ -1343,7 +1358,7 @@ ADCComparatorIntClear(unsigned long ulBase, unsigned long ulStatus)
 //! external reference.  If \b ADC_REF_INT is chosen, then an internal 3V
 //! reference is used and no external reference is needed.  If
 //! \b ADC_REF_EXT_3V is chosen, then a 3V reference must be supplied to the
-//! AVREF pin.  If \b ADC_REF_EXT_1V is chosen, then a 1V external referece
+//! AVREF pin.  If \b ADC_REF_EXT_1V is chosen, then a 1V external reference
 //! must be supplied to the AVREF pin.
 //!
 //! \note The ADC reference can only be selected on parts that have an external

@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 8555 of the EK-LM3S3748 Firmware Package.
+ * This is part of revision 9453 of the EK-LM3S3748 Firmware Package.
  *
  *****************************************************************************/
 
@@ -67,4 +67,4 @@ SECTIONS
     .stack  :   > SRAM
 }
 
-__STACK_TOP = __stack + 512;
+__STACK_TOP = __stack + 1024;

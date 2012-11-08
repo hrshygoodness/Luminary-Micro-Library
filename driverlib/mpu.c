@@ -5,20 +5,35 @@
 // Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -108,7 +123,7 @@ MPUDisable(void)
 //
 //! Gets the count of regions supported by the MPU.
 //!
-//! This function is used to get the total number of regions that are supported 
+//! This function is used to get the total number of regions that are supported
 //! by the MPU, including regions that are already programmed.
 //!
 //! \return The number of memory protection regions that are available
@@ -133,8 +148,8 @@ MPURegionCountGet(void)
 //! \param ulRegion is the region number to enable.
 //!
 //! This function is used to enable a memory protection region.  The region
-//! should already be configured with the MPURegionSet() function.  Once 
-//! enabled, the memory protection rules of the region are applied and access 
+//! should already be configured with the MPURegionSet() function.  Once
+//! enabled, the memory protection rules of the region are applied and access
 //! violations cause a memory management fault.
 //!
 //! \return None.
@@ -202,9 +217,9 @@ MPURegionDisable(unsigned long ulRegion)
 //! \param ulFlags is a set of flags to define the attributes of the region.
 //!
 //! This function sets up the protection rules for a region.  The region has
-//! a base address and a set of attributes including the size. The base 
-//! address parameter, \e ulAddr, must be aligned according to the size, and 
-//! the size must be a power of 2. 
+//! a base address and a set of attributes including the size. The base
+//! address parameter, \e ulAddr, must be aligned according to the size, and
+//! the size must be a power of 2.
 //!
 //! The \e ulFlags parameter is the logical OR of all of the attributes
 //! of the region.  It is a combination of choices for region size,
@@ -287,7 +302,7 @@ MPURegionDisable(unsigned long ulRegion)
 //! have the following value:
 //!
 //! <code>
-//! (MPU_RG_SIZE_32K | MPU_RGN_PERM_EXEC | MPU_RGN_PERM_PRV_RO_USR_RO |
+//! (MPU_RGN_SIZE_32K | MPU_RGN_PERM_EXEC | MPU_RGN_PERM_PRV_RO_USR_RO |
 //!  MPU_SUB_RGN_DISABLE_2 | MPU_RGN_ENABLE)
 //! </code>
 //!
@@ -381,8 +396,8 @@ MPURegionGet(unsigned long ulRegion, unsigned long *pulAddr,
 //! \param pfnHandler is a pointer to the function to be called when the
 //! memory management fault occurs.
 //!
-//! This function sets and enables the handler to be called when the MPU 
-//! generates a memory management fault due to a protection region access 
+//! This function sets and enables the handler to be called when the MPU
+//! generates a memory management fault due to a protection region access
 //! violation.
 //!
 //! \sa IntRegister() for important information about registering interrupt

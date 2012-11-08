@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -180,7 +180,6 @@ LocatorInit(void)
     pcb = udp_new();
     udp_recv(pcb, LocatorReceive, NULL);
     udp_bind(pcb, IP_ADDR_ANY, 23);
-    udp_connect(pcb, IP_ADDR_ANY, 23);
 }
 
 //*****************************************************************************

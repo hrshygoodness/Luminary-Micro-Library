@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -31,6 +31,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/usb.h"
+#include "driverlib/rtos_bindings.h"
 #include "usblib/usblib.h"
 #include "usblib/device/usbdevice.h"
 #include "usblib/device/usbdevicepriv.h"
@@ -403,7 +404,7 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
         //
         // Wait about 100mS.
         //
-        MAP_SysCtlDelay(MAP_SysCtlClockGet() / 30);
+        OS_DELAY(MAP_SysCtlClockGet() / 30);
 
         //
         // Attach the device using the soft connect.
@@ -413,7 +414,7 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
         //
         // Enable the USB interrupt.
         //
-        MAP_IntEnable(INT_USB0);
+        OS_INT_ENABLE(INT_USB0);
     }
 }
 
@@ -445,7 +446,7 @@ USBDCDTerm(unsigned long ulIndex)
     //
     // Disable the USB interrupts.
     //
-    MAP_IntDisable(INT_USB0);
+    OS_INT_DISABLE(INT_USB0);
 
     //
     // Reset the tick handlers so that they can be reconfigured when and if

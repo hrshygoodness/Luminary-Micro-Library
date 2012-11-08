@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -118,8 +118,9 @@ typedef struct
     //
     // Holds the identifier for the Feature Unit for controlling volume.
     //
-    unsigned char ucVolumeIDOut;
-    unsigned char ucVolumeIDIn;
+    unsigned char ucVolumeID;
+    
+    tACFeatureUnit *pFeatureUnit;
 
     //
     // Holds what types of controls are enabled on the device.
@@ -235,7 +236,6 @@ AudioTerminalGet(tConfigDescriptor *pConfigDesc, unsigned long ulTerminal,
                  unsigned long ulTerminalType)
 {
     tACOutputTerminal *pOutput;
-    tACFeatureUnit *pFeature;
     tDescriptorHeader *pHeader;
     long lBytesRemaining;
 
@@ -271,12 +271,7 @@ AudioTerminalGet(tConfigDescriptor *pConfigDesc, unsigned long ulTerminal,
             }
             else if(pOutput->bDescriptorSubtype == USB_AI_FEATURE_UNIT)
             {
-                pFeature = (tACFeatureUnit *)pHeader;
-
-                if(pFeature->bUnitID == ulTerminalType)
-                {
-                    return(pHeader);
-                }
+                return(pHeader);
             }
         }
 
@@ -748,6 +743,13 @@ USBAudioOpen(tUSBHostDevice *pDevice)
                                               USB_AI_OUTPUT_TERMINAL,
                                               USB_TTYPE_STREAMING);
 
+    // 
+    // Find the feature unit.
+    g_AudioDevice.pFeatureUnit = 
+        (tACFeatureUnit *)AudioTerminalGet(pConfigDesc,
+                                           USB_AI_FEATURE_UNIT,
+                                           0);
+
     //
     // Need some kind of terminal to send or receive audio from.
     //
@@ -780,6 +782,14 @@ USBAudioOpen(tUSBHostDevice *pDevice)
     {
         g_AudioDevice.pfnCallback((void *)&g_AudioDevice,
                                          0, USBH_AUDIO_EVENT_OPEN);
+    }
+
+    // 
+    // If a feature unit was found, save the ID 
+    //
+    if(g_AudioDevice.pFeatureUnit != 0) 
+    {
+        g_AudioDevice.ucVolumeID = g_AudioDevice.pFeatureUnit->bUnitID;
     }
 
     //
@@ -997,7 +1007,7 @@ VolumeSettingGet(unsigned long ulInstance, unsigned long ulInterface,
     //
     // Set the language ID.
     //
-    SetupPacket.wIndex = (pAudioDevice->ucVolumeIDOut << 8) |
+    SetupPacket.wIndex = (pAudioDevice->ucVolumeID << 8) |
                          (ulInterface & 0xff);
 
     //
@@ -1199,7 +1209,7 @@ USBHostAudioVolumeSet(unsigned long ulInstance, unsigned ulInterface,
     //
     // Set Volume control ID and interface to 0.
     //
-    SetupPacket.wIndex = pAudioDevice->ucVolumeIDOut << 8;
+    SetupPacket.wIndex = pAudioDevice->ucVolumeID << 8;
 
     //
     // Only request the space available.

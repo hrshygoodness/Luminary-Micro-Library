@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -242,7 +242,7 @@ Usage(char *pcFilename)
     fprintf(stderr, "If the output filename is not specified, standard output "
             "will be used.\n");
     fprintf(stderr, "\n");
-    fprintf(stderr, "Version 8555\n");
+    fprintf(stderr, "Version 9453\n");
     fprintf(stderr, "Report bugs to <support_lmi@ti.com>.\n");
 }
 

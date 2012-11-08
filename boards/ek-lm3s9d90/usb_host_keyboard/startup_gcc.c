@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the EK-LM3S9D90 Firmware Package.
+// This is part of revision 9453 of the EK-LM3S9D90 Firmware Package.
 //
 //*****************************************************************************
 
@@ -52,7 +52,7 @@ extern int main(void);
 // Reserve space for the system stack.
 //
 //*****************************************************************************
-static unsigned long pulStack[128];
+static unsigned long pulStack[256];
 
 //*****************************************************************************
 //

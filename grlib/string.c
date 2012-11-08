@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Graphics Library.
+// This is part of revision 9453 of the Stellaris Graphics Library.
 //
 //*****************************************************************************
 
@@ -1097,9 +1097,10 @@ GrStringNextCharGet(const tContext *pContext, const char *pcString,
 //! \return None.
 //
 //*****************************************************************************
-void GrFontGlyphRender(const tContext *pContext, const unsigned char *pucData,
-                       long lX, long lY, unsigned long bCompressed,
-                       unsigned long bOpaque)
+void
+GrFontGlyphRender(const tContext *pContext, const unsigned char *pucData,
+                  long lX, long lY, unsigned long bCompressed,
+                  unsigned long bOpaque)
 {
     long lIdx, lX0, lY0, lCount, lOff, lOn, lBit, lClipX1, lClipX2;
 
@@ -1382,7 +1383,6 @@ void GrFontGlyphRender(const tContext *pContext, const unsigned char *pucData,
                         lClipX2 = lX + lX0 + lCount - 1;
                     }
 
-
                     DpyLineDrawH(pContext->pDisplay, lClipX1, lClipX2,
                                  lY + lY0, pContext->ulBackground);
                 }
@@ -1589,9 +1589,10 @@ void GrFontGlyphRender(const tContext *pContext, const unsigned char *pucData,
 //! \return None.
 //
 //*****************************************************************************
-void GrFontInfoGet(const tFont *pFont, unsigned char *pucFormat,
-                   unsigned char *pucMaxWidth, unsigned char *pucHeight,
-                   unsigned char *pucBaseline)
+void
+GrFontInfoGet(const tFont *pFont, unsigned char *pucFormat,
+              unsigned char *pucMaxWidth, unsigned char *pucHeight,
+              unsigned char *pucBaseline)
 {
     //
     // Parameter sanity checks.
@@ -1681,7 +1682,8 @@ GrFontBaselineGet(const tFont *pFont)
 //! \return Returns the height of the font, in pixels.
 //
 //*****************************************************************************
-unsigned long GrFontHeightGet(const tFont *pFont)
+unsigned long
+GrFontHeightGet(const tFont *pFont)
 {
     unsigned char ucFormat, ucWidth, ucHeight, ucBaseline;
 
@@ -1919,9 +1921,9 @@ FontWideGlyphDataGet(const tFontWide *pFont, unsigned long ulCodePoint,
 //! the glyph does not exist in the font.
 //
 //*****************************************************************************
-const unsigned char *GrFontGlyphDataGet(const tFont *pFont,
-                                        unsigned long ulCodePoint,
-                                        unsigned char *pucWidth)
+const unsigned char *
+GrFontGlyphDataGet(const tFont *pFont, unsigned long ulCodePoint,
+                   unsigned char *pucWidth)
 {
     ASSERT(pFont);
     ASSERT(pucWidth);
@@ -1975,7 +1977,8 @@ const unsigned char *GrFontGlyphDataGet(const tFont *pFont,
 //! \return Returns the font codepage identifier.
 //!
 //*****************************************************************************
-unsigned short GrFontCodepageGet(const tFont *pFont)
+unsigned short
+GrFontCodepageGet(const tFont *pFont)
 {
     ASSERT(pFont);
 
@@ -2293,8 +2296,7 @@ GrCodepageMapTableSet(tContext *pContext,
 //
 //*****************************************************************************
 long
-GrStringCodepageSet(tContext *pContext,
-                    unsigned short usCodepage)
+GrStringCodepageSet(tContext *pContext, unsigned short usCodepage)
 {
     ASSERT(pContext);
 

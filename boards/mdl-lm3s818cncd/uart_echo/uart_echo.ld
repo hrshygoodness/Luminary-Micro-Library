@@ -18,7 +18,7 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 8555 of the MDL-LM3S818CNCD Firmware Package.
+ * This is part of revision 9453 of the MDL-LM3S818CNCD Firmware Package.
  *
  *****************************************************************************/
 

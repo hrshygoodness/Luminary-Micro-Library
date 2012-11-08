@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -662,7 +662,7 @@ DownloadImage(tLMDFUHandle hHandle, tLMDFUParams *psDFU)
     {
         g_ulAddress = g_ulAddressOverride;
     }
-    
+
     //
     // Does the input file exist?
     //
@@ -868,9 +868,8 @@ main(int argc,char* argv[])
             printf("The driver for the USB Device Firmware Upgrade device cannot be found.\n");
             printf("Before running this program, please connect the DFU device to this system\n");
             printf("and install the device driver when prompted by Windows.  The device driver\n");
-            printf("can be found on the evaluation kit CD or can be found in the package named\n");
-            printf("\"Stellaris embedded USB drivers\" which may be downloaded from\n");
-            printf("http://www.ti.com/software_updates.\n\n");
+            printf("can be found on the evaluation kit CD or can be found in the windows_drivers\n");
+            printf("directory of your StellarisWare installation.\n\n");
             iExitCode = 10;
         }
         else if(eRetcode == DFU_ERR_INVALID_ADDR)
@@ -879,9 +878,10 @@ main(int argc,char* argv[])
             printf("to be a version which this program does not support. Please download and\n");
             printf("install the latest device driver and example applications from the TI\n");
             printf("web site to ensure that you are using compatible versions. The drivers\n");
-            printf("can be found in the package named \"Stellaris embedded USB drivers\" and\n");
-            printf("the applications can be found in package \"Windows-side examples for USB kits\"\n");
-            printf("both of which may be downloaded from http://www.ti.com/software_updates.\n\n");
+            printf("can be found in the windows_drivers directory of your StellarisWare\n");
+            printf("installation and the applications can be found in package \"Windows-side\n");
+            printf("examples for USB kits\" which may be downloaded from the web site at\n");
+            printf("http://www.ti.com/software_updates.\n\n");
             iExitCode = 11;
         }
         else
@@ -889,9 +889,9 @@ main(int argc,char* argv[])
             printf("An error was reported while attempting to load the device driver for the \n");
             printf("USB Device Firmware Upgrade device.  If this error persists, please download\n");
             printf("and reinstall the latest device driver and example applications from the TI\n");
-            printf("web site. The drivers can be found in the package named \"Stellaris\n");
-            printf("embedded USB drivers\" and the applications can be found in package \"Windows-side\n");
-            printf("examples for USB kits\", both of which may be downloaded from\n");
+            printf("web site. The drivers can be found in the windows_drivers directory of your\n");
+            printf("StellarisWare installation and the applications can be found in package\n");
+            printf("\"Windows-side examples for USB kits\" which may be downloaded from\n");
             printf("http://www.ti.com/software_updates.\n\n");
             iExitCode = 12;
         }

@@ -6,20 +6,35 @@
 // Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -406,6 +421,138 @@
 #else
 #define MAP_ComparatorIntStatus \
         ComparatorIntStatus
+#endif
+
+//*****************************************************************************
+//
+// Macros for the EEPROM API.
+//
+//*****************************************************************************
+#ifdef ROM_EEPROMRead
+#define MAP_EEPROMRead \
+        ROM_EEPROMRead
+#else
+#define MAP_EEPROMRead \
+        EEPROMRead
+#endif
+#ifdef ROM_EEPROMBlockCountGet
+#define MAP_EEPROMBlockCountGet \
+        ROM_EEPROMBlockCountGet
+#else
+#define MAP_EEPROMBlockCountGet \
+        EEPROMBlockCountGet
+#endif
+#ifdef ROM_EEPROMBlockHide
+#define MAP_EEPROMBlockHide \
+        ROM_EEPROMBlockHide
+#else
+#define MAP_EEPROMBlockHide \
+        EEPROMBlockHide
+#endif
+#ifdef ROM_EEPROMBlockLock
+#define MAP_EEPROMBlockLock \
+        ROM_EEPROMBlockLock
+#else
+#define MAP_EEPROMBlockLock \
+        EEPROMBlockLock
+#endif
+#ifdef ROM_EEPROMBlockPasswordSet
+#define MAP_EEPROMBlockPasswordSet \
+        ROM_EEPROMBlockPasswordSet
+#else
+#define MAP_EEPROMBlockPasswordSet \
+        EEPROMBlockPasswordSet
+#endif
+#ifdef ROM_EEPROMBlockProtectGet
+#define MAP_EEPROMBlockProtectGet \
+        ROM_EEPROMBlockProtectGet
+#else
+#define MAP_EEPROMBlockProtectGet \
+        EEPROMBlockProtectGet
+#endif
+#ifdef ROM_EEPROMBlockProtectSet
+#define MAP_EEPROMBlockProtectSet \
+        ROM_EEPROMBlockProtectSet
+#else
+#define MAP_EEPROMBlockProtectSet \
+        EEPROMBlockProtectSet
+#endif
+#ifdef ROM_EEPROMBlockUnlock
+#define MAP_EEPROMBlockUnlock \
+        ROM_EEPROMBlockUnlock
+#else
+#define MAP_EEPROMBlockUnlock \
+        EEPROMBlockUnlock
+#endif
+#ifdef ROM_EEPROMIntClear
+#define MAP_EEPROMIntClear \
+        ROM_EEPROMIntClear
+#else
+#define MAP_EEPROMIntClear \
+        EEPROMIntClear
+#endif
+#ifdef ROM_EEPROMIntDisable
+#define MAP_EEPROMIntDisable \
+        ROM_EEPROMIntDisable
+#else
+#define MAP_EEPROMIntDisable \
+        EEPROMIntDisable
+#endif
+#ifdef ROM_EEPROMIntEnable
+#define MAP_EEPROMIntEnable \
+        ROM_EEPROMIntEnable
+#else
+#define MAP_EEPROMIntEnable \
+        EEPROMIntEnable
+#endif
+#ifdef ROM_EEPROMIntStatus
+#define MAP_EEPROMIntStatus \
+        ROM_EEPROMIntStatus
+#else
+#define MAP_EEPROMIntStatus \
+        EEPROMIntStatus
+#endif
+#ifdef ROM_EEPROMMassErase
+#define MAP_EEPROMMassErase \
+        ROM_EEPROMMassErase
+#else
+#define MAP_EEPROMMassErase \
+        EEPROMMassErase
+#endif
+#ifdef ROM_EEPROMProgram
+#define MAP_EEPROMProgram \
+        ROM_EEPROMProgram
+#else
+#define MAP_EEPROMProgram \
+        EEPROMProgram
+#endif
+#ifdef ROM_EEPROMProgramNonBlocking
+#define MAP_EEPROMProgramNonBlocking \
+        ROM_EEPROMProgramNonBlocking
+#else
+#define MAP_EEPROMProgramNonBlocking \
+        EEPROMProgramNonBlocking
+#endif
+#ifdef ROM_EEPROMSizeGet
+#define MAP_EEPROMSizeGet \
+        ROM_EEPROMSizeGet
+#else
+#define MAP_EEPROMSizeGet \
+        EEPROMSizeGet
+#endif
+#ifdef ROM_EEPROMStatusGet
+#define MAP_EEPROMStatusGet \
+        ROM_EEPROMStatusGet
+#else
+#define MAP_EEPROMStatusGet \
+        EEPROMStatusGet
+#endif
+#ifdef ROM_EEPROMInit
+#define MAP_EEPROMInit \
+        ROM_EEPROMInit
+#else
+#define MAP_EEPROMInit \
+        EEPROMInit
 #endif
 
 //*****************************************************************************
@@ -1282,6 +1429,13 @@
 #else
 #define MAP_GPIOPinTypePECITx \
         GPIOPinTypePECITx
+#endif
+#ifdef ROM_GPIOPinTypeI2CSCL
+#define MAP_GPIOPinTypeI2CSCL \
+        ROM_GPIOPinTypeI2CSCL
+#else
+#define MAP_GPIOPinTypeI2CSCL \
+        GPIOPinTypeI2CSCL
 #endif
 
 //*****************************************************************************
@@ -2911,6 +3065,13 @@
 #define MAP_SMBusMasterBlockProcessCall \
         SMBusMasterBlockProcessCall
 #endif
+#ifdef ROM_SMBusMasterBlockRead
+#define MAP_SMBusMasterBlockRead \
+        ROM_SMBusMasterBlockRead
+#else
+#define MAP_SMBusMasterBlockRead \
+        SMBusMasterBlockRead
+#endif
 #ifdef ROM_SMBusMasterBlockWrite
 #define MAP_SMBusMasterBlockWrite \
         ROM_SMBusMasterBlockWrite
@@ -3197,6 +3358,13 @@
 #else
 #define MAP_SMBusStatusGet \
         SMBusStatusGet
+#endif
+#ifdef ROM_SMBusSlaveDataSend
+#define MAP_SMBusSlaveDataSend \
+        ROM_SMBusSlaveDataSend
+#else
+#define MAP_SMBusSlaveDataSend \
+        SMBusSlaveDataSend
 #endif
 
 //*****************************************************************************
@@ -4492,6 +4660,13 @@
 #define MAP_USBHostAddrSet \
         USBHostAddrSet
 #endif
+#ifdef ROM_USBHostEndpointConfig
+#define MAP_USBHostEndpointConfig \
+        ROM_USBHostEndpointConfig
+#else
+#define MAP_USBHostEndpointConfig \
+        USBHostEndpointConfig
+#endif
 #ifdef ROM_USBHostEndpointDataAck
 #define MAP_USBHostEndpointDataAck \
         ROM_USBHostEndpointDataAck
@@ -4865,16 +5040,36 @@
 
 //*****************************************************************************
 //
-// Deprecated ROM functions.
+// Macros for the Software API.
 //
 //*****************************************************************************
-#ifndef DEPRECATED
-#define MAP_FlashIntGetStatus \
-        MAP_FlashIntStatus
-#define MAP_USBDevEndpointConfig \
-        MAP_USBDevEndpointConfigSet
-#define MAP_USBHostPwrFaultConfig \
-        MAP_USBHostPwrConfig
+#ifdef ROM_Crc16Array
+#define MAP_Crc16Array \
+        ROM_Crc16Array
+#else
+#define MAP_Crc16Array \
+        Crc16Array
+#endif
+#ifdef ROM_Crc16Array3
+#define MAP_Crc16Array3 \
+        ROM_Crc16Array3
+#else
+#define MAP_Crc16Array3 \
+        Crc16Array3
+#endif
+#ifdef ROM_Crc16
+#define MAP_Crc16 \
+        ROM_Crc16
+#else
+#define MAP_Crc16 \
+        Crc16
+#endif
+#ifdef ROM_Crc8CCITT
+#define MAP_Crc8CCITT \
+        ROM_Crc8CCITT
+#else
+#define MAP_Crc8CCITT \
+        Crc8CCITT
 #endif
 
 #endif // __ROM_MAP_H__

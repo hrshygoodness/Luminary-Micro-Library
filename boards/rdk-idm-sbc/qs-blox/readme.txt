@@ -29,7 +29,11 @@ The game also offers a small web site which displays the current status
 and allows the difficulty level to be set.  This site employs AJAX to
 request an XML file containing status information from the IDM and uses
 this to update the score, hiscore and state information once every 2.5
-seconds.
+seconds.  If changes are made to the web site content in the ``fs''
+directory, the file system image used by the application must be rebuilt
+by running the following command from the qs-blox directory:
+
+    makefsfile -i fs -o blox-fsdata.h -r -h
 
 This application supports remote software update over Ethernet using the
 LM Flash Programmer application.  A firmware update is initiated using the
@@ -53,4 +57,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 8555 of the RDK-IDM-SBC Firmware Package.
+This is part of revision 9453 of the RDK-IDM-SBC Firmware Package.

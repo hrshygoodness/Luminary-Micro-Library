@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -33,6 +33,7 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
+#include "driverlib/udma.h"
 #include "utils/crc.h"
 #include "utils/smbus.h"
 
@@ -77,7 +78,6 @@
 #define FLAG_ADDRESS_RESOLVED           5
 #define FLAG_ADDRESS_VALID              6
 #define FLAG_ARP                        7
-
 //*****************************************************************************
 //
 //! Enables Packet Error Checking (PEC).
@@ -244,7 +244,6 @@ void
 SMBusARPUDIDPacketEncode(tSMBusUDID *pUDID, unsigned char ucAddress,
                          unsigned char *pucData)
 {
-
     //
     // Place data from the UDID structure and address into the data buffer
     // using the correct MSB->LSB + address order.
@@ -382,7 +381,7 @@ SMBusMasterQuickCommand(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  bData);
+                              bData);
 
     //
     // Make sure that the bus is idle.
@@ -480,7 +479,7 @@ SMBusMasterHostNotify(tSMBus *pSMBus, unsigned char ucOwnSlaveAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Put the SMBus command code on the bus.
@@ -521,8 +520,8 @@ SMBusMasterHostNotify(tSMBus *pSMBus, unsigned char ucOwnSlaveAddress,
 //!
 //! The Send Byte protocol is a basic SMBus protocol that sends a single data
 //! byte to the slave.  Unlike most of the other SMBus protocols, Send Byte
-//! does not send a "command" byte before the data payload and is intended for
-//! basic communication.
+//! does not send a ``command'' byte before the data payload and is intended
+//! for basic communication.
 //!
 //! This protocol supports the optional PEC byte for error checking.  To use
 //! PEC, SMBusPECEnable() must be called before this function.
@@ -569,7 +568,7 @@ SMBusMasterByteSend(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Put the data byte on the bus.
@@ -591,13 +590,13 @@ SMBusMasterByteSend(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the data to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->pucTxBuffer[0], 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->pucTxBuffer[0], 1);
 
         //
         // Update the state machine.
@@ -615,7 +614,8 @@ SMBusMasterByteSend(tSMBus *pSMBus, unsigned char ucTargetAddress,
         //
         // Initiate the write operation.
         //
-        MAP_I2CMasterControl(pSMBus->ulI2CBase, I2C_MASTER_CMD_BURST_SEND_START);
+        MAP_I2CMasterControl(pSMBus->ulI2CBase,
+                             I2C_MASTER_CMD_BURST_SEND_START);
     }
     else
     {
@@ -661,8 +661,8 @@ SMBusMasterByteSend(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //!
 //! The Receive Byte protocol is a basic SMBus protocol that receives a single
 //! data byte from the slave.  Unlike most of the other SMBus protocols,
-//! Receive Byte does not send a "command" byte before the data payload and is
-//! intended for basic communication.
+//! Receive Byte does not send a ``command'' byte before the data payload and
+//! is intended for basic communication.
 //!
 //! This protocol supports the optional PEC byte for error checking.  To use
 //! PEC, SMBusPECEnable() must be called before this function.
@@ -707,7 +707,7 @@ SMBusMasterByteReceive(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  true);
+                              true);
 
     //
     // Calculate the CRC for PEC (if used).
@@ -724,7 +724,7 @@ SMBusMasterByteReceive(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Update the state machine.
@@ -742,7 +742,8 @@ SMBusMasterByteReceive(tSMBus *pSMBus, unsigned char ucTargetAddress,
         //
         // Initiate the read operation.
         //
-        MAP_I2CMasterControl(pSMBus->ulI2CBase, I2C_MASTER_CMD_BURST_RECEIVE_START);
+        MAP_I2CMasterControl(pSMBus->ulI2CBase,
+                             I2C_MASTER_CMD_BURST_RECEIVE_START);
     }
     else
     {
@@ -850,12 +851,7 @@ SMBusMasterByteWordWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
-
-    //
-    // Put the SMBus command code on the bus.
-    //
-    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
+                              false);
 
     //
     // Calculate the CRC for PEC (if used).
@@ -872,20 +868,20 @@ SMBusMasterByteWordWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
 
         //
         // Add the data array to the calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            pSMBus->pucTxBuffer,
-                                            pSMBus->ucTxSize);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                pSMBus->pucTxBuffer,
+                                                pSMBus->ucTxSize);
 
         //
         // Set the next state.
@@ -912,6 +908,11 @@ SMBusMasterByteWordWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
             pSMBus->ucMasterState = SMBUS_STATE_WRITE_NEXT;
         }
     }
+
+    //
+    // Put the SMBus command code on the bus.
+    //
+    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
 
     //
     // Make sure that the bus is idle.
@@ -954,7 +955,7 @@ SMBusMasterByteWordWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //! PEC, SMBusPECEnable() must be called before this function.
 //!
 //! \return Returns \b SMBUS_PERIPHERAL_BUSY if the I2C peripheral is currently
-//! active, \b SMBUS_BUS_BUSY if the bus is already in use, 
+//! active, \b SMBUS_BUS_BUSY if the bus is already in use,
 //! \b SMBUS_DATA_SIZE_ERROR if ucSize is greater than 2, or \b SMBUS_OK if the
 //! transfer has successfully been initiated.
 //
@@ -1005,7 +1006,7 @@ SMBusMasterByteWordRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Put the SMBus command code on the bus.
@@ -1027,13 +1028,13 @@ SMBusMasterByteWordRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
 
         //
         // Update the state machine.
@@ -1152,7 +1153,6 @@ SMBusMasterBlockWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // for each transaction.
     //
     pSMBus->ucTxIndex = 0;
-    pSMBus->ucMasterState = SMBUS_STATE_WRITE_BLOCK_SIZE;
 
     //
     // Calculate the CRC for PEC (if used).
@@ -1169,38 +1169,43 @@ SMBusMasterBlockWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
 
         //
         // Add the size to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucTxSize, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucTxSize, 1);
 
         //
         // Add the data array to the calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            pSMBus->pucTxBuffer,
-                                            pSMBus->ucTxSize);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                pSMBus->pucTxBuffer,
+                                                pSMBus->ucTxSize);
     }
 
     //
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Write the first byte of the data.
     //
     MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
+
+    //
+    // Update the state machine.
+    //
+    pSMBus->ucMasterState = SMBUS_STATE_WRITE_BLOCK_SIZE;
 
     //
     // Make sure that the bus is idle.
@@ -1219,6 +1224,7 @@ SMBusMasterBlockWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Initiate the write operation.
     //
     MAP_I2CMasterControl(pSMBus->ulI2CBase, I2C_MASTER_CMD_BURST_SEND_START);
+
     //
     // Return to the caller.
     //
@@ -1289,7 +1295,7 @@ SMBusMasterBlockRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Put the SMBus command code on the bus.
@@ -1318,13 +1324,13 @@ SMBusMasterBlockRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
     }
 
     //
@@ -1421,12 +1427,7 @@ SMBusMasterProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
-
-    //
-    // Put the SMBus command code on the bus.
-    //
-    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
+                              false);
 
     //
     // Calculate the CRC for PEC (if used).
@@ -1443,21 +1444,26 @@ SMBusMasterProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
 
         //
         // Add the data array to the calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            pSMBus->pucTxBuffer,
-                                            pSMBus->ucTxSize);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                pSMBus->pucTxBuffer,
+                                                pSMBus->ucTxSize);
     }
+
+    //
+    // Put the SMBus command code on the bus.
+    //
+    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
 
     //
     // Update the state machine.
@@ -1565,17 +1571,6 @@ SMBusMasterBlockProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
     HWREGBITB(&pSMBus->usFlags, FLAG_RAW_I2C) = 0;
 
     //
-    // Set the slave address and R/S bit.
-    //
-    MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
-
-    //
-    // Put the SMBus command code on the bus.
-    //
-    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
-
-    //
     // Calculate the CRC for PEC (if used).
     //
     if(HWREGBITB(&pSMBus->usFlags, FLAG_PEC))
@@ -1590,27 +1585,38 @@ SMBusMasterBlockProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start off by calculating the CRC of the target slave address with
         // an initial value of 0.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(0, &ucTempData, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(0, &ucTempData, 1);
 
         //
         // Add the command to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucCurrentCommand, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucCurrentCommand, 1);
 
         //
         // Add the size to the running CRC calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            &pSMBus->ucTxSize, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &pSMBus->ucTxSize, 1);
 
         //
         // Add the data array to the calculation.
         //
-        pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                            pSMBus->pucTxBuffer,
-                                            pSMBus->ucTxSize);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                pSMBus->pucTxBuffer,
+                                                pSMBus->ucTxSize);
     }
+
+    //
+    // Set the slave address and R/S bit.
+    //
+    MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
+                              false);
+
+    //
+    // Put the SMBus command code on the bus.
+    //
+    MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->ucCurrentCommand);
 
     //
     // Update the state machine.
@@ -1643,7 +1649,7 @@ SMBusMasterBlockProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
 
 //*****************************************************************************
 //
-//! Initiates a "raw" I2C write transfer to a slave device.
+//! Initiates a ``raw'' I2C write transfer to a slave device.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //! \param ucTargetAddress specifies the slave address of the target device.
@@ -1654,7 +1660,7 @@ SMBusMasterBlockProcessCall(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //! using an SMBus protocol.  The data size is only limited to the size of the
 //! ucSize variable, which is an unsigned character (8 bits, value of 255).
 //!
-//! Because this function uses "raw" I2C, PEC is not supported.
+//! Because this function uses ``raw'' I2C, PEC is not supported.
 //!
 //! \return Returns \b SMBUS_PERIPHERAL_BUSY if the I2C peripheral is currently
 //! active, \b SMBUS_BUS_BUSY if the bus is already in use, or \b SMBUS_OK if
@@ -1703,7 +1709,7 @@ SMBusMasterI2CWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
     // Put the first byte on the bus.
@@ -1757,7 +1763,7 @@ SMBusMasterI2CWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
                              I2C_MASTER_CMD_BURST_SEND_START);
     }
     else
-    { 
+    {
         //
         // Set the next state.
         //
@@ -1774,7 +1780,8 @@ SMBusMasterI2CWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
         //
         // Initiate the write operation.
         //
-        MAP_I2CMasterControl(pSMBus->ulI2CBase, I2C_MASTER_CMD_BURST_SEND_START);
+        MAP_I2CMasterControl(pSMBus->ulI2CBase,
+                             I2C_MASTER_CMD_BURST_SEND_START);
     }
 
     //
@@ -1790,7 +1797,7 @@ SMBusMasterI2CWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
 
 //*****************************************************************************
 //
-//! Initiates a "raw" I2C read transfer to a slave device.
+//! Initiates a ``raw'' I2C read transfer to a slave device.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //! \param ucTargetAddress specifies the slave address of the target device.
@@ -1802,7 +1809,7 @@ SMBusMasterI2CWrite(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //! of the ucSize variable, which is an unsigned character (8 bits, value of
 //! 255).
 //!
-//! Because this function uses "raw" I2C, PEC is not supported.
+//! Because this function uses ``raw'' I2C, PEC is not supported.
 //!
 //! \return Returns \b SMBUS_PERIPHERAL_BUSY if the I2C peripheral is currently
 //! active, \b SMBUS_BUS_BUSY if the bus is already in use, or \b SMBUS_OK if
@@ -1851,7 +1858,7 @@ SMBusMasterI2CRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  true);
+                              true);
 
     //
     // Make sure that the bus is idle.
@@ -1896,7 +1903,7 @@ SMBusMasterI2CRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
         // Start the burst receive.
         //
         MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                         I2C_MASTER_CMD_BURST_RECEIVE_START);
+                             I2C_MASTER_CMD_BURST_RECEIVE_START);
     }
 
     //
@@ -1912,7 +1919,7 @@ SMBusMasterI2CRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
 
 //*****************************************************************************
 //
-//! Initiates a "raw" I2C write-read transfer to a slave device.
+//! Initiates a ``raw'' I2C write-read transfer to a slave device.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //! \param ucTargetAddress specifies the slave address of the target device.
@@ -1921,7 +1928,7 @@ SMBusMasterI2CRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //! \param pucRxData is a pointer to the receive data buffer.
 //! \param ucRxSize is the number of bytes to receive from the slave.
 //!
-//! This function initiates a write-read tranfer to an I2C slave without using
+//! This function initiates a write-read transfer to an I2C slave without using
 //! an SMBus protocol.  The user-defined number of bytes is written to the
 //! slave first, followed by the reception of the user-defined number of bytes.
 //! The transmit and receive data sizes are only limited to the size of the
@@ -1985,10 +1992,10 @@ SMBusMasterI2CWriteRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
     // Set the slave address and R/S bit.
     //
     MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase, pSMBus->ucTargetSlaveAddress,
-                          	  false);
+                              false);
 
     //
-    // Put the first byte on the bus.
+    // Write the first byte of the data.
     //
     MAP_I2CMasterDataPut(pSMBus->ulI2CBase, pSMBus->pucTxBuffer[0]);
 
@@ -2041,12 +2048,12 @@ SMBusMasterI2CWriteRead(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //*****************************************************************************
 //
 //! \internal
-//! Sends a "general" Get UDID packet.
+//! Sends a ``general'' Get UDID packet.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //! \param pucData is a pointer to the receive data buffer.
 //!
-//! This function sends a "general" Get UDID packet, used during Address
+//! This function sends a ``general'' Get UDID packet, used during Address
 //! Resolution Protocol (ARP).  Since SMBus requires that data bytes be
 //! transmitted in a certain order, the raw data in the pucData needs to be
 //! treated as such.  To put the data in a known order, use
@@ -2070,13 +2077,13 @@ SMBusMasterARPGetUDIDGen(tSMBus *pSMBus, unsigned char *pucData)
 //*****************************************************************************
 //
 //! \internal
-//! Sends a "directed" Get UDID packet.
+//! Sends a ``directed'' Get UDID packet.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //! \param ucTargetAddress specifies the slave address of the target device.
 //! \param pucData is a pointer to the receive data buffer.
 //!
-//! This function sends a "directed" Get UDID packet, used during Address
+//! This function sends a ``directed'' Get UDID packet, used during Address
 //! Resolution Protocol (ARP).  A directed packet differs from a general packet
 //! in that it targets a specific slave device.  Since SMBus requires that data
 //! bytes be transmitted in a certain order, the raw data in the pucData needs
@@ -2102,11 +2109,11 @@ SMBusMasterARPGetUDIDDir(tSMBus *pSMBus, unsigned char ucTargetAddress,
 //*****************************************************************************
 //
 //! \internal
-//! Sends a "general" Reset Device packet.
+//! Sends a ``general'' Reset Device packet.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //!
-//! This function sends a "general" Reset Device packet, used during Address
+//! This function sends a ``general'' Reset Device packet, used during Address
 //! Resolution Protocol (ARP).  This packet is used by an ARP Master to force
 //! all non-PSA (Persistent Slave Address), ARP-capable devices to return to
 //! their initial state.  This packet also tells the devices to clear their
@@ -2130,11 +2137,11 @@ SMBusMasterARPResetDeviceGen(tSMBus *pSMBus)
 //*****************************************************************************
 //
 //! \internal
-//! Sends a "directed" Reset Device packet.
+//! Sends a ``directed'' Reset Device packet.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //!
-//! This function sends a "directed" Reset Device packet, used during Address
+//! This function sends a ``directed'' Reset Device packet, used during Address
 //! Resolution Protocol (ARP).  This packet is used by an ARP Master to force
 //! a specific non-PSA (Persistent Slave Address), ARP-capable device to return
 //! to its initial state.  This packet also tells the device to clear its
@@ -2250,10 +2257,10 @@ SMBusMasterARPPrepareToARP(tSMBus *pSMBus)
 //!
 //! \return Returns \b SMBUS_TIMEOUT if a bus timeout is detected,
 //! \b SMBUS_ARB_LOST if I2C bus arbitration lost is detected,
-//! \b SMBUS_ADDR_ACK_ERROR if the address phase of a transfer is NAK'd,
-//! \b SMBUS_DATA_ACK_ERROR if the data phase of a transfer is NAK'd,
-//! \b SMBUS_DATA_SIZE_ERROR if a receive buffer overrun is detected or if a
-//! transmit operation tries to write more data than is allowed,
+//! \b SMBUS_ADDR_ACK_ERROR if the address phase of a transfer results in a
+//! NACK, \b SMBUS_DATA_ACK_ERROR if the data phase of a transfer results in a
+//! NACK, \b SMBUS_DATA_SIZE_ERROR if a receive buffer overrun is detected or
+//! if a transmit operation tries to write more data than is allowed,
 //! \b SMBUS_MASTER_ERROR if an unknown error occurs, \b SMBUS_PEC_ERROR if the
 //! received PEC byte does not match the locally calculated value, or
 //! \b SMBUS_OK if processing finished successfully.
@@ -2418,8 +2425,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
         }
 
         //
-        // When using a block write, the transfer size must be sent
-        // before the data payload.
+        // When using a block write, the transfer size must be sent before the
+        // data payload.
         //
         case SMBUS_STATE_WRITE_BLOCK_SIZE:
         {
@@ -2433,19 +2440,19 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             //
             MAP_I2CMasterControl(pSMBus->ulI2CBase,
                                  I2C_MASTER_CMD_BURST_SEND_CONT);
-           
+
             //
             // The next data byte is from the data payload.
             //
-            if((pSMBus->ucTxSize == 1) && 
-								!(HWREGBITB(&pSMBus->usFlags, FLAG_PEC)))
+            if((pSMBus->ucTxSize == 1) &&
+               !(HWREGBITB(&pSMBus->usFlags, FLAG_PEC)))
             {
-                pSMBus->ucMasterState = SMBUS_STATE_WRITE_FINAL;       
+                pSMBus->ucMasterState = SMBUS_STATE_WRITE_FINAL;
             }
             else
-            { 
+            {
                 pSMBus->ucMasterState = SMBUS_STATE_WRITE_NEXT;
-            }    
+            }
 
             //
             // This state is done.
@@ -2466,7 +2473,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             //
             // Continue the burst write.
             //
-            MAP_I2CMasterControl(pSMBus->ulI2CBase, 
+            MAP_I2CMasterControl(pSMBus->ulI2CBase,
                                  I2C_MASTER_CMD_BURST_SEND_CONT);
 
             //
@@ -2503,6 +2510,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                     }
                 }
             }
+
             //
             // If PEC is not used, regardless of whether this is a process
             // call.
@@ -2544,7 +2552,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 if(HWREGBITB(&pSMBus->usFlags, FLAG_PROCESS_CALL))
                 {
                     //
-                    // Write the final byte from TX buffer to the data register.
+                    // Write the final byte from TX buffer to the data
+                    // register.
                     //
                     MAP_I2CMasterDataPut(pSMBus->ulI2CBase,
                                      pSMBus->pucTxBuffer[pSMBus->ucTxIndex++]);
@@ -2552,10 +2561,11 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 else
                 {
                     //
-                    // Write the calculated CRC (PEC) byte to the data register.
+                    // Write the calculated CRC (PEC) byte to the data
+                    // register.
                     //
                     MAP_I2CMasterDataPut(pSMBus->ulI2CBase,
-                                     pSMBus->ucCalculatedCRC);
+                                         pSMBus->ucCalculatedCRC);
                 }
             }
             else
@@ -2568,8 +2578,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             }
 
             //
-            // If a process call is active, send out the repeated
-            // start to begin the RX portion.
+            // If a process call is active, send out the repeated start to
+            // begin the RX portion.
             //
             if(HWREGBITB(&pSMBus->usFlags, FLAG_PROCESS_CALL))
             {
@@ -2582,7 +2592,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // Continue the burst write.
                 //
                 MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                                 I2C_MASTER_CMD_BURST_SEND_CONT);
+                                     I2C_MASTER_CMD_BURST_SEND_CONT);
             }
             else
             {
@@ -2590,7 +2600,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // Finish the burst write.
                 //
                 MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                                 I2C_MASTER_CMD_BURST_SEND_FINISH);
+                                     I2C_MASTER_CMD_BURST_SEND_FINISH);
 
                 //
                 // Since we end the transaction after the last byte is sent,
@@ -2614,12 +2624,13 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             // Put the I2C master into receive mode.
             //
             MAP_I2CMasterSlaveAddrSet(pSMBus->ulI2CBase,
-                                  pSMBus->ucTargetSlaveAddress, true);
+                                      pSMBus->ucTargetSlaveAddress, true);
 
             //
             // Perform a single byte read.
             //
-            MAP_I2CMasterControl(pSMBus->ulI2CBase, I2C_MASTER_CMD_SINGLE_RECEIVE);
+            MAP_I2CMasterControl(pSMBus->ulI2CBase,
+                                 I2C_MASTER_CMD_SINGLE_RECEIVE);
 
             //
             // The next state is the wait for final read state.
@@ -2658,8 +2669,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // Update the calculated CRC value in the configuration
                 // structure.
                 //
-                pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                    &ucTempData, 1);
+                pSMBus->ucCalculatedCRC =
+                    MAP_Crc8CCITT(pSMBus->ucCalculatedCRC, &ucTempData, 1);
 
                 //
                 // Set the next state in the state machine.
@@ -2674,14 +2685,16 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                     {
                         pSMBus->ucMasterState = SMBUS_STATE_READ_BLOCK_SIZE;
                     }
+
                     //
-                    // For every other case, move to the read next state.
+                    // For every other case...
                     //
                     else
                     {
                         pSMBus->ucMasterState = SMBUS_STATE_READ_NEXT;
                     }
                 }
+
                 //
                 // If 1 byte remains, move to the final read state.
                 //
@@ -2705,14 +2718,16 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                     {
                         pSMBus->ucMasterState = SMBUS_STATE_READ_BLOCK_SIZE;
                     }
+
                     //
-                    // For every other case, move to the read next state.
+                    // For every other case...
                     //
                     else
                     {
                         pSMBus->ucMasterState = SMBUS_STATE_READ_NEXT;
                     }
                 }
+
                 //
                 // If 2 bytes remain, move to the final read state.
                 //
@@ -2726,7 +2741,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             // Start the burst receive.
             //
             MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                             I2C_MASTER_CMD_BURST_RECEIVE_START);
+                                 I2C_MASTER_CMD_BURST_RECEIVE_START);
 
             //
             // This state is done.
@@ -2775,10 +2790,11 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 //
                 // Calculate the new CRC and update configuration structure.
                 //
-                pSMBus->ucCalculatedCRC = Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                    &pSMBus->ucRxSize, 1);
+                pSMBus->ucCalculatedCRC =
+                    MAP_Crc8CCITT(pSMBus->ucCalculatedCRC, &pSMBus->ucRxSize,
+                                  1);
             }
-            
+
             //
             // Update the state machine.
             //
@@ -2906,7 +2922,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // If too many or too few bytes, error.
                 //
                 MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                                 I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+                                     I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
 
                 //
                 // Set the next state.
@@ -2923,7 +2939,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             // Read the received character.
             //
             pSMBus->pucRxBuffer[pSMBus->ucRxIndex] =
-                                 MAP_I2CMasterDataGet(pSMBus->ulI2CBase);
+                MAP_I2CMasterDataGet(pSMBus->ulI2CBase);
 
             //
             // Continue the burst read.
@@ -2940,8 +2956,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // Calculate the new CRC and update configuration structure.
                 //
                 pSMBus->ucCalculatedCRC =
-                    Crc8CCITT(pSMBus->ucCalculatedCRC,
-                              &pSMBus->pucRxBuffer[pSMBus->ucRxIndex], 1);
+                    MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                  &pSMBus->pucRxBuffer[pSMBus->ucRxIndex], 1);
 
                 //
                 // Increment the receive buffer index.
@@ -2999,7 +3015,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // If too many or too few bytes, error.
                 //
                 MAP_I2CMasterControl(pSMBus->ulI2CBase,
-                                 I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+                                     I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
 
                 //
                 // Set the next state.
@@ -3016,7 +3032,7 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
             // Read the received character.
             //
             pSMBus->pucRxBuffer[pSMBus->ucRxIndex] =
-                                  MAP_I2CMasterDataGet(pSMBus->ulI2CBase);
+                MAP_I2CMasterDataGet(pSMBus->ulI2CBase);
 
             //
             // The next state is the wait for final read state.
@@ -3038,8 +3054,8 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                 // Calculate the new CRC and update configuration structure.
                 //
                 pSMBus->ucCalculatedCRC =
-                    Crc8CCITT(pSMBus->ucCalculatedCRC,
-                              &pSMBus->pucRxBuffer[pSMBus->ucRxIndex], 1);
+                    MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                  &pSMBus->pucRxBuffer[pSMBus->ucRxIndex], 1);
             }
 
             //
@@ -3085,9 +3101,9 @@ SMBusMasterIntProcess(tSMBus *pSMBus)
                     return(SMBUS_DATA_SIZE_ERROR);
                 }
 
-				//
-				// Store the received CRC byte.
-				//
+                //
+                // Store the received CRC byte.
+                //
                 pSMBus->ucReceivedCRC = ucTempData;
 
                 //
@@ -3207,7 +3223,7 @@ SMBusMasterIntEnable(tSMBus *pSMBus)
     // Enable the master interrupts.
     //
     MAP_I2CMasterIntEnableEx(pSMBus->ulI2CBase, I2C_MASTER_INT_DATA |
-                         I2C_MASTER_INT_TIMEOUT);
+                             I2C_MASTER_INT_TIMEOUT);
 
     //
     // Enable the interrupt in the NVIC.
@@ -3370,16 +3386,28 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
     if(ulInterruptStatus & I2C_SLAVE_INT_START)
     {
         //
-        // This interrupt is not supported so just return OK.
+        // Clear the interrupt.
+        //
+        MAP_I2CSlaveIntClearEx(pSMBus->ulI2CBase, I2C_SLAVE_INT_START);
+
+
+        //
+        // This interrupt is not supported outside of using the FIFO.
         //
         return(SMBUS_OK);
     }
 
-	//
+    //
     // Check for the STOP interrupt.
     //
     if(ulInterruptStatus & I2C_SLAVE_INT_STOP)
     {
+        //
+        // Make sure the transfer in progress flag is cleared.  In the case
+        // of Quick Command, it should never be set, so this is safe.
+        //
+        HWREGBITB(&pSMBus->usFlags, FLAG_TRANSFER_IN_PROGRESS) = 0;
+
         //
         // Clear the interrupt.
         //
@@ -3390,12 +3418,6 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
         //
         if(ulSlaveStatus & 0x10)
         {
-            //
-            // Make sure the transfer in progress flag is cleared.  In the case
-            // of Quick Command, it should never be set, so this is to be safe.
-            //
-            HWREGBITB(&pSMBus->usFlags, FLAG_TRANSFER_IN_PROGRESS) = 0;
-
             //
             // Make sure the TX/RX index is 0.  If not, we should not be here.
             // Other data should not have been sent or received during a Quick
@@ -3421,11 +3443,6 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                 return(SMBUS_SLAVE_QCMD_0);
             }
         }
-
-        //
-        // Clear the transfer in progress flag.
-        //
-        HWREGBITB(&pSMBus->usFlags, FLAG_TRANSFER_IN_PROGRESS) = 0;
 
         //
         // Move to the idle state.
@@ -3532,8 +3549,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                     // calculation.
                     //
                     pSMBus->ucCalculatedCRC =
-                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                  &pSMBus->ucCurrentCommand, 1);
+                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                      &pSMBus->ucCurrentCommand, 1);
                 }
 
                 //
@@ -3574,8 +3591,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                         {
                             //
                             // Make sure there is enough space in the buffer.
-                            // If not, NAK.  If there is, overwrite the current
-                            // size with the size sent by the master.
+                            // If not, NACK.  If there is, overwrite the
+                            // current size with the size sent by the master.
                             //
                             if(ucDataTemp > pSMBus->ucRxSize)
                             {
@@ -3605,8 +3622,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                     // Add the size byte to the CRC calculation.
                                     //
                                     pSMBus->ucCalculatedCRC =
-                                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                  &ucDataTemp, 1);
+                                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                      &ucDataTemp, 1);
                                 }
 
                                 //
@@ -3622,8 +3639,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                         }
 
                         //
-                        // If there is no data to receive and no PEC, nothing to
-                        // do.  Software should never get here.
+                        // If there is no data to receive and no PEC, nothing
+                        // to do.  Software should never get here.
                         //
                         if(pSMBus->ucRxIndex == pSMBus->ucRxSize)
                         {
@@ -3656,16 +3673,18 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 if(HWREGBITB(&pSMBus->usFlags, FLAG_PEC))
                                 {
                                     //
-                                    // Add the size byte to the CRC calculation.
+                                    // Add the size byte to the CRC
+                                    // calculation.
                                     //
                                     pSMBus->ucCalculatedCRC =
-                                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                  &ucDataTemp, 1);
+                                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                      &ucDataTemp, 1);
 
                                     //
                                     // Update the state machine.
                                     //
-                                    pSMBus->ucSlaveState = SMBUS_STATE_READ_PEC;
+                                    pSMBus->ucSlaveState =
+                                        SMBUS_STATE_READ_PEC;
                                 }
                                 else
                                 {
@@ -3676,6 +3695,7 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                         SMBUS_STATE_READ_DONE;
                                 }
                             }
+
                             //
                             // All other cases.
                             //
@@ -3687,11 +3707,12 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 if(HWREGBITB(&pSMBus->usFlags, FLAG_PEC))
                                 {
                                     //
-                                    // Add the size byte to the CRC calculation.
+                                    // Add the size byte to the CRC
+                                    // calculation.
                                     //
                                     pSMBus->ucCalculatedCRC =
-                                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                  &ucDataTemp, 1);
+                                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                      &ucDataTemp, 1);
                                 }
 
                                 //
@@ -3718,8 +3739,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                         ucDataTemp = MAP_I2CSlaveDataGet(pSMBus->ulI2CBase);
 
                         //
-                        // If there is no data to receive and no PEC, nothing to
-                        // do.  Software should never get here.
+                        // If there is no data to receive and no PEC, nothing
+                        // to do.  Software should never get here.
                         //
                         if(pSMBus->ucRxIndex == pSMBus->ucRxSize)
                         {
@@ -3752,11 +3773,12 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 if(HWREGBITB(&pSMBus->usFlags, FLAG_PEC))
                                 {
                                     //
-                                    // Add the size byte to the CRC calculation.
+                                    // Add the size byte to the CRC
+                                    // calculation.
                                     //
                                     pSMBus->ucCalculatedCRC =
-                                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                  &ucDataTemp, 1);
+                                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                      &ucDataTemp, 1);
 
                                     //
                                     // Update the state machine.
@@ -3794,11 +3816,12 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 if(HWREGBITB(&pSMBus->usFlags, FLAG_PEC))
                                 {
                                     //
-                                    // Add the size byte to the CRC calculation.
+                                    // Add the size byte to the CRC
+                                    // calculation.
                                     //
                                     pSMBus->ucCalculatedCRC =
-                                        Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                                  &ucDataTemp, 1);
+                                        MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                      &ucDataTemp, 1);
                                 }
 
                                 //
@@ -3842,7 +3865,7 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
 
                     //
                     // No more data to receive.  If we get here, read data
-                    // into a dummy variable and NAK.
+                    // into a dummy variable and NACK.
                     //
                     case SMBUS_STATE_READ_DONE:
                     {
@@ -3864,7 +3887,7 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                 break;
             }
 
-			//
+            //
             // The master has requested that the slave transmit data back to
             // master.
             //
@@ -3884,16 +3907,16 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                 switch(pSMBus->ucSlaveState)
                 {
                     //
-                    // The state machine is currently idle, or if the last state
-                    // was SMBUS_STATE_SLAVE_POST_COMMAND or SMBUS_READ_DONE,
-                    // this is the first byte transmitted.  In the case of slave
-                    // post command, this means that the command was received
-                    // followed by a repeated start (with R/S = 1).  In the case
-                    // of read next, this means that a raw I2C master transmit
-                    // changed direction with a repeated start and is now a
-                    // master receive.  In the case of read done, this means
-                    // that a previous master transmit was finished (non-command
-                    // followed by a repeated start.
+                    // The state machine is currently idle, or if the last
+                    // state was SMBUS_STATE_SLAVE_POST_COMMAND or
+                    // SMBUS_READ_DONE, this is the first byte transmitted.  In
+                    // the case of slave post command, this means that the
+                    // command was received followed by a repeated start (with
+                    // R/S = 1).  In the case of read next, this means that a
+                    // raw I2C master transmit changed direction with a
+                    // repeated start and is now a master receive.  In the case
+                    // of read done, this means that a previous master transmit
+                    // was finished (non-command followed by a repeated start).
                     //
                     case SMBUS_STATE_IDLE:
                     case SMBUS_STATE_SLAVE_POST_COMMAND:
@@ -3908,7 +3931,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                            I2C_SCSR_OAR2SEL)
                         {
                             pSMBus->ucOwnSlaveAddress =
-                                (HWREG(pSMBus->ulI2CBase + I2C_O_SOAR2) & 0x7f);
+                                (HWREG(pSMBus->ulI2CBase + I2C_O_SOAR2) &
+                                 0x7f);
                         }
                         else
                         {
@@ -3916,14 +3940,15 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 HWREG(pSMBus->ulI2CBase + I2C_O_SOAR);
                         }
 
-						//
-						// Check to see if the TX buffer is populated.  If not, 
-						// return not ready without writing to the data register.
-						//
-						if(pSMBus->ucTxSize == 0)
-						{
-						 	return(SMBUS_SLAVE_NOT_READY);
-						}
+                        //
+                        // Check to see if the TX buffer is populated.  If not,
+                        // return not ready without writing to the data
+                        // register.
+                        //
+                        if(pSMBus->ucTxSize == 0)
+                        {
+                            return(SMBUS_SLAVE_NOT_READY);
+                        }
 
                         //
                         // Is this a block transfer?
@@ -3972,15 +3997,15 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                             // Add the address and R/S bit to the CRC.
                             //
                             pSMBus->ucCalculatedCRC =
-                                Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                          &ucCRCTemp, 1);
+                                MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                              &ucCRCTemp, 1);
 
                             //
                             // Add the data byte to the CRC calculation.
                             //
                             pSMBus->ucCalculatedCRC =
-                                Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                          &ucDataTemp, 1);
+                                MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                              &ucDataTemp, 1);
 
                             //
                             // Move to the next state.
@@ -3995,7 +4020,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                             else
                             {
                                 //
-                                // All other cases, move to the next byte state.
+                                // All other cases, move to the next byte
+                                // state.
                                 //
                                 pSMBus->ucSlaveState = SMBUS_STATE_WRITE_NEXT;
                             }
@@ -4008,8 +4034,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                             switch(pSMBus->ucTxSize - pSMBus->ucTxIndex)
                             {
                                 //
-                                // If all of the data has been sent, move to the
-                                // done state.
+                                // If all of the data has been sent, move to
+                                // the done state.
                                 //
                                 case 0:
                                 {
@@ -4031,7 +4057,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                                 }
 
                                 //
-                                // All other cases, move to the next byte state.
+                                // All other cases, move to the next byte
+                                // state.
                                 //
                                 default:
                                 {
@@ -4074,8 +4101,8 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
                             // Add the byte to the CRC calculation.
                             //
                             pSMBus->ucCalculatedCRC =
-                                Crc8CCITT(pSMBus->ucCalculatedCRC,
-                                          &ucDataTemp, 1);
+                                MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                              &ucDataTemp, 1);
 
                             //
                             // Check if it's time to move to the next state.
@@ -4196,7 +4223,7 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //!
-//! This function sends data outside the interrupt processing funciton, and
+//! This function sends data outside the interrupt processing function, and
 //! should only be used when SMBusSlaveIntProcess() returns
 //! \b SMBUS_SLAVE_NOT_READY.  At this point, the application should set up the
 //! transfer and call this function (it assumes that the transmit buffer has
@@ -4208,21 +4235,20 @@ SMBusSlaveIntProcess(tSMBus *pSMBus)
 //! successfully.
 //
 //*****************************************************************************
-tSMBusStatus 
+tSMBusStatus
 SMBusSlaveDataSend(tSMBus *pSMBus)
 {
-	unsigned char ucCRCTemp; 
-	unsigned char ucDataTemp;
+    unsigned char ucCRCTemp;
+    unsigned char ucDataTemp;
 
-
-	//
-	// Check to see if the TX buffer is populated.  If not, 
-	// return not ready without writing to the data register.
-	//
-	if(pSMBus->ucTxSize == 0)
-	{
-	 	return(SMBUS_SLAVE_NOT_READY);
-	}
+    //
+    // Check to see if the TX buffer is populated.  If not,
+    // return not ready without writing to the data register.
+    //
+    if(pSMBus->ucTxSize == 0)
+    {
+        return(SMBUS_SLAVE_NOT_READY);
+    }
 
     //
     // Is this a block transfer?
@@ -4245,13 +4271,12 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
             // Set the transmit data to the next item in
             // the buffer.
             //
-            ucDataTemp =
-                pSMBus->pucTxBuffer[pSMBus->ucTxIndex++];
+            ucDataTemp = pSMBus->pucTxBuffer[pSMBus->ucTxIndex++];
         }
         else
         {
             //
-            // Send 0xff per spec.	Should not get here.
+            // Send 0xff per spec.  Should not get here.
             //
             ucDataTemp = 0xff;
         }
@@ -4270,16 +4295,14 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
         //
         // Add the address and R/S bit to the CRC.
         //
-        pSMBus->ucCalculatedCRC =
-            Crc8CCITT(pSMBus->ucCalculatedCRC,
-                      &ucCRCTemp, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &ucCRCTemp, 1);
 
         //
         // Add the data byte to the CRC calculation.
         //
-        pSMBus->ucCalculatedCRC =
-            Crc8CCITT(pSMBus->ucCalculatedCRC,
-                      &ucDataTemp, 1);
+        pSMBus->ucCalculatedCRC = MAP_Crc8CCITT(pSMBus->ucCalculatedCRC,
+                                                &ucDataTemp, 1);
 
         //
         // Move to the next state.
@@ -4312,8 +4335,7 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
             //
             case 0:
             {
-                pSMBus->ucSlaveState =
-                    SMBUS_STATE_WRITE_DONE;
+                pSMBus->ucSlaveState = SMBUS_STATE_WRITE_DONE;
 
                 break;
             }
@@ -4323,8 +4345,7 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
             //
             case 1:
             {
-                pSMBus->ucSlaveState =
-                    SMBUS_STATE_WRITE_FINAL;
+                pSMBus->ucSlaveState = SMBUS_STATE_WRITE_FINAL;
 
                 break;
             }
@@ -4334,8 +4355,7 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
             //
             default:
             {
-                pSMBus->ucSlaveState =
-                    SMBUS_STATE_WRITE_NEXT;
+                pSMBus->ucSlaveState = SMBUS_STATE_WRITE_NEXT;
 
                 break;
             }
@@ -4347,7 +4367,10 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
     //
     MAP_I2CSlaveDataPut(pSMBus->ulI2CBase, ucDataTemp);
 
-	return(SMBUS_OK);
+    //
+    // Return to caller.
+    //
+    return(SMBUS_OK);
 }
 
 //*****************************************************************************
@@ -4358,7 +4381,7 @@ SMBusSlaveDataSend(tSMBus *pSMBus)
 //! \param pucData is a pointer to the transmit data buffer.
 //! \param ucSize is the number of bytes in the buffer.
 //!
-//! This function sets the adddress and size of the slave transmit buffer.
+//! This function sets the address and size of the slave transmit buffer.
 //!
 //! \return None.
 //
@@ -4386,7 +4409,7 @@ SMBusSlaveTxBufferSet(tSMBus *pSMBus, unsigned char *pucData,
 //! \param pucData is a pointer to the receive data buffer.
 //! \param ucSize is the number of bytes in the buffer.
 //!
-//! This function sets the adddress and size of the slave receive buffer.
+//! This function sets the address and size of the slave receive buffer.
 //!
 //! \return None.
 //
@@ -4518,7 +4541,7 @@ SMBusSlaveBlockTransferDisable(tSMBus *pSMBus)
 
 //*****************************************************************************
 //
-//! Sets the "raw" I2C flag for an SMBus slave transfer.
+//! Sets the ``raw'' I2C flag for an SMBus slave transfer.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //!
@@ -4540,7 +4563,7 @@ SMBusSlaveI2CEnable(tSMBus *pSMBus)
 
 //*****************************************************************************
 //
-//! Clears the "raw" I2C flag for an SMBus slave transfer.
+//! Clears the ``raw'' I2C flag for an SMBus slave transfer.
 //!
 //! \param pSMBus specifies the SMBus configuration structure.
 //!
@@ -4725,11 +4748,12 @@ SMBusSlaveACKSend(tSMBus *pSMBus, tBoolean bACK)
 //! application requires that the slave NACK on a bad command or a bad PEC
 //! calculation, manual acknowledgement allows this to happen.
 //!
-//! In the case of NACK'ing a bad command, the application should use
-//! SMBusSlaveSendACK() to ACK/NACK the command.   The slave ISR should check
-//! for the SMBUS_SLAVE_FIRST_BYTE return code from SMBusSlaveISRProcess() and
-//! ACK/NACK accordingly.  All other cases should be handled in the application
-//! based on the return code of SMBusSlaveISRProcess().
+//! In the case of responding to a bad command with a NACK, the application
+//! should use SMBusSlaveSendACK() to ACK/NACK the command.   The slave ISR
+//! should check for the SMBUS_SLAVE_FIRST_BYTE return code from
+//! SMBusSlaveISRProcess() and ACK/NACK accordingly.  All other cases should be
+//! handled in the application based on the return code of
+//! SMBusSlaveISRProcess().
 //!
 //! \return None.
 //
@@ -4842,7 +4866,7 @@ SMBusSlaveIntEnable(tSMBus *pSMBus)
     // Enable the slave interrupts.
     //
     MAP_I2CSlaveIntEnableEx(pSMBus->ulI2CBase, I2C_SLAVE_INT_DATA |
-                        I2C_SLAVE_INT_STOP);
+                            I2C_SLAVE_INT_STOP);
 
     //
     // Enable the interrupt in the NVIC.

@@ -17,7 +17,7 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 8555 of the EK-LM3S1968 Firmware Package.
+This is part of revision 9453 of the EK-LM3S1968 Firmware Package.
 -->
 
 <workspace>
@@ -26,8 +26,6 @@ This is part of revision 8555 of the EK-LM3S1968 Firmware Package.
   <project description="../../third_party/third_party.sgxx" />
   <project description="../../utils/utils.sgxx" />
   <project description="../../driverlib/driverlib-cm3.sgxx" />
-  <project description="aes_expanded_key/aes_expanded_key.sgxx" />
-  <project description="aes_set_key/aes_set_key.sgxx" />
   <project description="audio/audio.sgxx" />
   <project description="bitband/bitband.sgxx" />
   <project description="blinky/blinky.sgxx" />

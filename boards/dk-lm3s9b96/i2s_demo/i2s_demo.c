@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the DK-LM3S9B96 Firmware Package.
+// This is part of revision 9107 of the DK-LM3S9B96 Firmware Package.
 //
 //******************************************************************************
 
@@ -1251,6 +1251,14 @@ main(void)
     // may find it is rather too loud!
     //
     SoundVolumeSet(INITIAL_VOLUME_PERCENT);
+
+    //
+    // Set the volume slider position to match the volume we just set.  This
+    // guards against any touchscreen activity (which could change the slider
+    // position) from leaving the slider out of sync with the actual volume.
+    //
+    SliderValueSet(&g_sSlider, INITIAL_VOLUME_PERCENT);
+    WidgetPaint((tWidget *)&g_sSlider);
 
     //
     // Enter an (almost) infinite loop for reading and processing commands from

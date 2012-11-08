@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -29,6 +29,7 @@
 #include "inc/hw_sysctl.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_ints.h"
+#include "inc/hw_gpio.h"
 #include "bl_config.h"
 #include "boot_loader/bl_usbfuncs.h"
 
@@ -471,6 +472,77 @@ USBEndpoint0DataSend(unsigned long ulTransType)
     return(0);
 }
 
+#if defined(USB_VBUS_CONFIG) || defined(USB_ID_CONFIG) || \
+    defined(USB_DP_CONFIG) || defined(USB_DM_CONFIG) || defined(DOXYGEN)
+//*****************************************************************************
+//
+//! Initialize the pins used by USB functions.
+//!
+//! This function configures the pins for USB functions depending on defines
+//! from the bl_config.h file.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+USBConfigurePins(void)
+{
+    //
+    // Enable the clocks to the GPIOs.
+    //
+    HWREG(SYSCTL_RCGCGPIO) |= (0x0
+#if defined(USB_VBUS_CONFIG)
+        | USB_VBUS_PERIPH
+#endif
+#if defined(USB_ID_CONFIG)
+        | USB_ID_PERIPH
+#endif
+#if defined(USB_DP_CONFIG)
+        | USB_DP_PERIPH
+#endif
+#if defined(USB_DM_CONFIG)
+        | USB_DM_PERIPH
+#endif
+        );
+
+    // 
+    // Setup the pins based on bl_config.h
+    //
+#if defined(USB_VBUS_CONFIG)
+    //
+    // Set the VBUS pin to be an analog input.
+    // 
+    HWREG(USB_VBUS_PORT + GPIO_O_DIR) &= ~(1 << USB_VBUS_PIN);
+    HWREG(USB_VBUS_PORT + GPIO_O_AMSEL) |= (1 << USB_VBUS_PIN);
+#endif
+
+#if defined(USB_ID_CONFIG)
+    //
+    // Set the ID pin to be an analog input.
+    // 
+    HWREG(USB_ID_PORT + GPIO_O_DIR) &= ~(1 << USB_ID_PIN);
+    HWREG(USB_ID_PORT + GPIO_O_AMSEL) |= (1 << USB_ID_PIN);
+#endif
+    
+#if defined(USB_DP_CONFIG)
+    //
+    // Set the DP pin to be an analog input.
+    // 
+    HWREG(USB_DP_PORT + GPIO_O_DIR) &= ~(1 << USB_DP_PIN);
+    HWREG(USB_DP_PORT + GPIO_O_AMSEL) |= (1 << USB_DP_PIN);
+#endif
+
+#if defined(USB_DM_CONFIG)
+    //
+    // Set the DM pin to be an analog input.
+    // 
+    HWREG(USB_DM_PORT + GPIO_O_DIR) &= ~(1 << USB_DM_PIN);
+    HWREG(USB_DM_PORT + GPIO_O_AMSEL) |= (1 << USB_DM_PIN);
+#endif
+
+}
+#endif
+
 //*****************************************************************************
 //
 //! Initialize the boot loader USB functions.
@@ -485,6 +557,14 @@ void
 USBBLInit(void)
 {
     volatile unsigned long ulStatus;
+
+    //
+    // Configure the USB Pins based on the bl_config.h settings.
+    //
+#if defined(USB_VBUS_CONFIG) || defined(USB_ID_CONFIG) || \
+    defined(USB_DP_CONFIG) || defined(USB_DM_CONFIG)
+    USBConfigurePins();
+#endif
 
     //
     // Initialize a couple of fields in the device state structure.

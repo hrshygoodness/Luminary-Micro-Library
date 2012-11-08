@@ -21,7 +21,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the RDK-IDM-SBC Firmware Package.
+// This is part of revision 9453 of the RDK-IDM-SBC Firmware Package.
 //
 //*****************************************************************************
 

@@ -5,20 +5,35 @@
 // Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Firmware Development Package.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -51,6 +66,7 @@
 #define EPI_O_RPSTD1            0x00000038  // EPI Non-Blocking Read Data 1
 #define EPI_O_STAT              0x00000060  // EPI Status
 #define EPI_O_RFIFOCNT          0x0000006C  // EPI Read FIFO Count
+#define EPI_O_READFIFO0         0x00000070  // EPI Read FIFO
 #define EPI_O_READFIFO          0x00000070  // EPI Read FIFO
 #define EPI_O_READFIFO1         0x00000074  // EPI Read FIFO Alias 1
 #define EPI_O_READFIFO2         0x00000078  // EPI Read FIFO Alias 2
@@ -64,8 +80,8 @@
 #define EPI_O_IM                0x00000210  // EPI Interrupt Mask
 #define EPI_O_RIS               0x00000214  // EPI Raw Interrupt Status
 #define EPI_O_MIS               0x00000218  // EPI Masked Interrupt Status
-#define EPI_O_EISC              0x0000021C  // EPI Error Interrupt Status and
-                                            // Clear
+#define EPI_O_EISC              0x0000021C  // EPI Error and Interrupt Status
+                                            // and Clear
 
 //*****************************************************************************
 //
@@ -99,12 +115,12 @@
 #define EPI_HB16CFG_WRHIGH      0x00200000  // WRITE Strobe Polarity
 #define EPI_HB16CFG_RDHIGH      0x00100000  // READ Strobe Polarity
 #define EPI_HB16CFG_MAXWAIT_M   0x0000FF00  // Maximum Wait
-#define EPI_HB16CFG_WRWS_M      0x000000C0  // CS0n Write Wait States
+#define EPI_HB16CFG_WRWS_M      0x000000C0  // Write Wait States
 #define EPI_HB16CFG_WRWS_0      0x00000000  // No wait states
 #define EPI_HB16CFG_WRWS_1      0x00000040  // 1 wait state
 #define EPI_HB16CFG_WRWS_2      0x00000080  // 2 wait states
 #define EPI_HB16CFG_WRWS_3      0x000000C0  // 3 wait states
-#define EPI_HB16CFG_RDWS_M      0x00000030  // CS0n Read Wait States
+#define EPI_HB16CFG_RDWS_M      0x00000030  // Read Wait States
 #define EPI_HB16CFG_RDWS_0      0x00000000  // No wait states
 #define EPI_HB16CFG_RDWS_1      0x00000010  // 1 wait state
 #define EPI_HB16CFG_RDWS_2      0x00000020  // 2 wait states
@@ -153,11 +169,10 @@
 // The following are defines for the bit fields in the EPI_O_SDRAMCFG register.
 //
 //*****************************************************************************
-#define EPI_SDRAMCFG_FREQ_M     0xC0000000  // Frequency Range
+#define EPI_SDRAMCFG_FREQ_M     0xC0000000  // EPI Frequency Range
 #define EPI_SDRAMCFG_FREQ_NONE  0x00000000  // 0 - 15 MHz
 #define EPI_SDRAMCFG_FREQ_15MHZ 0x40000000  // 15 - 30 MHz
 #define EPI_SDRAMCFG_FREQ_30MHZ 0x80000000  // 30 - 50 MHz
-#define EPI_SDRAMCFG_FREQ_50MHZ 0xC0000000  // 50 - 100 MHz
 #define EPI_SDRAMCFG_RFSH_M     0x07FF0000  // Refresh Counter
 #define EPI_SDRAMCFG_SLEEP      0x00000200  // Sleep Mode
 #define EPI_SDRAMCFG_SIZE_M     0x00000003  // Size of SDRAM
@@ -174,8 +189,8 @@
 //*****************************************************************************
 #define EPI_HB8CFG_XFFEN        0x00800000  // External FIFO FULL Enable
 #define EPI_HB8CFG_XFEEN        0x00400000  // External FIFO EMPTY Enable
-#define EPI_HB8CFG_WRHIGH       0x00200000  // CS0n WRITE Strobe Polarity
-#define EPI_HB8CFG_RDHIGH       0x00100000  // CS0n READ Strobe Polarity
+#define EPI_HB8CFG_WRHIGH       0x00200000  // WRITE Strobe Polarity
+#define EPI_HB8CFG_RDHIGH       0x00100000  // READ Strobe Polarity
 #define EPI_HB8CFG_MAXWAIT_M    0x0000FF00  // Maximum Wait
 #define EPI_HB8CFG_WRWS_M       0x000000C0  // Write Wait States
 #define EPI_HB8CFG_WRWS_0       0x00000000  // No wait states
@@ -263,8 +278,8 @@
                                             // 0x0000 to 0xFFFF
 #define EPI_ADDRMAP_EPSZ_16MB   0x00000080  // 16 MB; lower address range:
                                             // 0x00.0000 to 0xFF.FFFF
-#define EPI_ADDRMAP_EPSZ_256MB  0x000000C0  // 256 MB; lower address range:
-                                            // 0x000.0000 to 0xFFF.FFFF
+#define EPI_ADDRMAP_EPSZ_512MB  0x000000C0  // 512 MB; lower address range:
+                                            // 0x000.0000 to 0x1FFF.FFFF
 #define EPI_ADDRMAP_EPADR_M     0x00000030  // External Peripheral Address
 #define EPI_ADDRMAP_EPADR_NONE  0x00000000  // Not mapped
 #define EPI_ADDRMAP_EPADR_A000  0x00000010  // At 0xA000.0000
@@ -276,8 +291,8 @@
                                             // 0x0000 to 0xFFFF
 #define EPI_ADDRMAP_ERSZ_16MB   0x00000008  // 16 MB; lower address range:
                                             // 0x00.0000 to 0xFF.FFFF
-#define EPI_ADDRMAP_ERSZ_256MB  0x0000000C  // 256 MB; lower address range:
-                                            // 0x000.0000 to 0xFFF.FFFF
+#define EPI_ADDRMAP_ERSZ_512MB  0x0000000C  // 512 MB; lower address range:
+                                            // 0x000.0000 to 0x1FFF.FFFF
 #define EPI_ADDRMAP_ERADR_M     0x00000003  // External RAM Address
 #define EPI_ADDRMAP_ERADR_NONE  0x00000000  // Not mapped
 #define EPI_ADDRMAP_ERADR_6000  0x00000001  // At 0x6000.0000
@@ -353,8 +368,17 @@
 // The following are defines for the bit fields in the EPI_O_RFIFOCNT register.
 //
 //*****************************************************************************
-#define EPI_RFIFOCNT_COUNT_M    0x00000007  // FIFO Count
+#define EPI_RFIFOCNT_COUNT_M    0x0000000F  // FIFO Count
 #define EPI_RFIFOCNT_COUNT_S    0
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the EPI_O_READFIFO0
+// register.
+//
+//*****************************************************************************
+#define EPI_READFIFO0_DATA_M    0xFFFFFFFF  // Reads Data
+#define EPI_READFIFO0_DATA_S    0
 
 //*****************************************************************************
 //
@@ -435,11 +459,11 @@
 #define EPI_FIFOLVL_WFERR       0x00020000  // Write Full Error
 #define EPI_FIFOLVL_RSERR       0x00010000  // Read Stall Error
 #define EPI_FIFOLVL_WRFIFO_M    0x00000070  // Write FIFO
-#define EPI_FIFOLVL_WRFIFO_EMPT 0x00000000  // Trigger when there are 1 to 4
+#define EPI_FIFOLVL_WRFIFO_EMPT 0x00000000  // Trigger when there are any
                                             // spaces available in the WFIFO
-#define EPI_FIFOLVL_WRFIFO_1_4  0x00000020  // Trigger when there are 1 to 3
+#define EPI_FIFOLVL_WRFIFO_1_4  0x00000020  // Trigger when there are up to 3
                                             // spaces available in the WFIFO
-#define EPI_FIFOLVL_WRFIFO_1_2  0x00000030  // Trigger when there are 1 to 2
+#define EPI_FIFOLVL_WRFIFO_1_2  0x00000030  // Trigger when there are up to 2
                                             // spaces available in the WFIFO
 #define EPI_FIFOLVL_WRFIFO_3_4  0x00000040  // Trigger when there is 1 space
                                             // available in the WFIFO
@@ -471,8 +495,8 @@
 // The following are defines for the bit fields in the EPI_O_IM register.
 //
 //*****************************************************************************
-#define EPI_IM_WRIM             0x00000004  // Write Interrupt Mask
-#define EPI_IM_RDIM             0x00000002  // Read Interrupt Mask
+#define EPI_IM_WRIM             0x00000004  // Write FIFO Empty Interrupt Mask
+#define EPI_IM_RDIM             0x00000002  // Read FIFO Full Interrupt Mask
 #define EPI_IM_ERRIM            0x00000001  // Error Interrupt Mask
 
 //*****************************************************************************

@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the Stellaris USB Library.
+// This is part of revision 9453 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -44,8 +44,17 @@
 typedef struct
 {
     tUSBRingBufObject sRingBuf;
+    unsigned long ulLastSent;
+    unsigned long ulFlags;
 }
 tUSBBufferVars;
+
+//*****************************************************************************
+//
+// Flags which may be set in the tUSBBufferVars ulFlags field.
+//
+//*****************************************************************************
+#define USB_BUFFER_FLAG_SEND_ZLP 0x00000001
 
 //*****************************************************************************
 //
@@ -66,7 +75,7 @@ static void
 ScheduleNextTransmission(const tUSBBuffer *psBuffer)
 {
     tUSBBufferVars *psVars;
-    unsigned long ulPacket, ulSpace, ulTotal;
+    unsigned long ulPacket, ulSpace, ulTotal, ulSent;
 
     //
     // Get a pointer to our workspace variables.
@@ -95,11 +104,22 @@ ScheduleNextTransmission(const tUSBBuffer *psBuffer)
         ulTotal = USBRingBufUsed(&psVars->sRingBuf);
 
         //
+        // How much data will we be sending as a result of this call?
+        //
+        ulSent = (ulPacket < ulTotal) ? ulPacket : ulTotal;
+
+        //
         // Write the contiguous bytes to the lower layer assuming there is
         // something to send.
         //
         if(ulSpace)
         {
+            //
+            // There is data available to send.  Update our state to indicate
+            // the amount we will be sending in this packet.
+            //
+            psVars->ulLastSent = ulSent;
+
             //
             // Determine the maximum sized block we can send in this transfer.
             //
@@ -136,6 +156,25 @@ ScheduleNextTransmission(const tUSBBuffer *psBuffer)
 
                 psBuffer->pfnTransfer(psBuffer->pvHandle,
                                       psVars->sRingBuf.pucBuf, ulSpace, true);
+            }
+        }
+        else
+        {
+            //
+            // There is no data to send.  Did we last send a full packet?
+            //
+            if(psVars->ulLastSent == ulPacket)
+            {
+                //
+                // Yes - if necessary, send a zero-length packet back to the
+                // host to complete the last transaction.
+                //
+                if(psVars->ulFlags & USB_BUFFER_FLAG_SEND_ZLP)
+                {
+                    psVars->ulLastSent = 0;
+                    psBuffer->pfnTransfer(psBuffer->pvHandle,
+                                          psVars->sRingBuf.pucBuf, 0, true);
+                }
             }
         }
 
@@ -515,10 +554,11 @@ USBBufferInit(const tUSBBuffer *psBuffer)
            psBuffer->pfnTransfer && psBuffer->pfnCallback);
 
     //
-    // Get a pointer to the buffer workspace and inttialize the variables it
+    // Get a pointer to the buffer workspace and initialize the variables it
     // contains.
     //
     psVars = psBuffer->pvWorkspace;
+    psVars->ulFlags = 0;
     USBRingBufInit(&psVars->sRingBuf, psBuffer->pcBuffer,
                    psBuffer->ulBufferSize);
 
@@ -526,6 +566,61 @@ USBBufferInit(const tUSBBuffer *psBuffer)
     // If all is well, return the same pointer we were originally passed.
     //
     return(psBuffer);
+}
+
+//*****************************************************************************
+//
+//! Enables or disables zero-length packet insertion.
+//!
+//! \param psBuffer is the pointer to the buffer instance whose information
+//! is being queried.
+//! \param bSendZLP is \b true to send zero-length packets or \b false to
+//! prevent them from being sent.
+//!
+//! This function allows the use of zero-length packets to be controlled by
+//! an application.  In cases where the USB buffer has sent a full (64 byte)
+//! packet and then discovers that the transmit buffer is empty, the default
+//! behavior is to do nothing.  Some protocols, however, require that a zero-
+//! length packet be inserted to signal the end of the data.  When using such
+//! a protocol, this function should be called with \e bSendZLP set to \b true
+//! to enable the desired behavior.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+USBBufferZeroLengthPacketInsert(const tUSBBuffer *psBuffer, tBoolean bSendZLP)
+{
+    tUSBBufferVars *psVars;
+
+    //
+    // Check parameter validity.
+    //
+    ASSERT(psBuffer);
+
+    //
+    // Get our workspace variables.
+    //
+    psVars = psBuffer->pvWorkspace;
+
+    //
+    // Set the flag telling us whether or not to send a zero-length packet
+    // after sending a 64 bytes packet and finding no more data to send.
+    //
+    if(bSendZLP)
+    {
+        //
+        // Enable ZLP transmission.
+        //
+        psVars->ulFlags |= USB_BUFFER_FLAG_SEND_ZLP;
+    }
+    else
+    {
+        //
+        // Disable ZLP transmission.
+        //
+        psVars->ulFlags &= ~ USB_BUFFER_FLAG_SEND_ZLP;
+    }
 }
 
 //*****************************************************************************

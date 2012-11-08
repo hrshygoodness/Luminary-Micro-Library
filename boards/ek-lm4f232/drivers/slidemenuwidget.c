@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 8555 of the EK-LM4F232 Firmware Package.
+// This is part of revision 9453 of the EK-LM4F232 Firmware Package.
 //
 //*****************************************************************************
 
@@ -49,7 +49,7 @@
 //
 // Additional structures are provided to implement a menu, and menu items.
 // Each menu contains menu items, and each menu item can have a child menu.
-// These structures can be used to build a mene tree.  The menu widget will
+// These structures can be used to build a menu tree.  The menu widget will
 // show one menu at any given time, the menu that is displayed on the screen.
 //
 // In addition to child menus, any menu item can have instead a child widget.
@@ -539,7 +539,9 @@ SlideMenuDown(tWidget *pWidget)
     // twice as tall as the physical display.
     //
     GrContextInit(&sContext, pMenuWidget->pDisplayB);
-    SlideMenuDraw(pMenuWidget, &sContext, -64);
+    SlideMenuDraw(pMenuWidget, &sContext, -1 * 
+                  (pMenuWidget->sBase.sPosition.sYMax - 
+                  pMenuWidget->sBase.sPosition.sYMin));
 
     //
     // Initialize a drawing context for the display where the widget is to be
@@ -687,7 +689,9 @@ SlideMenuUp(tWidget *pWidget)
     // display that is twice as tall as the physical display.
     //
     GrContextInit(&sContext, pMenuWidget->pDisplayB);
-    SlideMenuDraw(pMenuWidget, &sContext, 64);
+    SlideMenuDraw(pMenuWidget, &sContext,
+                  (pMenuWidget->sBase.sPosition.sYMax - 
+                  pMenuWidget->sBase.sPosition.sYMin));
 
     //
     // Initialize a drawing context for the display where the widget is to be

@@ -32,7 +32,15 @@
 #ifndef __ARCH_SYS_ARCH_H__
 #define __ARCH_SYS_ARCH_H__
 
+#if RTOS_SAFERTOS
 #include "SafeRTOS/SafeRTOS_API.h"
+#elif RTOS_FREERTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#define portQUEUE_OVERHEAD_BYTES 1  // SafeRTOS constant, used for consistency
+#endif /* RTOS_SAFERTOS */
 
 /* Find the size of the largest required mbox. */
 #define MAX1 ((TCPIP_MBOX_SIZE > DEFAULT_RAW_RECVMBOX_SIZE) ? \

@@ -6,20 +6,35 @@
 // Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
 // 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
 // 
-// This is part of revision 8555 of the Stellaris Peripheral Driver Library.
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the  
+//   distribution.
+// 
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
+// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -43,16 +58,17 @@
 //
 // The following defines provide characteristics of the PECI module that are
 // important to the driver but which can not be gleaned from the register
-// definitions.
+// definitions.  Note that the maximum baud rate here is set higher than
+// specified to allow callers to achieve 1Mbps on a slow part.
 //
 //*****************************************************************************
-#define PECI_MAX_BAUD           2000000     // Maximum baud rate
-#define PECI_MIN_BAUD           2000        // Minimum baud rate
-#define PECI_MIN_RATIO          8           // Minimum baud rate divider
-#define PECI_MAX_RATIO          65535       // Maximum baud rate divider
-#define PECI_POLL_PRESCALE      4096        // Polling timer prescaler
-#define PECI_MIN_POLL           2           // Minimum polling interval (ms)
-#define PECI_MAX_POLL           1000        // Maximum polling interval (ms)
+#define PECI_MAX_BAUD      4000000                      // Max baud rate
+#define PECI_MIN_BAUD      2000                         // Min baud rate
+#define PECI_MIN_RATIO     (CLASS_IS_BLIZZARD ? 10 : 1) // Min baud rate divider
+#define PECI_MAX_RATIO     65535                        // Max baud rate divider
+#define PECI_POLL_PRESCALE 4096                    // Polling timer prescaler
+#define PECI_MIN_POLL      2                       // Min polling interval (ms)
+#define PECI_MAX_POLL      1000                    // Max polling interval (ms)
 
 //*****************************************************************************
 //
@@ -104,11 +120,14 @@ PECIDomainValid(unsigned long ulDomain)
 //! constant and known (to save the code/execution overhead of a call to
 //! SysCtlClockGet()).
 //!
-//! The \e ulBaud parameter defines the bit rate for the PECI transactions.
-//! This value is used to calculate a divisor value based on the specified
-//! \e ulPECIClk.  If the exact baud rate cannot be achieved (due to rounding),
-//! the baud rate is programmed to the nearest value that is less than the
-//! specified value.
+//! The \e ulBaud parameter defines the starting bit rate for the PECI
+//! transactions.  This value is used to calculate a divisor value based on
+//! the specified \e ulPECIClk.  If the exact baud rate cannot be achieved
+//! (due to rounding), the baud rate is programmed to the nearest value that
+//! is less than the specified value.  Note that, due to client clock
+//! stretching and delays through external components, the actual baud rate
+//! observed on the PECI bus will always be lower than the value specified in
+//! this parameter.
 //!
 //! The \e ulPoll parameter defines the polling rate, in milliseconds, used
 //! for PECI transactions.  For generation of the polling rate, the \e
@@ -161,8 +180,12 @@ PECIConfigSet(unsigned long ulBase, unsigned long ulPECIClk,
     //
     // Compute the divisor for the PECI polling rate.
     // Round up, to ensure programmed polling rate is >= specified rate.
+    // Note that the order of calculation is important here since ulPECIClk is
+    // in the 10s of MHz range and ulPoll can be several thousand for slow
+    // polling rates.  If we change the order, the calculation can overflow
+    // resulting in incorrect polling rates.
     //
-    ulDiv = ((ulPoll == 0) ? 0 : ((((ulPECIClk * ulPoll) / 1000) +
+    ulDiv = ((ulPoll == 0) ? 0 : ((((ulPECIClk / 1000) * ulPoll) +
                                    (PECI_POLL_PRESCALE - 1)) /
                                   PECI_POLL_PRESCALE));
     ulTemp |= ((ulDiv << PECI_DIV_POLL_S) & PECI_DIV_POLL_M);;
@@ -177,7 +200,7 @@ PECIConfigSet(unsigned long ulBase, unsigned long ulPECIClk,
 //! \param ulPECIClk is the rate of the clock supplied to the PECI module.
 //! \param pulBaud is a pointer to storage for the bit rate.
 //! \param pulPoll is a pointer to storage for the polling rate.
-//! \param pulOffset is a pointer to stoarage for the offset.
+//! \param pulOffset is a pointer to storage for the offset.
 //! \param pulRetry is a pointer to storage for the retry count.
 //!
 //! The baud rate and poll rate for the PECI module are determined, given an
@@ -189,6 +212,11 @@ PECIConfigSet(unsigned long ulBase, unsigned long ulPECIClk,
 //! returned by SysCtlClockGet(), or it can be explicitly hard coded if it is
 //! constant and known (to save the code/execution overhead of a call to
 //! SysCtlClockGet()).
+//!
+//! The baud rate returned in \e *pulBaud represents the rate at which the
+//! peripheral starts PECI transactions.  Due to client clock stretching and
+//! delays associated with external components, the actual baud rate observed
+//! will always be lower than this value.
 //!
 //! \return None.
 //
@@ -205,10 +233,10 @@ PECIConfigGet(unsigned long ulBase, unsigned long ulPECIClk,
     //
     ASSERT(ulBase == PECI0_BASE);
     ASSERT(ulPECIClk != 0);
-    ASSERT(*pulBaud != 0);
-    ASSERT(*pulPoll != 0);
-    ASSERT(*pulOffset != 0);
-    ASSERT(*pulRetry != 0);
+    ASSERT(pulBaud != 0);
+    ASSERT(pulPoll != 0);
+    ASSERT(pulOffset != 0);
+    ASSERT(pulRetry != 0);
 
     //
     // Retrieve the Offset and Retry values
@@ -221,14 +249,15 @@ PECIConfigGet(unsigned long ulBase, unsigned long ulPECIClk,
     // Calculate the baud rate.
     //
     ulTemp = HWREG(ulBase + PECI_O_DIV);
-    *pulBaud = ulPECIClk / ((ulTemp & PECI_DIV_BAUD_M) >> PECI_DIV_BAUD_S);
+    *pulBaud = (ulPECIClk / (4 * ((ulTemp & PECI_DIV_BAUD_M) >>
+                                  PECI_DIV_BAUD_S)));
 
     //
     // Compute the divisor for the PECI polling rate.
     // Round up, to ensure programmed polling rate is >= specified rate.
     //
     *pulPoll = ((((ulTemp & PECI_DIV_POLL_M) >> PECI_DIV_POLL_S) * 1000) /
-        (ulPECIClk / PECI_POLL_PRESCALE));
+                (ulPECIClk / PECI_POLL_PRESCALE));
 }
 
 //*****************************************************************************
@@ -509,7 +538,7 @@ PECIDomainMaxReadGet(unsigned long ulBase, unsigned long ulDomain)
 //! \param ulBase is the base address of the PECI module.
 //! \param ulDomain is the PECI domain that should be disabled.
 //!
-//! This function clears the current and maximum values for the specified
+//! This function clears the current temperature value for the specified
 //! domain.
 //!
 //! The \e ulDomain parameter can be one of the following values:
@@ -541,8 +570,8 @@ PECIDomainValueClear(unsigned long ulBase, unsigned long ulDomain)
 //! \param ulBase is the base address of the PECI module.
 //! \param ulDomain is the PECI domain that should be disabled.
 //!
-//! This function clears the current and maximum values for the specified
-//! domain.
+//! This function clears the maximum temperature measurement value for the
+//! specified domain.
 //!
 //! The \e ulDomain parameter can be one of the following values:
 //! \b PECI_DOMAIN_M0D0, \b PECI_DOMAIN_M0D1, \b PECI_DOMAIN_M1D0, or
@@ -574,10 +603,10 @@ PECIDomainMaxReadClear(unsigned long ulBase, unsigned long ulDomain)
 //! \param pfnHandler is a pointer to the function to be called when the
 //! PECI interrupt occurs.
 //!
-//! This function registers the handler to be called when an PECI interrupt   
-//! occurs. This function enables the global interrupt in the interrupt  
-//! controller; specific PECI interrupts must be enabled via PECIIntEnable().   
-//! If necessary, it is the interrupt handler's responsibility to clear the 
+//! This function registers the handler to be called when an PECI interrupt
+//! occurs. This function enables the global interrupt in the interrupt
+//! controller; specific PECI interrupts must be enabled via PECIIntEnable().
+//! If necessary, it is the interrupt handler's responsibility to clear the
 //! interrupt source via PECIIntClear().
 //!
 //! \sa IntRegister() for important information about registering interrupt
@@ -613,7 +642,7 @@ PECIIntRegister(unsigned long ulBase, void (*pfnHandler)(void))
 //! \param ulBase specifies the PECI module base address.
 //!
 //! This function unregisters the handler to be called when a PECI interrupt
-//! occurs.  This function also masks off the interrupt in the interrupt 
+//! occurs.  This function also masks off the interrupt in the interrupt
 //! controller so that the interrupt handler no longer is called.
 //!
 //! \sa IntRegister() for important information about registering interrupt
@@ -649,8 +678,8 @@ PECIIntUnregister(unsigned long ulBase)
 //! \param ulIntFlags is a bit mask of the interrupt sources to be enabled.
 //! \param ulIntMode is the mode for the PECI domain interrupts.
 //!
-//! This function enables the indicated PECI interrupt sources.  Only the 
-//! sources that are enabled can be reflected to the processor interrupt; 
+//! This function enables the indicated PECI interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
 //! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter can be any of the following values:
@@ -708,8 +737,8 @@ PECIIntEnable(unsigned long ulBase, unsigned long ulIntFlags,
 //! \param ulBase specifies the PECI module base address.
 //! \param ulIntFlags is a bit mask of the interrupt sources to be disabled.
 //!
-//! This function disables the indicated PECI interrupt sources.  Only the 
-//! sources that are enabled can be reflected to the processor interrupt; 
+//! This function disables the indicated PECI interrupt sources.  Only the
+//! sources that are enabled can be reflected to the processor interrupt;
 //! disabled sources have no effect on the processor.
 //!
 //! The \e ulIntFlags parameter can be any of the following values:
@@ -785,11 +814,11 @@ PECIIntStatus(unsigned long ulBase, tBoolean bMasked)
 //! \param ulBase specifies the PECI module base address.
 //! \param ulIntFlags is a bit mask of the interrupt sources to be cleared.
 //!
-//! This function clears the specified PECI interrupt sources so that they no 
+//! This function clears the specified PECI interrupt sources so that they no
 //! longer assert.  This function must be called in the interrupt handler to
-//! keep the interrupts from being recognized again immediately upon exit.  
-//! The \e ulIntFlags parameter can consist of any combination of the 
-//! \b PECI_READ, \b PECI_ERR, \b PECI_AC, \b PECI_M0D0, \b PECI_M0D1, 
+//! keep the interrupts from being recognized again immediately upon exit.
+//! The \e ulIntFlags parameter can consist of any combination of the
+//! \b PECI_READ, \b PECI_ERR, \b PECI_AC, \b PECI_M0D0, \b PECI_M0D1,
 //! \b PECI_M1D0, or \b PECI_M1D1 values.
 //!
 //! \note Because there is a write buffer in the Cortex-M processor, it may
@@ -876,8 +905,8 @@ PECIAdvCmdSend(unsigned long ulBase, unsigned char ucCmd,
 //!
 //! This function sends a PECI Advanced Command.  If the interface is not IDLE,
 //! it returns immediately.  Otherwise, it sends the the command.  The function
-//! paramters are used to populate the message control fields before activating
-//! the command.
+//! parameters are used to populate the message control fields before
+//! activating the command.
 //!
 //! \return None.
 //

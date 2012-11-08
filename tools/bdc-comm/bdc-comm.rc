@@ -18,13 +18,13 @@
  * CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
  * DAMAGES, FOR ANY REASON WHATSOEVER.
  * 
- * This is part of revision 8555 of the Stellaris Firmware Development Package.
+ * This is part of revision 9453 of the Stellaris Firmware Development Package.
  *
  *****************************************************************************/
 
 1               VERSIONINFO
-FILEVERSION     1,0,0,8555
-PRODUCTVERSION  1,0,0,8555
+FILEVERSION     1,0,0,9453
+PRODUCTVERSION  1,0,0,9453
 FILEFLAGSMASK   0x3f
 FILEFLAGS       0
 FILEOS          0x4
@@ -37,12 +37,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "Texas Instruments Incorporated"
             VALUE "FileDescription",  "Texas Instruments BDC24 Communication Application"
-            VALUE "FileVersion",      "8555"
+            VALUE "FileVersion",      "9453"
             VALUE "InternalName",     "bdc-comm.exe"
             VALUE "LegalCopyright",   "Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved."
             VALUE "OriginalFilename", "bdc-comm.exe"
             VALUE "ProductName",      "Texas Instruments BDC24 Communication Application"
-            VALUE "ProductVersion",   "8555"
+            VALUE "ProductVersion",   "9453"
         END
     END
 

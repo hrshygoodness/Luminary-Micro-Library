@@ -156,7 +156,7 @@ Function {CreateHelpAboutWindow(void)} {} {
       xywh {85 15 370 20}
     }
     Fl_Box {} {
-      label {Version 8555}
+      label {Version 9453}
       xywh {85 35 370 20}
     }
     Fl_Box {} {
