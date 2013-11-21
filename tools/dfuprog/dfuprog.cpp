@@ -3,7 +3,7 @@
 // dfuprog.cpp : A simple command-line utility for programming a USB-connected
 //               Stellaris board running the USB DFU boot loader.
 //
-// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -101,7 +101,7 @@ PrintWelcome(void)
     }
 
     printf("\nUSB Device Firmware Upgrade Example\n");
-    printf("Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.\n\n");
+    printf("Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.\n\n");
 }
 
 //*****************************************************************************

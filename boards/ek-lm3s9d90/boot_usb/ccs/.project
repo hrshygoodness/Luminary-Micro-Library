@@ -8,14 +8,77 @@
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -54,6 +117,11 @@
 			<locationURI>SW_ROOT/boot_loader/bl_i2c.c</locationURI>
 		</link>
 		<link>
+			<name>boot_loader/bl_link_ccs.cmd</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boot_loader/bl_link_ccs.cmd</locationURI>
+		</link>
+		<link>
 			<name>boot_loader/bl_main.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boot_loader/bl_main.c</locationURI>
@@ -67,6 +135,11 @@
 			<name>boot_loader/bl_ssi.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boot_loader/bl_ssi.c</locationURI>
+		</link>
+		<link>
+			<name>boot_loader/bl_startup_ccs.s</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boot_loader/bl_startup_ccs.s</locationURI>
 		</link>
 		<link>
 			<name>boot_loader/bl_uart.c</name>
@@ -83,15 +156,11 @@
 			<type>1</type>
 			<locationURI>SW_ROOT/boot_loader/bl_usbfuncs.c</locationURI>
 		</link>
-		<link>
-			<name>boot_loader/bl_startup_ccs.s</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boot_loader/bl_startup_ccs.s</locationURI>
-		</link>
-		<link>
-			<name>boot_loader/bl_link_ccs.cmd</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boot_loader/bl_link_ccs.cmd</locationURI>
-		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

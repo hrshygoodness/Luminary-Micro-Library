@@ -2,7 +2,7 @@
 //
 // hw_types.h - Common types and macros.
 //
-// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -134,12 +134,6 @@ typedef unsigned char tBoolean;
 #define CLASS_IS_FIRESTORM                                                   \
         ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_VER_M | SYSCTL_DID0_CLASS_M)) == \
          (SYSCTL_DID0_VER_1 | SYSCTL_DID0_CLASS_FIRESTORM))
-#endif
-
-#ifndef CLASS_IS_BLIZZARD
-#define CLASS_IS_BLIZZARD                                                    \
-        ((HWREG(SYSCTL_DID0) & (SYSCTL_DID0_VER_M | SYSCTL_DID0_CLASS_M)) == \
-         (SYSCTL_DID0_VER_1 | SYSCTL_DID0_CLASS_BLIZZARD))
 #endif
 
 #ifndef REVISION_IS_A0

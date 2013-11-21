@@ -2,7 +2,7 @@
 #
 # Makefile.driverlib-cm3 - Rules for building the driver library.
 #
-# Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 # Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 # CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 # DAMAGES, FOR ANY REASON WHATSOEVER.
 # 
-# This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+# This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 #
 #******************************************************************************
 
@@ -26,11 +26,6 @@
 # Defines the directory suffix that this project uses.
 #
 SUFFIX=-cm3
-
-#
-# Set the processor variant.
-#
-VARIANT=cm3
 
 #
 # The base directory for StellarisWare.
@@ -72,25 +67,19 @@ ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/adc.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/can.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/comp.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/cpu.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/eeprom.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/epi.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/ethernet.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/fan.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/flash.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/fpu.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/gpio.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/hibernate.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/i2c.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/i2s.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/interrupt.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/lpc.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/mpu.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/peci.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/pwm.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/qei.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/ssi.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/sysctl.o
-${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/sysexc.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/systick.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/timer.o
 ${COMPILER}-cm3/libdriver-cm3.a: ${COMPILER}-cm3/uart.o

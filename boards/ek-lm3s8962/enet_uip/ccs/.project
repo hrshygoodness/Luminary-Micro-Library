@@ -3,20 +3,82 @@
 	<name>enet_uip</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -25,19 +87,24 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s8962/enet_uip/enet_uip.c</locationURI>
 		</link>
 		<link>
-			<name>third_party/uip-1.0/apps/httpd/httpd.c</name>
+			<name>enet_uip_ccs.cmd</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/third_party/uip-1.0/apps/httpd/httpd.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s8962/enet_uip/enet_uip_ccs.cmd</locationURI>
 		</link>
 		<link>
-			<name>third_party/uip-1.0/apps/dhcpc/dhcpc.c</name>
+			<name>startup_ccs.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/third_party/uip-1.0/apps/dhcpc/dhcpc.c</locationURI>
+			<locationURI>SW_ROOT/boards/ek-lm3s8962/enet_uip/startup_ccs.c</locationURI>
 		</link>
 		<link>
 			<name>drivers/rit128x96x4.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s8962/drivers/rit128x96x4.c</locationURI>
+		</link>
+		<link>
+			<name>utils/ustdlib.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
 		</link>
 		<link>
 			<name>third_party/uip-1.0/uip/uip.c</name>
@@ -55,19 +122,20 @@
 			<locationURI>SW_ROOT/third_party/uip-1.0/uip/uip_timer.c</locationURI>
 		</link>
 		<link>
-			<name>utils/ustdlib.c</name>
+			<name>third_party/uip-1.0/apps/dhcpc/dhcpc.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
+			<locationURI>SW_ROOT/third_party/uip-1.0/apps/dhcpc/dhcpc.c</locationURI>
 		</link>
 		<link>
-			<name>startup_ccs.c</name>
+			<name>third_party/uip-1.0/apps/httpd/httpd.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s8962/enet_uip/startup_ccs.c</locationURI>
-		</link>
-		<link>
-			<name>enet_uip_ccs.cmd</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s8962/enet_uip/enet_uip_ccs.cmd</locationURI>
+			<locationURI>SW_ROOT/third_party/uip-1.0/apps/httpd/httpd.c</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

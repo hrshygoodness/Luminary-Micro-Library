@@ -194,6 +194,7 @@
 
   <project>
     <PathAndName>.\sd_card\sd_card.uvproj</PathAndName>
+    <NodeIsActive>1</NodeIsActive>
     <NodeIsCheckedInBatchBuild>1</NodeIsCheckedInBatchBuild>
   </project>
 

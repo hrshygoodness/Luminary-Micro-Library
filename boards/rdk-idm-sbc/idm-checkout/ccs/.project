@@ -3,43 +3,88 @@
 	<name>idm-checkout</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib-cm3</project>
-		<project>grlib-cm3</project>
-		<project>usblib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
-			<name>idm-checkout.c</name>
+			<name>audioplay.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/idm-checkout.c</locationURI>
-		</link>
-		<link>
-			<name>images.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/images.c</locationURI>
-		</link>
-		<link>
-			<name>gui_widgets.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/gui_widgets.c</locationURI>
-		</link>
-		<link>
-			<name>grlib_demo.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/grlib_demo.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/audioplay.c</locationURI>
 		</link>
 		<link>
 			<name>file.c</name>
@@ -47,14 +92,39 @@
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/file.c</locationURI>
 		</link>
 		<link>
+			<name>grlib_demo.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/grlib_demo.c</locationURI>
+		</link>
+		<link>
+			<name>gui_widgets.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/gui_widgets.c</locationURI>
+		</link>
+		<link>
+			<name>idm-checkout.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/idm-checkout.c</locationURI>
+		</link>
+		<link>
+			<name>idm-checkout_ccs.cmd</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/idm-checkout_ccs.cmd</locationURI>
+		</link>
+		<link>
+			<name>images.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/images.c</locationURI>
+		</link>
+		<link>
 			<name>imageview.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/imageview.c</locationURI>
 		</link>
 		<link>
-			<name>audioplay.c</name>
+			<name>startup_ccs.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/audioplay.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/startup_ccs.c</locationURI>
 		</link>
 		<link>
 			<name>tftp.c</name>
@@ -67,11 +137,6 @@
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/usb_mouse.c</locationURI>
 		</link>
 		<link>
-			<name>drivers/sdram.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/sdram.c</locationURI>
-		</link>
-		<link>
 			<name>drivers/jpgwidget.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/jpgwidget.c</locationURI>
@@ -82,9 +147,14 @@
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/kitronix320x240x16_ssd2119_idm_sbc.c</locationURI>
 		</link>
 		<link>
-			<name>drivers/wm8510.c</name>
+			<name>drivers/sdram.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/wm8510.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/sdram.c</locationURI>
+		</link>
+		<link>
+			<name>drivers/set_pinout.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/set_pinout.c</locationURI>
 		</link>
 		<link>
 			<name>drivers/sound.c</name>
@@ -92,19 +162,19 @@
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/sound.c</locationURI>
 		</link>
 		<link>
-			<name>drivers/touch.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/touch.c</locationURI>
-		</link>
-		<link>
 			<name>drivers/ssiflash.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/ssiflash.c</locationURI>
 		</link>
 		<link>
-			<name>drivers/set_pinout.c</name>
+			<name>drivers/touch.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/set_pinout.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/touch.c</locationURI>
+		</link>
+		<link>
+			<name>drivers/wm8510.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm-sbc/drivers/wm8510.c</locationURI>
 		</link>
 		<link>
 			<name>utils/cmdline.c</name>
@@ -127,6 +197,11 @@
 			<locationURI>SW_ROOT/utils/lwiplib.c</locationURI>
 		</link>
 		<link>
+			<name>utils/swupdate.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/utils/swupdate.c</locationURI>
+		</link>
+		<link>
 			<name>utils/uartstdio.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/utils/uartstdio.c</locationURI>
@@ -137,29 +212,9 @@
 			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
 		</link>
 		<link>
-			<name>utils/swupdate.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/utils/swupdate.c</locationURI>
-		</link>
-		<link>
 			<name>third_party/bget/bget.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/third_party/bget/bget.c</locationURI>
-		</link>
-		<link>
-			<name>third_party/fatfs/src/ff.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/third_party/fatfs/src/ff.c</locationURI>
-		</link>
-		<link>
-			<name>third_party/fatfs/port/dual-disk-driver.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/third_party/fatfs/port/dual-disk-driver.c</locationURI>
-		</link>
-		<link>
-			<name>third_party/lwip-1.3.2/apps/httpserver_raw/httpd.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/third_party/lwip-1.3.2/apps/httpserver_raw/httpd.c</locationURI>
 		</link>
 		<link>
 			<name>third_party/jpeg/jcomapi.c</name>
@@ -257,14 +312,14 @@
 			<locationURI>SW_ROOT/third_party/jpeg/jidctred.c</locationURI>
 		</link>
 		<link>
-			<name>third_party/jpeg/jmemmgr.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/third_party/jpeg/jmemmgr.c</locationURI>
-		</link>
-		<link>
 			<name>third_party/jpeg/jmemlmi.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/third_party/jpeg/jmemlmi.c</locationURI>
+		</link>
+		<link>
+			<name>third_party/jpeg/jmemmgr.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/third_party/jpeg/jmemmgr.c</locationURI>
 		</link>
 		<link>
 			<name>third_party/jpeg/jquant1.c</name>
@@ -282,14 +337,25 @@
 			<locationURI>SW_ROOT/third_party/jpeg/jutils.c</locationURI>
 		</link>
 		<link>
-			<name>startup_ccs.c</name>
+			<name>third_party/fatfs/port/dual-disk-driver.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/startup_ccs.c</locationURI>
+			<locationURI>SW_ROOT/third_party/fatfs/port/dual-disk-driver.c</locationURI>
 		</link>
 		<link>
-			<name>idm-checkout_ccs.cmd</name>
+			<name>third_party/fatfs/src/ff.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm-sbc/idm-checkout/idm-checkout_ccs.cmd</locationURI>
+			<locationURI>SW_ROOT/third_party/fatfs/src/ff.c</locationURI>
+		</link>
+		<link>
+			<name>third_party/lwip-1.3.2/apps/httpserver_raw/httpd.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/third_party/lwip-1.3.2/apps/httpserver_raw/httpd.c</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

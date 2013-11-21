@@ -3,7 +3,7 @@
 // dfuwrap.c - A simple command line application to generate a file system
 //                image file from the contents of a directory.
 //
-// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -238,7 +238,7 @@ void
 PrintWelcome(void)
 {
     QUIETPRINT("\ndfuwrap - Wrap a binary file for use in USB DFU download.\n");
-    QUIETPRINT("Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.\n\n");
+    QUIETPRINT("Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.\n\n");
 }
 
 //*****************************************************************************

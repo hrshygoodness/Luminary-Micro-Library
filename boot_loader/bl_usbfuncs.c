@@ -3,7 +3,7 @@
 // bl_usbfuncs.c - The subset of USB library functions required by the USB DFU
 //                 boot loader.
 //
-// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -556,8 +556,6 @@ USBConfigurePins(void)
 void
 USBBLInit(void)
 {
-    volatile unsigned long ulStatus;
-
     //
     // Configure the USB Pins based on the bl_config.h settings.
     //
@@ -584,8 +582,8 @@ USBBLInit(void)
     //
     // Clear any pending interrupts.
     //
-    ulStatus = HWREGH(USB0_BASE + USB_O_TXIS);
-    ulStatus = HWREGB(USB0_BASE + USB_O_IS);
+    HWREGH(USB0_BASE + USB_O_TXIS);
+    HWREGB(USB0_BASE + USB_O_IS);
 
     //
     // Enable USB Interrupts.

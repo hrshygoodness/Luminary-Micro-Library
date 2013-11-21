@@ -3,7 +3,7 @@
 // i2s_filter.c - Example program that records the line input from the codec and
 // plays it back out the output.
 //
-// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the DK-LM3S9D96 Firmware Package.
+// This is part of revision 10636 of the DK-LM3S9D96 Firmware Package.
 //
 //******************************************************************************
 

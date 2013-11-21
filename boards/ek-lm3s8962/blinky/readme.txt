@@ -4,7 +4,7 @@ A very simple example that blinks the on-board LED.
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -20,4 +20,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 9453 of the EK-LM3S8962 Firmware Package.
+This is part of revision 10636 of the EK-LM3S8962 Firmware Package.

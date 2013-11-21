@@ -110,6 +110,7 @@
         <tRmem>1</tRmem>
         <tRfunc>0</tRfunc>
         <tRbox>1</tRbox>
+        <tRtrace>0</tRtrace>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
         <nTsel>4</nTsel>
@@ -142,6 +143,7 @@
           <Name></Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
+      <Breakpoint/>
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
@@ -168,6 +170,9 @@
         <newCpu>0</newCpu>
         <uProt>0</uProt>
       </DebugFlag>
+      <Tracepoint>
+        <THDelay>0</THDelay>
+      </Tracepoint>
       <LintExecutable></LintExecutable>
       <LintConfigFile></LintConfigFile>
     </TargetOption>
@@ -178,6 +183,7 @@
     <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>1</GroupNumber>
       <FileNumber>1</FileNumber>
@@ -191,6 +197,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\drivers\kitronix320x240x16_ssd2119_8bit.c</PathWithFileName>
       <FilenameWithoutPath>kitronix320x240x16_ssd2119_8bit.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -205,6 +213,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\drivers\set_pinout.c</PathWithFileName>
       <FilenameWithoutPath>set_pinout.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -219,6 +229,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\startup_rvmdk.S</PathWithFileName>
       <FilenameWithoutPath>startup_rvmdk.S</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -233,6 +245,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\utils\uartstdio.c</PathWithFileName>
       <FilenameWithoutPath>uartstdio.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -247,6 +261,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\usb_bulk_structs.c</PathWithFileName>
       <FilenameWithoutPath>usb_bulk_structs.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -261,6 +277,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\usb_dev_bulk.c</PathWithFileName>
       <FilenameWithoutPath>usb_dev_bulk.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
@@ -275,6 +293,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\utils\ustdlib.c</PathWithFileName>
       <FilenameWithoutPath>ustdlib.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
   </Group>
 
@@ -283,6 +303,7 @@
     <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>2</GroupNumber>
       <FileNumber>8</FileNumber>
@@ -296,6 +317,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\driverlib\rvmdk-cm3\driverlib-cm3.lib</PathWithFileName>
       <FilenameWithoutPath>driverlib-cm3.lib</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
@@ -310,6 +333,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\grlib\rvmdk-cm3\grlib-cm3.lib</PathWithFileName>
       <FilenameWithoutPath>grlib-cm3.lib</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
@@ -324,6 +349,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\usblib\rvmdk-cm3\usblib-cm3.lib</PathWithFileName>
       <FilenameWithoutPath>usblib-cm3.lib</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
     </File>
   </Group>
 
@@ -332,6 +359,7 @@
     <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>3</GroupNumber>
       <FileNumber>11</FileNumber>
@@ -345,6 +373,8 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\readme.txt</PathWithFileName>
       <FilenameWithoutPath>readme.txt</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
       <WindowPosition>
         <length>44</length>
         <flags>0</flags>
@@ -366,22 +396,5 @@
       </WindowPosition>
     </File>
   </Group>
-
-  <MDIGroups>
-    <Orientation>1</Orientation>
-    <ActiveMDIGroup>0</ActiveMDIGroup>
-    <MDIGroup>
-      <Size>100</Size>
-      <ActiveTab>0</ActiveTab>
-      <Documents>
-        <Doc>
-          <Name>.\readme.txt</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>1</TopLine>
-          <CurrentLine>1</CurrentLine>
-        </Doc>
-      </Documents>
-    </MDIGroup>
-  </MDIGroups>
 
 </ProjectOpt>

@@ -2,7 +2,7 @@
 //
 // uiparms.c - Contains the parameters needed for the user interface module.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the RDK-STEPPER Firmware Package.
+// This is part of revision 10636 of the RDK-STEPPER Firmware Package.
 //
 //*****************************************************************************
 
@@ -68,7 +68,7 @@ const unsigned long g_ulUITargetType = RESP_ID_TARGET_STEPPER;
 //! careful consideration.
 //
 //*****************************************************************************
-const unsigned short g_usFirmwareVersion = 9453;
+const unsigned short g_usFirmwareVersion = 10636;
 
 //*****************************************************************************
 //

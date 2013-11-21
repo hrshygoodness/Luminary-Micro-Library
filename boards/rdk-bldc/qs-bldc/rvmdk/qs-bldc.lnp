@@ -1,4 +1,0 @@
---cpu Cortex-M3 ".\rvmdk\adc_ctrl.o" ".\rvmdk\brake.o" ".\rvmdk\cpu_usage.o" ".\rvmdk\flash_pb.o" ".\rvmdk\hall_ctrl.o" ".\rvmdk\lwiplib.o" ".\rvmdk\main.o" ".\rvmdk\pwm_ctrl.o" ".\rvmdk\sine.o" ".\rvmdk\sinemod.o" ".\rvmdk\speed_sense.o" ".\rvmdk\startup_rvmdk.o" ".\rvmdk\trapmod.o" ".\rvmdk\ui.o" ".\rvmdk\ui_can.o" ".\rvmdk\ui_ethernet.o" ".\rvmdk\ui_onboard.o" "..\..\..\driverlib\rvmdk\driverlib.lib" --library_type=microlib --strict --scatter "qs-bldc.sct" 
---entry Reset_Handler --autoat --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
---info sizes --info totals --info unused --info veneers 
- --list ".\rvmdk\qs-bldc.map" -o ".\rvmdk\qs-bldc.axf"

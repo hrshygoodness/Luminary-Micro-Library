@@ -19,7 +19,7 @@ ClassGuid={F5450C06-EB58-420e-8F98-A76C5D4AFB18}
 Provider = %ProviderName%
 CatalogFile.NTx86=usb_dev_bulk_x86.cat
 CatalogFile.NTamd64=usb_dev_bulk_amd64.cat
-DriverVer=09/05/2012,1.3.9453
+DriverVer=03/28/2013,1.3.10636
 
 ; ========== Manufacturer/Models sections ===========
 

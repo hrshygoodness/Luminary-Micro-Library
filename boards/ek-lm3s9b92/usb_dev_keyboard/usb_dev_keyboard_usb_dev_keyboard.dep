@@ -1,8 +1,8 @@
 Dependencies for Project 'usb_dev_keyboard', Target 'usb_dev_keyboard': (DO NOT MODIFY !)
-F (.\startup_rvmdk.S)(0x4C2D8442)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
-F (..\..\..\utils\uartstdio.c)(0x4D686EC4)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\uartstdio.o" --omf_browse ".\rvmdk\uartstdio.crf" --depend ".\rvmdk\uartstdio.d")
-F (usb_dev_keyboard.c)(0x4C2D8442)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\usb_dev_keyboard.o" --omf_browse ".\rvmdk\usb_dev_keyboard.crf" --depend ".\rvmdk\usb_dev_keyboard.d")
-F (usb_keyb_structs.c)(0x4C2D8442)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\usb_keyb_structs.o" --omf_browse ".\rvmdk\usb_keyb_structs.crf" --depend ".\rvmdk\usb_keyb_structs.d")
-F (..\..\..\driverlib\rvmdk\driverlib.lib)(0x4D686EBE)()
-F (..\..\..\usblib\rvmdk\usblib.lib)(0x4D686EC4)()
-F (.\readme.txt)(0x4C2D8442)()
+F (.\startup_rvmdk.S)(0x509BFA0B)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1" -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -o ".\rvmdk\startup_rvmdk.o" --depend ".\rvmdk\startup_rvmdk.d")
+F (..\..\..\utils\uartstdio.c)(0x509BFCB4)(-c --cpu Cortex-M3 -D__EVAL -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I "C:\Keil\ARM\INC" -I "C:\Keil\ARM\INC\Luminary" -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\uartstdio.o" --omf_browse ".\rvmdk\uartstdio.crf" --depend ".\rvmdk\uartstdio.d")
+F (.\usb_dev_keyboard.c)(0x509BFA0B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I C:\Keil\ARM\RV31\INC -I C:\Keil\ARM\CMSIS\Include -I C:\Keil\ARM\Inc\Luminary -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\usb_dev_keyboard.o" --omf_browse ".\rvmdk\usb_dev_keyboard.crf" --depend ".\rvmdk\usb_dev_keyboard.d")
+F (.\usb_keyb_structs.c)(0x509BFA0B)(-c --cpu Cortex-M3 -D__MICROLIB -g -O2 --apcs=interwork --split_sections -I..\..\.. -I C:\Keil\ARM\RV31\INC -I C:\Keil\ARM\CMSIS\Include -I C:\Keil\ARM\Inc\Luminary -Drvmdk -DPART_LM3S9B92 -DTARGET_IS_TEMPEST_RB1 -o ".\rvmdk\usb_keyb_structs.o" --omf_browse ".\rvmdk\usb_keyb_structs.crf" --depend ".\rvmdk\usb_keyb_structs.d")
+F (..\..\..\driverlib\rvmdk-cm3\driverlib-cm3.lib)(0x51BF6E9F)()
+F (..\..\..\usblib\rvmdk-cm3\usblib-cm3.lib)(0x509BFCB4)()
+F (.\readme.txt)(0x509BFA0B)()

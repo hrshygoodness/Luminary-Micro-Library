@@ -2,7 +2,7 @@
 //
 // usb.c - Driver for the USB Interface.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -4040,13 +4040,6 @@ USBNumEndpointsGet(unsigned long ulBase)
         // Tempest and Firestorm class devices support 15 endpoint pairs.
         //
         return(15);
-    }
-    else if(CLASS_IS_BLIZZARD)
-    {
-        //
-        // Blizzard class devices support 7 endpoint pairs.
-        //
-        return(7);
     }
     else
     {

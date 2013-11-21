@@ -424,10 +424,10 @@
       <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
-          <Name>C:\StellarisWare\driverlib\readme.txt</Name>
-          <ColumnNumber>19</ColumnNumber>
+          <Name>..\..\..\boot_loader\readme.txt</Name>
+          <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
-          <CurrentLine>18</CurrentLine>
+          <CurrentLine>1</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

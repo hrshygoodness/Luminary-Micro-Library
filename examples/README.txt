@@ -1,6 +1,6 @@
 PLEASE READ THIS TO UNDERSTAND THE EXAMPLES
 
-There are two kinds of examples:
+There are three kinds of examples:
 
 ================
 board - These examples are found in the StellarisWare/boards directory.
@@ -25,3 +25,12 @@ applications, and contain no project files or startup code or anything else
 like that.  We do verify that the individual C files containing the example
 code will compile and perform the intended function but do not mean for these
 to be used as standalone example applications.
+
+================
+project - This example is found in the following location:
+
+StellarisWare/example/project
+
+This is a simple example with startup code and project files that can be used
+as a starting point for a complete application.  This can be used with very few
+restrictions as it is covered by the TI BSD license.

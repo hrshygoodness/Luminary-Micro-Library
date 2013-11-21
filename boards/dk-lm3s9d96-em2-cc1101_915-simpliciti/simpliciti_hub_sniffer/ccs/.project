@@ -3,42 +3,103 @@
 	<name>simpliciti_hub_sniffer</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib-cm3</project>
-		<project>grlib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>dk-lm3s9d96/drivers/set_pinout.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/set_pinout.c</locationURI>
-		</link>
-		<link>
-			<name>dk-lm3s9d96/drivers/kitronix320x240x16_ssd2119_8bit.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/kitronix320x240x16_ssd2119_8bit.c</locationURI>
-		</link>
-		<link>
-			<name>dk-lm3s9d96/drivers/touch.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/touch.c</locationURI>
-		</link>
 		<link>
 			<name>simpliciti_hub_sniffer.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/dk-lm3s9d96-em2-cc1101_915-simpliciti/simpliciti_hub_sniffer/simpliciti_hub_sniffer.c</locationURI>
+		</link>
+		<link>
+			<name>simpliciti_hub_sniffer_ccs.cmd</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/dk-lm3s9d96-em2-cc1101_915-simpliciti/simpliciti_hub_sniffer/simpliciti_hub_sniffer_ccs.cmd</locationURI>
+		</link>
+		<link>
+			<name>startup_ccs.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/dk-lm3s9d96-em2-cc1101_915-simpliciti/simpliciti_hub_sniffer/startup_ccs.c</locationURI>
+		</link>
+		<link>
+			<name>SimpliciTI-1.1.1/simplicitilib.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/SimpliciTI-1.1.1/simplicitilib.c</locationURI>
 		</link>
 		<link>
 			<name>utils/uartstdio.c</name>
@@ -51,19 +112,25 @@
 			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
 		</link>
 		<link>
-			<name>SimpliciTI-1.1.1/simplicitilib.c</name>
+			<name>dk-lm3s9d96/drivers/kitronix320x240x16_ssd2119_8bit.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/SimpliciTI-1.1.1/simplicitilib.c</locationURI>
+			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/kitronix320x240x16_ssd2119_8bit.c</locationURI>
 		</link>
 		<link>
-			<name>startup_ccs.c</name>
+			<name>dk-lm3s9d96/drivers/set_pinout.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/dk-lm3s9d96-em2-cc1101_915-simpliciti/simpliciti_hub_sniffer/startup_ccs.c</locationURI>
+			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/set_pinout.c</locationURI>
 		</link>
 		<link>
-			<name>simpliciti_hub_sniffer_ccs.cmd</name>
+			<name>dk-lm3s9d96/drivers/touch.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/dk-lm3s9d96-em2-cc1101_915-simpliciti/simpliciti_hub_sniffer/simpliciti_hub_sniffer_ccs.cmd</locationURI>
+			<locationURI>SW_ROOT/boards/dk-lm3s9d96/drivers/touch.c</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

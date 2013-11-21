@@ -2,7 +2,7 @@
 //
 // bl_enet.c - Functions to update via Ethernet.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -1286,8 +1286,8 @@ ConfigureEnet(void)
     //
     HWREG(ETH_BASE + MAC_O_TCTL) = (MAC_TCTL_DUPLEX | MAC_TCTL_CRC |
                                     MAC_TCTL_PADEN | MAC_TCTL_TXEN);
-    HWREG(ETH_BASE + MAC_O_RCTL) = (MAC_RCTL_RSTFIFO | MAC_RCTL_AMUL |
-                                    MAC_RCTL_RXEN);
+    HWREG(ETH_BASE + MAC_O_RCTL) = (MAC_RCTL_RSTFIFO | MAC_RCTL_BADCRC |
+                                    MAC_RCTL_AMUL | MAC_RCTL_RXEN);
 }
 
 //*****************************************************************************

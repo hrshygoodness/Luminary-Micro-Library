@@ -3,7 +3,7 @@
 // can_device_led.c - Simple application that runs on the CAN device board and
 //                    uses the buttons as a light switch for the LED.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the EK-LM3S2965 Firmware Package.
+// This is part of revision 10636 of the EK-LM3S2965 Firmware Package.
 //
 //*****************************************************************************
 

@@ -2,7 +2,7 @@
 #
 # makedefs - Definitions common to all makefiles.
 #
-# Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+# Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 # Software License Agreement
 # 
 #   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
-# This is part of revision 9453 of the Stellaris Firmware Development Package.
+# This is part of revision 10636 of the Stellaris Firmware Development Package.
 #
 #******************************************************************************
 
@@ -82,39 +82,17 @@ CC=${PREFIX}-gcc
 ARMGCC_ROOT:=${shell dirname '${shell sh -c "which ${CC}"}'}/..
 
 #
-# Determine the compiler CPU/FPU options based on the processor variant.
-#
-ifndef VARIANT
-CPU=-mcpu=cortex-m3
-FPU=
-else
-ifeq (${VARIANT}, cm3)
-CPU=-mcpu=cortex-m3
-FPU=
-else
-ifeq (${VARIANT}, cm4f)
-CPU=-mcpu=cortex-m4
-FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-else
-$(error Unknown processor variant ${VARIANT}!)
-endif
-endif
-endif
-
-#
 # The flags passed to the assembler.
 #
-AFLAGS=-mthumb \
-       ${CPU}  \
-       ${FPU}  \
+AFLAGS=-mthumb         \
+       -mcpu=cortex-m3 \
        -MD
 
 #
 # The flags passed to the compiler.
 #
 CFLAGS=-mthumb             \
-       ${CPU}              \
-       ${FPU}              \
+       -mcpu=cortex-m3     \
        -Os                 \
        -ffunction-sections \
        -fdata-sections     \

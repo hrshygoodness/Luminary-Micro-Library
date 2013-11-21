@@ -2,7 +2,7 @@
 //
 // ustdlib.h - Prototypes for simple standard library functions.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -117,6 +117,8 @@ extern int ustrnicmp(const char *pcStr1, const char *pcStr2, int iCount);
 extern int ustrncmp(const char *pcStr1, const char *pcStr2, int iCount);
 extern int ustrcmp(const char *pcStr1, const char *pcStr2);
 extern int ustrcasecmp(const char *pcStr1, const char *pcStr2);
+extern void usrand(unsigned long ulSeed);
+extern int urand(void);
 
 //*****************************************************************************
 //

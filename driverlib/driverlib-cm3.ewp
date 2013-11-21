@@ -779,22 +779,13 @@
       <name>$PROJ_DIR$\cpu.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\eeprom.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\epi.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\ethernet.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\fan.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\flash.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\fpu.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\gpio.c</name>
@@ -812,13 +803,7 @@
       <name>$PROJ_DIR$\interrupt.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\lpc.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\mpu.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\peci.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\pwm.c</name>
@@ -831,9 +816,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\sysctl.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\sysexc.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\systick.c</name>

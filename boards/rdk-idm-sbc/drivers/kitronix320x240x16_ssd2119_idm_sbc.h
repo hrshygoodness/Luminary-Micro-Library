@@ -4,7 +4,7 @@
 //                K350QVG-V1-F display driver with an SSD2119 controller as
 //                implemented on the IDM-SBC module.
 //
-// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -20,7 +20,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the RDK-IDM-SBC Firmware Package.
+// This is part of revision 10636 of the RDK-IDM-SBC Firmware Package.
 //
 //*****************************************************************************
 

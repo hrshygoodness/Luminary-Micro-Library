@@ -2,7 +2,7 @@
 //
 // scribble.c - A simple scribble pad to demonstrate the touch screen driver.
 //
-// Copyright (c) 2008-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2008-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the RDK-IDM Firmware Package.
+// This is part of revision 10636 of the RDK-IDM Firmware Package.
 //
 //*****************************************************************************
 

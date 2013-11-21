@@ -3,30 +3,86 @@
 	<name>usb_stick_update</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib-cm3</project>
-		<project>usblib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
-			<name>usb_stick_update.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_stick_update/usb_stick_update.c</locationURI>
-		</link>
-		<link>
-			<name>simple_fs.c/simple_fs.c</name>
+			<name>simple_fs.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_stick_update/simple_fs.c</locationURI>
 		</link>
@@ -36,9 +92,20 @@
 			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_stick_update/startup_ccs.c</locationURI>
 		</link>
 		<link>
+			<name>usb_stick_update.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_stick_update/usb_stick_update.c</locationURI>
+		</link>
+		<link>
 			<name>usb_stick_update_ccs.cmd</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/ek-lm3s3748/usb_stick_update/usb_stick_update_ccs.cmd</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

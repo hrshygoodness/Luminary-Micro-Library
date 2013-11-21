@@ -3,37 +3,103 @@
 	<name>fontview</name>
 	<comment></comment>
 	<projects>
-		<project>driverlib-cm3</project>
-		<project>grlib-cm3</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
 			<arguments>
+				<dictionary>
+					<key>?name?</key>
+					<value></value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.append_environment</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildArguments</key>
+					<value>-k</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildCommand</key>
+					<value>${CCS_UTILS_DIR}/bin/gmake</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.buildLocation</key>
+					<value>${BuildDirectory}</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
+					<value>clean</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.contents</key>
+					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.enableFullBuild</key>
+					<value>true</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
+					<value>all</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.stopOnError</key>
+					<value>false</value>
+				</dictionary>
+				<dictionary>
+					<key>org.eclipse.cdt.make.core.useDefaultBuildCmd</key>
+					<value>true</value>
+				</dictionary>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
 		<nature>org.eclipse.cdt.core.cnature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>com.ti.ccstudio.managedbuild.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>fontview.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm/fontview/fontview.c</locationURI>
-		</link>
 		<link>
 			<name>fatwrapper.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/boards/rdk-idm/fontview/fatwrapper.c</locationURI>
 		</link>
 		<link>
-			<name>drivers/touch.c</name>
+			<name>fontview.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm/drivers/touch.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm/fontview/fontview.c</locationURI>
+		</link>
+		<link>
+			<name>fontview_ccs.cmd</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm/fontview/fontview_ccs.cmd</locationURI>
+		</link>
+		<link>
+			<name>startup_ccs.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/boards/rdk-idm/fontview/startup_ccs.c</locationURI>
 		</link>
 		<link>
 			<name>drivers/formike240x320x16_ili9320.c</name>
@@ -41,9 +107,9 @@
 			<locationURI>SW_ROOT/boards/rdk-idm/drivers/formike240x320x16_ili9320.c</locationURI>
 		</link>
 		<link>
-			<name>utils/ustdlib.c</name>
+			<name>drivers/touch.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
+			<locationURI>SW_ROOT/boards/rdk-idm/drivers/touch.c</locationURI>
 		</link>
 		<link>
 			<name>utils/locator.c</name>
@@ -61,9 +127,9 @@
 			<locationURI>SW_ROOT/utils/swupdate.c</locationURI>
 		</link>
 		<link>
-			<name>third_party/fatfs/src/ff.c</name>
+			<name>utils/ustdlib.c</name>
 			<type>1</type>
-			<locationURI>SW_ROOT/third_party/fatfs/src/ff.c</locationURI>
+			<locationURI>SW_ROOT/utils/ustdlib.c</locationURI>
 		</link>
 		<link>
 			<name>third_party/fatfs/port/mmc-rdk-idm.c</name>
@@ -71,19 +137,20 @@
 			<locationURI>SW_ROOT/third_party/fatfs/port/mmc-rdk-idm.c</locationURI>
 		</link>
 		<link>
+			<name>third_party/fatfs/src/ff.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/third_party/fatfs/src/ff.c</locationURI>
+		</link>
+		<link>
 			<name>third_party/fonts/ofl/fonts/fontcjktest20pt.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/third_party/fonts/ofl/fonts/fontcjktest20pt.c</locationURI>
 		</link>
-		<link>
-			<name>startup_ccs.c</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm/fontview/startup_ccs.c</locationURI>
-		</link>
-		<link>
-			<name>fontview_ccs.cmd</name>
-			<type>1</type>
-			<locationURI>SW_ROOT/boards/rdk-idm/fontview/fontview_ccs.cmd</locationURI>
-		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>SW_ROOT</name>
+			<value>$%7BPARENT-4-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

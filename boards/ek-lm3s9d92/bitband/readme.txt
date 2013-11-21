@@ -13,7 +13,7 @@ UART0, connected to the FTDI virtual COM port and running at 115,200,
 
 -------------------------------------------------------------------------------
 
-Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+Copyright (c) 2009-2013 Texas Instruments Incorporated.  All rights reserved.
 Software License Agreement
 
 Texas Instruments (TI) is supplying this software for use solely and
@@ -29,4 +29,4 @@ A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, FOR ANY REASON WHATSOEVER.
 
-This is part of revision 9453 of the EK-LM3S9D92 Firmware Package.
+This is part of revision 10636 of the EK-LM3S9D92 Firmware Package.

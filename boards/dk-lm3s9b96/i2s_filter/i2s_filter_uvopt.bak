@@ -266,8 +266,8 @@
       <TopLine>0</TopLine>
       <CurrentLine>0</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\driverlib\rvmdk\driverlib.lib</PathWithFileName>
-      <FilenameWithoutPath>driverlib.lib</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\driverlib\rvmdk-cm3\driverlib-cm3.lib</PathWithFileName>
+      <FilenameWithoutPath>driverlib-cm3.lib</FilenameWithoutPath>
     </File>
   </Group>
 
@@ -319,10 +319,10 @@
       <ActiveTab>0</ActiveTab>
       <Documents>
         <Doc>
-          <Name>C:\StellarisWare\driverlib\readme.txt</Name>
-          <ColumnNumber>19</ColumnNumber>
+          <Name>.\readme.txt</Name>
+          <ColumnNumber>0</ColumnNumber>
           <TopLine>1</TopLine>
-          <CurrentLine>18</CurrentLine>
+          <CurrentLine>1</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

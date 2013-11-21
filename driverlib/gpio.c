@@ -2,7 +2,7 @@
 //
 // gpio.c - API for GPIO ports
 //
-// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -487,8 +487,6 @@ GPIOIntTypeGet(unsigned long ulPort, unsigned char ucPin)
 //! - \b GPIO_PIN_TYPE_STD_WPU
 //! - \b GPIO_PIN_TYPE_STD_WPD
 //! - \b GPIO_PIN_TYPE_OD
-//! - \b GPIO_PIN_TYPE_OD_WPU
-//! - \b GPIO_PIN_TYPE_OD_WPD
 //! - \b GPIO_PIN_TYPE_ANALOG
 //!
 //! where \b GPIO_PIN_TYPE_STD* specifies a push-pull pin, \b GPIO_PIN_TYPE_OD*
@@ -519,8 +517,6 @@ GPIOPadConfigSet(unsigned long ulPort, unsigned char ucPins,
            (ulPinType == GPIO_PIN_TYPE_STD_WPU) ||
            (ulPinType == GPIO_PIN_TYPE_STD_WPD) ||
            (ulPinType == GPIO_PIN_TYPE_OD) ||
-           (ulPinType == GPIO_PIN_TYPE_OD_WPU) ||
-           (ulPinType == GPIO_PIN_TYPE_OD_WPD) ||
            (ulPinType == GPIO_PIN_TYPE_ANALOG));
 
     //
@@ -1355,7 +1351,7 @@ GPIOPinTypeI2C(unsigned long ulPort, unsigned char ucPins)
     //
     // Set the pad(s) for open-drain operation with a weak pull-up.
     //
-    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD_WPU);
+    GPIOPadConfigSet(ulPort, ucPins, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_OD);
 }
 
 //*****************************************************************************

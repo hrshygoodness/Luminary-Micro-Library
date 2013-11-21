@@ -2,7 +2,7 @@
 //
 // gpio.h - Defines and Macros for GPIO API.
 //
-// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -86,7 +86,7 @@ extern "C"
 #define GPIO_RISING_EDGE        0x00000004  // Interrupt on rising edge
 #define GPIO_BOTH_EDGES         0x00000001  // Interrupt on both edges
 #define GPIO_LOW_LEVEL          0x00000002  // Interrupt on low level
-#define GPIO_HIGH_LEVEL         0x00000007  // Interrupt on high level
+#define GPIO_HIGH_LEVEL         0x00000006  // Interrupt on high level
 #define GPIO_DISCRETE_INT       0x00010000  // Interrupt for individual pins
 
 //*****************************************************************************
@@ -111,8 +111,6 @@ extern "C"
 #define GPIO_PIN_TYPE_STD_WPU   0x0000000A  // Push-pull with weak pull-up
 #define GPIO_PIN_TYPE_STD_WPD   0x0000000C  // Push-pull with weak pull-down
 #define GPIO_PIN_TYPE_OD        0x00000009  // Open-drain
-#define GPIO_PIN_TYPE_OD_WPU    0x0000000B  // Open-drain with weak pull-up
-#define GPIO_PIN_TYPE_OD_WPD    0x0000000D  // Open-drain with weak pull-down
 #define GPIO_PIN_TYPE_ANALOG    0x00000000  // Analog comparator
 
 //*****************************************************************************

@@ -2,7 +2,7 @@
 //
 // can.h - Defines and Macros for the CAN controller.
 //
-// Copyright (c) 2006-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2006-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 

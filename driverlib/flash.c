@@ -2,7 +2,7 @@
 //
 // flash.c - Driver for programming the on-chip flash.
 //
-// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -63,7 +63,11 @@ static const unsigned long g_pulFMPPERegs[] =
     FLASH_FMPPE,
     FLASH_FMPPE1,
     FLASH_FMPPE2,
-    FLASH_FMPPE3
+    FLASH_FMPPE3,
+    FLASH_FMPPE4,
+    FLASH_FMPPE5,
+    FLASH_FMPPE6,
+    FLASH_FMPPE7
 };
 
 //*****************************************************************************
@@ -77,7 +81,11 @@ static const unsigned long g_pulFMPRERegs[] =
     FLASH_FMPRE,
     FLASH_FMPRE1,
     FLASH_FMPRE2,
-    FLASH_FMPRE3
+    FLASH_FMPRE3,
+    FLASH_FMPRE4,
+    FLASH_FMPRE5,
+    FLASH_FMPRE6,
+    FLASH_FMPRE7
 };
 
 //*****************************************************************************

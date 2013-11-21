@@ -2,7 +2,7 @@
 //
 // sysctl.c - Driver for the system controller.
 //
-// Copyright (c) 2005-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2005-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
-// This is part of revision 9453 of the Stellaris Peripheral Driver Library.
+// This is part of revision 10636 of the Stellaris Peripheral Driver Library.
 //
 //*****************************************************************************
 
@@ -1804,7 +1804,7 @@ SysCtlResetCauseClear(unsigned long ulCauses)
 //! generate a processor interrupt.
 //!
 //! \note The availability of the resample feature is only available on
-//! Sandstorm-class devices. Please consult the data sheet for the part you
+//! Sandstorm-class devices.  Please consult the data sheet for the part you
 //! are using to determine whether this feature is available.
 //!
 //! \return None.
@@ -2274,7 +2274,6 @@ unsigned long
 SysCtlClockGet(void)
 {
     unsigned long ulRCC, ulRCC2, ulPLL, ulClk;
-    unsigned long ulPLL1;
 
     //
     // Read RCC and RCC2.  For Sandstorm-class devices (which do not have
@@ -2420,88 +2419,51 @@ SysCtlClockGet(void)
        (!(ulRCC2 & SYSCTL_RCC2_USERCC2) && !(ulRCC & SYSCTL_RCC_BYPASS)))
     {
         //
-        // See if this is a Blizzard-class device.
+        // Get the PLL configuration.
         //
-        if(CLASS_IS_BLIZZARD)
+        ulPLL = HWREG(SYSCTL_PLLCFG);
+
+        //
+        // See if this is a Sandstorm-class or Fury-class device.
+        //
+        if(CLASS_IS_SANDSTORM)
         {
             //
-            // Read the two PLL frequency registers.  The formula for a
-            // Blizzard-class device is "(xtal * m) / ((q + 1) * (n + 1))".
+            // Compute the PLL output frequency based on its input frequency.
+            // The formula for a Sandstorm-class devices is
+            // "(xtal * (f + 2)) / (r + 2)".
             //
-            ulPLL = HWREG(SYSCTL_PLLFREQ0);
-            ulPLL1 = HWREG(SYSCTL_PLLFREQ1);
-
-            //
-            // Divide the input clock by the dividers.
-            //
-            ulClk /= ((((ulPLL1 & SYSCTL_PLLFREQ1_Q_M) >>
-                        SYSCTL_PLLFREQ1_Q_S) + 1) *
-                      (((ulPLL1 & SYSCTL_PLLFREQ1_N_M) >>
-                        SYSCTL_PLLFREQ1_N_S) + 1) * 2);
-
-            //
-            // Multiply the clock by the multiplier, which is split into an
-            // integer part and a fractional part.
-            //
-            ulClk = ((ulClk * ((ulPLL & SYSCTL_PLLFREQ0_MINT_M) >>
-                               SYSCTL_PLLFREQ0_MINT_S)) +
-                     ((ulClk * ((ulPLL & SYSCTL_PLLFREQ0_MFRAC_M) >>
-                                SYSCTL_PLLFREQ0_MFRAC_S)) >> 10));
+            ulClk = ((ulClk * (((ulPLL & SYSCTL_PLLCFG_F_M) >>
+                                SYSCTL_PLLCFG_F_S) + 2)) /
+                     (((ulPLL & SYSCTL_PLLCFG_R_M) >> SYSCTL_PLLCFG_R_S) + 2));
         }
-
-        //
-        // Older device classes used a different PLL.
-        //
         else
         {
             //
-            // Get the PLL configuration.
+            // Compute the PLL output frequency based on its input
+            // frequency.  The formula for a Fury-class device is
+            // "(xtal * f) / ((r + 1) * 2)".
             //
-            ulPLL = HWREG(SYSCTL_PLLCFG);
+            ulClk = ((ulClk * ((ulPLL & SYSCTL_PLLCFG_F_M) >>
+                               SYSCTL_PLLCFG_F_S)) /
+                     ((((ulPLL & SYSCTL_PLLCFG_R_M) >>
+                        SYSCTL_PLLCFG_R_S) + 1) * 2));
+        }
 
-            //
-            // See if this is a Sandstorm-class or Fury-class device.
-            //
-            if(CLASS_IS_SANDSTORM)
-            {
-                //
-                // Compute the PLL output frequency based on its input
-                // frequency.  The formula for a Sandstorm-class devices is
-                // "(xtal * (f + 2)) / (r + 2)".
-                //
-                ulClk = ((ulClk * (((ulPLL & SYSCTL_PLLCFG_F_M) >>
-                                    SYSCTL_PLLCFG_F_S) + 2)) /
-                         (((ulPLL & SYSCTL_PLLCFG_R_M) >>
-                           SYSCTL_PLLCFG_R_S) + 2));
-            }
-            else
-            {
-                //
-                // Compute the PLL output frequency based on its input
-                // frequency.  The formula for a Fury-class device is
-                // "(xtal * f) / ((r + 1) * 2)".
-                //
-                ulClk = ((ulClk * ((ulPLL & SYSCTL_PLLCFG_F_M) >>
-                                   SYSCTL_PLLCFG_F_S)) /
-                         ((((ulPLL & SYSCTL_PLLCFG_R_M) >>
-                            SYSCTL_PLLCFG_R_S) + 1) * 2));
-            }
+        //
+        // See if the optional output divide by 2 is being used.
+        //
+        if(ulPLL & SYSCTL_PLLCFG_OD_2)
+        {
+            ulClk /= 2;
+        }
 
-            //
-            // See if the optional output divide by 2 is being used.
-            //
-            if(ulPLL & SYSCTL_PLLCFG_OD_2)
-            {
-                ulClk /= 2;
-            }
-
-            //
-            // See if the optional output divide by 4 is being used.
-            //
-            if(ulPLL & SYSCTL_PLLCFG_OD_4)
-            {
-                ulClk /= 4;
-            }
+        //
+        // See if the optional output divide by 4 is being used.
+        //
+        if(ulPLL & SYSCTL_PLLCFG_OD_4)
+        {
+            ulClk /= 4;
         }
 
         //

@@ -2,7 +2,7 @@
 //
 // usbenum.c - Enumeration code to handle all endpoint zero traffic.
 //
-// Copyright (c) 2007-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2007-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -18,7 +18,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris USB Library.
+// This is part of revision 10636 of the Stellaris USB Library.
 //
 //*****************************************************************************
 
@@ -323,7 +323,7 @@ USBDCDInit(unsigned long ulIndex, tDeviceInfo *psDevice)
             //
             // Switch to OTG mode to detect VBUS changes.
             //
-            MAP_USBOTGMode(USB0_BASE);
+            USBOTGMode(USB0_BASE);
         }
         else
         {

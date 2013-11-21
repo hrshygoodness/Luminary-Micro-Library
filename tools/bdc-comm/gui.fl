@@ -156,11 +156,11 @@ Function {CreateHelpAboutWindow(void)} {} {
       xywh {85 15 370 20}
     }
     Fl_Box {} {
-      label {Version 9453}
+      label {Version 10636}
       xywh {85 35 370 20}
     }
     Fl_Box {} {
-      label {Copyright (c) 2010-2012 Texas Instruments Incorporated.  All rights reserved.}
+      label {Copyright (c) 2010-2013 Texas Instruments Incorporated.  All rights reserved.}
       xywh {85 55 370 20} labelsize 10
     }
     Fl_Return_Button {} {

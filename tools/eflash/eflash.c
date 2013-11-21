@@ -3,7 +3,7 @@
 // eflash.c - This file holds the main routine for downloading an image to a
 //            Stellaris Device via Ethernet.
 //
-// Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.
+// Copyright (c) 2009-2013 Texas Instruments Incorporated.  All rights reserved.
 // Software License Agreement
 // 
 // Texas Instruments (TI) is supplying this software for use solely and
@@ -19,7 +19,7 @@
 // CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 // DAMAGES, FOR ANY REASON WHATSOEVER.
 // 
-// This is part of revision 9453 of the Stellaris Firmware Development Package.
+// This is part of revision 10636 of the Stellaris Firmware Development Package.
 //
 //*****************************************************************************
 
@@ -40,7 +40,7 @@
 // The version of the application.
 //
 //*****************************************************************************
-const unsigned short g_usApplicationVersion = 9453;
+const unsigned short g_usApplicationVersion = 10636;
 
 //*****************************************************************************
 //
@@ -51,7 +51,7 @@ static const char g_pcProgramName[] =
     "EFLASH Ethernet Boot Loader Download Utility";
 
 static const char g_pcProgramCopyright[] =
-    "Copyright (c) 2009-2012 Texas Instruments Incorporated.  All rights reserved.";
+    "Copyright (c) 2009-2013 Texas Instruments Incorporated.  All rights reserved.";
 
 static const char g_pcProgramHelp[] =
 "usage: eflash [options] file\n"

@@ -407,11 +407,6 @@
               <FilePath>.\cpu.c</FilePath>
             </File>
             <File>
-              <FileName>eeprom.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\eeprom.c</FilePath>
-            </File>
-            <File>
               <FileName>epi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\epi.c</FilePath>
@@ -422,19 +417,9 @@
               <FilePath>.\ethernet.c</FilePath>
             </File>
             <File>
-              <FileName>fan.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\fan.c</FilePath>
-            </File>
-            <File>
               <FileName>flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>fpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\fpu.c</FilePath>
             </File>
             <File>
               <FileName>gpio.c</FileName>
@@ -462,19 +447,9 @@
               <FilePath>.\interrupt.c</FilePath>
             </File>
             <File>
-              <FileName>lpc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lpc.c</FilePath>
-            </File>
-            <File>
               <FileName>mpu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\mpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>peci.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\peci.c</FilePath>
             </File>
             <File>
               <FileName>pwm.c</FileName>
@@ -495,11 +470,6 @@
               <FileName>sysctl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\sysctl.c</FilePath>
-            </File>
-            <File>
-              <FileName>sysexc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\sysexc.c</FilePath>
             </File>
             <File>
               <FileName>systick.c</FileName>
